@@ -12,11 +12,11 @@ POS will be responsible for:
 # Copyright
 Copyright 2018-2021 Open Targets
 
-Bristol Myers Squibb
-European Bioinformatics Institute - EMBL-EBI
-GSK
-Sanofi
-Wellcome Sanger Institute
+Bristol Myers Squibb <br>
+European Bioinformatics Institute - EMBL-EBI <br>
+GSK <br>
+Sanofi <br>
+Wellcome Sanger Institute <br>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
