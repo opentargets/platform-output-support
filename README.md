@@ -8,6 +8,8 @@ POS will be responsible for:
 * Publishing datasets in different services
 * Data validation
 
+
+# Copyright
 Copyright 2014-2021 Biogen, Celgene Corporation, EMBL - European Bioinformatics Institute, GlaxoSmithKline, Takeda Pharmaceutical Company and Wellcome Sanger Institute
 
 This software was developed as part of the Open Targets project. For more information please see: http://www.opentargets.org
@@ -23,3 +25,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+https://github.com/opentargets/platform-output-support.git
