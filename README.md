@@ -10,15 +10,20 @@ POS will be responsible for:
 
 
 # Copyright
-Copyright 2014-2021 Biogen, Celgene Corporation, EMBL - European Bioinformatics Institute, GlaxoSmithKline, Takeda Pharmaceutical Company and Wellcome Sanger Institute
+Copyright 2018-2021 Open Targets
 
-This software was developed as part of the Open Targets project. For more information please see: http://www.opentargets.org
+Bristol Myers Squibb
+European Bioinformatics Institute - EMBL-EBI
+GSK
+Sanofi
+Wellcome Sanger Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
+
 You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
