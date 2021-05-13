@@ -4,7 +4,7 @@ resource "random_string" "random" {
   upper = false
   special = false
   keepers = {
-    vm_elastic_search_version = var.vm_elastic_search_version
+    vm_pos_boot_disk_size = var.vm_pos_boot_disk_size
   }
 }
 
@@ -16,20 +16,21 @@ resource "google_service_account" "gcp_service_acc_apis" {
 
 
 
-resource "google_compute_instance" "elasticsearch_etl" {
-  name = "${var.module_wide_prefix_scope}-elastic-search-server-${random_string.random.result}"
-  machine_type = "custom-${var.vm_elastic_search_vcpus}-${var.vm_elastic_search_mem}"
+resource "google_compute_instance" "pos_vm" {
+  name = "${var.module_wide_prefix_scope}-support-vm-${random_string.random.result}"
+  machine_type = var.vm_pos_machine_type
   zone   = var.vm_default_zone
   allow_stopping_for_update = true
   can_ip_forward = true
 
   boot_disk {
     initialize_params {
-      image =  "${var.vm_elastic_boot_image}"
+      image =  "${var.vm_pos_boot_image}"
       type = "pd-ssd"
-      size = "${var.vm_elasticsearch_boot_disk_size}"
+      size = "${var.vm_pos_boot_disk_size}"
     }
   }
+
 
   network_interface {
     network = "default"
@@ -40,11 +41,11 @@ resource "google_compute_instance" "elasticsearch_etl" {
 
   metadata = {
     startup-script = templatefile(
-      "${path.module}/scripts/elasticsearch_startup.sh",
-      {
-        ELASTIC_SEARCH_VERSION = var.vm_elastic_search_version
-      }
-    )
+        "${path.module}/scripts/load_data.sh",
+        {
+          ELASTICSEARCH_URI = "${var.vm_elasticsearch_uri}"
+        }
+      )
     google-logging-enabled = true
   }
 

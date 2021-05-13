@@ -35,3 +35,19 @@ module "backend_elastic_search" {
 
 
 }
+
+module "backend_pos_vm" {
+  module_wide_prefix_scope = "${var.config_release_name}-vm"
+  source = "./modules/posvm"
+
+  depends_on = [module.backend_elastic_search]
+
+  // Region and zone
+  vm_default_zone = var.config_gcp_default_zone
+  vm_pos_boot_image = var.config_vm_pos_boot_image
+  vm_pos_boot_disk_size = var.config_vm_pos_boot_disk_size
+  vm_pos_machine_type = var.config_vm_pos_machine_type
+  gs_etl = var.config_gs_etl
+  vm_elasticsearch_uri = module.backend_elastic_search.elasticsearch_vm_name
+
+}
