@@ -8,7 +8,5 @@ sudo pip3 install elasticsearch-loader
 
 
 echo "test cinzia"
-echo $ELASTICSEARCH_URI
+echo ${ELASTICSEARCH_URI}
 
-echo $$ELASTICSEARCH_URI
-echo $strin
