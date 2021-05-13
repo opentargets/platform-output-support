@@ -1,0 +1,6 @@
+gcloud auth application-default login
+export SERVICE_ACCOUNT_JSON=/Users/cinzia/.config/gcloud/application_default_credentials.json
+terraform init
+terraform plan -var-file="deployment_context.tfvars"
+terraform apply -var-file="deployment_context.tfvars"
+terraform destroy -var-file="deployment_context.tfvars"
