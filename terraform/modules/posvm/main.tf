@@ -5,12 +5,16 @@ resource "random_string" "random" {
   special = false
   keepers = {
     vm_pos_boot_disk_size = var.vm_pos_boot_disk_size
+    // Take into account the machine type as well
+    machine_type = var.vm_pos_machine_type
   }
 }
 
 
 resource "google_service_account" "gcp_service_acc_apis" {
-  account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
+  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
+  // We are launching a single VM, even with multiple VMs, we can reuse the same account
+  account_id = "${var.module_wide_prefix_scope}-svcpos"
   display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
 }
 
@@ -25,13 +29,13 @@ resource "google_compute_instance" "pos_vm" {
 
   boot_disk {
     initialize_params {
-      image =  "${var.vm_pos_boot_image}"
+      image =  var.vm_pos_boot_image
       type = "pd-ssd"
-      size = "${var.vm_pos_boot_disk_size}"
+      size = var.vm_pos_boot_disk_size
     }
   }
 
-
+  // WARNING - Does this machine need a public IP?
   network_interface {
     network = "default"
     access_config {
@@ -43,7 +47,7 @@ resource "google_compute_instance" "pos_vm" {
     startup-script = templatefile(
         "${path.module}/scripts/load_data.sh",
         {
-          ELASTICSEARCH_URI = "${var.vm_elasticsearch_uri}"
+          ELASTICSEARCH_URI = var.vm_elasticsearch_uri
         }
       )
     google-logging-enabled = true
@@ -52,5 +56,10 @@ resource "google_compute_instance" "pos_vm" {
   service_account {
     email = google_service_account.gcp_service_acc_apis.email
     scopes = [ "cloud-platform" ]
+  }
+
+  // We add the lifecyle configuration
+  lifecycle {
+    create_before_destroy = true
   }
 }
