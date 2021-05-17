@@ -305,6 +305,9 @@ echo touching $OT_RCFILE
 echo "cluster_id=$cluster_id" > $OT_RCFILE
 date >> $OT_RCFILE
 
+echo "Google Storage info:"
+echo ${GS_ETL_DATASET}
+
 # Retrieve the table and database for clickhouse
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/literature.sql
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/literature_log.sql
@@ -314,13 +317,13 @@ wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/aotf_log.sql
 
 clickhouse-client --multiline --multiquery < aotf_log.sql
-gsutil -m cat gs://open-targets-data-releases/21.04/output/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
 clickhouse-client --multiline --multiquery < aotf.sql
 
 clickhouse-client --multiline --multiquery < w2v_log.sql
-gsutil -m cat gs://open-targets-data-releases/21.04/output/literature/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
+gsutil -m cat gs://${GS_ETL_DATASET}/literature/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
 clickhouse-client --multiline --multiquery < w2v.sql
 
 clickhouse-client --multiline --multiquery < literature_log.sql
-gsutil -m cat gs://open-targets-data-releases/21.04/output/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
+gsutil -m cat gs://${GS_ETL_DATASET}/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
 clickhouse-client --multiline --multiquery < literature.sql
