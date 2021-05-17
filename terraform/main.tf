@@ -1,5 +1,5 @@
 // Open Targets Platform Infrastructure
-// Author: Manuel Bernal Llinares <mbdebian@gmail.com>
+// Author: Cinzia Malangone <cinzia.malangone@gmail.com>
 
 terraform {
   required_providers {
@@ -35,6 +35,7 @@ module "backend_elastic_search" {
 
 
 }
+
 
 module "backend_pos_vm" {
   module_wide_prefix_scope = "${var.config_release_name}-vm"

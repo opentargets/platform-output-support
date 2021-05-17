@@ -7,6 +7,8 @@ resource "random_string" "random" {
     vm_pos_boot_disk_size = var.vm_pos_boot_disk_size
     // Take into account the machine type as well
     machine_type = var.vm_pos_machine_type
+    // Be aware of launch script changes
+    launch_script_hash = md5(file("${path.module}/scripts/load_data.sh"))
   }
 }
 
@@ -26,6 +28,7 @@ resource "google_compute_instance" "pos_vm" {
   zone   = var.vm_default_zone
   allow_stopping_for_update = true
   can_ip_forward = true
+  count = var.enable_module
 
   boot_disk {
     initialize_params {
@@ -35,7 +38,7 @@ resource "google_compute_instance" "pos_vm" {
     }
   }
 
-  // WARNING - Does this machine need a public IP?
+  // WARNING - Does this machine need a public IP. No cloud routing for eu-dev.
   network_interface {
     network = "default"
     access_config {
@@ -47,7 +50,8 @@ resource "google_compute_instance" "pos_vm" {
     startup-script = templatefile(
         "${path.module}/scripts/load_data.sh",
         {
-          ELASTICSEARCH_URI = var.vm_elasticsearch_uri
+          ELASTICSEARCH_URI = var.vm_elasticsearch_uri,
+          GS_ETL_DATASET = var.gs_etl
         }
       )
     google-logging-enabled = true

@@ -29,6 +29,7 @@ resource "google_compute_instance" "elasticsearch_etl" {
   zone   = var.vm_default_zone
   allow_stopping_for_update = true
   can_ip_forward = true
+  count = var.enable_module
 
   boot_disk {
     initialize_params {

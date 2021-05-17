@@ -1,5 +1,12 @@
 // --- Module input parameters --- //
 // General deployment input parameters --- //
+// General deployment input parameters --- //
+variable "enable_module" {
+  description = "Enable/disable the module POS VM"
+  type = number
+  default = 1
+}
+
 variable "module_wide_prefix_scope" {
   description = "The prefix provided here will scope names for those resources created by this module, default 'otpdeves'"
   type = string
