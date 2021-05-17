@@ -1,0 +1,65 @@
+resource "random_string" "random" {
+  length = 8
+  lower = true
+  upper = false
+  special = false
+  keepers = {
+    // Take into account changes in the machine type
+    vm_machine_type = local.vm_machine_type
+  }
+}
+
+
+resource "google_service_account" "gcp_service_acc_apis" {
+  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
+  // As we are launching just one VM that we may replace, we can reuse the service account
+  account_id = "${var.module_wide_prefix_scope}-svces"
+  display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
+}
+
+
+
+resource "google_compute_instance" "clickhouse_etl" {
+  // Good, we need randomness in case we make changes in the VM that will replace it
+  name = "${var.module_wide_prefix_scope}-clickhouse-server-${random_string.random.result}"
+  // We are launching only one VM, so we can externalise the machine type computation
+  machine_type = local.vm_machine_type
+  zone   = var.vm_default_zone
+  allow_stopping_for_update = true
+  can_ip_forward = true
+
+  boot_disk {
+    initialize_params {
+      image =  var.vm_clickhouse_boot_image
+      type = "pd-ssd"
+      size = var.vm_clickhouse_boot_disk_size
+    }
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      network_tier = "PREMIUM"
+    }
+  }
+
+  metadata = {
+    startup-script = templatefile(
+    "${path.module}/scripts/clickhouse_startup.sh",
+    {
+      GS_ETL_DATASET = var.gs_etl
+    }
+    )
+    google-logging-enabled = true
+  }
+
+  service_account {
+    email = google_service_account.gcp_service_acc_apis.email
+    scopes = [ "cloud-platform" ]
+  }
+
+  // Upon changes to the VM, it will create the new one before getting rid of the previous one
+  lifecycle {
+    create_before_destroy = true
+  }
+}

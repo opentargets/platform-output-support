@@ -36,6 +36,23 @@ module "backend_elastic_search" {
 
 }
 
+module "backend_clickhouse" {
+  source = "./modules/clickhouse"
+
+  module_wide_prefix_scope = "${var.config_release_name}-ch"
+  // Elastic Search configuration
+  vm_clickhouse_vcpus = var.config_vm_clickhouse_vcpus
+  // Memory size in MiB
+  vm_clickhouse_mem = var.config_vm_clickhouse_mem
+
+  gs_etl = var.config_gs_etl
+
+  // Region and zone
+  vm_default_region = var.config_gcp_default_region
+  vm_default_zone = var.config_gcp_default_zone
+  vm_clickhouse_boot_image = var.config_vm_clickhouse_boot_image
+  vm_clickhouse_boot_disk_size = var.config_vm_clickhouse_boot_disk_size
+}
 
 module "backend_pos_vm" {
   module_wide_prefix_scope = "${var.config_release_name}-vm"
