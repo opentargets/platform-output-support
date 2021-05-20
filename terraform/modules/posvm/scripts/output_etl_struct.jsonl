@@ -1,21 +1,21 @@
-{'output' : 'cancerBiomarker', 'indexName': 'cancerbiomarker', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'diseaseToPhenotype', 'indexName': 'disease_hpo', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'targets', 'indexName': 'target', 'indexId': 'id', 'indexSettings' ='index_settings.json'}
-{'output' : 'diseases', 'indexName': 'disease', 'indexId': 'id', 'indexSettings' ='index_settings.json'}
-{'output' : 'molecule', 'indexName': 'drug', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'mechanismOfAction', 'indexName': 'mechanism_of_action', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'indication', 'indexName': 'indication', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'drugWarnings', 'indexName': 'drug_warnings', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'eco', 'indexName': 'eco', 'indexId': 'id', 'indexSettings' ='index_settings.json'}
-{'output' : 'baselineExpression', 'indexName': 'expression', 'indexId': 'id', 'indexSettings' ='index_settings.json'}
-{'output' : 'hpo', 'indexName': 'hpo', 'indexId': 'id', 'indexSettings' ='index_settings.json'}
-{'output' : 'mousePhenotypes', 'indexName': 'mouse_phenotypes', 'indexId': 'id', 'indexSettings' ='index_settings.json'}
-{'output' : 'reactome', 'indexName': 'reactome', 'indexId': 'id', 'indexSettings' ='index_settings.json'}
-{'output' : 'cancerBiomarker', 'indexName': 'cancerbiomarker', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'searchDrug', 'indexName': 'search_drug', 'indexId': '', 'indexSettings' ='index_settings_search.json'}
-{'output' : 'searchTarget', 'indexName': 'search_target', 'indexId': '', 'indexSettings' ='index_settings_search.json'}
-{'output' : 'searchDisease', 'indexName': 'search_disease', 'indexId': '', 'indexSettings' ='index_settings_search.json'}
-{'output' : 'knownDrugsAggregated', 'indexName': 'known_drugs', 'indexId': '', 'indexSettings' ='index_settings_search_known_drugs.json'}
-{'output' : 'interaction', 'indexName': 'interaction', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'interactionEvidence', 'indexName': 'interaction_evidence', 'indexId': '', 'indexSettings' ='index_settings.json'}
-{'output' : 'AOTFElasticsearch', 'indexName': 'evidences_aotf', 'indexId': '', 'indexSettings' ='index_settings.json'}
+cancerBiomarker,cancerbiomarker,,index_settings.json
+diseaseToPhenotype,disease_hpo,,index_settings.json
+targets,target,id,index_settings.json
+diseases,disease,id,index_settings.json
+molecule,drug,,index_settings.json
+mechanismOfAction,mechanism_of_action,,index_settings.json
+indication,indication,,index_settings.json
+drugWarnings,drug_warnings,,index_settings.json
+eco,eco,id,index_settings.json
+baselineExpression,expression,id,index_settings.json
+hpo,hpo,id,index_settings.json
+mousePhenotypes,mouse_phenotypes,id,index_settings.json
+reactome,reactome,id,index_settings.json
+cancerBiomarker,cancerbiomarker,,index_settings.json
+searchDrug,search_drug,,index_settings_search.json
+searchTarget,search_target,,index_settings_search.json
+searchDisease,search_disease,,index_settings_search.json
+knownDrugsAggregated,known_drugs,,index_settings_search_known_drugs.json
+interaction,interaction,,index_settings.json
+interactionEvidence,interaction_evidence,,index_settings.json
+AOTFElasticsearch,evidences_aotf,,index_settings.json

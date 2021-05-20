@@ -3,18 +3,27 @@ echo ${ELASTICSEARCH_URI}
 echo ${GS_ETL_DATASET}
 
 #This is a prototype. Change when ETL will be stable in the output approach
-export PREFIX=${PREFIX_DATA:-"out"}
 export RELEASE=${ETL_RELEASE:-""}
-# the default index settings file
-export INDEX_SETTINGS=${ETL_INDEX_SETTINGS:-"index_settings.json"}
-# default ES endpoint
-export ES=${ELASTICSEARCH_URI}:-"http://localhost:9200"}
 
 echo $PREFIX_DATA
 echo $ES
-echo $INDEX_SETTINGS
-echo $PREFIX
 echo $RELEASE
+
+input="/tmp/output_etl_struct.jsonl"
+while IFS= read -r line
+do
+  echo "$line"
+  export INPUT=`echo $line | awk -F, '{print $1}'`
+  export ID=`echo $line | awk -F, '{print $3}'`
+  export INDEX_NAME=`echo $line | awk -F, '{print $2}'`
+  export INDEX_SETTINGS=$PREFIX_DATA/`echo $line | awk -F, '{print $4}'`
+  echo $INPUT
+  echo $ID
+  echo $INDEX_NAME
+  echo $INDEX_SETTINGS
+done < "$input"
+
+
 
 # Load evidence
 FOLDER_PREFIX="${PREFIX_DATA}/evidence"
@@ -30,7 +39,9 @@ for folder in $FOLDERS; do
   export ID='id'
   export INDEX_NAME="${token}"
   export INPUT="${full_folder}"
-  ./load_jsons.sh
+  export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+  echo $INDEX_SETTINGS
+  /tmp/load_json.sh
 done
 
 

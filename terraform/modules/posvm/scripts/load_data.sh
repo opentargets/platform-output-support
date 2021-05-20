@@ -28,16 +28,16 @@ echo "Copy from GS to local HD"
 sudo mkdir -p /tmp
 cd /tmp
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
-sudo chmod 555 load_data.sh
-
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/output_etl_struct.jsonl
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_all_data.sh
+sudo chmod 555 load_data.sh
 sudo chmod 555 load_all_data.sh
 
 sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings.json
 sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search_known_drugs.json
 sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search.json
 
-export ELASTICSEARCH_URI=${ELASTICSEARCH_URI}:9200
+export ES=${ELASTICSEARCH_URI}:9200
 export PREFIX_DATA=/tmp/data/
 echo "starting the insertion of data ... Elasticsearch."
 ./load_all_data.sh
