@@ -3,7 +3,7 @@ output "elasticsearch_hostname" {
 }
 
 output "clickhouse_hostname" {
-  value = module.backend_clickhouse.clickhouse_vm_name
+  value = module.backend_clickhouse.*
 }
 
 output "pos_support_vm_name" {
