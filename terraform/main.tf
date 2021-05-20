@@ -54,6 +54,30 @@ module "backend_clickhouse" {
   vm_clickhouse_boot_disk_size = var.config_vm_clickhouse_boot_disk_size
 }
 
+module "backend_graphql" {
+  source = "./modules/graphQL"
+
+  depends_on = [module.backend_elastic_search, module.backend_clickhouse]
+
+  module_wide_prefix_scope = "${var.config_release_name}-gql"
+  // GraphQL configuration
+  vm_graphql_vcpus = var.config_vm_graphql_vcpus
+  // Memory size in MiB
+  vm_graphql_mem = var.config_vm_graphql_mem
+
+  // Parameter for GRAPHQL server
+  vm_platform_api_image_version = var.config_vm_platform_api_image_version
+  host_elastic_search = module.backend_elastic_search.elasticsearch_vm_name
+  host_clickhouse = module.backend_clickhouse.clickhouse_vm_name
+
+  // Region and zone
+  vm_default_region = var.config_gcp_default_region
+  vm_default_zone = var.config_gcp_default_zone
+  vm_graphql_boot_image = var.config_vm_graphql_boot_image
+  vm_graphql_boot_disk_size = var.config_vm_graphql_boot_disk_size
+}
+
+
 module "backend_pos_vm" {
   module_wide_prefix_scope = "${var.config_release_name}-vm"
   source = "./modules/posvm"

@@ -24,4 +24,12 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
 gsutil -m cp -r gs://${GS_ETL_DATASET}/faers/* /tmp/data/faers/
 
 echo "Copy from GS to local HD"
-gsutil cat  'gs://open-targets-data-releases/21.04/output/etl/json/metadata/**/part*' | jq -r '.resource.path'
+#gsutil cat  'gs://open-targets-data-releases/21.04/output/etl/json/metadata/**/part*' | jq -r '.resource'
+sudo mkdir -p /tmp
+cd tmp
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
+sudo chmod 555 load_data.sh
+
+sudo echo "done" > /tmp/done.msg
+
+

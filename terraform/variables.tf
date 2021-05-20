@@ -1,5 +1,4 @@
 // --- RELEASE INFORMATION --- //
-
 variable "config_release_name" {
   description = "Open Targets Platform release name, not related to any configuration parameter."
   type = string
@@ -27,7 +26,6 @@ variable "config_gs_etl" {
 }
 
 // --- Elastic Search Configuration --- //
-
 variable "config_vm_elastic_boot_image" {
   description = "Boot image configuration for the deployed Elastic Search Instances"
   type = string
@@ -55,7 +53,6 @@ variable "config_vm_elastic_search_boot_disk_size" {
   type = string
 }
 
-
 // --- Clickhouse Configuration --- //
 
 variable "config_vm_clickhouse_boot_image" {
@@ -79,14 +76,39 @@ variable "config_vm_clickhouse_boot_disk_size" {
   type = string
 }
 
-// --- POS VM Configuration --- //
+// --- GraphQL VM Configuration --- //
+variable "config_vm_platform_api_image_version" {
+  description = "API Docker image version to use in deployment"
+  type = string
+}
+variable "config_vm_graphql_vcpus" {
+  description = "CPU count for the deployed graphQL Instances"
+  type = number
+}
 
+variable "config_vm_graphql_mem" {
+  description = "RAM configuration for the deployed clickhouse Instances"
+  type = number
+}
+
+variable "config_vm_graphql_boot_image" {
+  description = "Boot image configuration for the deployed GraphQL Instances"
+  type = string
+  default = "projects/cos-cloud/global/images/family/cos-stable"
+}
+
+variable "config_vm_graphql_boot_disk_size" {
+  description = "Boot disk size to use for the deployed GraphQL Instances"
+  type = string
+}
+
+
+// --- POS VM Configuration --- //
 variable "config_vm_pos_boot_image" {
   description = "Boot image configuration for POS VM"
   type = string
   default = "debian-10"
 }
-
 
 variable "config_vm_pos_boot_disk_size" {
   description = "POS VM boot disk size, default '500GB'"

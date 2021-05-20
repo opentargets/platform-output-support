@@ -317,13 +317,21 @@ wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/aotf_log.sql
 
 clickhouse-client --multiline --multiquery < aotf_log.sql
+echo "create and fill in aotf_log"
 gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
+echo "create and fill in Association on the fly table"
 clickhouse-client --multiline --multiquery < aotf.sql
+echo "Association on the fly table done"
 
 clickhouse-client --multiline --multiquery < w2v_log.sql
 gsutil -m cat gs://${GS_ETL_DATASET}/literature/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
 clickhouse-client --multiline --multiquery < w2v.sql
+echo "Literature vectors done"
 
 clickhouse-client --multiline --multiquery < literature_log.sql
 gsutil -m cat gs://${GS_ETL_DATASET}/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
 clickhouse-client --multiline --multiquery < literature.sql
+echo "Literature table done"
+
+sudo mkdir -p /tmp2
+sudo echo "done" > /tmp2/done.msg 

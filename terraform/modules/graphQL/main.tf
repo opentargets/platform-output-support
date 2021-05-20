@@ -4,9 +4,10 @@ resource "random_string" "random" {
   upper = false
   special = false
   keepers = {
-    vm_elastic_search_version = var.vm_elastic_search_version
     // Take into account changes in the machine type
     vm_machine_type = local.vm_machine_type
+    // Be aware of launch script changes
+    launch_script_hash = md5(file("${path.module}/scripts/instance_startup.sh"))
   }
 }
 
@@ -14,32 +15,37 @@ resource "random_string" "random" {
 resource "google_service_account" "gcp_service_acc_apis" {
   //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
   // As we are launching just one VM that we may replace, we can reuse the service account
-  account_id = "${var.module_wide_prefix_scope}-svces"
+  account_id = "${var.module_wide_prefix_scope}-svcgql"
   display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
 }
 
+resource "google_compute_firewall" "default" {
+  name    = "graphql-app-firewall"
+  network = "default"
 
+  allow {
+    protocol = "tcp"
+    ports    = ["8080", "80"]
+  }
+}
 
-resource "google_compute_instance" "elasticsearch_etl" {
+resource "google_compute_instance" "graphql_instance" {
   // Good, we need randomness in case we make changes in the VM that will replace it
   name = "${var.module_wide_prefix_scope}-server-${random_string.random.result}"
-  //machine_type = "custom-${var.vm_elastic_search_vcpus}-${var.vm_elastic_search_mem}"
   // We are launching only one VM, so we can externalise the machine type computation
   machine_type = local.vm_machine_type
   zone   = var.vm_default_zone
   allow_stopping_for_update = true
   can_ip_forward = true
-  count = var.enable_module
 
   boot_disk {
     initialize_params {
-      image =  var.vm_elastic_boot_image
+      image =  var.vm_graphql_boot_image
       type = "pd-ssd"
-      size = var.vm_elasticsearch_boot_disk_size
+      size = var.vm_graphql_boot_disk_size
     }
   }
 
-  // WARNING - Does this machine need a public IP?
   network_interface {
     network = "default"
     access_config {
@@ -49,10 +55,13 @@ resource "google_compute_instance" "elasticsearch_etl" {
 
   metadata = {
     startup-script = templatefile(
-      "${path.module}/scripts/elasticsearch_startup.sh",
-      {
-        ELASTIC_SEARCH_VERSION = var.vm_elastic_search_version
-      }
+    "${path.module}/scripts/instance_startup.sh",
+    {
+      SLICK_CLICKHOUSE_URL = "jdbc:clickhouse://${var.host_clickhouse}:8123",
+      ELASTICSEARCH_HOST = var.host_elastic_search,
+      PLATFORM_API_VERSION = var.vm_platform_api_image_version,
+      OTP_API_PORT = local.otp_api_port
+    }
     )
     google-logging-enabled = true
   }
@@ -67,3 +76,12 @@ resource "google_compute_instance" "elasticsearch_etl" {
     create_before_destroy = true
   }
 }
+
+
+
+
+
+
+
+
+
