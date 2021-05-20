@@ -16,11 +16,12 @@ do
   export INPUT=`echo $line | awk -F, '{print $1}'`
   export ID=`echo $line | awk -F, '{print $3}'`
   export INDEX_NAME=`echo $line | awk -F, '{print $2}'`
-  export INDEX_SETTINGS=$PREFIX_DATA/`echo $line | awk -F, '{print $4}'`
+  export INDEX_SETTINGS=$PREFIX_DATA`echo $line | awk -F, '{print $4}'`
   echo $INPUT
   echo $ID
   echo $INDEX_NAME
   echo $INDEX_SETTINGS
+  /tmp/load_json.sh
 done < "$input"
 
 
