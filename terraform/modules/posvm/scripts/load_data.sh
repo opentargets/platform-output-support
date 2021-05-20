@@ -30,6 +30,12 @@ cd tmp
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
 sudo chmod 555 load_data.sh
 
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_all_data.sh
+sudo chmod 555 load_all_data.sh
+
+export PREFIX_DATA=/tmp/data/
+
+
 sudo echo "done" > /tmp/done.msg
 
 
