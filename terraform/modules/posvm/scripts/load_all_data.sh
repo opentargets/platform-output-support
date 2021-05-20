@@ -13,9 +13,9 @@ input="/tmp/output_etl_struct.jsonl"
 while IFS= read -r line
 do
   echo "$line"
-  export INPUT=`echo $line | awk -F, '{print $1}'`
-  export ID=`echo $line | awk -F, '{print $3}'`
+  export INPUT=$PREFIX_DATA`echo $line | awk -F, '{print $1}'`
   export INDEX_NAME=`echo $line | awk -F, '{print $2}'`
+  export ID=`echo $line | awk -F, '{print $3}'`
   export INDEX_SETTINGS=$PREFIX_DATA`echo $line | awk -F, '{print $4}'`
   echo $INPUT
   echo $ID
@@ -45,4 +45,16 @@ for folder in $FOLDERS; do
   /tmp/load_json.sh
 done
 
+export INPUT=$PREFIX_DATA"so"
+export INDEX_NAME="so"
+export ID="id"
+export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+/tmp/load_json.sh
 
+# /faers/json/raw/*
+export INDEX_NAME="openfda_faers"
+export INPUT=$PREFIX_DATA"faers"
+export ID=""
+export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+
+./load_jsons.sh
