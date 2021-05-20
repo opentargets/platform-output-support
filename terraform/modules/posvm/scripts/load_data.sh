@@ -6,7 +6,7 @@ echo "---> [LAUNCH] POS support VM"
 #sudo apt update && sudo apt -y install python3-pip
 #sudo pip3 install elasticsearch-loader
 
-sudo sh -c 'apt update && apt -y install wget && apt -y install python3-pip && pip3 install elasticsearch-loader && pip3 install jq'
+sudo sh -c 'apt update && apt -y install wget && apt -y install python3-pip && pip3 install elasticsearch-loader'
 
 
 echo ${ELASTICSEARCH_URI}
@@ -30,8 +30,8 @@ cd /tmp
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/output_etl_struct.jsonl
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_all_data.sh
-sudo chmod 555 load_data.sh
 sudo chmod 555 load_all_data.sh
+sudo chmod 555 load_json.sh
 
 sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings.json
 sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search_known_drugs.json
