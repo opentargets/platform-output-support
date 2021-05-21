@@ -8,6 +8,9 @@ echo "---> [LAUNCH] POS support VM"
 
 sudo sh -c 'apt update && apt -y install wget && apt -y install python3-pip && pip3 install elasticsearch-loader'
 
+mkdir /tmp
+wget https://github.com/miku/esbulk/releases/download/v0.7.3/esbulk_0.7.3_amd64.deb
+sudo dpkg -i esbulk_0.7.3_amd64.deb
 
 echo ${ELASTICSEARCH_URI}
 echo ${GS_ETL_DATASET}
@@ -28,10 +31,12 @@ echo "Copy from GS to local HD"
 sudo mkdir -p /tmp
 cd /tmp
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json_esbulk.sh
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/output_etl_struct.jsonl
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_all_data.sh
 sudo chmod 555 load_all_data.sh
 sudo chmod 555 load_json.sh
+sudo chmod 555 load_json_esbulk.sh
 
 sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings.json
 sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search_known_drugs.json
