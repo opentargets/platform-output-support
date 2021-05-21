@@ -45,7 +45,7 @@ sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.
 export ES=${ELASTICSEARCH_URI}:9200
 export PREFIX_DATA=/tmp/data/
 echo "starting the insertion of data ... Elasticsearch."
-./load_all_data.sh
+time ./load_all_data.sh
 
 sudo echo "done" > /tmp/done.msg
 
