@@ -12,10 +12,10 @@ hpo,hpo,id,index_settings.json
 mousePhenotypes,mouse_phenotypes,id,index_settings.json
 reactome,reactome,id,index_settings.json
 cancerBiomarker,cancerbiomarker,,index_settings.json
+interaction,interaction,,index_settings.json
+interactionEvidence,interaction_evidence,,index_settings.json
+AOTFElasticsearch,evidences_aotf,,index_settings.json
 searchDrug,search_drug,,index_settings_search.json
 searchTarget,search_target,,index_settings_search.json
 searchDisease,search_disease,,index_settings_search.json
 knownDrugsAggregated,known_drugs,,index_settings_search_known_drugs.json
-interaction,interaction,,index_settings.json
-interactionEvidence,interaction_evidence,,index_settings.json
-AOTFElasticsearch,evidences_aotf,,index_settings.json
