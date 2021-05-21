@@ -28,22 +28,22 @@ done < "$input"
 
 
 # Load evidence
-#FOLDER_PREFIX="${PREFIX_DATA}/evidence"
-#FOLDERS=$(ls -1 $FOLDER_PREFIX | grep 'sourceId')
+FOLDER_PREFIX="${PREFIX_DATA}/evidence"
+FOLDERS=$(ls -1 $FOLDER_PREFIX | grep 'sourceId')
 
-#for folder in $FOLDERS; do
-#  IFS='=' read -ra tokens <<< "$folder"
-#
-#  token="evidence_datasource_${tokens[1]}"
+for folder in $FOLDERS; do
+  IFS='=' read -ra tokens <<< "$folder"
 
-#  full_folder="${FOLDER_PREFIX}/${folder}/"
+  token="evidence_datasource_${tokens[1]}"
 
-#  export ID='id'
-#  export INDEX_NAME="${token}"
-#  export INPUT="${full_folder}"
-#  export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
-#  echo $INDEX_SETTINGS
-#  /tmp/load_json_esbulk.sh
+  full_folder="${FOLDER_PREFIX}/${folder}/"
+
+  export ID='id'
+  export INDEX_NAME="${token}"
+  export INPUT="${full_folder}"
+  export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+  echo $INDEX_SETTINGS
+  /tmp/load_json_esbulk.sh
 #done
 
 export INPUT=$PREFIX_DATA"so"
