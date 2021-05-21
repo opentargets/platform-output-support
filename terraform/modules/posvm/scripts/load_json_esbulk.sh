@@ -32,10 +32,10 @@ for f in $FILES
   do
     echo $f
     if [[ -n "$ID" ]]; then
-       printf "The index will have %s \n" "$ID"
-      $cmd $f $trail | sudo esbulk -server $ES -index $INDEX -id $ID -verbose
+      printf "The index will have %s \n" "$ID"
+      $cmd $f $trail | sudo esbulk -server $ES -index $INDEX -id $ID
     else
        printf "The index wont have an ID \n"
-      $cmd "$f" $trail | sudo esbulk -server $ES -index $INDEX -id $ID -verbose
+      $cmd "$f" $trail | sudo esbulk -server $ES -index $INDEX
     fi
 done
