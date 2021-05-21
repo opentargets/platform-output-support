@@ -4,7 +4,7 @@
 echo "---> [LAUNCH] Open Targets Platform Elastic Search"
 
 echo "create a temporary location to put temporary files into"
-mkdir -p tmp
+mkdir -p /tmp
 
 docker volume create esdata
 
@@ -79,3 +79,5 @@ docker run -d \
  --link elasticsearch:elasticsearch \
  -e "ELASTICSEARCH_URL=http://elasticsearch:9200" \
  docker.elastic.co/kibana/kibana-oss:${ELASTIC_SEARCH_VERSION}
+
+echo "installation done" > /tmp/inst.done

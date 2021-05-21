@@ -57,6 +57,7 @@ resource "google_compute_instance" "pos_vm" {
     google-logging-enabled = true
   }
 
+
   service_account {
     email = google_service_account.gcp_service_acc_apis.email
     scopes = [ "cloud-platform" ]
