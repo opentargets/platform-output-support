@@ -21,7 +21,8 @@ do
   echo $ID
   echo $INDEX_NAME
   echo $INDEX_SETTINGS
-  /tmp/load_json.sh
+  #/tmp/load_json.sh
+  /tmp/load_json_esbulk.sh
 done < "$input"
 
 
@@ -42,14 +43,14 @@ done < "$input"
 #  export INPUT="${full_folder}"
 #  export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 #  echo $INDEX_SETTINGS
-#  /tmp/load_json.sh
+#  /tmp/load_json_esbulk.sh
 #done
 
 export INPUT=$PREFIX_DATA"so"
 export INDEX_NAME="so"
 export ID="id"
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
-/tmp/load_json.sh
+./load_json_esbulk.sh
 
 # /faers/json/raw/*
 export INDEX_NAME="openfda_faers"
@@ -57,4 +58,4 @@ export INPUT=$PREFIX_DATA"faers"
 export ID=""
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 
-./load_jsons.sh
+./load_json_esbulk.sh
