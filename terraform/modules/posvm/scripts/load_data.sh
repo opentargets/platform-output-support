@@ -60,7 +60,7 @@ do
   #allow non zero exit codes since that is what we are checking for
   set +e
   #pipeline script will put a tag on the instance here it checks for this tag
-  gcloud --project ${PROJECT_ID}     compute instances list --filter='tags:startup-done' > instance_tmp.txt
+  gcloud --project ${PROJECT_ID} compute instances list --filter='tags:startup-done' > instance_tmp.txt
   cat instance_tmp.txt
 
   grep ${CLICKHOUSE_URI} instance_tmp.txt

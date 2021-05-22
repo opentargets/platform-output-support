@@ -13,14 +13,6 @@ resource "random_string" "random" {
 }
 
 
-resource "google_service_account" "gcp_service_acc_apis" {
-  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
-  // We are launching a single VM, even with multiple VMs, we can reuse the same account
-  account_id = var.account_id
-}
-
-
-
 resource "google_compute_instance" "pos_vm" {
   name = "${var.module_wide_prefix_scope}-support-vm-${random_string.random.result}"
   machine_type = var.vm_pos_machine_type
@@ -60,7 +52,6 @@ resource "google_compute_instance" "pos_vm" {
   }
 
   service_account {
-    email = google_service_account.gcp_service_acc_apis.email
     scopes = [ "cloud-platform" ]
   }
 

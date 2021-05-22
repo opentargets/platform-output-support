@@ -27,7 +27,6 @@ resource "google_service_account" "gcp_service_acc_apis" {
 module "backend_elastic_search" {
   source = "./modules/elasticsearch"
 
-  account_id = google_service_account.gcp_service_acc_apis.account_id
   module_wide_prefix_scope = "${var.config_release_name}-es"
   // Elastic Search configuration
   vm_elastic_search_version = var.config_vm_elastic_search_version
@@ -89,7 +88,7 @@ module "backend_graphql" {
 module "backend_pos_vm" {
   module_wide_prefix_scope = "${var.config_release_name}-vm"
   source = "./modules/posvm"
-  account_id = google_service_account.gcp_service_acc_apis.account_id
+  #ßaccount_id = google_service_account.gcp_service_acc_apis.account_id
   project_id = var.config_project_id
   depends_on = [module.backend_elastic_search, module.backend_clickhouse]
 

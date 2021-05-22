@@ -332,5 +332,5 @@ echo "Literature vectors done"
 #gsutil -m cat gs://${GS_ETL_DATASET}/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
 #clickhouse-client --multiline --multiquery < literature.sql
 echo "Literature table done"
-
-gcloud --project open-targets-eu-dev compute instances add-tags platform-210210-105028-21-02-3-pipe --zone europe-west1-d     --tags "startup-done"
+export HOSTNAME=`hostname`
+gcloud --project open-targets-eu-dev compute instances add-tags $HOSTNAME --zone europe-west1-d     --tags "startup-done"

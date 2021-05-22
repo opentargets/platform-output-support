@@ -54,7 +54,6 @@ resource "google_compute_instance" "clickhouse_etl" {
   }
 
   service_account {
-    email = google_service_account.gcp_service_acc_apis.email
     scopes = [ "cloud-platform" ]
   }
 
