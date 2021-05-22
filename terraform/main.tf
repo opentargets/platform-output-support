@@ -15,11 +15,19 @@ provider "google" {
   project = var.config_project_id
 }
 
+resource "google_service_account" "gcp_service_acc_apis" {
+  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
+  // As we are launching just one VM that we may replace, we can reuse the service account
+  account_id = "pos-svc"
+  display_name = "pos-GCP-service-account"
+}
+
 
 // --- Elastic Search Backend --- //
 module "backend_elastic_search" {
   source = "./modules/elasticsearch"
 
+  account_id = google_service_account.gcp_service_acc_apis.account_id
   module_wide_prefix_scope = "${var.config_release_name}-es"
   // Elastic Search configuration
   vm_elastic_search_version = var.config_vm_elastic_search_version
@@ -81,8 +89,9 @@ module "backend_graphql" {
 module "backend_pos_vm" {
   module_wide_prefix_scope = "${var.config_release_name}-vm"
   source = "./modules/posvm"
-
-  depends_on = [module.backend_elastic_search]
+  account_id = google_service_account.gcp_service_acc_apis.account_id
+  project_id = var.config_project_id
+  depends_on = [module.backend_elastic_search, module.backend_clickhouse]
 
   // Region and zone
   vm_default_zone = var.config_gcp_default_zone
@@ -91,5 +100,6 @@ module "backend_pos_vm" {
   vm_pos_machine_type = var.config_vm_pos_machine_type
   gs_etl = var.config_gs_etl
   vm_elasticsearch_uri = module.backend_elastic_search.elasticsearch_vm_name
+  vm_clickhouse_uri = module.backend_clickhouse.clickhouse_vm_name
 
 }

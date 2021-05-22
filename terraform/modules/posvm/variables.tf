@@ -7,6 +7,16 @@ variable "enable_module" {
   default = 1
 }
 
+variable "project_id" {
+  description = "Default project to use when not specified in the module"
+  type = string
+}
+
+variable "account_id" {
+  description = "Unique account id. Common gserviceaccount properties"
+  type = string
+}
+
 variable "module_wide_prefix_scope" {
   description = "The prefix provided here will scope names for those resources created by this module, default 'otpdeves'"
   type = string
@@ -44,5 +54,10 @@ variable "vm_pos_machine_type" {
 
 variable "vm_elasticsearch_uri" {
   description = "Elasticsearch Server"
+  type = string
+}
+
+variable "vm_clickhouse_uri" {
+  description = "Clickhouse Server"
   type = string
 }

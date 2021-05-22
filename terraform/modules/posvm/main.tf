@@ -16,8 +16,7 @@ resource "random_string" "random" {
 resource "google_service_account" "gcp_service_acc_apis" {
   //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
   // We are launching a single VM, even with multiple VMs, we can reuse the same account
-  account_id = "${var.module_wide_prefix_scope}-svcpos"
-  display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
+  account_id = var.account_id
 }
 
 
@@ -50,13 +49,15 @@ resource "google_compute_instance" "pos_vm" {
     startup-script = templatefile(
         "${path.module}/scripts/load_data.sh",
         {
+          PROJECT_ID = var.project_id,
+          GC_ZONE = var.vm_default_zone,
           ELASTICSEARCH_URI = var.vm_elasticsearch_uri,
+          CLICKHOUSE_URI = var.vm_clickhouse_uri,
           GS_ETL_DATASET = var.gs_etl
         }
       )
     google-logging-enabled = true
   }
-
 
   service_account {
     email = google_service_account.gcp_service_acc_apis.email

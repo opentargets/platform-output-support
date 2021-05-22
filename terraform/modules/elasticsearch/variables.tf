@@ -6,6 +6,11 @@ variable "enable_module" {
   default = 1
 }
 
+variable "account_id" {
+  description = "Unique account id. Common gserviceaccount properties"
+  type = string
+}
+
 variable "module_wide_prefix_scope" {
   description = "The prefix provided here will scope names for those resources created by this module, default 'otpdeves'"
   type = string
