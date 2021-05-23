@@ -80,4 +80,3 @@ docker run -d \
  -e "ELASTICSEARCH_URL=http://elasticsearch:9200" \
  docker.elastic.co/kibana/kibana-oss:${ELASTIC_SEARCH_VERSION}
 
-echo "installation done" > /tmp/inst.done

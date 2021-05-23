@@ -71,14 +71,12 @@ do
   set -e
 done
 
-
 #stop elasticsearch machine
 gcloud compute --project=${PROJECT_ID} instances stop ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
 
 # Clickhouse
-#gcloud compute --project=open-targets-platform     instances stop platform-210210-105028-21-02-3-es 	--zone europe-west1-d
+gcloud compute --project=${PROJECT_ID} instances stop ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
 
-NOW=`date +'%y%m%d-%H%M%S'`
 #create image from elasticsearch machine
-gcloud compute --project=${PROJECT_ID}  images create platform-$NOW-cinzia-es  --source-disk ${ELASTICSEARCH_URI}  --family ot-es7     --source-disk-zone europe-west1-d
+gcloud compute --project=${PROJECT_ID}  images create platform-$NOW-cinzia-es  --source-disk ${ELASTICSEARCH_URI}  --family ot-es7     --source-disk-zone ${GC_ZONE}
 
