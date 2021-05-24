@@ -19,6 +19,13 @@ resource "google_service_account" "gcp_service_acc_apis" {
   display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
 }
 
+resource "google_project_iam_member" "main" {
+  project = var.project_id
+  role               = "roles/compute.instanceAdmin"
+
+  member= "serviceAccount:${google_service_account.gcp_service_acc_apis.email}"
+}
+
 resource "google_compute_instance" "pos_vm" {
   name = "${var.module_wide_prefix_scope}-support-vm-${random_string.random.result}"
   machine_type = var.vm_pos_machine_type

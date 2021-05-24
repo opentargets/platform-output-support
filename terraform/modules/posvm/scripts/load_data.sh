@@ -83,3 +83,15 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 #create image from clickhouse image
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
+# List of DNS records
+#export OLD_DNS=`gcloud dns record-sets list --project=open-targets-prod  --zone=opentargets-io | grep "pos.opentargets.io" |  awk -F$' ' '{print $4}'`
+
+#echo $OLD_DNS
+
+#gcloud beta dns --project=open-targets-prod record-sets transaction start --zone=opentargets-io
+
+#gcloud beta dns --project=open-targets-prod record-sets transaction add 35.187.127.33 --name=pos.opentargets.io. --ttl=120 --type=A --zone=opentargets-io
+
+#gcloud beta dns --project=open-targets-prod record-sets transaction remove $OLD_DNS --name=pos.opentargets.io. --ttl=120 --type=A --zone=opentargets-io
+
+#gcloud beta dns --project=open-targets-prod record-sets transaction execute --zone=opentargets-io
