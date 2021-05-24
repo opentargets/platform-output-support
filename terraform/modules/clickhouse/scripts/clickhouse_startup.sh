@@ -324,13 +324,13 @@ clickhouse-client --multiline --multiquery < aotf.sql
 echo "Association on the fly table done"
 
 #clickhouse-client --multiline --multiquery < w2v_log.sql
-#gsutil -m cat gs://${GS_ETL_DATASET}/literature/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
-#clickhouse-client --multiline --multiquery < w2v.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/literature/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
+clickhouse-client --multiline --multiquery < w2v.sql
 echo "Literature vectors done"
 
 #clickhouse-client --multiline --multiquery < literature_log.sql
-#gsutil -m cat gs://${GS_ETL_DATASET}/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
-#clickhouse-client --multiline --multiquery < literature.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
+clickhouse-client --multiline --multiquery < literature.sql
 echo "Literature table done"
 
 export HOSTNAME=`hostname`

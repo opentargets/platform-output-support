@@ -45,7 +45,6 @@ do
   export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
   echo $INDEX_SETTINGS
   /tmp/load_json_esbulk.sh
-  break
 done
 
 export INPUT=$PREFIX_DATA"so"
@@ -55,9 +54,9 @@ export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 ./load_json_esbulk.sh
 
 # /faers/json/raw/*
-#export INDEX_NAME="openfda_faers"
-#export INPUT=$PREFIX_DATA"faers"
-#export ID=""
-#export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+export INDEX_NAME="openfda_faers"
+export INPUT=$PREFIX_DATA"faers"
+export ID=""
+export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 
 #./load_json_esbulk.sh
