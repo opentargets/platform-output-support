@@ -19,6 +19,11 @@ variable "module_wide_prefix_scope" {
   default = "otdevpos"
 }
 
+variable "release_name" {
+  description = "Open Targets Platform release name, parameter for the images"
+  type = string
+}
+
 // --- ETL info --- //
 variable "gs_etl" {
   description = "Output of the ETL [root]. Eg. open-targets-data-releases/21.04/output"

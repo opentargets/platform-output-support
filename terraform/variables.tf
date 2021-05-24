@@ -1,6 +1,12 @@
 // --- RELEASE INFORMATION --- //
+
+variable "config_script_name" {
+  description = "Open Targets Platform script name, not related to any configuration parameter."
+  type = string
+}
+
 variable "config_release_name" {
-  description = "Open Targets Platform release name, not related to any configuration parameter."
+  description = "Open Targets Platform release name, parameter for the images"
   type = string
 }
 

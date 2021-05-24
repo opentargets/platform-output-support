@@ -78,5 +78,8 @@ gcloud compute --project=${PROJECT_ID} instances stop ${ELASTICSEARCH_URI} --zon
 gcloud compute --project=${PROJECT_ID} instances stop ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
 
 #create image from elasticsearch machine
-gcloud compute --project=${PROJECT_ID}  images create platform-$NOW-cinzia-es  --source-disk ${ELASTICSEARCH_URI}  --family ot-es7     --source-disk-zone ${GC_ZONE}
+gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  --source-disk ${ELASTICSEARCH_URI}  --family ot-es7     --source-disk-zone ${GC_ZONE}
+
+#create image from clickhouse image
+gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 

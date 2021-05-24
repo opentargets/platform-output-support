@@ -12,6 +12,12 @@ resource "random_string" "random" {
   }
 }
 
+resource "google_service_account" "gcp_service_acc_apis" {
+  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
+  // As we are launching just one VM that we may replace, we can reuse the service account
+  account_id = "${var.module_wide_prefix_scope}-svcvm"
+  display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
+}
 
 resource "google_compute_instance" "pos_vm" {
   name = "${var.module_wide_prefix_scope}-support-vm-${random_string.random.result}"
@@ -45,13 +51,15 @@ resource "google_compute_instance" "pos_vm" {
           GC_ZONE = var.vm_default_zone,
           ELASTICSEARCH_URI = var.vm_elasticsearch_uri,
           CLICKHOUSE_URI = var.vm_clickhouse_uri,
-          GS_ETL_DATASET = var.gs_etl
+          GS_ETL_DATASET = var.gs_etl,
+          IMAGE_PREFIX = var.release_name
         }
       )
     google-logging-enabled = true
   }
 
   service_account {
+    email = google_service_account.gcp_service_acc_apis.email
     scopes = [ "cloud-platform" ]
   }
 

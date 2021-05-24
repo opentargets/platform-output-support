@@ -15,19 +15,12 @@ provider "google" {
   project = var.config_project_id
 }
 
-resource "google_service_account" "gcp_service_acc_apis" {
-  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
-  // As we are launching just one VM that we may replace, we can reuse the service account
-  account_id = "pos-svc"
-  display_name = "pos-GCP-service-account"
-}
-
 
 // --- Elastic Search Backend --- //
 module "backend_elastic_search" {
   source = "./modules/elasticsearch"
 
-  module_wide_prefix_scope = "${var.config_release_name}-es"
+  module_wide_prefix_scope = "${var.config_script_name}-es"
   // Elastic Search configuration
   vm_elastic_search_version = var.config_vm_elastic_search_version
   vm_elastic_search_vcpus = var.config_vm_elastic_search_vcpus
@@ -46,7 +39,7 @@ module "backend_elastic_search" {
 module "backend_clickhouse" {
   source = "./modules/clickhouse"
 
-  module_wide_prefix_scope = "${var.config_release_name}-ch"
+  module_wide_prefix_scope = "${var.config_script_name}-ch"
   // Elastic Search configuration
   vm_clickhouse_vcpus = var.config_vm_clickhouse_vcpus
   // Memory size in MiB
@@ -66,7 +59,7 @@ module "backend_graphql" {
 
   depends_on = [module.backend_elastic_search, module.backend_clickhouse]
 
-  module_wide_prefix_scope = "${var.config_release_name}-gql"
+  module_wide_prefix_scope = "${var.config_script_name}-gql"
   // GraphQL configuration
   vm_graphql_vcpus = var.config_vm_graphql_vcpus
   // Memory size in MiB
@@ -86,9 +79,8 @@ module "backend_graphql" {
 
 
 module "backend_pos_vm" {
-  module_wide_prefix_scope = "${var.config_release_name}-vm"
+  module_wide_prefix_scope = "${var.config_script_name}-vm"
   source = "./modules/posvm"
-  #ßaccount_id = google_service_account.gcp_service_acc_apis.account_id
   project_id = var.config_project_id
   depends_on = [module.backend_elastic_search, module.backend_clickhouse]
 
@@ -100,5 +92,5 @@ module "backend_pos_vm" {
   gs_etl = var.config_gs_etl
   vm_elasticsearch_uri = module.backend_elastic_search.elasticsearch_vm_name
   vm_clickhouse_uri = module.backend_clickhouse.clickhouse_vm_name
-
+  release_name = var.config_release_name
 }
