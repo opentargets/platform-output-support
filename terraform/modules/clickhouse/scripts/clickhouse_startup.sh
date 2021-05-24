@@ -335,4 +335,4 @@ echo "Literature table done"
 
 export HOSTNAME=`hostname`
 echo $HOSTNAME
-gcloud --project open-targets-eu-dev compute instances add-tags $HOSTNAME --zone europe-west1-d     --tags "startup-done"
+gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE}    --tags "startup-done"

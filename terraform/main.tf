@@ -48,6 +48,7 @@ module "backend_clickhouse" {
   gs_etl = var.config_gs_etl
 
   // Region and zone
+  project_id = var.config_project_id
   vm_default_region = var.config_gcp_default_region
   vm_default_zone = var.config_gcp_default_zone
   vm_clickhouse_boot_image = var.config_vm_clickhouse_boot_image

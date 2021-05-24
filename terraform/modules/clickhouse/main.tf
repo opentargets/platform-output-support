@@ -16,6 +16,12 @@ resource "google_service_account" "gcp_service_acc_apis" {
   display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
 }
 
+resource "google_project_iam_member" "main" {
+  project = var.project_id
+  role    = "roles/compute.instanceAdmin"
+  member  = "serviceAccount:${google_service_account.gcp_service_acc_apis.email}"
+}
+
 resource "google_compute_instance" "clickhouse_etl" {
   // Good, we need randomness in case we make changes in the VM that will replace it
   name = "${var.module_wide_prefix_scope}-server-${random_string.random.result}"
@@ -44,6 +50,8 @@ resource "google_compute_instance" "clickhouse_etl" {
     startup-script = templatefile(
     "${path.module}/scripts/clickhouse_startup.sh",
     {
+      PROJECT_ID = var.project_id,
+      GC_ZONE = var.vm_default_zone,
       GS_ETL_DATASET = var.gs_etl
     }
     )

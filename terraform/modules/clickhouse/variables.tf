@@ -6,6 +6,11 @@ variable "module_wide_prefix_scope" {
   default = "otpdevch"
 }
 
+variable "project_id" {
+  description = "Default project to use when not specified in the module"
+  type = string
+}
+
 variable "vm_clickhouse_boot_image" {
   description = "Boot image configuration for the deployed Clickhouse Instances"
   type = string
