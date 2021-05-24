@@ -59,7 +59,8 @@ resource "google_compute_instance" "pos_vm" {
           ELASTICSEARCH_URI = var.vm_elasticsearch_uri,
           CLICKHOUSE_URI = var.vm_clickhouse_uri,
           GS_ETL_DATASET = var.gs_etl,
-          IMAGE_PREFIX = var.release_name
+          IMAGE_PREFIX = var.release_name,
+          ENABLE_GRAPHQL = var.enable_graphQL
         }
       )
     google-logging-enabled = true

@@ -44,7 +44,6 @@ module "backend_clickhouse" {
   vm_clickhouse_vcpus = var.config_vm_clickhouse_vcpus
   // Memory size in MiB
   vm_clickhouse_mem = var.config_vm_clickhouse_mem
-
   gs_etl = var.config_gs_etl
 
   // Region and zone

@@ -12,6 +12,11 @@ variable "project_id" {
   type = string
 }
 
+variable "enable_graphQL" {
+  description = "OpenTargets release with graphQL"
+  type = bool
+  default = true
+}
 
 variable "module_wide_prefix_scope" {
   description = "The prefix provided here will scope names for those resources created by this module, default 'otpdeves'"

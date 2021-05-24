@@ -83,6 +83,14 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 #create image from clickhouse image
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
+
+echo ${ENABLE_GRAPHQL}
+if [ "${ENABLE_GRAPHQL}" = true ]; then
+  echo "start VM"
+  gcloud compute --project=${PROJECT_ID} instances start ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
+  gcloud compute --project=${PROJECT_ID} instances start ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
+fi
+
 # List of DNS records
 #export OLD_DNS=`gcloud dns record-sets list --project=open-targets-prod  --zone=opentargets-io | grep "pos.opentargets.io" |  awk -F$' ' '{print $4}'`
 

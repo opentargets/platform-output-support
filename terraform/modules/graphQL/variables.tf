@@ -1,3 +1,9 @@
+variable "enable_module" {
+  description = "Enable/disable the module GraphQL"
+  type = number
+  default = 1
+}
+
 variable "module_wide_prefix_scope" {
   description = "The prefix provided here will scope names for those resources created by this module, default 'otpdevch'"
   type = string

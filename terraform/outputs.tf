@@ -1,5 +1,5 @@
 output "elasticsearch_hostname" {
-  value = module.backend_elastic_search.elasticsearch_vm_name
+  value = module.backend_elastic_search.*
 }
 
 output "clickhouse_hostname" {
