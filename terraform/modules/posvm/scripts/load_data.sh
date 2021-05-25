@@ -90,6 +90,7 @@ if [ "${ENABLE_GRAPHQL}" = true ]; then
   gcloud compute --project=${PROJECT_ID} instances start ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
   gcloud compute --project=${PROJECT_ID} instances start ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
 fi
+echo "finish"
 
 # List of DNS records
 #export OLD_DNS=`gcloud dns record-sets list --project=open-targets-prod  --zone=opentargets-io | grep "pos.opentargets.io" |  awk -F$' ' '{print $4}'`
