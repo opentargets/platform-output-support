@@ -21,7 +21,7 @@ resource "google_service_account" "gcp_service_acc_apis" {
 
 #roles/compute.storageAdmin
 resource "google_project_iam_member" "main" {
-  for_each = local.roles
+  for_each = toset(local.roles)
   project = var.project_id
   role    = each.value
 
