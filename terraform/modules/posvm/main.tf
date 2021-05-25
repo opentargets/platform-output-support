@@ -19,9 +19,11 @@ resource "google_service_account" "gcp_service_acc_apis" {
   display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
 }
 
+#roles/compute.storageAdmin
 resource "google_project_iam_member" "main" {
+  for_each = local.roles
   project = var.project_id
-  role               = "roles/compute.instanceAdmin"
+  role    = each.value
 
   member= "serviceAccount:${google_service_account.gcp_service_acc_apis.email}"
 }

@@ -14,3 +14,4 @@ terraform taint module.backend_pos_vm.random_string.random
 
 export VM=pos-ch-clickhouse-server-0prcofqb
 gcloud --project=open-targets-eu-dev compute ssh $VM -- sudo journalctl -n 500 -f -u google-startup-scripts.service
+gcloud --project=open-targets-eu-dev compute ssh pos-gql-server-eumatsx0 -- sudo journalctl -n 500 -f -u google-startup-scripts.service
