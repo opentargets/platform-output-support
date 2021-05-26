@@ -19,6 +19,8 @@ export MACHINE_SIZE=`cat /proc/meminfo | grep MemTotal | grep -o '[0-9]\+'`
 # Set half the available RAM for the JVM
 export JVM_SIZE=`expr $MACHINE_SIZE / 2097152`
 
+echo "JVM_SIZE: " $JVM_SIZE
+echo "-Xms$${JVM_SIZE}g -Xmx$${JVM_SIZE}g"
 
 #start elasticsearch
 #-----------------------

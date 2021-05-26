@@ -3,44 +3,40 @@
 
 echo "---> [LAUNCH] POS support VM"
 
-#sudo apt update && sudo apt -y install python3-pip
-#sudo pip3 install elasticsearch-loader
-
 sudo sh -c 'apt update && apt -y install wget && apt -y install python3-pip && pip3 install elasticsearch-loader'
 
+# Install esbulk.
 mkdir /tmp
 wget https://github.com/miku/esbulk/releases/download/v0.7.3/esbulk_0.7.3_amd64.deb
 sudo dpkg -i esbulk_0.7.3_amd64.deb
 
-echo ${CLICKHOUSE_URI}
-echo ${ELASTICSEARCH_URI}
-echo ${GS_ETL_DATASET}
-echo ${GC_ZONE}
-echo ${PROJECT_ID}
+echo "CH: "${CLICKHOUSE_URI}", ES:"${ELASTICSEARCH_URI}", GS: "${GS_ETL_DATASET}
 
-echo "curl here"
+#Query the elasticsearch - log purpose
 curl -X GET  ${ELASTICSEARCH_URI}:9200/_cat/indices; echo
 
 mkdir -p /tmp/data
 mkdir -p /tmp/data/so
 mkdir -p /tmp/data/faers/
 
-# Copy files locally.
-#gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
-gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
-#gsutil -m cp -r gs://${GS_ETL_DATASET}/faers/json/raw/* /tmp/data/faers/
-
+# Copy files locally. Robust vs streaming
 echo "Copy from GS to local HD"
-#gsutil cat  'gs://open-targets-data-releases/21.04/output/etl/json/metadata/**/part*' | jq -r '.resource'
+gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
+gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
+gsutil -m cp -r gs://${GS_ETL_DATASET}/faers/json/raw/* /tmp/data/faers/
+
 sudo mkdir -p /tmp
 cd /tmp
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json_esbulk.sh
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/output_etl_struct.jsonl
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_all_data.sh
 sudo chmod 555 load_all_data.sh
-sudo chmod 555 load_json.sh
 sudo chmod 555 load_json_esbulk.sh
+
+# If esbulk gives problem try to use elasticsearch_loader
+#sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
+#sudo chmod 555 load_json.sh
+
 
 sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings.json
 sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search_known_drugs.json
@@ -63,6 +59,7 @@ do
   gcloud --project ${PROJECT_ID} compute instances list --filter='tags:startup-done' > instance_tmp.txt
   cat instance_tmp.txt
 
+  # Check if clickhouse is done with the insertion of the data
   grep ${CLICKHOUSE_URI} instance_tmp.txt
   POLL=$?
   echo "POLL="$POLL
@@ -84,23 +81,9 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
 
-echo ${ENABLE_GRAPHQL}
+echo "GraphQL is available: "${ENABLE_GRAPHQL}
 if [ "${ENABLE_GRAPHQL}" = true ]; then
-  echo "start VM"
   gcloud compute --project=${PROJECT_ID} instances start ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
   gcloud compute --project=${PROJECT_ID} instances start ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
 fi
-echo "finish"
 
-# List of DNS records
-#export OLD_DNS=`gcloud dns record-sets list --project=open-targets-prod  --zone=opentargets-io | grep "pos.opentargets.io" |  awk -F$' ' '{print $4}'`
-
-#echo $OLD_DNS
-
-#gcloud beta dns --project=open-targets-prod record-sets transaction start --zone=opentargets-io
-
-#gcloud beta dns --project=open-targets-prod record-sets transaction add 35.187.127.33 --name=pos.opentargets.io. --ttl=120 --type=A --zone=opentargets-io
-
-#gcloud beta dns --project=open-targets-prod record-sets transaction remove $OLD_DNS --name=pos.opentargets.io. --ttl=120 --type=A --zone=opentargets-io
-
-#gcloud beta dns --project=open-targets-prod record-sets transaction execute --zone=opentargets-io

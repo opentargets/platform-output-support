@@ -19,4 +19,3 @@ searchDrug,search_drug,,index_settings_search.json
 searchTarget,search_target,,index_settings_search.json
 searchDisease,search_disease,,index_settings_search.json
 knownDrugsAggregated,known_drugs,,index_settings_search_known_drugs.json
-

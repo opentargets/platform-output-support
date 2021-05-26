@@ -9,21 +9,17 @@ echo $PREFIX_DATA
 echo $ES
 echo $RELEASE
 
-#input="/tmp/output_etl_struct.jsonl"
-#while IFS= read -r line
-#do
-#  echo "$line"
-#  export INPUT=$PREFIX_DATA`echo $line | awk -F, '{print $1}'`
-#  export INDEX_NAME=`echo $line | awk -F, '{print $2}'`
-#  export ID=`echo $line | awk -F, '{print $3}'`
-#  export INDEX_SETTINGS=$PREFIX_DATA`echo $line | awk -F, '{print $4}'`
-#  echo $INPUT
-#  echo $ID
-#  echo $INDEX_NAME
-#  echo $INDEX_SETTINGS
+input="/tmp/output_etl_struct.jsonl"
+while IFS= read -r line
+do
+  export INPUT=$PREFIX_DATA`echo $line | awk -F, '{print $1}'`
+  export INDEX_NAME=`echo $line | awk -F, '{print $2}'`
+  export ID=`echo $line | awk -F, '{print $3}'`
+  export INDEX_SETTINGS=$PREFIX_DATA`echo $line | awk -F, '{print $4}'`
+  echo "Filling in:" $INDEX_NAME
   #/tmp/load_json.sh
- # /tmp/load_json_esbulk.sh
-#done < "$input"
+  /tmp/load_json_esbulk.sh
+done < "$input"
 
 
 
@@ -34,7 +30,7 @@ FOLDERS=$(ls -1 $FOLDER_PREFIX | grep 'sourceId')
 for folder in $FOLDERS;
 do
   IFS='=' read -ra tokens <<< "$folder"
-  break
+
   token="evidence_datasource_${tokens[1]}"
 
   full_folder="${FOLDER_PREFIX}/${folder}/"
@@ -43,7 +39,7 @@ do
   export INDEX_NAME="${token}"
   export INPUT="${full_folder}"
   export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
-  echo $INDEX_SETTINGS
+
   /tmp/load_json_esbulk.sh
 done
 
@@ -59,4 +55,4 @@ export INPUT=$PREFIX_DATA"faers"
 export ID=""
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 
-#./load_json_esbulk.sh
+./load_json_esbulk.sh
