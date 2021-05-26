@@ -74,6 +74,8 @@ gcloud compute --project=${PROJECT_ID} instances stop ${ELASTICSEARCH_URI} --zon
 # Clickhouse
 gcloud compute --project=${PROJECT_ID} instances stop ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
 
+NOW=`date +'%y%m%d-%H%M%S'`
+echo $NOW
 #create image from elasticsearch machine
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  --source-disk ${ELASTICSEARCH_URI}  --family ot-es7     --source-disk-zone ${GC_ZONE}
 
