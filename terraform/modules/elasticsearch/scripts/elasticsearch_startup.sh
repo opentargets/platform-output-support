@@ -38,7 +38,7 @@ echo "-Xms$${JVM_SIZE}g -Xmx$${JVM_SIZE}g"
 #    size of the queue for bulk indexing tasks
 #      needed for high submissions from pipeline
 
-docker run -d \
+docker run -d --restart always \
   --name elasticsearch \
   -p 9200:9200 \
   -p 9300:9300 \
