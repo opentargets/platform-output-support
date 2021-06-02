@@ -34,8 +34,8 @@ resource "google_service_account" "gcp_service_acc_apis" {
 }
 
 
-resource "google_compute_instance" "pos_vm" {
-  name = "${var.module_wide_prefix_scope}-support-vm-${random_string.random.result}"
+resource "google_compute_instance" "sync_vm" {
+  name = "${var.module_wide_prefix_scope}-sync-vm-${random_string.random.result}"
   machine_type = var.config_vm_machine_type
   zone   = var.config_vm_default_zone
   allow_stopping_for_update = true
@@ -61,8 +61,11 @@ resource "google_compute_instance" "pos_vm" {
     startup-script = templatefile(
     "${path.module}/scripts/sync_data.sh",
     {
-      FTP_PASS = var.ftp_credential
+      FTP_PASS = "${file("${path.module}/credentials/ftp-key.txt")}"
+      PROD_SVC = jsonencode(chomp("${file("${path.module}/credentials/open-targets-prod-compress.json")}"))
+      EU_DEV_SVC = jsonencode(chomp("${file("${path.module}/credentials/open-targets-eu-dev-compress.json")}"))
       GS_ETL_DATASET = var.config_gs_etl
+      FTP_DIR = var.config_ftp_dir
     }
     )
     google-logging-enabled = true
