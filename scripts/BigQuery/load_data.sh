@@ -1,19 +1,19 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <version_tag>"
-    exit 1
-fi
+#if [ $# -ne 1 ]; then
+#    echo "Usage: $0 <version_tag>"
+#    exit 1
+#fi
 
-version_tag=$1
-project_id=open-targets-prod
+version_tag=21.06.1
+project_id=open-targets-eu-dev
 underscore_version_tag=${version_tag//[\.]/_}
 
-path_prefix="gs://open-targets-data-releases/${version_tag}/output/etl/parquet"
+path_prefix="gs://open-targets-pre-data-releases/${version_tag}/output/etl/parquet"
 
 datasets=$(gsutil -m cat "${path_prefix}/metadata/**/part*" | jq -r '.id' )
 
-#bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_tag}
+bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_tag}
 #
 for ds in $datasets
 do
@@ -33,8 +33,8 @@ done
 
 #bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_tag}.faersRaw
 #bq --project_id=${project_id} --dataset_id=platform_${underscore_version_tag} --location='eu' load --autodetect --source_format=PARQUET faersRaw \
-#  "gs://open-targets-data-releases/${version_tag}/output/faers/parquet/raw/part*"
+#  "gs://open-targets-pre-data-releases/${version_tag}/output/faers/parquet/raw/part*"
 
 #bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_tag}.faersSignificant
 #bq --project_id=${project_id} --dataset_id=platform_${underscore_version_tag} --location='eu' load --autodetect --source_format=PARQUET faersSignificant \
-#  "gs://open-targets-data-releases/${version_tag}/output/faers/parquet/significant/part*"
+#  "gs://open-targets-pre-data-releases/${version_tag}/output/faers/parquet/significant/part*"

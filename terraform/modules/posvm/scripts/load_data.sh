@@ -82,6 +82,8 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 #create image from clickhouse image
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
+#BQ
+time ./create_bq_dev.sh
 
 echo "GraphQL is available: "${ENABLE_GRAPHQL}
 if [ "${ENABLE_GRAPHQL}" = true ]; then
