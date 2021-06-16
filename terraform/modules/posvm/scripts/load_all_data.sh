@@ -49,7 +49,7 @@ export ID="id"
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 ./load_json_esbulk.sh
 
-# /faers/json/raw/*
+# /faers/json/significant/*
 export INDEX_NAME="openfda_faers"
 export INPUT=$PREFIX_DATA"faers"
 export ID=""
