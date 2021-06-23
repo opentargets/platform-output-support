@@ -83,11 +83,10 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
 #BQ
-time ./create_bq_dev.sh
+#time ./create_bq_dev.sh
 
-echo "GraphQL is available: "${ENABLE_GRAPHQL}
-if [ "${ENABLE_GRAPHQL}" = true ]; then
-  gcloud compute --project=${PROJECT_ID} instances start ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
-  gcloud compute --project=${PROJECT_ID} instances start ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
-fi
-
+#echo "GraphQL is available: "${ENABLE_GRAPHQL}
+#if [ "${ENABLE_GRAPHQL}" = true ]; then
+#  gcloud compute --project=${PROJECT_ID} instances start ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
+#  gcloud compute --project=${PROJECT_ID} instances start ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
+#fi
