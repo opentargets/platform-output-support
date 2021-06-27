@@ -319,6 +319,7 @@ wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/
 clickhouse-client --multiline --multiquery < aotf_log.sql
 echo "create and fill in aotf_log"
 gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
+gsutil -m cat gs://open-targets-pre-data-releases/21.06.4/output/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
 echo "create and fill in Association on the fly table"
 clickhouse-client --multiline --multiquery < aotf.sql
 echo "Association on the fly table done"
@@ -328,10 +329,10 @@ gsutil -m cat gs://${GS_ETL_DATASET}/literature/parquet/literatureIndex/part\* |
 clickhouse-client --multiline --multiquery < literature.sql
 echo "Literature table done"
 
-#clickhouse-client --multiline --multiquery < w2v_log.sql
-#gsutil -m cat gs://${GS_ETL_DATASET}/literature/parquet/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
-#clickhouse-client --multiline --multiquery < w2v.sql
-#echo "Literature vectors done"
+clickhouse-client --multiline --multiquery < w2v_log.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/literature/parquet/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
+clickhouse-client --multiline --multiquery < w2v.sql
+echo "Literature vectors done"
 
 # This tag is waited by the POS VM in order to stop the VM and create the image of CH
 gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE}  --tags "startup-done"
