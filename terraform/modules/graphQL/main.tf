@@ -19,8 +19,8 @@ resource "google_service_account" "gcp_service_acc_apis" {
 }
 
 
-resource "google_compute_firewall" "default" {
-  name    = "graphql-app-firewall"
+resource "google_compute_firewall" "default_4" {
+  name    = "graphql-app-firewall-4"
   network = "default"
 
   allow {

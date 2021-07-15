@@ -5,6 +5,8 @@ terraform plan -var-file="deployment_context.tfvars"
 terraform apply -var-file="deployment_context.tfvars"
 terraform destroy -var-file="deployment_context.tfvars"
 
+terraform state rm $(terraform state list)
+terraform state rm $(terraform state list | grep aws_instance)
 
 # list of the state
 terraform state list
@@ -15,3 +17,6 @@ terraform taint module.backend_pos_vm.random_string.random
 export VM=pos-ch-clickhouse-server-0prcofqb
 gcloud --project=open-targets-eu-dev compute ssh $VM -- sudo journalctl -n 500 -f -u google-startup-scripts.service
 gcloud --project=open-targets-eu-dev compute ssh pos-gql-server-eumatsx0 -- sudo journalctl -n 500 -f -u google-startup-scripts.service
+
+
+terraform apply -var-file="deployment_context_3.tfvars"

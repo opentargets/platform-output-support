@@ -319,7 +319,6 @@ wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/
 clickhouse-client --multiline --multiquery < aotf_log.sql
 echo "create and fill in aotf_log"
 gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
-gsutil -m cat gs://open-targets-pre-data-releases/21.06.4/output/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
 echo "create and fill in Association on the fly table"
 clickhouse-client --multiline --multiquery < aotf.sql
 echo "Association on the fly table done"
