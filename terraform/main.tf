@@ -19,7 +19,7 @@ provider "google" {
 // --- Elastic Search Backend --- //
 module "backend_elastic_search" {
   source = "./modules/elasticsearch"
-
+  project_id = var.config_project_id
   module_wide_prefix_scope = "${var.config_script_name}-es"
   // Elastic Search configuration
   vm_elastic_search_version = var.config_vm_elastic_search_version
@@ -56,7 +56,7 @@ module "backend_clickhouse" {
 
 module "backend_graphql" {
   source = "./modules/graphQL"
-
+  project_id = var.config_project_id
   depends_on = [module.backend_elastic_search, module.backend_clickhouse]
 
   module_wide_prefix_scope = "${var.config_script_name}-gql"

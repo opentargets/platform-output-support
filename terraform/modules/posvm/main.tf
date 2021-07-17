@@ -54,7 +54,7 @@ resource "google_compute_instance" "pos_vm" {
   }
 
   service_account {
-    email = "pos-service-account@open-targets-prod.iam.gserviceaccount.com"
+    email = "pos-service-account@${var.project_id}.gserviceaccount.com"
     scopes = [ "cloud-platform" ]
   }
 

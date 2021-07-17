@@ -61,7 +61,7 @@ resource "google_compute_instance" "graphql_instance" {
   }
 
   service_account {
-    email = "pos-service-account@open-targets-prod.iam.gserviceaccount.com"
+    email = "pos-service-account@${var.project_id}.iam.gserviceaccount.com"
     scopes = [ "cloud-platform" ]
   }
 

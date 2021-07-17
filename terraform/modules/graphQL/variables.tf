@@ -10,6 +10,11 @@ variable "module_wide_prefix_scope" {
   default = "otpdevgql"
 }
 
+variable "project_id" {
+  description = "Default project to use when not specified in the module"
+  type = string
+}
+
 variable "vm_platform_api_image_version" {
   description = "API Docker image version to use in deployment"
   type = string

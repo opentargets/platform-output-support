@@ -12,6 +12,11 @@ variable "module_wide_prefix_scope" {
   default = "otpdeves"
 }
 
+variable "project_id" {
+  description = "Default project to use when not specified in the module"
+  type = string
+}
+
 variable "vm_elastic_boot_image" {
   description = "Boot image configuration for the deployed Elastic Search Instances"
   type = string
