@@ -11,16 +11,9 @@ resource "random_string" "random" {
   }
 }
 
-resource "google_service_account" "gcp_service_acc_apis" {
-  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
-  // As we are launching just one VM that we may replace, we can reuse the service account
-  account_id = "${var.module_wide_prefix_scope}-svcgql-${random_string.random.result}"
-  display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
-}
 
-
-resource "google_compute_firewall" "default_4" {
-  name    = "graphql-app-firewall-4"
+resource "google_compute_firewall" "default" {
+  name    = "graphql-app-firewall-5"
   network = "default"
 
   allow {
@@ -68,7 +61,7 @@ resource "google_compute_instance" "graphql_instance" {
   }
 
   service_account {
-    email = google_service_account.gcp_service_acc_apis.email
+    email = "pos-service-account@open-targets-prod.iam.gserviceaccount.com"
     scopes = [ "cloud-platform" ]
   }
 

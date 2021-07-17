@@ -10,12 +10,6 @@ resource "random_string" "random" {
   }
 }
 
-resource "google_service_account" "gcp_service_acc_apis" {
-  //account_id = "${var.module_wide_prefix_scope}-svc-${random_string.random.result}"
-  // As we are launching just one VM that we may replace, we can reuse the service account
-  account_id = "${var.module_wide_prefix_scope}-svces-${random_string.random.result}"
-  display_name = "${var.module_wide_prefix_scope}-GCP-service-account"
-}
 
 resource "google_compute_instance" "elasticsearch_etl" {
   // Good, we need randomness in case we make changes in the VM that will replace it
@@ -55,7 +49,7 @@ resource "google_compute_instance" "elasticsearch_etl" {
   }
 
   service_account {
-    email = google_service_account.gcp_service_acc_apis.email
+    email = "pos-service-account@open-targets-prod.iam.gserviceaccount.com"
     scopes = [ "cloud-platform" ]
   }
 
