@@ -6,6 +6,8 @@ resource "random_string" "random" {
   keepers = {
     // Take into account changes in the machine type
     vm_machine_type = local.vm_machine_type
+    // Be aware of launch script changes
+    launch_script_hash = md5(file("${path.module}/scripts/clickhouse_startup.sh"))
   }
 }
 

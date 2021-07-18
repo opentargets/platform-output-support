@@ -7,6 +7,8 @@ resource "random_string" "random" {
     vm_elastic_search_version = var.vm_elastic_search_version
     // Take into account changes in the machine type
     vm_machine_type = local.vm_machine_type
+    // Be aware of launch script changes
+    launch_script_hash = md5(file("${path.module}/scripts/elasticsearch_startup.sh"))
   }
 }
 

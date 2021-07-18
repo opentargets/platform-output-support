@@ -81,7 +81,9 @@ module "backend_graphql" {
 module "backend_pos_vm" {
   module_wide_prefix_scope = "${var.config_script_name}-vm"
   source = "./modules/posvm"
+
   project_id = var.config_project_id
+
   depends_on = [module.backend_elastic_search, module.backend_clickhouse]
 
   // Region and zone
