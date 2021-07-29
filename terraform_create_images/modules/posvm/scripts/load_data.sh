@@ -80,12 +80,12 @@ echo $NOW
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  --source-disk ${ELASTICSEARCH_URI}  --family ot-es7     --source-disk-zone ${GC_ZONE}
 
 #create image from clickhouse image
-gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
+#gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
-gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE}  --tags "pos-image-done"
+#gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE}  --tags "pos-image-done"
 
 echo "Final command"
-echo hostname
+echo `hostname`
 # start the same VMs.
 #  gcloud compute --project=${PROJECT_ID} instances start ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
 #  gcloud compute --project=${PROJECT_ID} instances start ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
