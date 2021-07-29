@@ -19,7 +19,6 @@ resource "google_compute_instance" "pos_vm" {
   zone   = var.vm_default_zone
   allow_stopping_for_update = true
   can_ip_forward = true
-  count = var.enable_module
 
   boot_disk {
     initialize_params {
@@ -46,8 +45,7 @@ resource "google_compute_instance" "pos_vm" {
           ELASTICSEARCH_URI = var.vm_elasticsearch_uri,
           CLICKHOUSE_URI = var.vm_clickhouse_uri,
           GS_ETL_DATASET = var.gs_etl,
-          IMAGE_PREFIX = var.release_name,
-          ENABLE_GRAPHQL = var.enable_graphQL
+          IMAGE_PREFIX = var.release_name
         }
       )
     google-logging-enabled = true

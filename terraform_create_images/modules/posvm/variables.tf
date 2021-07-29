@@ -1,11 +1,5 @@
 // --- Module input parameters --- //
 // General deployment input parameters --- //
-// General deployment input parameters --- //
-variable "enable_module" {
-  description = "Enable/disable the module POS VM"
-  type = number
-  default = 1
-}
 
 variable "project_id" {
   description = "Default project to use when not specified in the module"

@@ -27,9 +27,9 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/faers/json/significant/* /tmp/data/faers/
 
 sudo mkdir -p /tmp
 cd /tmp
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json_esbulk.sh
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/output_etl_struct.jsonl
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_all_data.sh
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/terraform_create_images/modules/posvm/scripts/output_etl_struct.jsonl
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/terraform_create_images/modules/posvm/scripts/load_all_data.sh
 sudo chmod 555 load_all_data.sh
 sudo chmod 555 load_json_esbulk.sh
 
@@ -71,7 +71,7 @@ done
 #stop elasticsearch machine
 gcloud compute --project=${PROJECT_ID} instances stop ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
 
-# Clickhouse
+# stop Clickhouse
 gcloud compute --project=${PROJECT_ID} instances stop ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
 
 NOW=`date +'%y%m%d-%H%M%S'`
@@ -82,11 +82,8 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 #create image from clickhouse image
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
-#BQ
-#time ./create_bq_dev.sh
+gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE}  --tags "pos-image-done"
 
-#echo "GraphQL is available: "${ENABLE_GRAPHQL}
-#if [ "${ENABLE_GRAPHQL}" = true ]; then
+# start the same VMs.
 #  gcloud compute --project=${PROJECT_ID} instances start ${CLICKHOUSE_URI}	--zone ${GC_ZONE}
 #  gcloud compute --project=${PROJECT_ID} instances start ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
-#fi

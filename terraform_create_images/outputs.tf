@@ -9,7 +9,3 @@ output "clickhouse_hostname" {
 output "pos_support_vm_name" {
   value = module.backend_pos_vm.pos_support_vm_name
 }
-
-output "graphql_hostame_info" {
-  value = module.backend_graphql.*
-}

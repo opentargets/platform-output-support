@@ -11,7 +11,7 @@ tfbackend.tf
 deployment_context.tfvars
 **/.DS_Store
 tfbackend.tf.bak
-
+deployment_context.tfvars
 
 .DS_Store
 /platform-etl-openfda-faers.iml

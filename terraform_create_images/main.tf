@@ -1,11 +1,16 @@
 // Open Targets Platform Infrastructure
 // Author: Cinzia Malangone <cinzia.malangone@gmail.com>
 
+// --- Provider Configuration --- //
 terraform {
   required_providers {
     google = {
-      source = "hashicorp/google"
-      version = "3.55.0"
+      source  = "hashicorp/google"
+      version = "3.70.0"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "3.70.0"
     }
   }
 }
@@ -15,6 +20,12 @@ provider "google" {
   project = var.config_project_id
 }
 
+
+provider "google-beta" {
+  project = var.config_project_id
+  region = var.config_gcp_default_region
+  #zone   = local.gcp_zone
+}
 
 // --- Elastic Search Backend --- //
 module "backend_elastic_search" {
@@ -52,29 +63,6 @@ module "backend_clickhouse" {
   vm_default_zone = var.config_gcp_default_zone
   vm_clickhouse_boot_image = var.config_vm_clickhouse_boot_image
   vm_clickhouse_boot_disk_size = var.config_vm_clickhouse_boot_disk_size
-}
-
-module "backend_graphql" {
-  source = "./modules/graphQL"
-  project_id = var.config_project_id
-  depends_on = [module.backend_elastic_search, module.backend_clickhouse]
-
-  module_wide_prefix_scope = "${var.config_script_name}-gql"
-  // GraphQL configuration
-  vm_graphql_vcpus = var.config_vm_graphql_vcpus
-  // Memory size in MiB
-  vm_graphql_mem = var.config_vm_graphql_mem
-
-  // Parameter for GRAPHQL server
-  vm_platform_api_image_version = var.config_vm_platform_api_image_version
-  host_elastic_search = module.backend_elastic_search.elasticsearch_vm_name
-  host_clickhouse = module.backend_clickhouse.clickhouse_vm_name
-
-  // Region and zone
-  vm_default_region = var.config_gcp_default_region
-  vm_default_zone = var.config_gcp_default_zone
-  vm_graphql_boot_image = var.config_vm_graphql_boot_image
-  vm_graphql_boot_disk_size = var.config_vm_graphql_boot_disk_size
 }
 
 

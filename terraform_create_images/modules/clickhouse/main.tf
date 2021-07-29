@@ -47,8 +47,8 @@ resource "google_compute_instance" "clickhouse_etl" {
 
   metadata = {
     startup-script = templatefile(
-    "${path.module}/scripts/clickhouse_startup.sh",
-    {
+   "${path.module}/scripts/clickhouse_startup.sh",
+      {
       PROJECT_ID = var.project_id,
       GC_ZONE = var.vm_default_zone,
       GS_ETL_DATASET = var.gs_etl
@@ -56,6 +56,7 @@ resource "google_compute_instance" "clickhouse_etl" {
     )
     google-logging-enabled = true
   }
+
 
   service_account {
     email = "pos-service-account@${var.project_id}.iam.gserviceaccount.com"
