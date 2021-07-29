@@ -27,9 +27,9 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/faers/json/significant/* /tmp/data/faers/
 
 sudo mkdir -p /tmp
 cd /tmp
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/terraform_create_images/modules/posvm/scripts/output_etl_struct.jsonl
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/terraform_create_images/modules/posvm/scripts/load_all_data.sh
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/output_etl_struct.jsonl
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_all_data.sh
 sudo chmod 555 load_all_data.sh
 sudo chmod 555 load_json_esbulk.sh
 

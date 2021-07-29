@@ -7,4 +7,4 @@ terraform init
 terraform apply -auto-approve -var-file="deployment_context.tfvars"
 
 
-rm deployment_context.tfvars
+#rm deployment_context.tfvars

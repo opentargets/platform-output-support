@@ -12,6 +12,8 @@ deployment_context.tfvars
 **/.DS_Store
 tfbackend.tf.bak
 deployment_context.tfvars
+terraform_create_images/deployment_context.tfvars
+
 
 .DS_Store
 /platform-etl-openfda-faers.iml
