@@ -88,32 +88,18 @@ variable "config_vm_clickhouse_boot_disk_size" {
   type = string
 }
 
-// --- GraphQL VM Configuration --- //
-variable "config_vm_platform_api_image_version" {
+// --- GraphQL VM Configuration. Deploy appEngine. If empty doesn't deploy the appEngine --- //
+variable "config_api_image_version" {
   description = "API Docker image version to use in deployment"
   type = string
-}
-variable "config_vm_graphql_vcpus" {
-  description = "CPU count for the deployed graphQL Instances"
-  type = number
+  default = ""
 }
 
-variable "config_vm_graphql_mem" {
-  description = "RAM configuration for the deployed clickhouse Instances"
-  type = number
-}
-
-variable "config_vm_graphql_boot_image" {
-  description = "Boot image configuration for the deployed GraphQL Instances"
+variable "config_appengine_name" {
+  description = "AppEngine dev. promote vs no-promote"
   type = string
-  default = "projects/cos-cloud/global/images/family/cos-stable"
+  default = "pos-api"
 }
-
-variable "config_vm_graphql_boot_disk_size" {
-  description = "Boot disk size to use for the deployed GraphQL Instances"
-  type = string
-}
-
 
 // --- POS VM Configuration --- //
 variable "config_vm_pos_boot_image" {

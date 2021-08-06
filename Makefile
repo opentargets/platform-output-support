@@ -1,14 +1,19 @@
 .DEFAULT_GOAL:=help
 
-#cat config.tfvars | grep release_id_prod | awk -F= '{print $2}' | tr -d ' "'
 ROOT_DIR_MAKEFILE_POS:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-
 GS_ETL_DATASET:=$(shell cat config.tfvars | grep config_gs_etl | awk -F= '{print $$2}' | tr -d ' "')
-RELEASE_ID:=$(shell cat config.tfvars | grep release_id | awk -F= '{print $$2}' | tr -d ' "')
+GS_SYNC_FROM:=$(shell cat config.tfvars | grep gs_sync_from | awk -F= '{print $$2}' | tr -d ' "')
+PROJECT_ID_DEV=$(shell cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
+RELEASE_ID_DEV=$(shell cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
+RELEASE_ID_PROD=$(shell cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
 
 export ROOT_DIR_MAKEFILE_POS
 export GS_ETL_DATASET
-export RELEASE_ID
+export GS_SYNC_FROM
+export PROJECT_ID_DEV
+export RELEASE_ID_DEV
+export RELEASE_ID_PROD
+
 check:
 	[ -e "/you/file.file" ] && echo 1 || $error("Bad svnversion v1.4, please install v1.6")
 
@@ -20,22 +25,24 @@ image: ## Create Google cloud Clickhouse image and ElasticSearch image.
 	cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/deployment_context.tfvars
 	${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/run.sh
 
-bigquerydev: export PROJECT_ID:=$(shell cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
+bigquerydev:  ## Big Query Dev
+	@echo $(PROJECT_ID_DEV)
+	@echo "==== Big Query DEV ===="
+	export PROJECT_ID=${PROJECT_ID_DEV}; \
+	export RELEASE_ID=${RELEASE_ID_DEV}; \
+	 ${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
 
-bigquerydev: ## Big Query Dev
+
+bigqueryprod:## Big Query Production
 	@echo "==== Big Query DEV ===="
 	@echo ${GS_ETL_DATASET}
-	@echo ${PROJECT_ID}
-	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
+	export PROJECT_ID=open-targets-prod; \
+    export RELEASE_ID=${RELEASE_ID_PROD}; \${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
 
-bigqueryprod: export PROJECT_ID:=open-targets-prod
+sync:
+	@echo "==== Sync ===="
+	@echo ${GS_SYNC_FROM}
+	@echo ${RELEASE_ID_PROD}
+	${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/sync.sh
 
-bigqueryprod: ## Big Query Production
-	@echo "==== Big Query DEV ===="
-	@echo ${GS_ETL_DATASET}
-	@echo ${PROJECT_ID}
-	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
-
-sync: ## percent included
 appengine: ## parenthesis
-graphql: ## both

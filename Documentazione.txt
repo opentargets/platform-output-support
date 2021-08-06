@@ -1,13 +1,36 @@
+
+gcloud app deploy --image-url gcr.io/YOUR_PROJECT_ID/YOUR_CONTAINER_IMAGE
+```
+gcloud --project=open-targets-eu-dev app deploy cinzia.yaml\
+    --no-promote \
+    -v pos-test
+
+```
+env_variables:
+  ELASTICSEARCH_HOST: "example-gcs-host"
+
+
+
+eu.gcr.io/open-targets-eu-dev/appengine/api-beta.pos-test:latest
+
+gcloud --project=open-targets-eu-dev app deploy cinzia.yaml\
+    --image-url eu.gcr.io/open-targets-eu-dev/appengine/api-beta.pos-test:latest \
+    --no-promote \
+    -v pos-test
+
+
+
 ssh-
 cat ~/.ssh/id_rsa.pub | ssh your_user@noah-login-01 "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 
+#cat config.tfvars | grep release_id_prod | awk -F= '{print $2}' | tr -d ' "'
 
 Service account created for POS inside the following projects
 
 
 export SERVICE_ACCOUNT_ID=pos-service-account-test
 export PROJECT_IDS_GS=["open-targets-eu-dev","open-targets-prod","open-targets-genetics","open-targets-platform","open-targets"]
-export POS_ROLES= ["roles/compute.admin", "roles/logging.viewer","roles/compute.instanceAdmin","roles/storage.objectViewer","roles/storage.admin"]
+export POS_ROLES= ["roles/compute.admin", "roles/logging.viewer","roles/compute.instanceAdmin","roles/storage.objectViewer","roles/storage.admin","roles/storage.legacyBucketReader"]
 gcloud iam service-accounts create $SERVICE_ACCOUNT_ID \
     --description="Platform output support service account" \
     --display-name="Platform output support (POS)"
@@ -83,3 +106,6 @@ tools at your fingertips.
 PyCharm Pro for Anaconda is available at: https://www.anaconda.com/pycharm
 
 
+You can use gsutil rsync command, with -x option to exclude some objects. Something like :
+
+gsutil -m rsync -r -x '^dir3/*' gs://so-bucket .

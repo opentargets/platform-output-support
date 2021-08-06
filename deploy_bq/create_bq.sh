@@ -45,5 +45,6 @@ rm platform_${underscore_version_tag}_schema.json
 rm platform_${underscore_version_tag}_meta.json
 rm platform_${underscore_version_tag}_new_schema.json
 
+
 # Debug: view the new roles for the BiqQuery dataset
 #bq show --format=prettyjson ${project_id}:platform_${underscore_version_tag}

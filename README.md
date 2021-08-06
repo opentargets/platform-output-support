@@ -8,15 +8,47 @@ POS will be responsible for:
 * Publishing datasets in different services
 * Data validation
 
+### Requirement
+*) Terraform <br>
+*) Jq
+
+### How to run the different steps
+Simply run the following command:
+
+```make```
+
+The output shows the possible action to run
+
+```
+Usage:
+  make 
+  help             show help message
+  image            Create Google cloud Clickhouse image and ElasticSearch image.
+  bigquerydev      Big Query Dev
+  bigqueryprod     Big Query Production
+  sync             sync the pre-data bucket to private ftp and public ftp
+```
+
+Every single variables is stored in the **config.tfvars**
+
+The current POS steps are:
+
+```make image``` it creates the ES and CH images using the ETL output
+
+```make bigquerydev``` it generates a bigquery dataset in eu-dev
+
+```make bigqueryprod``` it generates a bigquery dataset in production
+
+```make sync``` Synch the data from the Google Storage to EBI FTP (internal use)
+
+
 ### Infrastructure Tasks
 
 >**directory terraform**: Infrastructure deployment for the release. <br>
 *) Spawn an Elasticsearch Server and loads the data into it. <br>
 *) Spawn Clickhouse Server and loads the data into it <br>
 *) Create Elasticsearch and Clickhouse images <br>
-*) Optionally spawn the GraphQL server to query CH and ES 
 
-More details about how to run this task and the config file inside the terraform/README.md
 
 # Copyright
 Copyright 2018-2021 Open Targets
