@@ -83,3 +83,37 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
 
+echo "create VMs!"
+gcloud --project ${PROJECT_ID} \
+    beta compute instances create ${IMAGE_PREFIX}-$NOW-es-vm \
+    --zone=${GC_ZONE} \
+    --image-project ${PROJECT_ID} \
+    --image ${IMAGE_PREFIX}-$NOW-es \
+    --machine-type=e2-highmem-4 \
+    --scopes compute-rw,storage-rw
+
+#--network-tier=PREMIUM --scopes=https://www.googleapis.com/auth/cloud-platform
+
+gcloud --project ${PROJECT_ID} \
+    compute instances create ${IMAGE_PREFIX}-$NOW-ch-vm \
+    --zone=${GC_ZONE} \
+    --machine-type=e2-custom-4-26624 \
+    --image-project ${PROJECT_ID} \
+    --image ${IMAGE_PREFIX}-$NOW-ch \
+    --scopes compute-rw,storage-rw
+
+sudo wget -O /tmp/api_app.yaml https://raw.githubusercontent.com/opentargets/platform-api-beta/master/app.yaml
+sudo cat > /tmp/custom.yaml <<EOF_A
+env_variables:
+  ELASTICSEARCH_HOST: "${IMAGE_PREFIX}-$NOW-es-vm.c.open-targets-eu-dev.internal"
+  SLICK_CLICKHOUSE_URL: "${IMAGE_PREFIX}-$NOW-ch-vm.c.open-targets-eu-dev.internal:8123"
+
+EOF_A
+
+cat /tmp/api_app.yaml /tmp/custom.yaml > /tmp/api_custom.yaml
+
+gcloud --project=open-targets-eu-dev app deploy /tmp/api_custom.yaml \
+    --image-url eu.gcr.io/open-targets-eu-dev/appengine/api-beta.pos-test:latest \
+    --no-promote \
+    --quiet \
+    -v pos-test
