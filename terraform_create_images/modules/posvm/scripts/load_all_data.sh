@@ -49,6 +49,12 @@ export ID="id"
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 ./load_json_esbulk.sh
 
+export INPUT=$PREFIX_DATA"otar_projects"
+export INDEX_NAME="otar_projects"
+export ID="efo_id"
+export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+./load_json_esbulk.sh
+
 # /faers/json/significant/*
 export INDEX_NAME="openfda_faers"
 export INPUT=$PREFIX_DATA"faers"

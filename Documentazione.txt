@@ -40,7 +40,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID_GS \
     --member="serviceAccount:$SERVICE_ACCOUNT_ID@$PROJECT_ID_GS.iam.gserviceaccount.com" \
     --role="roles/compute.admin"
 
-
+terraform destroy -auto-approve -var-file="deployment_context.tfvars"
 
 curl https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh > anaconda3.sh
 sudo -u otftpuser bash anaconda3.sh
