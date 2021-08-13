@@ -17,12 +17,14 @@ curl -X GET  ${ELASTICSEARCH_URI}:9200/_cat/indices; echo
 
 mkdir -p /tmp/data
 mkdir -p /tmp/data/so
+mkdir -p /tmp/data/otar_projects
 mkdir -p /tmp/data/faers/
 
 # Copy files locally. Robust vs streaming
 echo "Copy from GS to local HD"
 gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
+gsutil -m cp -r gs://${GS_ETL_DATASET}/otar_projects/* /tmp/data/otar_projects
 gsutil -m cp -r gs://${GS_ETL_DATASET}/faers/json/significant/* /tmp/data/faers/
 
 sudo mkdir -p /tmp
