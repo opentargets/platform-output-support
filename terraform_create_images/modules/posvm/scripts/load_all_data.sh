@@ -21,7 +21,13 @@ do
   /tmp/load_json_esbulk.sh
 done < "$input"
 
+# /faers/json/significant/*
+export INDEX_NAME="openfda_faers"
+export INPUT=$PREFIX_DATA"faers"
+export ID=""
+export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 
+./load_json_esbulk.sh
 
 # Load evidence
 FOLDER_PREFIX="${PREFIX_DATA}/evidence"
@@ -55,10 +61,3 @@ export ID="efo_id"
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 ./load_json_esbulk.sh
 
-# /faers/json/significant/*
-export INDEX_NAME="openfda_faers"
-export INPUT=$PREFIX_DATA"faers"
-export ID=""
-export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
-
-./load_json_esbulk.sh

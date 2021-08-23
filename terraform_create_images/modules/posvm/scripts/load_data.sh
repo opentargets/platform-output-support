@@ -25,7 +25,7 @@ echo "Copy from GS to local HD"
 gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
 gsutil -m cp -r gs://${GS_ETL_DATASET}/otar_projects/* /tmp/data/otar_projects
-gsutil -m cp -r gs://${GS_ETL_DATASET}/faers/json/significant/* /tmp/data/faers/
+gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/fda/results/* /tmp/data/faers/
 
 sudo mkdir -p /tmp
 cd /tmp
