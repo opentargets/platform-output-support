@@ -6,7 +6,6 @@ molecule,drug,,index_settings.json
 mechanismOfAction,mechanism_of_action,,index_settings.json
 indication,indication,,index_settings.json
 drugWarnings,drug_warnings,,index_settings.json
-eco,eco,id,index_settings.json
 baselineExpression,expression,id,index_settings.json
 hpo,hpo,id,index_settings.json
 mousePhenotypes,mouse_phenotypes,id,index_settings.json
