@@ -114,8 +114,10 @@ EOF_A
 
 cat /tmp/api_app.yaml /tmp/custom.yaml > /tmp/api_custom.yaml
 
-#gcloud --project=open-targets-eu-dev app deploy /tmp/api_custom.yaml \
-#    --image-url eu.gcr.io/open-targets-eu-dev/appengine/api-beta.pos-test:latest \
-#    --no-promote \
-#    --quiet \
-#    -v pos-test
+#eu.gcr.io/open-targets-eu-dev/default.master:latest
+#eu.gcr.io/open-targets-eu-dev/appengine/api-beta.pos-test:latest
+gcloud --project=open-targets-eu-dev app deploy /tmp/api_custom.yaml \
+    --image-url eu.gcr.io/open-targets-eu-dev/default.master:latest \
+    --no-promote \
+    --quiet \
+    -v pos-test
