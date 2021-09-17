@@ -80,6 +80,7 @@ module "backend_pos_vm" {
   vm_pos_boot_disk_size = var.config_vm_pos_boot_disk_size
   vm_pos_machine_type = var.config_vm_pos_machine_type
   gs_etl = var.config_gs_etl
+  config_direct_json = var.config_direct_json
   vm_elasticsearch_uri = module.backend_elastic_search.elasticsearch_vm_name
   vm_clickhouse_uri = module.backend_clickhouse.clickhouse_vm_name
   release_name = var.config_release_name

@@ -45,6 +45,7 @@ resource "google_compute_instance" "pos_vm" {
           ELASTICSEARCH_URI = var.vm_elasticsearch_uri,
           CLICKHOUSE_URI = var.vm_clickhouse_uri,
           GS_ETL_DATASET = var.gs_etl,
+          GS_DIRECT_FILES = var.config_direct_json,
           IMAGE_PREFIX = var.release_name
         }
       )

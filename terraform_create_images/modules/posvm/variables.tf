@@ -29,6 +29,11 @@ variable "gs_etl" {
   type = string
 }
 
+variable "config_direct_json" {
+  description = "External JSon to laod. Used for SO. Eg. open-targets-data-releases/21.09"
+  type = string
+}
+
 // --- VM info --- //
 variable "vm_pos_boot_image" {
   description = "Boot image configuration for POS VM"

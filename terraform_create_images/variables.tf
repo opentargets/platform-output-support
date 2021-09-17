@@ -37,6 +37,11 @@ variable "config_gs_etl" {
   type = string
 }
 
+variable "config_direct_json" {
+  description = "External JSon to laod. Used for SO. Eg. open-targets-data-releases/21.09/input"
+  type = string
+}
+
 // --- Elastic Search Configuration --- //
 variable "config_vm_elastic_boot_image" {
   description = "Boot image configuration for the deployed Elastic Search Instances"
