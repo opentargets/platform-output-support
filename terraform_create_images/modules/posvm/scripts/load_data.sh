@@ -27,7 +27,7 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 
 gsutil -m cp -r gs://${GS_ETL_DATASET}/otar_projects/* /tmp/data/otar_projects
 gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/fda/results/* /tmp/data/faers/
-gsutil -m cp -r gs://${GS_ETL_DATASET}/input/annotation-files/mp/* /tmp/data/mp/
+gsutil -m cp -r gs://${GS_DIRECT_FILES}/input/mousePhenotypes/* /tmp/data/mp/
 #gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
 gsutil list -r gs://${GS_DIRECT_FILES} | grep ontology-so | xargs -t -I % gsutil cp %  /tmp/data/so
 

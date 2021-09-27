@@ -36,7 +36,7 @@ bq --project_id=${project_id} --dataset_id=platform_${underscore_version_tag} --
 # The mouse phenotypes data does not come from the ETL; it is provided directly from the data team via PIS.
 bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_tag}.mousePhenotypes
 bq --project_id=${project_id} --dataset_id=platform_${underscore_version_tag} --location='eu' load --autodetect --source_format=NEWLINE_DELIMITED_JSON mousePhenotypes \
-  "gs://open-targets-pre-data-releases/${version_tag}/input/mp/*.json"
+  "gs://${GS_ETL_DATASET}/${version_tag}/input/mp/*.json"
 
 
 # Adding allUserAuth roles
