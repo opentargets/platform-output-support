@@ -57,7 +57,7 @@ export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 
 # Mouse phenotypes
 export INPUT=$PREFIX_DATA"mp"
-export INDEX_NAME="mp"
+export INDEX_NAME="mouse_phenotypes"
 export ID=""
 ./load_json_esbulk.sh
 
