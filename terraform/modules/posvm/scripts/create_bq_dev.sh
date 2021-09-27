@@ -30,6 +30,11 @@ bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_t
 bq --project_id=${project_id} --dataset_id=platform_${underscore_version_tag} --location='eu' load --autodetect --source_format=PARQUET faersRaw \
  "gs://${GS_ETL_DATASET}/faers/parquet/raw/part*"
 
+# The mouse phenotypes data does not come from the ETL; it is provided directly from the data team via PIS.
+bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_tag}.mousePhenotypes
+bq --project_id=${project_id} --dataset_id=platform_${underscore_version_tag} --location='eu' load --autodetect --source_format=NEWLINE_DELIMITED_JSON mousePhenotypes \
+  "gs://open-targets-pre-data-releases/${version_tag}/input/mp/*.json"
+
 bq --project_id=${project_id} --location='eu' mk platform_${underscore_version_tag}.faersSignificant
 bq --project_id=${project_id} --dataset_id=platform_${underscore_version_tag} --location='eu' load --autodetect --source_format=PARQUET faersSignificant \
   "gs://${GS_ETL_DATASET}/faers/parquet/significant/part*"
