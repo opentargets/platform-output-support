@@ -17,6 +17,7 @@ curl -X GET  ${ELASTICSEARCH_URI}:9200/_cat/indices; echo
 
 mkdir -p /tmp/data
 mkdir -p /tmp/data/so
+mkdir -p /tmp/data/mp
 mkdir -p /tmp/data/otar_projects
 mkdir -p /tmp/data/faers/
 
@@ -26,6 +27,7 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 
 gsutil -m cp -r gs://${GS_ETL_DATASET}/otar_projects/* /tmp/data/otar_projects
 gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/fda/results/* /tmp/data/faers/
+gsutil -m cp -r gs://${GS_ETL_DATASET}/input/annotation-files/mp/* /tmp/data/mp/
 #gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
 gsutil list -r gs://${GS_DIRECT_FILES} | grep ontology-so | xargs -t -I % gsutil cp %  /tmp/data/so
 
