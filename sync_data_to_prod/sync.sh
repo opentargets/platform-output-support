@@ -8,6 +8,8 @@ ssh noah-login-02 "tmux send-keys 'cd /nfs/ftp/private/otftpuser/upload/platform
 ssh noah-login-02 "tmux send-keys 'sudo -u otftpuser mkdir /nfs/ftp/pub/databases/opentargets/platform/${RELEASE_ID_PROD}; '  C-m"
 ssh noah-login-02 "tmux send-keys 'sudo -u otftpuser cp -R /nfs/ftp/private/otftpuser/upload/platform/${RELEASE_ID_PROD}/* /nfs/ftp/pub/databases/opentargets/platform/${RELEASE_ID_PROD}'  C-m"
 ssh noah-login-02 "tmux send-keys 'sudo -u otftpuser chmod -R 755 /nfs/ftp/pub/databases/opentargets/platform/${RELEASE_ID_PROD}'  C-m"
+ssh noah-login-02 "tmux send-keys 'cd /ebi/ftp/pub/databases/opentargets/platform'  C-m"
+ssh noah-login-02 "tmux send-keys 'sudo -u otftpuser ln -nsf ${RELEASE_ID_PROD} latest'  C-m"
 ssh noah-login-02 "tmux send-keys 'echo "done"'  C-m"
 #do not kill the session here!
 #ssh noah-login-02 "tmux kill-session -t gscopytoftp"
