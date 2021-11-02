@@ -32,6 +32,12 @@ variable "config_project_id" {
 }
 
 // --- ETL info --- //
+variable "is_partner_instance" {
+  description = "Is partners instance? By default false"
+  type = boolean
+  default = false
+}
+
 variable "config_gs_etl" {
   description = "Output of the ETL [root]. Eg. open-targets-data-releases/21.04/output"
   type = string
