@@ -26,7 +26,6 @@ variable "release_name" {
 // --- ETL info --- //
 variable "is_partner_instance" {
   description = "Is partners instance? By default false"
-  type = boolean
   default = false
 }
 

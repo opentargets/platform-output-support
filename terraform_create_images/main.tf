@@ -43,8 +43,6 @@ module "backend_elastic_search" {
   vm_default_zone = var.config_gcp_default_zone
   vm_elastic_boot_image = var.config_vm_elastic_boot_image
   vm_elasticsearch_boot_disk_size = var.config_vm_elastic_search_boot_disk_size
-
-
 }
 
 module "backend_clickhouse" {
