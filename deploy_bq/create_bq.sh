@@ -25,42 +25,27 @@ for ds in $datasets
 do
   echo $ds
 
-  gsutil list "gs://${GS_ETL_DATASET}/**/parquet/"$ds"/_SUCCESS" 2> /dev/null || true
+  gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*' 2> /dev/null || true
   status=$?
   echo ${status}
 
   if [[ $status == 0 ]]; then
+    gssource=$(gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*')
     bq --project_id=${project_id} --location='eu' mk platform${suffix}.${ds}
+
     if [[ $ds = evidence* ]]
     then
       bq --project_id=${project_id} --dataset_id=platform${suffix} --location='eu' load --autodetect --source_format=PARQUET \
         --hive_partitioning_mode=STRINGS \
-        --hive_partitioning_source_uri_prefix="${path_prefix}/${ds}/" ${ds}  "${path_prefix}/${ds}/sourceId*"
+        --hive_partitioning_source_uri_prefix="${path_prefix}/${ds}/" ${ds}  "${gssource}sourceId*"
     else
       bq --project_id=${project_id} --dataset_id=platform${suffix} --location='eu' load --autodetect --source_format=PARQUET ${ds} \
-        "${path_prefix}/${ds}/part*"
+        "${gssource}part*"
     fi
   else
      echo "=== ERROR " $ds ": table does not exist"
   fi
 done
-
-#datasets=$(gsutil -m cat "${path_prefix}/metadata/**/part*" | jq -r '.id' )
-#for ds in $datasets
-#do
-#  echo $ds
-#  bq --project_id=${project_id} --location='eu' mk platform.${ds}
-
-#  if [[ $ds = evidence* ]]
-#  then
-#    bq --project_id=${project_id} --dataset_id=platform --location='eu' load --autodetect --source_format=PARQUET \
-#      --hive_partitioning_mode=STRINGS \
-#      --hive_partitioning_source_uri_prefix="${path_prefix}/${ds}/" ${ds}  "${path_prefix}/${ds}/sourceId*"
-#  else
-#    bq --project_id=${project_id} --dataset_id=platform --location='eu' load --autodetect --source_format=PARQUET ${ds} \
-#      "${path_prefix}/${ds}/part*"
-#  fi
-#done
 
 # Adding allUserAuth roles
 if [ ${project_id} == "open-targets-prod" ]; then
