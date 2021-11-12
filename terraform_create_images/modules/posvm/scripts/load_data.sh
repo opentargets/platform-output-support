@@ -28,10 +28,8 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 
 #gsutil -m cp -r gs://${GS_ETL_DATASET}/otar_projects/* /tmp/data/otar_projects
 gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
-gsutil -m cp -r gs://${GS_DIRECT_FILES}/input/mousePhenotypes/* /tmp/data/mp/
 #gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
-gsutil list -r gs://${GS_DIRECT_FILES} | grep ontology-so | xargs -t -I % gsutil cp %  /tmp/data/so
-
+gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp %  /tmp/data/so
 
 
 sudo mkdir -p /tmp
@@ -91,7 +89,7 @@ gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-es  -
 #create image from clickhouse image
 gcloud compute --project=${PROJECT_ID}  images create ${IMAGE_PREFIX}-$NOW-ch  --source-disk ${CLICKHOUSE_URI}  --family ot-ch     --source-disk-zone ${GC_ZONE}
 
-if [ ${IS_PARTNER_INSTANCE} != false ]; then
+if [ ${IS_PARTNER_INSTANCE} == false ]; then
  echo "Platform Create VMs. No partner instance"
  gcloud --project ${PROJECT_ID} \
     beta compute instances create ${IMAGE_PREFIX}-$NOW-es-vm \
