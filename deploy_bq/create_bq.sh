@@ -9,7 +9,7 @@ if [ ${project_id} == "open-targets-prod" ]; then
     suffix=""
 else
     echo "Dev - suffix dev - allAuthenticatedUsers OFF"
-    suffix="_dev2"
+    suffix="_dev"
 fi
 
 bq --project_id=${project_id} --location='eu' rm -f -r platform${suffix}
@@ -27,7 +27,6 @@ do
 
   gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*' 2> /dev/null || true
   status=$?
-  echo ${status}
 
   if [[ $status == 0 ]]; then
     gssource=$(gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*')

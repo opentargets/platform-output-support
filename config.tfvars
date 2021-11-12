@@ -20,7 +20,7 @@ config_gcp_default_zone                     = "europe-west1-d"
 config_vm_elastic_search_vcpus              = "4"
 config_vm_elastic_search_mem                = "32768"
 config_vm_elastic_search_boot_disk_size     = 350
-config_vm_elastic_search_version            = "7.15.1"
+config_vm_elastic_search_version            = "7.14.2"
 
 config_vm_clickhouse_vcpus              = "4"
 config_vm_clickhouse_mem                = "26624"
