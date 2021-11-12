@@ -52,7 +52,7 @@ docker run -d --restart always \
   -e ES_JAVA_OPTS="-Xms$${JVM_SIZE}g -Xmx$${JVM_SIZE}g" \
   -v esdata:/usr/share/elasticsearch/data \
   -v /var/elasticsearch/log:/var/log/elasticsearch \
-  docker.elastic.co/elasticsearch/elasticsearch-oss:${ELASTIC_SEARCH_VERSION}
+   docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_SEARCH_VERSION}
 
 POLL=1
 echo "POLL="$POLL
@@ -80,5 +80,5 @@ docker run -d \
  --restart unless-stopped \
  --link elasticsearch:elasticsearch \
  -e "ELASTICSEARCH_URL=http://elasticsearch:9200" \
- docker.elastic.co/kibana/kibana-oss:${ELASTIC_SEARCH_VERSION}
+ docker.elastic.co/kibana/kibana:${ELASTIC_SEARCH_VERSION}
 
