@@ -14,7 +14,7 @@ tfbackend.tf.bak
 deployment_context.tfvars
 terraform_create_images/deployment_context.tfvars
 
-
+/terraform_create_images/modules/posvm/scripts/neo4j/data/
 .DS_Store
 /platform-etl-openfda-faers.iml
 /.idea
