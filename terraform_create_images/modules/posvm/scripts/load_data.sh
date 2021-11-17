@@ -31,9 +31,8 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReacti
 #gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
 gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp %  /tmp/data/so
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp %  gs://{GS_DIRECT_FILES}/webapp/ontology/efo_json/
-
-
-open-targets-pre-data-releases/21.11.1/output
+#TODO: remove in the next release. Used to test the command output
+gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp %  /tmp/data/
 
 sudo mkdir -p /tmp
 cd /tmp
