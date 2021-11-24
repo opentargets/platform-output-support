@@ -26,7 +26,8 @@ Usage:
   image            Create Google cloud Clickhouse image and ElasticSearch image.
   bigquerydev      Big Query Dev
   bigqueryprod     Big Query Production
-  sync             sync the pre-data bucket to private ftp and public ftp
+  sync             Sync the pre-data bucket to private ftp and public ftp
+  syncgs           Copy data from pre-release to release 
 ```
 
 Every single variables is stored in the **config.tfvars**

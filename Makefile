@@ -44,3 +44,9 @@ sync:## Sync data to production
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
 	${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/sync.sh
+
+syncgs: ## Copy data from pre-release to production
+	@echo "==== Sync ===="
+	@echo ${GS_SYNC_FROM}
+	@echo ${RELEASE_ID_PROD}
+	${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/syncgs.sh
