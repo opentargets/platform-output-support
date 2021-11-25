@@ -42,6 +42,7 @@ The current POS steps are:
 
 ```make sync``` Synch the data from the Google Storage to EBI FTP (internal use)
 
+```make syncgs``` Synch the data from the google storage pre-release to production (internal use)
 
 ### Infrastructure Tasks
 
