@@ -32,7 +32,7 @@ gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp 
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp %  gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
 #TODO: remove in the next release. Used to test the command output
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t  -I % gsutil cp %  /tmp/data/
-gsutil list -r gs://${GS_DIRECT_FILES} | grep otar_projects.tsv | xargs -t -I % gsutil cp %  /tmp/data/otar_projects/
+gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_projects/
 
 sudo mkdir -p /tmp
 cd /tmp
