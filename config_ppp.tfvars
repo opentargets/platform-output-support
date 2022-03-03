@@ -8,7 +8,7 @@ is_partner_instance                       = false
 config_direct_json                         = "open-targets-pre-data-releases/partners/22.02.4"
 config_gs_etl                              = "open-targets-pre-data-releases/partners/22.02.4/output"
 config_script_name                         = "posprod"
-config_release_name                        = "platform22-02-4"
+config_release_name                        = "platformppp22-02-4"
 
 # Project dev info
 config_project_id                           = "open-targets-eu-dev"
