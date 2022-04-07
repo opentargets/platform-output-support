@@ -1,7 +1,7 @@
 # Variables for Sync data
 release_id_dev                            = "22.04"
 release_id_prod                           = "22.04"
-gs_sync_from                              = "open-targets-pre-ata-releases/22.04"
+gs_sync_from                              = "open-targets-pre-data-releases/22.04"
 is_partner_instance                       = false
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
