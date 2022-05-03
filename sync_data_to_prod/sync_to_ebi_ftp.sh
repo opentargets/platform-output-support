@@ -1,4 +1,10 @@
 #!/bin/bash
+# Job requirements
+#BSUB -J ot_platform_ebi_ftp_sync
+#BSUB -W 00:05
+#BSUB -n 1
+#BSUB -e /nfs/ftp/private/otftpuser/lsf/%J.err
+#BSUB -o /nfs/ftp/private/otftpuser/lsf/%J.logs
 
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
 
@@ -65,14 +71,8 @@ make_dirs() {
   sudo -u otftpuser --bash -c "mkdir ${path_ebi_ftp_destination} && chmod 770 ${path_ebi_ftp_destination}"
 }
 
-# Job requirements
-#BSUB -J ot_platform_ebi_ftp_sync
-#BSUB -W 00:10
-#BSUB -n 4
-#BSUB -e ${path_lsf_job_stderr}
-#BSUB -o ${path_lsf_job_stdout}
-
 print_summary
-log_heading "FILESYSTEM" "Preparing destination folders"
-make_dirs
-log_heading "JOB" "END OF JOB ${job_name}"
+log_heading "ENV" "This is the Job environment variables"
+#log_heading "FILESYSTEM" "Preparing destination folders"
+#make_dirs
+#log_heading "JOB" "END OF JOB ${job_name}"
