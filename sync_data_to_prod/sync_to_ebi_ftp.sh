@@ -1,7 +1,7 @@
 #!/bin/bash
 # Job requirements
 #BSUB -J ot_platform_ebi_ftp_sync
-#BSUB -W 00:05
+#BSUB -W 03:00
 #BSUB -n 2
 #BSUB -M 2G
 #BUSB -R rusage[mem=2G]
@@ -92,9 +92,9 @@ print_summary
 #log_heading "ENV" "This is the Job environment variables"
 #env
 log_heading "FILESYSTEM" "Preparing destination folders"
-#make_dirs
+make_dirs
 log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
-# TODO
+CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
 log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
 # TODO
 log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
