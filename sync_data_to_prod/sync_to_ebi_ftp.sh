@@ -66,8 +66,8 @@ make_dirs() {
 }
 
 # Job requirements
-#BSUB -J ${job_name}
-#BSUB -W 1:00
+#BSUB -J ot_platform_ebi_ftp_sync
+#BSUB -W 00:10
 #BSUB -n 4
 #BSUB -e ${path_lsf_job_stderr}
 #BSUB -o ${path_lsf_job_stdout}
