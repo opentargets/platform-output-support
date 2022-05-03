@@ -18,7 +18,7 @@
 # Helpers and environment
 #alias gen_id='uuidgen | tr '\''[:upper:]'\'' '\''[:lower:]'\'
 #export session_id_suffix=`gen_id | cut -f5 -d'-'`
-export session_id_suffix="${LSB_BATCH_JID}"
+#export session_id_suffix="${LSB_BATCH_JID}"
 #export job_name="ot-sync-${RELEASE_ID_PROD}-${session_id_suffix}"
 export job_name="${LSB_JOBNAME}-${LSB_BATCH_JID}"
 export path_private_base='/nfs/ftp/private/otftpuser'
@@ -84,6 +84,6 @@ make_dirs() {
 print_summary
 log_heading "ENV" "This is the Job environment variables"
 env
-#log_heading "FILESYSTEM" "Preparing destination folders"
-#make_dirs
-#log_heading "JOB" "END OF JOB ${job_name}"
+log_heading "FILESYSTEM" "Preparing destination folders"
+make_dirs
+log_heading "JOB" "END OF JOB ${job_name}"
