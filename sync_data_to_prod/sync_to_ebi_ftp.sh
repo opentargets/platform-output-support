@@ -5,8 +5,8 @@
 #BSUB -n 1
 #BSUB -M 2G
 #BUSB -R rusage[mem=2G]
-#BSUB -e /nfs/ftp/private/otftpuser/lsf/%J.err
-#BSUB -o /nfs/ftp/private/otftpuser/lsf/%J.logs
+#BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/%J.err
+#BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/%J.out
 
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
 
