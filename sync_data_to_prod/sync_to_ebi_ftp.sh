@@ -13,10 +13,12 @@
 
 # Defaults
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
+[ -z "${GS_SYNC_FROM}" ] && export GS_SYNC_FROM="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
 
 # Helpers and environment
-alias gen_id='uuidgen | tr '\''[:upper:]'\'' '\''[:lower:]'\'
-export session_id_suffix=`gen_id | cut -f5 -d'-'`
+#alias gen_id='uuidgen | tr '\''[:upper:]'\'' '\''[:lower:]'\'
+#export session_id_suffix=`gen_id | cut -f5 -d'-'`
+export session_id_suffix="${LSB_BATCH_JID}"
 #export job_name="ot-sync-${RELEASE_ID_PROD}-${session_id_suffix}"
 export job_name="${LSB_JOBNAME}-${LSB_BATCH_JID}"
 export path_private_base='/nfs/ftp/private/otftpuser'
