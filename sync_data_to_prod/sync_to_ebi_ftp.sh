@@ -73,6 +73,7 @@ make_dirs() {
 
 print_summary
 log_heading "ENV" "This is the Job environment variables"
+env
 #log_heading "FILESYSTEM" "Preparing destination folders"
 #make_dirs
 #log_heading "JOB" "END OF JOB ${job_name}"
