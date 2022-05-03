@@ -22,7 +22,8 @@
 #export job_name="ot-sync-${RELEASE_ID_PROD}-${session_id_suffix}"
 export job_name="${LSB_JOBNAME}-${LSB_BATCH_JID}"
 export path_private_base='/nfs/ftp/private/otftpuser'
-export path_private_staging_folder="${path_private_base}/${RELEASE_ID_PROD}"
+export path_private_base_ftp_upload="${path_private_base}/opentargets_ebi_ftp_upload"
+export path_private_staging_folder="${path_private_base_ftp_upload}/${RELEASE_ID_PROD}"
 export path_ebi_ftp_base='/nfs/ftp/pub/databases/opentargets/platform'
 export path_ebi_ftp_destination="${path_ebi_ftp_base}/${RELEASE_ID_PROD}"
 export path_ebi_ftp_destination_latest="${path_ebi_ftp_base}/latest"
