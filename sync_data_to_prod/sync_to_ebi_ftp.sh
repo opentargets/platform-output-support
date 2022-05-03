@@ -75,3 +75,4 @@ make_dirs() {
 print_summary
 log_heading "FILESYSTEM" "Preparing destination folders"
 make_dirs
+log_heading "JOB" "END OF JOB ${job_name}"
