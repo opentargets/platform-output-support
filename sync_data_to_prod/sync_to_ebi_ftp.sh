@@ -5,8 +5,8 @@
 #BSUB -n 2
 #BSUB -M 2G
 #BUSB -R rusage[mem=2G]
-#BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/%J.err
-#BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/%J.out
+#BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.err
+#BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
 #BUSB -B
 
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
@@ -30,8 +30,8 @@ export path_lsf_job_workdir="${path_lsf_base}/${job_name}"
 export path_lsf_job_logs="${path_lsf_logs}/${job_name}"
 export path_lsf_job_stderr="${path_lsf_job_logs}/output.err"
 export path_lsf_job_stdout="${path_lsf_job_logs}/output.out"
-export path_lsf_job_bsub_stderr="${path_lsf_logs}/${LSB_BATCH_JID}.err"
-export path_lsf_job_bsub_stdout="${path_lsf_logs}/${LSB_BATCH_JID}.out"
+export path_lsf_job_bsub_stderr="${path_lsf_logs}/${job_name}.err"
+export path_lsf_job_bsub_stdout="${path_lsf_logs}/${job_name}.out"
 export path_data_source="gs://${GS_SYNC_FROM}/"
 
 
