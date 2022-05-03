@@ -2,11 +2,12 @@
 # Job requirements
 #BSUB -J ot_platform_ebi_ftp_sync
 #BSUB -W 00:05
-#BSUB -n 1
+#BSUB -n 2
 #BSUB -M 2G
 #BUSB -R rusage[mem=2G]
 #BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/%J.err
 #BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/%J.out
+#BUSB -B
 
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
 
@@ -16,7 +17,8 @@
 # Helpers and environment
 alias gen_id='uuidgen | tr '\''[:upper:]'\'' '\''[:lower:]'\'
 export session_id_suffix=`gen_id | cut -f5 -d'-'`
-export job_name="ot-sync-${RELEASE_ID_PROD}-${session_id_suffix}"
+#export job_name="ot-sync-${RELEASE_ID_PROD}-${session_id_suffix}"
+export job_name="${LSB_JOBNAME}-${LSB_BATCH_JID}"
 export path_private_base='/nfs/ftp/private/otftpuser'
 export path_ebi_ftp_base='/nfs/ftp/pub/databases/opentargets/platform'
 export path_ebi_ftp_destination="${path_ebi_ftp_base}/${RELEASE_ID_PROD}"
@@ -26,6 +28,8 @@ export path_lsf_job_workdir="${path_lsf_base}/${job_name}"
 export path_lsf_job_logs="${path_lsf_logs}/${job_name}"
 export path_lsf_job_stderr="${path_lsf_job_logs}/output.err"
 export path_lsf_job_stdout="${path_lsf_job_logs}/output.out"
+export path_lsf_job_bsub_stderr="${path_lsf_logs}/${LSB_BATCH_JID}.err"
+export path_lsf_job_bsub_stdout="${path_lsf_logs}/${LSB_BATCH_JID}.out"
 export path_data_source="gs://${GS_SYNC_FROM}/"
 
 
@@ -46,8 +50,8 @@ log_error() {
 }
 
 print_summary() {
-    echo -e "[==================== JOB DATASHEET ======================]"
-    echo -e "\t- Release Number                     : ${release_number}"
+    echo -e "[=================================== JOB DATASHEET =====================================]"
+    echo -e "\t- Release Number                     : ${RELEASE_ID_PROD}"
     echo -e "\t- Job Name                           : ${job_name}"
     echo -e "\t- PATH Private base                  : ${path_private_base}"
     echo -e "\t- PATH EBI FTP base destination      : ${path_ebi_ftp_base}"
@@ -56,8 +60,10 @@ print_summary() {
     echo -e "\t- PATH LSF Job workdir               : ${path_lsf_job_workdir}"
     echo -e "\t- PATH LSF Job logs stderr           : ${path_lsf_job_stderr}"
     echo -e "\t- PATH LSF Job logs stdout           : ${path_lsf_job_stdout}"
+    echo -e "\t- PATH LSF BSUB Job logs stderr      : ${path_lsf_job_bsub_stderr}"
+    echo -e "\t- PATH LSF BSUB Job logs stdout      : ${path_lsf_job_bsub_stdout}"
     echo -e "\t- PATH Data Source                   : ${path_data_source}"
-    echo -e "[====================|==============|=====================]"
+    echo -e "[===================================|==============|====================================]"
 }
 
 make_dirs() {
