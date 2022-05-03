@@ -25,6 +25,7 @@ export path_private_base='/nfs/ftp/private/otftpuser'
 export path_private_staging_folder="${path_private_base}/${RELEASE_ID_PROD}"
 export path_ebi_ftp_base='/nfs/ftp/pub/databases/opentargets/platform'
 export path_ebi_ftp_destination="${path_ebi_ftp_base}/${RELEASE_ID_PROD}"
+export path_ebi_ftp_destination_latest="${path_ebi_ftp_base}/latest"
 export path_lsf_base="${path_private_base}/lsf"
 export path_lsf_logs="${path_lsf_base}/logs"
 export path_lsf_job_workdir="${path_lsf_base}/${job_name}"
@@ -59,6 +60,8 @@ print_summary() {
     echo -e "\t- PATH Private base                  : ${path_private_base}"
     echo -e "\t- PATH Private staging folder        : ${path_private_staging_folder}"
     echo -e "\t- PATH EBI FTP base destination      : ${path_ebi_ftp_base}"
+    echo -e "\t- PATH EBI FTP destination folder    : ${path_ebi_ftp_destination}"
+    echo -e "\t- PATH EBI FTP destination latest    : ${path_ebi_ftp_destination_latest}"
     echo -e "\t- PATH LSF base                      : ${path_lsf_base}"
     echo -e "\t- PATH LSF logs                      : ${path_lsf_logs}"
     echo -e "\t- PATH LSF Job workdir               : ${path_lsf_job_workdir}"
@@ -89,5 +92,15 @@ print_summary
 #log_heading "ENV" "This is the Job environment variables"
 #env
 log_heading "FILESYSTEM" "Preparing destination folders"
-make_dirs
+#make_dirs
+log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
+# TODO
+log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
+# TODO
+log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
+# TODO
+log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
+# TODO
+log_heading "SYNC" "Start a sync of the FTP data from HX staging area to the OY and PG London storages"
+# TODO
 log_heading "JOB" "END OF JOB ${job_name}"
