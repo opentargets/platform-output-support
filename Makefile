@@ -43,7 +43,7 @@ sync:## Sync data to production
 	@echo "==== Sync ===="
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
-	${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/sync.sh
+	bsub < ${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/sync_to_ebi_ftp.sh
 
 syncgs: ## Copy data from pre-release to production
 	@echo "==== Sync ===="
