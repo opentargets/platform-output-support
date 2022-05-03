@@ -67,7 +67,7 @@ make_dirs() {
 
 # Job requirements
 #BSUB -J ${job_name}
-#BSUB -W 6:00
+#BSUB -W 1:00
 #BSUB -n 4
 #BSUB -e ${path_lsf_job_stderr}
 #BSUB -o ${path_lsf_job_stdout}
