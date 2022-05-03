@@ -2,6 +2,9 @@
 
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
 
+# Defaults
+[ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
+
 # Helpers and environment
 alias gen_id='uuidgen | tr '\''[:upper:]'\'' '\''[:lower:]'\'
 export session_id_suffix=`gen_id | cut -f5 -d'-'`
@@ -16,6 +19,7 @@ export path_lsf_job_logs="${path_lsf_logs}/${job_name}"
 export path_lsf_job_stderr="${path_lsf_job_logs}/output.err"
 export path_lsf_job_stdout="${path_lsf_job_logs}/output.out"
 export path_data_source="gs://${GS_SYNC_FROM}/"
+
 
 log_heading() {
     tag=$1
