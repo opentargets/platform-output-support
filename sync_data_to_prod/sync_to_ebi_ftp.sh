@@ -70,15 +70,15 @@ print_summary() {
 
 make_dirs() {
   log_body "MKDIR" "Check/Create ${path_lsf_base}"
-  sudo -u otftpuser --bash -c "mkdir ${path_lsf_base} && chmod 770 ${path_lsf_base}"
+  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_base} && chmod 770 ${path_lsf_base}"
   log_body "MKDIR" "Check/Create ${path_lsf_logs}"
-  sudo -u otftpuser --bash -c "mkdir ${path_lsf_logs} && chmod 770 ${path_lsf_logs}"
+  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_logs} && chmod 770 ${path_lsf_logs}"
   log_body "MKDIR" "Check/Create ${path_lsf_job_workdir}"
-  sudo -u otftpuser --bash -c "mkdir ${path_lsf_job_workdir} && chmod 770 ${path_lsf_job_workdir}"
+  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_job_workdir} && chmod 770 ${path_lsf_job_workdir}"
   log_body "MKDIR" "Check/Create ${path_lsf_job_logs}"
-  sudo -u otftpuser --bash -c "mkdir ${path_lsf_job_logs} && chmod 770 ${path_lsf_job_logs}"
+  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_job_logs} && chmod 770 ${path_lsf_job_logs}"
   log_body "MKDIR" "Check/Create ${path_ebi_ftp_destination}"
-  sudo -u otftpuser --bash -c "mkdir ${path_ebi_ftp_destination} && chmod 770 ${path_ebi_ftp_destination}"
+  sudo -u otftpuser -- bash -c "mkdir ${path_ebi_ftp_destination} && chmod 770 ${path_ebi_ftp_destination}"
 }
 
 print_summary
