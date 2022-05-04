@@ -1,7 +1,7 @@
 #!/bin/bash
 # Job requirements
 #BSUB -J ot_platform_ebi_ftp_sync
-#BSUB -W 06:00
+#BSUB -W 03:00
 #BSUB -n 2
 #BSUB -M 8G
 #BUSB -R rusage[mem=8G]
