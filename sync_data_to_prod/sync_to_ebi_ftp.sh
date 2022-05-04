@@ -95,13 +95,14 @@ print_summary
 log_heading "FILESYSTEM" "Preparing destination folders"
 make_dirs
 log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
-CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
+#CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
 log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
-# TODO
+find ${path_private_staging_folder} -type d -exec chmod 775 \{} \;
+find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
 log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
-# TODO
+rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
 log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
-# TODO
+ln -nsf ${path_ebi_ftp_destination} ${path_ebi_ftp_destination_latest}
 log_heading "SYNC" "Start a sync of the FTP data from HX staging area to the OY and PG London storages"
 # TODO
 log_heading "JOB" "END OF JOB ${job_name}"
