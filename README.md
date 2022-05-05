@@ -40,7 +40,7 @@ The current POS steps are:
 
 ```make bigqueryprod``` it generates a bigquery dataset in production
 
-```make sync``` Synch the data from the Google Storage to EBI FTP (internal use)
+```make sync``` Synch the data from the Google Storage to EBI FTP (internal use, run from a login node within EBI infrastructure)
 
 ```make syncgs``` Synch the data from the google storage pre-release to production (internal use)
 
