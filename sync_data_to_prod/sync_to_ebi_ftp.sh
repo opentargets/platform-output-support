@@ -102,7 +102,7 @@ find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
 log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
 rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
 log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
-ln -nsf ${path_ebi_ftp_destination} ${path_ebi_ftp_destination_latest}
+ln -nsf $( basename ${path_ebi_ftp_destination} ) ${path_ebi_ftp_destination_latest}
 log_heading "SYNC" "Start a sync of the FTP data from HX staging area to the OY and PG London storages"
 # TODO
 log_heading "JOB" "END OF JOB ${job_name}"
