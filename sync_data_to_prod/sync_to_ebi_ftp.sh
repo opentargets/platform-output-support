@@ -86,12 +86,10 @@ make_dirs() {
 }
 
 print_summary
-#log_heading "ENV" "This is the Job environment variables"
-#env
 log_heading "FILESYSTEM" "Preparing destination folders"
 make_dirs
 log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
-#CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
+CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
 log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
 find ${path_private_staging_folder} -type d -exec chmod 775 \{} \;
 find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
