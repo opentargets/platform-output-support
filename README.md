@@ -51,6 +51,21 @@ The current POS steps are:
 *) Spawn Clickhouse Server and loads the data into it <br>
 *) Create Elasticsearch and Clickhouse images <br>
 
+## Clean up
+
+After running `make images` three VMs will be left running (unless your are in partner mode):
+  - `posprod-vm-support-vm`
+  - an elasticsearch instance
+  - a clickhouse instance
+
+You can follow along with the progress of the VMs as they load by running:
+
+```
+# update name as necesary
+gcloud --project=open-targets-eu-dev compute ssh <vm> -- sudo journalctl -n 500 -f -u google-startup-scripts.service
+```
+
+To stop these instances run `terraform destroy -var-file="deployment_context.tfvars" from the `terraform_create_images` directory. 
 
 # Copyright
 Copyright 2018-2021 Open Targets
