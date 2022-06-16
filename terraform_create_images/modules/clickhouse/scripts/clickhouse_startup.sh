@@ -216,89 +216,6 @@ systemctl start clickhouse-server
 
 echo "starting clickhouse... done."
 
-cat <<EOF > /etc/tmux.conf
-set -g status "on"
-unbind C-b
-set-option -g prefix M-x
-bind-key M-x send-prefix
-bind | split-window -h
-bind - split-window -v
-bind x killp
-unbind '"'
-unbind %
-bind r source-file ~/.tmux.conf
-bind -n M-S-Left select-window -p
-bind -n M-S-Right select-window -n
-bind -n M-Left select-pane -L
-bind -n M-Right select-pane -R
-bind -n M-Up select-pane -U
-bind -n M-Down select-pane -D
-set-option -g allow-rename off
-set -g mouse on
-set -g pane-border-fg black
-set -g pane-active-border-fg brightred
-set -g status-justify left
-set -g status-interval 2
-setw -g window-status-format " #F#I:#W#F "
-setw -g window-status-current-format " #F#I:#W#F "
-# setw -g window-status-format "#[fg=magenta]#[bg=black] #I #[bg=cyan]#[fg=colour8] #W "
-# setw -g window-status-current-format "#[bg=brightmagenta]#[fg=colour8] #I #[fg=colour8]#[bg=colour14] #W "
-setw -g window-status-current-attr dim
-setw -g window-status-attr reverse
-
-set -g status-left ''
-
-set-option -g visual-activity off
-set-option -g visual-bell off
-set-option -g visual-silence off
-set-window-option -g monitor-activity off
-set-option -g bell-action none
-
-setw -g mode-attr bold
-set -g status-position bottom
-set -g status-attr dim
-set -g status-left ''
-# set -g status-right '#[fg=colour233,bg=colour245,bold] %d/%m #[fg=colour233,bg=colour245,bold] %H:%M:%S '
-set -g status-right-length 50
-set -g status-left-length 20
-
-setw -g window-status-current-attr bold
-# setw -g window-status-current-format ' #I#[fg=colour250]:#[fg=colour255]#W#[fg=colour50]#F '
-
-setw -g window-status-attr none
-# setw -g window-status-format ' #I#[fg=colour237]:#[fg=colour250]#W#[fg=colour244]#F '
-
-setw -g window-status-bell-attr bold
-setw -g window-status-bell-fg colour255
-setw -g window-status-bell-bg colour1
-
-set -g message-attr bold
-set -g default-terminal "screen-256color"  # Setting the correct term
-set -g status-bg default # transparent
-set -g status-fg magenta
-set -g status-attr default
-setw -g window-status-fg blue
-setw -g window-status-bg default
-setw -g window-status-attr dim
-setw -g window-status-current-fg brightred
-setw -g window-status-current-bg default
-setw -g window-status-current-attr bright
-setw -g window-status-bell-bg red
-setw -g window-status-bell-fg white
-setw -g window-status-bell-attr bright
-setw -g window-status-activity-bg blue
-setw -g window-status-activity-fg white
-setw -g window-status-activity-attr bright
-set -g pane-border-fg white
-set -g pane-border-bg default
-set -g pane-active-border-fg brightblack
-set -g pane-active-border-bg default
-set -g message-fg default
-set -g message-bg default
-set -g message-attr bright
-
-EOF
-
 echo "Next step is loading the data"
 
 echo touching $OT_RCFILE
@@ -324,12 +241,12 @@ clickhouse-client --multiline --multiquery < aotf.sql
 echo "Association on the fly table done"
 
 clickhouse-client --multiline --multiquery < literature_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/literature-etl/json/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
+gsutil -m cat gs://${GS_ETL_DATASET}/literature/parquet/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format parquet"
 clickhouse-client --multiline --multiquery < literature.sql
 echo "Literature table done"
 
 clickhouse-client --multiline --multiquery < w2v_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/literature-etl/json/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
+gsutil -m cat gs://${GS_ETL_DATASET}/literature/parquet/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format parquet"
 clickhouse-client --multiline --multiquery < w2v.sql
 echo "Literature vectors done"
 
