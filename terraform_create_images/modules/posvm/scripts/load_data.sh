@@ -54,6 +54,7 @@ sudo chmod 555 load_json_esbulk.sh
 sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings.json
 sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search_known_drugs.json
 sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search.json
+sudo wget -O /tmp/data/index_settings_evidence.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/evidence_settings_search.json
 
 export ES=${ELASTICSEARCH_URI}:9200
 export PREFIX_DATA=/tmp/data/

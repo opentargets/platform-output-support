@@ -44,7 +44,7 @@ do
   export ID='id'
   export INDEX_NAME="${token}"
   export INPUT="${full_folder}"
-  export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+  export INDEX_SETTINGS=$PREFIX_DATA/index_settings_evidence.json
 
   /tmp/load_json_esbulk.sh
 done
