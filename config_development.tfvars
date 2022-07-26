@@ -1,14 +1,14 @@
 # Variables for Sync data
-release_id_dev                            = "22.06.2"
-release_id_prod                           = "22.06"
-gs_sync_from                              = "open-targets-pre-data-releases/22.06.2"
+release_id_dev                            = "development"
+release_id_prod                           = "development"
+gs_sync_from                              = "open-targets-pre-data-releases/development"
 is_partner_instance                       = false
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
-config_direct_json                         = "open-targets-pre-data-releases/22.06.2"
-config_gs_etl                              = "open-targets-pre-data-releases/22.06.2/output"
+config_direct_json                         = "open-targets-pre-data-releases/development"
+config_gs_etl                              = "open-targets-pre-data-releases/development/output"
 config_script_name                         = "posprod"
-config_release_name                        = "platform2206"
+config_release_name                        = "devpfXX"
 
 # Project dev info
 config_project_id                           = "open-targets-eu-dev"
