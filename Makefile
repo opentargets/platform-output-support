@@ -6,6 +6,8 @@ GS_SYNC_FROM:=$(shell cat config.tfvars | grep gs_sync_from | awk -F= '{print $$
 PROJECT_ID_DEV=$(shell cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_DEV=$(shell cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_PROD=$(shell cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
+TF_WORKSPACE_ID=$(shell uuidgen | tr '''[:upper:]''' '''[:lower:]''' | cut -f5 -d'-')
+TF_WORKSPACE_ID_FILE='terraform_workspace_id'
 
 export ROOT_DIR_MAKEFILE_POS
 export GS_ETL_DATASET
@@ -22,8 +24,14 @@ help: ## show help message
 
 image: ## Create Google cloud Clickhouse image and ElasticSearch image.
 	@echo ${ROOT_DIR_MAKEFILE_POS}
-	cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
-	${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/run.sh
+	@cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
+	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
+		export tf_id="${TF_WORKSPACE_ID}" && \
+		echo "[TERRAFORM] Using Terraform Workspace ID '$${tf_id}'" && \
+		terraform init && \
+		terraform workspace new $${tf_id} && \
+		echo "$${tf_id}" > ${TF_WORKSPACE_ID_FILE} && \
+		terraform apply -auto-approve
 
 bigquerydev:  ## Big Query Dev
 	@echo $(PROJECT_ID_DEV)
