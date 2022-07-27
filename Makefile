@@ -22,7 +22,7 @@ help: ## show help message
 
 image: ## Create Google cloud Clickhouse image and ElasticSearch image.
 	@echo ${ROOT_DIR_MAKEFILE_POS}
-	cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/deployment_context.tfvars
+	cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
 	${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/run.sh
 
 bigquerydev:  ## Big Query Dev
