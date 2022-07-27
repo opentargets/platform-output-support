@@ -1,6 +1,7 @@
 .idea
 .vscode
 terraform_create_images/.terraform*
+terraform_create_images/terraform_workspace_id
 
 .env
 **/.DS_Store
