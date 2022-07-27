@@ -42,6 +42,20 @@ clean_image_infrastructure: ## Clean the infrastructure used for creating the da
 		terraform workspace delete $${tf_id} && \
 		rm ${TF_WORKSPACE_ID_FILE}
 
+clean_all_image_infrastructure: ## Clean all the infrastructures used for creating data images
+	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
+	terraform init && \
+	terraform workspace select default && \
+	for ws in $$( terraform workspace list | cut -f2 -d'*' ) ; do \
+		if [ $$ws != 'default' ] ; then \
+			echo "[CLEAN] Terraform workspace '$$ws'"; \
+			terraform workspace select $$ws ; \
+			terraform destroy -auto-approve ; \
+			terraform workspace select default ; \
+			terraform workspace delete $$ws ; \
+		fi \
+	done
+
 bigquerydev:  ## Big Query Dev
 	@echo $(PROJECT_ID_DEV)
 	@echo "==== Big Query DEV ===="
