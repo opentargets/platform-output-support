@@ -33,6 +33,15 @@ image: ## Create Google cloud Clickhouse image and ElasticSearch image.
 		echo "$${tf_id}" > ${TF_WORKSPACE_ID_FILE} && \
 		terraform apply -auto-approve
 
+clean_image_infrastructure: ## Clean the infrastructure used for creating the data images
+	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
+		export tf_id=$$(cat ${TF_WORKSPACE_ID_FILE}) && \
+		terraform destroy -auto-approve && \
+		echo "[TERRAFORM] Cleaning up Workspace ID '$${tf_id}'" ; \
+		terraform workspace select default && \
+		terraform workspace delete $${tf_id} && \
+		rm ${TF_WORKSPACE_ID_FILE}
+
 bigquerydev:  ## Big Query Dev
 	@echo $(PROJECT_ID_DEV)
 	@echo "==== Big Query DEV ===="
