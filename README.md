@@ -1,14 +1,13 @@
 # Open Targets: Platform-output-support overview
 
 Platform Output Support (POS) is the third component in the back-end data and infrastructure generation pipeline.
-POS is an automatic and unified place to perform a release of OT Platform to the public. The other two components are Platform Input Support (PIS) and the ETL.
-POS will be responsible for:
+POS is part of the Open Targets Platform release process, being responsible for:
 
-* Infrastructure tasks
-* Publishing datasets in different services
-* Data validation
+* Creation of machine images for the data backend, based on Clickhouse and Elastic Search
+* Publishing datasets in different services (Google Cloud and EBI FTP)
+* Data validation (**not implemented** yet)
 
-### Requirement
+### Requirements
 *) Terraform <br>
 *) Jq
 
@@ -21,9 +20,10 @@ The output shows the possible action to run
 
 ```
 Usage:
-  make 
   help             show help message
   image            Create Google cloud Clickhouse image and ElasticSearch image.
+  clean_image_infrastructure Clean the infrastructure used for creating the data images
+  clean_all_image_infrastructure Clean all the infrastructures used for creating data images
   bigquerydev      Big Query Dev
   bigqueryprod     Big Query Production
   sync             Sync the pre-data bucket to private ftp and public ftp
@@ -40,32 +40,17 @@ The current POS steps are:
 
 ```make bigqueryprod``` it generates a bigquery dataset in production
 
-```make sync``` Synch the data from the Google Storage to EBI FTP (internal use, run from a login node within EBI infrastructure)
+```make sync``` Sync the data from the Google Storage to EBI FTP (internal use, run from a login node within EBI infrastructure)
 
-```make syncgs``` Synch the data from the google storage pre-release to production (internal use)
+```make syncgs``` Sync the data from the google storage pre-release to production (internal use)
 
-### Infrastructure Tasks
+```make clean_image_infrastructure``` This step cleans up the infrastructure used for creating the data backend machine images
 
->**directory terraform**: Infrastructure deployment for the release. <br>
-*) Spawn an Elasticsearch Server and loads the data into it. <br>
-*) Spawn Clickhouse Server and loads the data into it <br>
-*) Create Elasticsearch and Clickhouse images <br>
+## Housekeeping
 
-## Clean up
+The last step, *clean_image_infrastructure*, will clean up, at infrastructure level, all the resources used for creating the data backend machine images but, if further clean up is needed, e.g. for previous runs of POS that were not properly cleaned up, the following command can be used:
 
-After running `make images` three VMs will be left running (unless your are in partner mode):
-  - `posprod-vm-support-vm`
-  - an elasticsearch instance
-  - a clickhouse instance
-
-You can follow along with the progress of the VMs as they load by running:
-
-```
-# update name as necesary
-gcloud --project=open-targets-eu-dev compute ssh <vm> -- sudo journalctl -n 500 -f -u google-startup-scripts.service
-```
-
-To stop these instances run `terraform destroy -var-file="deployment_context.tfvars" from the `terraform_create_images` directory. 
+```make clean_all_image_infrastructure```
 
 # Copyright
 Copyright 2018-2021 Open Targets
