@@ -32,6 +32,7 @@ export path_lsf_job_stdout="${path_lsf_job_logs}/output.out"
 export path_lsf_job_bsub_stderr="${path_lsf_logs}/${job_name}.err"
 export path_lsf_job_bsub_stdout="${path_lsf_logs}/${job_name}.out"
 export path_data_source="gs://${GS_SYNC_FROM}/"
+export filename_release_checksum="release_data_integrity.sha1"
 
 
 log_heading() {
@@ -93,6 +94,13 @@ CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production
 log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
 find ${path_private_staging_folder} -type d -exec chmod 775 \{} \;
 find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
+log_heading "DATA" "Compute SHA1 checksum for all the files in this release"
+current_dir=`pwd`
+cd ${path_private_staging_folder}
+find src -type f -exec sha1sum \{} \; > ${filename_release_checksum}
+log_heading "DATA" "Add the data integrity information back to the source bucket"
+CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
+cd ${current_dir}
 log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
 rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
 log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
