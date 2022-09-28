@@ -70,7 +70,7 @@ bigqueryprod:## Big Query Production
 	export PROJECT_ID=open-targets-prod; \
     export RELEASE_ID=${RELEASE_ID_PROD}; \${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
 
-sync:## Sync data to production
+sync:## Sync data to EBI FTP service
 	@echo "==== Sync ===="
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
