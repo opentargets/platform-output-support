@@ -97,7 +97,7 @@ find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
 log_heading "DATA" "Compute SHA1 checksum for all the files in this release"
 current_dir=`pwd`
 cd ${path_private_staging_folder}
-find src -type f -exec sha1sum \{} \; > ${filename_release_checksum}
+find . -type f -exec sha1sum \{} \; > ${filename_release_checksum}
 log_heading "DATA" "Add the data integrity information back to the source bucket"
 CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
 cd ${current_dir}
