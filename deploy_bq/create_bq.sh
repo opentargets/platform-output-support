@@ -29,7 +29,7 @@ do
   status=$?
 
   if [[ $status == 0 ]]; then
-    gssource=$(gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*')
+    gssource=$(gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | sed 's/_SUCCESS//g')
     bq --project_id=${project_id} --location='eu' mk platform${suffix}.${ds}
 
     if [[ $ds = evidence* ]]
