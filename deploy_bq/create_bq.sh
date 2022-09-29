@@ -25,7 +25,7 @@ for ds in $datasets
 do
   echo "[DATASET] Loading '$ds'"
 
-  gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*' 2> /dev/null || true
+  gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | sed 's/_SUCCESS//g' 2> /dev/null || true
   status=$?
 
   if [[ $status == 0 ]]; then
