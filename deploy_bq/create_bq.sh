@@ -23,7 +23,7 @@ datasets=$(curl -X GET https://raw.githubusercontent.com/opentargets/platform-ap
 
 for ds in $datasets
 do
-  echo $ds
+  echo "[DATASET] Loading '$ds'"
 
   gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*' 2> /dev/null || true
   status=$?
