@@ -23,13 +23,13 @@ datasets=$(curl -X GET https://raw.githubusercontent.com/opentargets/platform-ap
 
 for ds in $datasets
 do
-  echo $ds
+  echo "[DATASET] Loading '$ds'"
 
-  gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*' 2> /dev/null || true
+  gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | sed 's/_SUCCESS//g' 2> /dev/null || true
   status=$?
 
   if [[ $status == 0 ]]; then
-    gssource=$(gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | grep -o '^[^\_SUCCESS]*')
+    gssource=$(gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | sed 's/_SUCCESS//g')
     bq --project_id=${project_id} --location='eu' mk platform${suffix}.${ds}
 
     if [[ $ds = evidence* ]]
