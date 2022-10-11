@@ -98,8 +98,9 @@ log_heading "DATA" "Compute SHA1 checksum for all the files in this release"
 current_dir=`pwd`
 cd ${path_private_staging_folder}
 find . -type f -exec sha1sum \{} \; > ${filename_release_checksum}
-log_heading "DATA" "Add the data integrity information back to the source bucket"
-CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
+# TODO - This part needs a different approach
+#log_heading "DATA" "Add the data integrity information back to the source bucket"
+#CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
 cd ${current_dir}
 log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
 rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
