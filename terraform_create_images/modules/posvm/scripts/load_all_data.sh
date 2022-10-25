@@ -10,16 +10,15 @@ echo $ES
 echo $RELEASE
 
 input="/tmp/output_etl_struct.jsonl"
-while IFS= read -r line
-do
-  export INPUT=$PREFIX_DATA`echo $line | awk -F, '{print $1}'`
-  export INDEX_NAME=`echo $line | awk -F, '{print $2}'`
-  export ID=`echo $line | awk -F, '{print $3}'`
-  export INDEX_SETTINGS=$PREFIX_DATA`echo $line | awk -F, '{print $4}'`
+while IFS= read -r line; do
+  export INPUT=$PREFIX_DATA$(echo $line | awk -F, '{print $1}')
+  export INDEX_NAME=$(echo $line | awk -F, '{print $2}')
+  export ID=$(echo $line | awk -F, '{print $3}')
+  export INDEX_SETTINGS=$PREFIX_DATA$(echo $line | awk -F, '{print $4}')
   echo "Filling in:" $INDEX_NAME
   #/tmp/load_json.sh
   /tmp/load_json_esbulk.sh
-done < "$input"
+done <"$input"
 
 # /faers/json/significant/*
 export INDEX_NAME="openfda_faers"
@@ -33,9 +32,8 @@ export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 FOLDER_PREFIX="${PREFIX_DATA}/evidence"
 FOLDERS=$(ls -1 $FOLDER_PREFIX | grep 'sourceId')
 
-for folder in $FOLDERS;
-do
-  IFS='=' read -ra tokens <<< "$folder"
+for folder in $FOLDERS; do
+  IFS='=' read -ra tokens <<<"$folder"
 
   token="evidence_datasource_${tokens[1]}"
 
@@ -44,7 +42,11 @@ do
   export ID='id'
   export INDEX_NAME="${token}"
   export INPUT="${full_folder}"
-  export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+  if [[ token == 'evidence_datasource_ot_genetics_portal' ]]; then
+    export INDEX_SETTINGS=$PREFIX_DATA/index_settings_genetics_evidence.json
+  else
+    export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
+  fi
 
   /tmp/load_json_esbulk.sh
 done
@@ -54,6 +56,3 @@ export INDEX_NAME="so"
 export ID="id"
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 ./load_json_esbulk.sh
-
-
-
