@@ -12,17 +12,17 @@ apt-get update && DEBIAN_FRONTEND=noninteractive \
     -o Dpkg::Options::="--force-confnew" \
     --force-yes \
     -fuy \
-    dist-upgrade && \
+    dist-upgrade &&
     DEBIAN_FRONTEND=noninteractive \
-    apt-get \
-    -o Dpkg::Options::="--force-confnew" \
-    --force-yes \
-    -fuy \
-    install default-jdk openjdk-11-jdk-headless bzip2 unzip zip wget net-tools wget uuid-runtime python-pip python-dev libyaml-dev httpie jq gawk tmux git build-essential less silversearcher-ag dirmngr psmisc
+        apt-get \
+        -o Dpkg::Options::="--force-confnew" \
+        --force-yes \
+        -fuy \
+        install default-jdk openjdk-11-jdk-headless bzip2 unzip zip wget net-tools wget uuid-runtime python-pip python-dev libyaml-dev httpie jq gawk tmux git build-essential less silversearcher-ag dirmngr psmisc
 
 cluster_id=$(uuidgen -r)
 
-cat <<EOF > /etc/security/limits.conf
+cat <<EOF >/etc/security/limits.conf
 * soft nofile 65536
 * hard nofile 65536
 * soft memlock unlimited
@@ -30,7 +30,7 @@ cat <<EOF > /etc/security/limits.conf
 
 EOF
 
-cat <<EOF > /etc/sysctl.conf
+cat <<EOF >/etc/sysctl.conf
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 net.ipv4.tcp_syncookies = 1
@@ -72,7 +72,7 @@ sysctl -p
 # swapoff -a
 # echo 'never' | tee /sys/kernel/mm/transparent_hugepage/enabled
 echo 'noop' | tee /sys/block/sda/queue/scheduler
-echo "block/sda/queue/scheduler = noop" >> /etc/sysfs.conf
+echo "block/sda/queue/scheduler = noop" >>/etc/sysfs.conf
 # echo "kernel/mm/transparent_hugepage/enabled = never" >> /etc/sysfs.conf
 
 systemctl daemon-reload
@@ -91,19 +91,19 @@ apt-get update && DEBIAN_FRONTEND=noninteractive \
     -o Dpkg::Options::="--force-confnew" \
     --force-yes \
     -fuy \
-    dist-upgrade && \
+    dist-upgrade &&
     DEBIAN_FRONTEND=noninteractive \
-    apt-get \
-    -o Dpkg::Options::="--force-confnew" \
-    --force-yes \
-    -fuy \
-    install clickhouse-client=21.9.4.35 clickhouse-server=21.9.4.35 clickhouse-common-static=21.9.4.35
+        apt-get \
+        -o Dpkg::Options::="--force-confnew" \
+        --force-yes \
+        -fuy \
+        install clickhouse-client=21.9.4.35 clickhouse-server=21.9.4.35 clickhouse-common-static=21.9.4.35
 
 service clickhouse-server stop
 /etc/init.d/clickhouse-server stop
 killall clickhouse-server && sleep 5
 
-cat <<EOF > /etc/clickhouse-server/config.xml
+cat <<EOF >/etc/clickhouse-server/config.xml
 <?xml version="1.0"?>
 <yandex>
     <logger>
@@ -150,7 +150,7 @@ cat <<EOF > /etc/clickhouse-server/config.xml
 </yandex>
 EOF
 
-cat <<EOF > /etc/clickhouse-server/users.xml
+cat <<EOF >/etc/clickhouse-server/users.xml
 <?xml version="1.0"?>
 <yandex>
     <profiles>
@@ -207,7 +207,6 @@ cat <<EOF > /etc/clickhouse-server/users.xml
 </yandex>
 EOF
 
-
 mkdir /etc/clickhouse-server/dictionaries
 chown -R clickhouse:clickhouse dictionaries/
 
@@ -218,8 +217,8 @@ echo "starting clickhouse... done."
 echo "Next step is loading the data"
 
 echo touching $OT_RCFILE
-echo "cluster_id=$cluster_id" > $OT_RCFILE
-date >> $OT_RCFILE
+echo "cluster_id=$cluster_id" >$OT_RCFILE
+date >>$OT_RCFILE
 
 echo "Google Storage info:"
 echo ${GS_ETL_DATASET}
@@ -232,22 +231,22 @@ wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/aotf.sql
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/aotf_log.sql
 
-clickhouse-client --multiline --multiquery < aotf_log.sql
+clickhouse-client --multiline --multiquery <aotf_log.sql
 echo "create and fill in aotf_log"
 gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
 echo "create and fill in Association on the fly table"
-clickhouse-client --multiline --multiquery < aotf.sql
+clickhouse-client --multiline --multiquery <aotf.sql
 echo "Association on the fly table done"
 
-clickhouse-client --multiline --multiquery < literature_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/literature-etl/json/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
-clickhouse-client --multiline --multiquery < literature.sql
+clickhouse-client --multiline --multiquery <literature_log.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
+clickhouse-client --multiline --multiquery <literature.sql
 echo "Literature table done"
 
-clickhouse-client --multiline --multiquery < w2v_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/literature-etl/json/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
-clickhouse-client --multiline --multiquery < w2v.sql
+clickhouse-client --multiline --multiquery <w2v_log.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
+clickhouse-client --multiline --multiquery <w2v.sql
 echo "Literature vectors done"
 
 # This tag is waited by the POS VM in order to stop the VM and create the image of CH
-gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE}  --tags "startup-done"
+gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE} --tags "startup-done"
