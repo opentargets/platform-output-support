@@ -47,10 +47,6 @@ sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/
 sudo chmod 555 load_all_data.sh
 sudo chmod 555 load_json_esbulk.sh
 
-# If esbulk gives problem try to use elasticsearch_loader
-#sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
-#sudo chmod 555 load_json.sh
-
 sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings.json
 sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search_known_drugs.json
 sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search.json

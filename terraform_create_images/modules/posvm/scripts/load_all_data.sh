@@ -16,7 +16,6 @@ while IFS= read -r line; do
   export ID=$(echo $line | awk -F, '{print $3}')
   export INDEX_SETTINGS=$PREFIX_DATA$(echo $line | awk -F, '{print $4}')
   echo "Filling in:" $INDEX_NAME
-  #/tmp/load_json.sh
   /tmp/load_json_esbulk.sh
 done <"$input"
 
