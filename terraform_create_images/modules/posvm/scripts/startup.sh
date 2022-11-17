@@ -26,10 +26,10 @@ mkdir -p /tmp/data/webapp
 
 # Copy files locally. Robust vs streaming
 echo "Copy from GS to local HD"
-gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
+gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 
-gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
-#gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
+gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
+
 gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp % /tmp/data/so
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
 echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/etl/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
