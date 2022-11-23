@@ -1,5 +1,5 @@
 #!/bin/bash
-# Startup script for Elastic Search VM Instance
+# Startup script for POS post-production VM
 
 echo "---> [LAUNCH] POS support VM"
 
