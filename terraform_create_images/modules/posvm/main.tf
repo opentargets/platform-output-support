@@ -38,7 +38,7 @@ resource "google_compute_instance" "pos_vm" {
 
   metadata = {
     startup-script = templatefile(
-        "${path.module}/scripts/load_data.sh",
+        "${path.module}/scripts/startup_script.sh",
         {
           PROJECT_ID = var.project_id,
           GC_ZONE = var.vm_default_zone,
