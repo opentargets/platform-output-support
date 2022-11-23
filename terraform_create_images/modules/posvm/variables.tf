@@ -52,9 +52,9 @@ variable "vm_default_zone" {
 }
 
 variable "vm_pos_boot_disk_size" {
-  description = "POS VM boot disk size, default '500GB'"
+  description = "POS VM boot disk size, default '2048GB'"
   type = string
-  default = 500
+  default = 2048
 }
 
 variable "vm_pos_machine_type" {
