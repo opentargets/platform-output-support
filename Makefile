@@ -76,16 +76,18 @@ sync:## Sync data to EBI FTP service
 	@echo ${RELEASE_ID_PROD}
 	bsub < ${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/sync_to_ebi_ftp.sh
 
-pull_sync:## Sync data to EBI FTP service using a 'PULL' approach, which runs from outside the EBI network
+pull_sync:## Sync data to EBI FTP service using a 'PULL' approach, which runs from outside the EBI network (don't forget to include gcp_source=user@IP:/full_path)
 	@echo "==== Manual Sync ===="
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
+	@echo "Sync from Google Cloud ---> ${gcp_source}"
 	@export sync_script=`cat ${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/pull_sync_to_ebi_ftp.sh`
 	cat ${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/pull_sync_to_ebi_ftp.sh | ssh -o proxycommand="ssh -p 2244 ligate.ebi.ac.uk proxy %h" \
 		mbernal@codon-login-02 \
 			'/bin/bash -c "source /etc/bashrc; \
 				export GS_SYNC_FROM=${GS_SYNC_FROM}; \
 				export RELEASE_ID_PROD=${RELEASE_ID_PROD}; \
+				export GCP_RSYNC_SOURCE=${gcp_source}; \
 				bsub -q datamover"'
 
 syncgs: ## Copy data from pre-release to production
