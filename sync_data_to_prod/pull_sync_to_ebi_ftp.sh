@@ -31,7 +31,7 @@ export path_lsf_job_bsub_stderr="${path_lsf_logs}/${job_name}.err"
 export path_lsf_job_bsub_stdout="${path_lsf_logs}/${job_name}.out"
 export path_data_source="gs://${GS_SYNC_FROM}/"
 export filename_release_checksum="release_data_integrity.sha1"
-export path_gcp_rsync_source="${GCP_RSYNC_FOLDER}"
+export path_gcp_rsync_source="${GCP_RSYNC_SOURCE}"
 
 
 log_heading() {
@@ -87,15 +87,15 @@ make_dirs() {
 
 print_summary
 log_heading "FILESYSTEM" "Preparing destination folders"
-#make_dirs
+make_dirs
 #log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
 #CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
 log_heading "RSYNC" "Rsync data from '${path_gcp_rsync_source}' ---> to ---> ${path_ebi_ftp_destination}"
-# rsync -vah -e ssh --stats --delete ${path_gcp_rsync_source}/ ${path_ebi_ftp_destination}/
+rsync -vah -e ssh --stats --delete ${path_gcp_rsync_source}/ ${path_ebi_ftp_destination}/
 log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_ebi_ftp_destination}'"
-#find ${path_ebi_ftp_destination} -type d -exec chmod 775 \{} \;
-#find ${path_ebi_ftp_destination} -type f -exec chmod 644 \{} \;
+find ${path_ebi_ftp_destination} -type d -exec chmod 775 \{} \;
+find ${path_ebi_ftp_destination} -type f -exec chmod 644 \{} \;
 log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
-#ln -nsf $( basename ${path_ebi_ftp_destination} ) ${path_ebi_ftp_destination_latest}
+ln -nsf $( basename ${path_ebi_ftp_destination} ) ${path_ebi_ftp_destination_latest}
 #log_heading "SYNC" "Start a sync of the FTP data from HX staging area to the OY and PG London storages"
 log_heading "JOB" "END OF JOB ${job_name}"
