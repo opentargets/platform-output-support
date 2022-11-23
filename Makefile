@@ -76,7 +76,7 @@ sync:## Sync data to EBI FTP service
 	@echo ${RELEASE_ID_PROD}
 	bsub < ${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/sync_to_ebi_ftp.sh
 
-pull_sync:## Sync data to EBI FTP service
+pull_sync:## Sync data to EBI FTP service using a 'PULL' approach, which runs from outside the EBI network
 	@echo "==== Manual Sync ===="
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
