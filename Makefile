@@ -86,7 +86,7 @@ pull_sync:## Sync data to EBI FTP service using a 'PULL' approach, which runs fr
 			'/bin/bash -c "source /etc/bashrc; \
 				export GS_SYNC_FROM=${GS_SYNC_FROM}; \
 				export RELEASE_ID_PROD=${RELEASE_ID_PROD}; \
-				bsub"'
+				bsub -q datamover"'
 
 syncgs: ## Copy data from pre-release to production
 	@echo "==== Sync ===="
