@@ -42,7 +42,7 @@ for folder in $FOLDERS; do
   export ID='id'
   export INDEX_NAME="${token}"
   export INPUT="${full_folder}"
-  if [[ token == 'evidence_datasource_ot_genetics_portal' ]]; then
+  if [[ "$token" == "evidence_datasource_ot_genetics_portal" ]]; then
     export INDEX_SETTINGS=$PREFIX_DATA/index_settings_genetics_evidence.json
   else
     export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
