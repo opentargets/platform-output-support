@@ -7,11 +7,15 @@
 #BUSB -R rusage[mem=4096M]
 #BUSB -B
 
+# Load the interpreter configuration
+#source /etc/bashrc
+
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
 
 # Defaults
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
 [ -z "${GS_SYNC_FROM}" ] && export GS_SYNC_FROM="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
+export RSYNC=`which rsync`
 
 # Helpers and environment
 export job_name="${LSB_JOBNAME}-${LSB_BATCH_JID}"
@@ -91,7 +95,7 @@ make_dirs
 #log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
 #CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
 log_heading "RSYNC" "Rsync data from '${path_gcp_rsync_source}' ---> to ---> ${path_ebi_ftp_destination}"
-rsync -vah -e ssh --stats --delete ${path_gcp_rsync_source}/ ${path_ebi_ftp_destination}/
+$RSYNC -vah -e ssh --stats --delete ${path_gcp_rsync_source}/ ${path_ebi_ftp_destination}/
 log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_ebi_ftp_destination}'"
 find ${path_ebi_ftp_destination} -type d -exec chmod 775 \{} \;
 find ${path_ebi_ftp_destination} -type f -exec chmod 644 \{} \;
