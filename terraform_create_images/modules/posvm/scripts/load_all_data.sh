@@ -32,6 +32,7 @@ FOLDER_PREFIX="${PREFIX_DATA}/evidence"
 FOLDERS=$(ls -1 $FOLDER_PREFIX | grep 'sourceId')
 
 for folder in $FOLDERS; do
+  set -x
   IFS='=' read -ra tokens <<<"$folder"
 
   token="evidence_datasource_${tokens[1]}"
@@ -46,6 +47,7 @@ for folder in $FOLDERS; do
   else
     export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
   fi
+  set +x
 
   /tmp/load_json_esbulk.sh
 done
