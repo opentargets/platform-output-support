@@ -32,7 +32,7 @@ gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugRea
 
 gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp % /tmp/data/so
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
-echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/etl/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
+echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
 gsutil cat 'gs://${GS_ETL_DATASET}/metadata/**/*.json' >/tmp/data/webapp/downloads.json
 gsutil cp /tmp/data/webapp/downloads.json gs://${GS_DIRECT_FILES}/webapp/downloads.json
 #TODO: remove in the next release. Used to test the command output
@@ -76,6 +76,11 @@ while [ $POLL != "0" ]; do
   set -e
 done
 
+# Get some data to validate loading was successful
+es_logs="es_loading_logs.txt"
+date >>$es_logs
+curl -X GET ${ELASTICSEARCH_URI}:9200/_cat/indices >>$es_logs
+gsutil cp $es_logs 'gs://${GS_ETL_DATASET}/pos/'
 #stop elasticsearch machine
 gcloud compute --project=${PROJECT_ID} instances stop ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
 

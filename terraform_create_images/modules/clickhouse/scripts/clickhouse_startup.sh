@@ -248,5 +248,11 @@ gsutil -m cat gs://${GS_ETL_DATASET}/literature-etl/json/vectors/part\* | clickh
 clickhouse-client --multiline --multiquery <w2v.sql
 echo "Literature vectors done"
 
+# Get some data to validate loading was successful
+ch_logs="ch_loading_logs.txt"
+date >>$ch_logs
+clickhouse-client -q "SELECT table, sum(rows) as rows, formatReadableSize(sum(bytes)) as size, round(log10(rows), 2) AS row_orderMagnitude FROM system.parts WHERE active AND (table NOT ILIKE '%_log') GROUP BY table;" >>$ch_logs
+gsutil cp $ch_logs 'gs://${GS_ETL_DATASET}/pos/'
+
 # This tag is waited by the POS VM in order to stop the VM and create the image of CH
 gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE} --tags "startup-done"
