@@ -24,6 +24,7 @@ Once Elasticsearch is loaded (see `load_all_data.sh`) and Clickhouse has a tag i
 ## Elasticsearch
 
 - Starts an Elasticsearch Docker container. Data is loaded into this container by POSVM. When loading is complete, POSVM will shut this machine down and make an image which be deployed using the `terraform-google-opentargets-platform` repository.
+- Indexes are loaded by the POSVM. The file `posvm/scripts/output_etl_struct.jsonl` defines how the indexes loaded including name and ID field.
 
 ## Logs
 
