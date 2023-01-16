@@ -248,6 +248,12 @@ gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/vectors/part\* | clickh
 clickhouse-client --multiline --multiquery <w2v.sql
 echo "Literature vectors done"
 
+clickhouse-client --multiline --multiquery <sentences_log.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/literatureSentences/part\* | clickhouse-client -h localhost --query="insert into ot.sentences_log format JSONEachRow "
+clickhouse-client --multiline --multiquery <sentences.sql
+clickhouse-client -h localhost --query="drop table ot.sentences_log"
+echo "Literature sentences done"
+
 # Get some data to validate loading was successful
 ch_logs="ch_loading_logs.txt"
 date >>$ch_logs
