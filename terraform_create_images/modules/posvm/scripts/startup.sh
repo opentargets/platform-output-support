@@ -26,14 +26,14 @@ mkdir -p /tmp/data/webapp
 
 # Copy files locally. Robust vs streaming
 echo "Copy from GS to local HD"
-gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
+gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 
-gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
-#gsutil -m cp -r gs://${GS_ETL_DATASET}/so/* /tmp/data/so
+gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
+
 gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp % /tmp/data/so
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
-echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/etl/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
-gsutil cat 'gs://${GS_ETL_DATASET}/etl/metadata/**/*.json' >/tmp/data/webapp/downloads.json
+echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
+gsutil cat 'gs://${GS_ETL_DATASET}/metadata/**/*.json' >/tmp/data/webapp/downloads.json
 gsutil cp /tmp/data/webapp/downloads.json gs://${GS_DIRECT_FILES}/webapp/downloads.json
 #TODO: remove in the next release. Used to test the command output
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % /tmp/data/
@@ -47,13 +47,10 @@ sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/
 sudo chmod 555 load_all_data.sh
 sudo chmod 555 load_json_esbulk.sh
 
-# If esbulk gives problem try to use elasticsearch_loader
-#sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform/modules/posvm/scripts/load_json.sh
-#sudo chmod 555 load_json.sh
-
-sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings.json
-sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search_known_drugs.json
-sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-etl-backend/master/elasticsearch/index_settings_search.json
+sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings.json
+sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search_known_drugs.json
+sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search.json
+sudo wget -O /tmp/data/index_settings_genetics_evidence.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_genetics_evidence.json
 
 export ES=${ELASTICSEARCH_URI}:9200
 export PREFIX_DATA=/tmp/data/
@@ -79,6 +76,11 @@ while [ $POLL != "0" ]; do
   set -e
 done
 
+# Get some data to validate loading was successful
+es_logs="es_loading_logs.txt"
+date >>$es_logs
+curl -X GET ${ELASTICSEARCH_URI}:9200/_cat/indices >>$es_logs
+gsutil cp $es_logs 'gs://${GS_ETL_DATASET}/pos/'
 #stop elasticsearch machine
 gcloud compute --project=${PROJECT_ID} instances stop ${ELASTICSEARCH_URI} --zone ${GC_ZONE}
 

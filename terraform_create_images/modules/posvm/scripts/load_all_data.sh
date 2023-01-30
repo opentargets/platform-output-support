@@ -16,7 +16,6 @@ while IFS= read -r line; do
   export ID=$(echo $line | awk -F, '{print $3}')
   export INDEX_SETTINGS=$PREFIX_DATA$(echo $line | awk -F, '{print $4}')
   echo "Filling in:" $INDEX_NAME
-  #/tmp/load_json.sh
   /tmp/load_json_esbulk.sh
 done <"$input"
 
@@ -33,6 +32,7 @@ FOLDER_PREFIX="${PREFIX_DATA}/evidence"
 FOLDERS=$(ls -1 $FOLDER_PREFIX | grep 'sourceId')
 
 for folder in $FOLDERS; do
+  set -x
   IFS='=' read -ra tokens <<<"$folder"
 
   token="evidence_datasource_${tokens[1]}"
@@ -42,11 +42,12 @@ for folder in $FOLDERS; do
   export ID='id'
   export INDEX_NAME="${token}"
   export INPUT="${full_folder}"
-  if [[ token == 'evidence_datasource_ot_genetics_portal' ]]; then
+  if [[ "$token" == "evidence_datasource_ot_genetics_portal" ]]; then
     export INDEX_SETTINGS=$PREFIX_DATA/index_settings_genetics_evidence.json
   else
     export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
   fi
+  set +x
 
   /tmp/load_json_esbulk.sh
 done

@@ -1,30 +1,30 @@
-# Variables for Sync data
-release_id_dev                            = "22.09"
-release_id_prod                           = "22.09"
-gs_sync_from                              = "open-targets-pre-data-releases/partners/22.09"
-is_partner_instance                       = true
+# Variables for Sync data (BigQuery)
+release_id_dev      = "22.11"
+release_id_prod     = "22.11"
+gs_sync_from        = "open-targets-pre-data-releases/partners/22.11"
+is_partner_instance = true
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
-config_direct_json                         = "open-targets-pre-data-releases/partners/22.09"
-config_gs_etl                              = "open-targets-pre-data-releases/partners/22.09/output"
-config_script_name                         = "posprod"
-config_release_name                        = "pfppp2209"
+config_direct_json  = "open-targets-pre-data-releases/partners/22.11/inputs"
+config_gs_etl       = "open-targets-pre-data-releases/partners/22.11/output"
+config_script_name  = "posprod"
+config_release_name = "pfppp2211"
 
 # Project dev info
-config_project_id                           = "open-targets-eu-dev"
-config_gcp_default_region                   = "europe-west1"
-config_gcp_default_zone                     = "europe-west1-d"
+config_project_id         = "open-targets-eu-dev"
+config_gcp_default_region = "europe-west1"
+config_gcp_default_zone   = "europe-west1-d"
 
-config_vm_elastic_search_vcpus              = "4"
-config_vm_elastic_search_mem                = "32768"
-config_vm_elastic_search_boot_disk_size     = 350
-config_vm_elastic_search_version            = "7.10.2"
+config_vm_elastic_search_vcpus          = "4"
+config_vm_elastic_search_mem            = "32768"
+config_vm_elastic_search_boot_disk_size = 350
+config_vm_elastic_search_version        = "7.10.2"
 
-config_vm_clickhouse_vcpus              = "4"
-config_vm_clickhouse_mem                = "26624"
-config_vm_clickhouse_boot_disk_size     = 300
+config_vm_clickhouse_vcpus          = "4"
+config_vm_clickhouse_mem            = "26624"
+config_vm_clickhouse_boot_disk_size = 300
 
-config_vm_pos_machine_type                  = "n1-standard-8"
-config_vm_pos_boot_image                    = "debian-10"
+config_vm_pos_machine_type = "n1-standard-8"
+config_vm_pos_boot_image   = "debian-10"
 
 

@@ -23,8 +23,17 @@ help: ## show help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 image: ## Create Google cloud Clickhouse image and ElasticSearch image.
-	@echo ${ROOT_DIR_MAKEFILE_POS}
 	@cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
+	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
+		export tf_id="${TF_WORKSPACE_ID}" && \
+		echo "[TERRAFORM] Using Terraform Workspace ID '$${tf_id}'" && \
+		terraform init && \
+		terraform workspace new $${tf_id} && \
+		echo "$${tf_id}" > ${TF_WORKSPACE_ID_FILE} && \
+		terraform apply -auto-approve
+
+ppp_image: ## PPP: Create Google cloud Clickhouse image and ElasticSearch image.
+	@cp ${ROOT_DIR_MAKEFILE_POS}/config_ppp.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
 	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
 		export tf_id="${TF_WORKSPACE_ID}" && \
 		echo "[TERRAFORM] Using Terraform Workspace ID '$${tf_id}'" && \

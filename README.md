@@ -8,10 +8,12 @@ POS is part of the Open Targets Platform release process, being responsible for:
 * Data validation (**not implemented** yet)
 
 ### Requirements
+
 *) Terraform <br>
 *) Jq
 
 ### How to run the different steps
+
 Simply run the following command:
 
 ```make```
@@ -22,6 +24,7 @@ The output shows the possible action to run
 Usage:
   help             show help message
   image            Create Google cloud Clickhouse image and ElasticSearch image.
+  ppp_image        PPP: Create Google cloud Clickhouse image and ElasticSearch image.
   clean_image_infrastructure Clean the infrastructure used for creating the data images
   clean_all_image_infrastructure Clean all the infrastructures used for creating data images
   bigquerydev      Big Query Dev
@@ -34,7 +37,9 @@ Every single variables is stored in the **config.tfvars**
 
 The current POS steps are:
 
-```make image``` it creates the ES and CH images using the ETL output
+```make image``` it creates the ES and CH images using the ETL output using variables specified in `config.tfvars`
+
+```make ppp_image``` is different to `make image` in that it uses the configuration file `config_ppp.tfvars`.
 
 ```make bigquerydev``` it generates a bigquery dataset in eu-dev
 
@@ -53,6 +58,7 @@ The last step, *clean_image_infrastructure*, will clean up, at infrastructure le
 ```make clean_all_image_infrastructure```
 
 # Copyright
+
 Copyright 2018-2021 Open Targets
 
 Bristol Myers Squibb <br>
@@ -66,7 +72,7 @@ you may not use this file except in compliance with the License.
 
 You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+   <http://www.apache.org/licenses/LICENSE-2.0>
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,4 +80,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-https://github.com/opentargets/platform-output-support.git
+<https://github.com/opentargets/platform-output-support.git>

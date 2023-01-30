@@ -222,31 +222,48 @@ date >>$OT_RCFILE
 
 echo "Google Storage info:"
 echo ${GS_ETL_DATASET}
+echo "Acquiring SQL scripts from: ${BRANCH}"
 
 # Retrieve the table and database for clickhouse
-wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/literature.sql
-wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/literature_log.sql
-wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/w2v.sql
-wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/w2v_log.sql
-wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/aotf.sql
-wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/CH/aotf_log.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/literature.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/literature_log.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/w2v.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/w2v_log.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/aotf.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/aotf_log.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/sentences_log.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/sentences.sql
 
 clickhouse-client --multiline --multiquery <aotf_log.sql
 echo "create and fill in aotf_log"
 gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/AOTFClickhouse/part\* | clickhouse-client -h localhost --query="insert into ot.associations_otf_log format JSONEachRow "
 echo "create and fill in Association on the fly table"
 clickhouse-client --multiline --multiquery <aotf.sql
+clickhouse-client -h localhost --query="drop table ot.associations_otf_log"
 echo "Association on the fly table done"
 
 clickhouse-client --multiline --multiquery <literature_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
 clickhouse-client --multiline --multiquery <literature.sql
+clickhouse-client -h localhost --query="drop table ot.literature_log"
 echo "Literature table done"
 
 clickhouse-client --multiline --multiquery <w2v_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/vectors/part\* | clickhouse-client -h localhost --query="insert into ot.ml_w2v_log format JSONEachRow "
 clickhouse-client --multiline --multiquery <w2v.sql
 echo "Literature vectors done"
+
+clickhouse-client --multiline --multiquery <sentences_log.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/literatureSentences/part\* | clickhouse-client -h localhost --query="insert into ot.sentences_log format JSONEachRow "
+clickhouse-client --multiline --multiquery <sentences.sql
+clickhouse-client -h localhost --query="drop table ot.sentences_log"
+echo "Literature sentences done"
+
+# Get some data to validate loading was successful
+ch_logs="ch_loading_logs.txt"
+date >>$ch_logs
+clickhouse-client -q "SELECT table, sum(rows) as rows, formatReadableSize(sum(bytes)) as size, round(log10(rows), 2) AS row_orderMagnitude FROM system.parts WHERE active AND (table NOT ILIKE '%_log') GROUP BY table;" >>$ch_logs
+gsutil cp $ch_logs 'gs://${GS_ETL_DATASET}/pos/'
 
 # This tag is waited by the POS VM in order to stop the VM and create the image of CH
 gcloud --project ${PROJECT_ID} compute instances add-tags $HOSTNAME --zone ${GC_ZONE} --tags "startup-done"

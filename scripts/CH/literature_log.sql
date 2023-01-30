@@ -10,5 +10,4 @@ create table if not exists ot.literature_log(
     keywordId String,
     relevance Float64,
     keywordType FixedString(2),
-    sentences Nullable(String)
 ) engine = Log;

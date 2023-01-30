@@ -28,14 +28,13 @@ fi
 echo create index "$ES/$INDEX" with settings file $INDEX_SETTINGS
 curl -XPUT -H 'Content-Type: application/json' --data @$INDEX_SETTINGS $ES/$INDEX
 
-for f in $FILES
-  do
-    echo $f
-    if [[ -n "$ID" ]]; then
-      printf "The index will have %s \n" "$ID"
-      $cmd $f $trail | sudo esbulk -server $ES -index $INDEX -id $ID -w 4 -size 2000
-    else
-       printf "The index wont have an ID \n"
-      $cmd "$f" $trail | sudo esbulk -server $ES -index $INDEX -w 4 -size 2000
-    fi
+for f in $FILES; do
+  echo $f
+  if [[ -n "$ID" ]]; then
+    printf "The index will have %s \n" "$ID"
+    $cmd $f $trail | sudo esbulk -server $ES -index $INDEX -id $ID -w 4 -size 2000
+  else
+    printf "The index wont have an ID \n"
+    $cmd "$f" $trail | sudo esbulk -server $ES -index $INDEX -w 4 -size 2000
+  fi
 done
