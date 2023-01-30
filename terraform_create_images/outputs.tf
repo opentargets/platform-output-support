@@ -9,3 +9,7 @@ output "clickhouse_hostname" {
 output "pos_support_vm_name" {
   value = module.backend_pos_vm.pos_support_vm_name
 }
+
+output "debug_posvm_debug" {
+  value = module.backend_pos_vm.posvm_debug
+}
