@@ -54,7 +54,6 @@ module "backend_clickhouse" {
   // Memory size in MiB
   vm_clickhouse_mem = var.config_vm_clickhouse_mem
   gs_etl            = var.config_gs_etl
-  gs_branch         = var.config_git_branch
 
   // Region and zone
   project_id                   = var.config_project_id
