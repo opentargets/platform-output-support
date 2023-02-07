@@ -9,5 +9,5 @@ create table if not exists ot.literature_log(
     day UInt8,
     keywordId String,
     relevance Float64,
-    keywordType FixedString(2),
+    keywordType FixedString(2)
 ) engine = Log;

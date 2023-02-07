@@ -23,8 +23,8 @@ The output shows the possible action to run
 ```
 Usage:
   help             show help message
+  set_profile      Set an active configuration profile, e.g. "make set_profile profile='development'" (see folder 'profiles')
   image            Create Google cloud Clickhouse image and ElasticSearch image.
-  ppp_image        PPP: Create Google cloud Clickhouse image and ElasticSearch image.
   clean_image_infrastructure Clean the infrastructure used for creating the data images
   clean_all_image_infrastructure Clean all the infrastructures used for creating data images
   bigquerydev      Big Query Dev
@@ -33,13 +33,12 @@ Usage:
   syncgs           Copy data from pre-release to release 
 ```
 
-Every single variables is stored in the **config.tfvars**
+Every single variables is stored in the **config.<profile>**
 
 The current POS steps are:
+```make set_profile profile='<profile>'``` it sets the configuration profile to be used for the rest of the commands
 
-```make image``` it creates the ES and CH images using the ETL output using variables specified in `config.tfvars`
-
-```make ppp_image``` is different to `make image` in that it uses the configuration file `config_ppp.tfvars`.
+```make image``` it creates the ES and CH images using the ETL output using the information from the active configuration profile
 
 ```make bigquerydev``` it generates a bigquery dataset in eu-dev
 

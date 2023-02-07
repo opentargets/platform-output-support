@@ -1,11 +1,11 @@
 .DEFAULT_GOAL:=help
 
 ROOT_DIR_MAKEFILE_POS:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-GS_ETL_DATASET:=$(shell cat config.tfvars | grep config_gs_etl | awk -F= '{print $$2}' | tr -d ' "')
-GS_SYNC_FROM:=$(shell cat config.tfvars | grep gs_sync_from | awk -F= '{print $$2}' | tr -d ' "')
-PROJECT_ID_DEV=$(shell cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
-RELEASE_ID_DEV=$(shell cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
-RELEASE_ID_PROD=$(shell cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
+GS_ETL_DATASET:=$(shell test -f config.tfvars && cat config.tfvars | grep config_gs_etl | awk -F= '{print $$2}' | tr -d ' "')
+GS_SYNC_FROM:=$(shell test -f config.tfvars && cat config.tfvars | grep gs_sync_from | awk -F= '{print $$2}' | tr -d ' "')
+PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
+RELEASE_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
+RELEASE_ID_PROD=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
 TF_WORKSPACE_ID=$(shell uuidgen | tr '''[:upper:]''' '''[:lower:]''' | cut -f5 -d'-')
 TF_WORKSPACE_ID_FILE='terraform_workspace_id'
 
@@ -22,18 +22,12 @@ check:
 help: ## show help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
+set_profile: ## Set an active configuration profile, e.g. "make set_profile profile='development'" (see folder 'profiles')
+	@echo "[POS] Setting active profile '${profile}'"
+	@ln -sf profiles/config.${profile} config.tfvars
+
 image: ## Create Google cloud Clickhouse image and ElasticSearch image.
 	@cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
-	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
-		export tf_id="${TF_WORKSPACE_ID}" && \
-		echo "[TERRAFORM] Using Terraform Workspace ID '$${tf_id}'" && \
-		terraform init && \
-		terraform workspace new $${tf_id} && \
-		echo "$${tf_id}" > ${TF_WORKSPACE_ID_FILE} && \
-		terraform apply -auto-approve
-
-ppp_image: ## PPP: Create Google cloud Clickhouse image and ElasticSearch image.
-	@cp ${ROOT_DIR_MAKEFILE_POS}/config_ppp.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
 	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
 		export tf_id="${TF_WORKSPACE_ID}" && \
 		echo "[TERRAFORM] Using Terraform Workspace ID '$${tf_id}'" && \
@@ -70,7 +64,7 @@ bigquerydev:  ## Big Query Dev
 	@echo "==== Big Query DEV ===="
 	export PROJECT_ID=${PROJECT_ID_DEV}; \
 	export RELEASE_ID=${RELEASE_ID_DEV}; \
-	 ${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
+	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
 
 
 bigqueryprod:## Big Query Production
@@ -90,3 +84,5 @@ syncgs: ## Copy data from pre-release to production
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
 	${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/syncgs.sh
+
+.PHONY: syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
