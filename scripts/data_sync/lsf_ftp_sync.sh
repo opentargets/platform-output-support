@@ -9,7 +9,6 @@
 #BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
 #BUSB -N
 #BUSB -B
-#BUSB -u "mbernal@ebi.ac.uk"
 
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
 
