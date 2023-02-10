@@ -16,6 +16,9 @@
 # Defaults
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
 [ -z "${GS_SYNC_FROM}" ] && export GS_SYNC_FROM="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
+[ -z $PATH_OPS_ROOT_FOLDER ] && echo "PATH to operations root folder is required" && exit 1
+[ -z $PATH_OPS_CREDENTIALS ] && echo "PATH to operations credentials folder is required" && exit 1
+
 # TODO - Credentials file default
 
 # Helpers and environment
@@ -37,24 +40,25 @@ export path_lsf_job_bsub_stdout="${path_lsf_logs}/${job_name}.out"
 export path_data_source="gs://${GS_SYNC_FROM}/"
 export filename_release_checksum="release_data_integrity.sha1"
 
-
-log_heading() {
+# Logging functions
+function log_heading {
     tag=$1
     shift
     echo -e "[=[$tag]= ---| $@ |--- ]"
 }
 
-log_body() {
+function log_body {
     tag=$1
     shift
     echo -e "\t[$tag]---> $@"
 }
 
-log_error() {
+function log_error {
     echo -e "[ERROR] $@"
 }
 
-print_summary() {
+# Environment summary
+function print_summary {
     echo -e "[=================================== JOB DATASHEET =====================================]"
     echo -e "\t- Release Number                     : ${RELEASE_ID_PROD}"
     echo -e "\t- Job Name                           : ${job_name}"
@@ -71,44 +75,102 @@ print_summary() {
     echo -e "\t- PATH LSF BSUB Job logs stderr      : ${path_lsf_job_bsub_stderr}"
     echo -e "\t- PATH LSF BSUB Job logs stdout      : ${path_lsf_job_bsub_stdout}"
     echo -e "\t- PATH Data Source                   : ${path_data_source}"
+    echo -e "\t- PATH Operations root folder        : ${PATH_OPS_ROOT_FOLDER}"
+    echo -e "\t- PATH Operations credentials folder : ${PATH_OPS_CREDENTIALS}"
     echo -e "[===================================|==============|====================================]"
 }
 
-make_dirs() {
-  log_body "MKDIR" "Check/Create ${path_lsf_base}"
-  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_base} && chmod 770 ${path_lsf_base}"
-  log_body "MKDIR" "Check/Create ${path_lsf_logs}"
-  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_logs} && chmod 770 ${path_lsf_logs}"
-  log_body "MKDIR" "Check/Create ${path_lsf_job_workdir}"
-  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_job_workdir} && chmod 770 ${path_lsf_job_workdir}"
-  log_body "MKDIR" "Check/Create ${path_lsf_job_logs}"
-  sudo -u otftpuser -- bash -c "mkdir ${path_lsf_job_logs} && chmod 770 ${path_lsf_job_logs}"
-  log_body "MKDIR" "Check/Create ${path_ebi_ftp_destination}"
-  sudo -u otftpuser -- bash -c "mkdir ${path_ebi_ftp_destination} && chmod 775 ${path_ebi_ftp_destination}"
-  log_body "MKDIR" "Check/Create ${path_private_staging_folder}"
-  sudo -u otftpuser -- bash -c "mkdir ${path_private_staging_folder} && chmod 770 ${path_private_staging_folder}"
+# Prepare destination folders
+function make_dirs {
+    log_body "MKDIR" "Check/Create ${path_lsf_base}"
+    sudo -u otftpuser -- bash -c "mkdir ${path_lsf_base} && chmod 770 ${path_lsf_base}"
+    log_body "MKDIR" "Check/Create ${path_lsf_logs}"
+    sudo -u otftpuser -- bash -c "mkdir ${path_lsf_logs} && chmod 770 ${path_lsf_logs}"
+    log_body "MKDIR" "Check/Create ${path_lsf_job_workdir}"
+    sudo -u otftpuser -- bash -c "mkdir ${path_lsf_job_workdir} && chmod 770 ${path_lsf_job_workdir}"
+    log_body "MKDIR" "Check/Create ${path_lsf_job_logs}"
+    sudo -u otftpuser -- bash -c "mkdir ${path_lsf_job_logs} && chmod 770 ${path_lsf_job_logs}"
+    log_body "MKDIR" "Check/Create ${path_ebi_ftp_destination}"
+    sudo -u otftpuser -- bash -c "mkdir ${path_ebi_ftp_destination} && chmod 775 ${path_ebi_ftp_destination}"
+    log_body "MKDIR" "Check/Create ${path_private_staging_folder}"
+    sudo -u otftpuser -- bash -c "mkdir ${path_private_staging_folder} && chmod 770 ${path_private_staging_folder}"
 }
 
+# GCP functions
+function activate_service_account {
+    log_heading "GCP" "Activating service account at '${PATH_OPS_CREDENTIALS}'"
+    singularity exec docker://google/cloud-sdk:latest gcloud auth activate-service-account --key-file=${PATH_OPS_CREDENTIALS}
+}
+
+function deactivate_service_account {
+    active_account=$(singularity exec docker://google/cloud-sdk:latest gcloud auth list --filter=status:ACTIVE --format="value(account)")
+    log_heading "GCP" "Deactivating service account '${active_account}'"
+    singularity exec docker://google/cloud-sdk:latest gcloud auth revoke ${active_account}
+}
+
+function pull_data_from_gcp {
+    log_heading "GCP" "Pulling data from GCP"
+    log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
+    #singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
+    log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
+    #find ${path_private_staging_folder} -type d -exec chmod 775 \{} \;
+    #find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
+    log_heading "GCP" "Done pulling data from GCP"
+}
+
+# Helper functions
+function compute_checksums {
+    log_heading "CHECKSUM" "Compute SHA1 checksum for all the files in this release"
+    log_heading "DATA" "Compute SHA1 checksum for all the files in this release"
+    #current_dir=`pwd`
+    #cd ${path_private_staging_folder}
+    #find . -type f -exec sha1sum \{} \; > ${filename_release_checksum}
+    # TODO - This part needs a different approach
+    #log_heading "DATA" "Add the data integrity information back to the source bucket"
+    #CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
+    #cd ${current_dir}
+}
+
+function promote_data_from_staging_to_ftp {
+    log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
+    #rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
+}
+
+function ftp_update_latest_symlink {
+    log_heading "FTP" "Update latest symlink"
+    log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
+    #ln -nsf $( basename ${path_ebi_ftp_destination} ) ${path_ebi_ftp_destination_latest}
+}
+
+# Bootstrap
+function bootstrap {
+    log_heading "BOOTSTRAP" "Bootstrapping"
+    activate_service_account
+    log_heading "FILESYSTEM" "Preparing destination folders"
+    #make_dirs
+    log_heading "BOOTSTRAP" "Done"
+}
+
+# Cleanup
+function cleanup {
+    log_heading "CLEAN" "Cleaning up"
+    deactivate_service_account
+    log_body "CLEAN" "Remove operations folder at '${PATH_OPS_ROOT_FOLDER}'"
+    #rm -rf ${PATH_OPS_ROOT_FOLDER}
+    log_heading "CLEAN" "Done"
+}
+
+
+
+
+# Main
 print_summary
-log_heading "FILESYSTEM" "Preparing destination folders"
-#make_dirs
-log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
-#CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
-log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
-#find ${path_private_staging_folder} -type d -exec chmod 775 \{} \;
-#find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
-log_heading "DATA" "Compute SHA1 checksum for all the files in this release"
-#current_dir=`pwd`
-#cd ${path_private_staging_folder}
-#find . -type f -exec sha1sum \{} \; > ${filename_release_checksum}
-# TODO - This part needs a different approach
-#log_heading "DATA" "Add the data integrity information back to the source bucket"
-#CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
-#cd ${current_dir}
-log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
-#rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
-log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
-#ln -nsf $( basename ${path_ebi_ftp_destination} ) ${path_ebi_ftp_destination_latest}
-log_heading "SYNC" "Start a sync of the FTP data from HX staging area to the OY and PG London storages"
-# TODO - Remove credentials file
+log_heading "JOB" "Starting job '${job_name}'"
+bootstrap
+pull_data_from_gcp
+compute_checksums
+promote_data_from_staging_to_ftp
+ftp_update_latest_symlink
+#log_heading "SYNC" "Start a sync of the FTP data from HX staging area to the OY and PG London storages?"
+cleanup
 log_heading "JOB" "END OF JOB ${job_name}"

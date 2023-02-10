@@ -3,14 +3,16 @@
 ROOT_DIR_MAKEFILE_POS:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 PATH_SCRIPTS=${ROOT_DIR_MAKEFILE_POS}/scripts
 PATH_SCRIPTS_DATASYNC=${PATH_SCRIPTS}/data_sync
+PATH_TMP=${ROOT_DIR_MAKEFILE_POS}/tmp
+PATH_CREDENTIALS=${PATH_TMP}/credentials
 GS_ETL_DATASET:=$(shell test -f config.tfvars && cat config.tfvars | grep config_gs_etl | awk -F= '{print $$2}' | tr -d ' "')
 GS_SYNC_FROM:=$(shell test -f config.tfvars && cat config.tfvars | grep gs_sync_from | awk -F= '{print $$2}' | tr -d ' "')
 PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_PROD=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
 TF_WORKSPACE_ID=$(shell uuidgen | tr '''[:upper:]''' '''[:lower:]''' | cut -f5 -d'-')
-PATH_GCS_CREDENTIALS=${ROOT_DIR_MAKEFILE_POS}/credentials/gcs_credentials.json
-PATH_GCS_CREDENTIALS_GCP="gs://open-targets-ops/credentials/pis-service_account.json"
+PATH_GCS_CREDENTIALS_FILE=${PATH_CREDENTIALS}/gcs_credentials.json
+PATH_GCS_CREDENTIALS_GCP_FILE="gs://open-targets-ops/credentials/pis-service_account.json"
 TF_WORKSPACE_ID_FILE='terraform_workspace_id'
 
 export ROOT_DIR_MAKEFILE_POS
@@ -19,6 +21,7 @@ export GS_SYNC_FROM
 export PROJECT_ID_DEV
 export RELEASE_ID_DEV
 export RELEASE_ID_PROD
+export PATH_GCS_CREDENTIALS_FILE
 
 check:
 	[ -e "/you/file.file" ] && echo 1 || $error("Bad svnversion v1.4, please install v1.6")
@@ -27,12 +30,12 @@ help: ## show help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 tmp: # Create a temporary directory
-	@mkdir -p ${ROOT_DIR_MAKEFILE_POS}/tmp
+	@mkdir -p ${PATH_TMP}
 
 credentials: ## Create a credentials file for Google Cloud
 	@echo "[GOOGLE] Creating credentials file"
-	@mkdir -p ${ROOT_DIR_MAKEFILE_POS}/credentials
-	@gsutil cp ${PATH_GCS_CREDENTIALS_GCP} ${PATH_GCS_CREDENTIALS}
+	@mkdir -p ${PATH_CREDENTIALS}
+	@gsutil cp ${PATH_GCS_CREDENTIALS_GCP_FILE} ${PATH_GCS_CREDENTIALS_FILE}
 
 set_profile: ## Set an active configuration profile, e.g. "make set_profile profile='development'" (see folder 'profiles')
 	@echo "[POS] Setting active profile '${profile}'"
@@ -74,7 +77,7 @@ clean_all_image_infrastructure: ## Clean all the infrastructures used for creati
 clean_tmp: ## Clean the temporary directory
 	@rm -rf tmp
 
-clean: clean_tmp clean_image_infrastructure ## Clean the temporary directory and all the infrastructures used for creating data images
+clean: clean_tmp clean_image_infrastructure ## Clean the temporary directory and the infrastructure used for creating data images
 
 bigquerydev:  ## Big Query Dev
 	@echo $(PROJECT_ID_DEV)
@@ -92,14 +95,12 @@ bigqueryprod:## Big Query Production
 
 sync: tmp credentials ## Sync data to EBI FTP service
 	@echo "==== Sync ===="
-	@echo ${GS_SYNC_FROM}
-	@echo ${RELEASE_ID_PROD}
-	bsub < ${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/sync_to_ebi_ftp.sh
+	${PATH_SCRIPTS_DATASYNC}/launch_ebi_ftp_sync.sh
 
 syncgs: ## Copy data from pre-release to production
 	@echo "==== Sync ===="
-	@echo ${GS_SYNC_FROM}
-	@echo ${RELEASE_ID_PROD}
+	@echo "Sync from '${GS_SYNC_FROM}'"
+	@echo "Release ID '${RELEASE_ID_PROD}'"
 	${PATH_SCRIPTS_DATASYNC}/syncgs.sh
 
-.PHONY: clean syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
+.PHONY: credentials clean syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
