@@ -7,6 +7,8 @@ PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_
 RELEASE_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_PROD=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
 TF_WORKSPACE_ID=$(shell uuidgen | tr '''[:upper:]''' '''[:lower:]''' | cut -f5 -d'-')
+PATH_GCS_CREDENTIALS=${ROOT_DIR_MAKEFILE_POS}/credentials/gcs_credentials.json
+PATH_GCS_CREDENTIALS_GCP="gs://open-targets-ops/credentials/pis-service_account.json"
 TF_WORKSPACE_ID_FILE='terraform_workspace_id'
 
 export ROOT_DIR_MAKEFILE_POS
@@ -21,6 +23,14 @@ check:
 
 help: ## show help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+tmp: # Create a temporary directory
+	@mkdir -p ${ROOT_DIR_MAKEFILE_POS}/tmp
+
+credentials: ## Create a credentials file for Google Cloud
+	@echo "[GOOGLE] Creating credentials file"
+	@mkdir -p ${ROOT_DIR_MAKEFILE_POS}/credentials
+	@gsutil cp ${PATH_GCS_CREDENTIALS_GCP} ${PATH_GCS_CREDENTIALS}
 
 set_profile: ## Set an active configuration profile, e.g. "make set_profile profile='development'" (see folder 'profiles')
 	@echo "[POS] Setting active profile '${profile}'"
@@ -59,6 +69,11 @@ clean_all_image_infrastructure: ## Clean all the infrastructures used for creati
 		fi \
 	done
 
+clean_tmp: ## Clean the temporary directory
+	@rm -rf tmp
+
+clean: clean_tmp clean_image_infrastructure ## Clean the temporary directory and all the infrastructures used for creating data images
+
 bigquerydev:  ## Big Query Dev
 	@echo $(PROJECT_ID_DEV)
 	@echo "==== Big Query DEV ===="
@@ -73,7 +88,7 @@ bigqueryprod:## Big Query Production
 	export PROJECT_ID=open-targets-prod; \
     export RELEASE_ID=${RELEASE_ID_PROD}; \${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
 
-sync:## Sync data to EBI FTP service
+sync: tmp credentials ## Sync data to EBI FTP service
 	@echo "==== Sync ===="
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
@@ -85,4 +100,4 @@ syncgs: ## Copy data from pre-release to production
 	@echo ${RELEASE_ID_PROD}
 	${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/syncgs.sh
 
-.PHONY: syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
+.PHONY: clean syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
