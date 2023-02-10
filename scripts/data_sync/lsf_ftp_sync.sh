@@ -5,8 +5,8 @@
 #BSUB -n 1
 #BSUB -M 4604M
 #BUSB -R rusage[mem=4604M]
-##BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.err
-##BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
+#BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.err
+#BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
 #BUSB -N
 #BUSB -B
 #BUSB -u "mbernal@ebi.ac.uk"
@@ -108,6 +108,7 @@ function pull_data_from_gcp {
     log_heading "GCP" "Pulling data from GCP, '${path_data_source}' ---> to ---> '${path_ebi_ftp_destination}"
     singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil -m rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_ebi_ftp_destination}/
     log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_ebi_ftp_destination}'"
+    # We don't really need to do this for the production folder, but it's nice to have the permissions set correctly (although you'd need to be 'otftpuser' to do it)
     find ${path_ebi_ftp_destination} -type d -exec chmod 775 {} \;
     find ${path_ebi_ftp_destination} -type f -exec chmod 644 {} \;
     log_heading "GCP" "Done pulling data from GCP"
@@ -118,7 +119,7 @@ function compute_checksums {
     log_heading "CHECKSUM" "Compute SHA1 checksum for all the files in this release"
     current_dir=`pwd`
     cd ${path_ebi_ftp_destination}
-    find . -type f -exec sha1sum \{} \; > ${filename_release_checksum}
+    find . -type f ! -iname "${filename_release_checksum}" -exec sha1sum \{} \; > ${filename_release_checksum}
     log_heading "DATA" "Add the data integrity information back to the source bucket"
     singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
     cd ${current_dir}
@@ -158,7 +159,6 @@ log_heading "JOB" "Starting job '${job_name}'"
 bootstrap
 pull_data_from_gcp
 compute_checksums
-promote_data_from_staging_to_ftp
 ftp_update_latest_symlink
 cleanup
 log_heading "JOB" "END OF JOB ${job_name}"
