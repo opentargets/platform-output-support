@@ -23,14 +23,17 @@ The output shows the possible action to run
 ```
 Usage:
   help             show help message
+  credentials      Create a credentials file for Google Cloud
   set_profile      Set an active configuration profile, e.g. "make set_profile profile='development'" (see folder 'profiles')
   image            Create Google cloud Clickhouse image and ElasticSearch image.
-  clean_image_infrastructure Clean the infrastructure used for creating the data images
-  clean_all_image_infrastructure Clean all the infrastructures used for creating data images
+  clean_image_infrastructure  Clean the infrastructure used for creating the data images
+  clean_all_image_infrastructure  Clean all the infrastructures used for creating data images
+  clean_tmp        Clean the temporary directory
+  clean            Clean the temporary directory and the infrastructure used for creating data images
   bigquerydev      Big Query Dev
   bigqueryprod     Big Query Production
-  sync             Sync the pre-data bucket to private ftp and public ftp
-  syncgs           Copy data from pre-release to release 
+  sync             Sync data to EBI FTP service
+  syncgs           Copy data from pre-release to production
 ```
 
 Every single variables is stored in the **config.<profile>**
@@ -55,6 +58,9 @@ The current POS steps are:
 The last step, *clean_image_infrastructure*, will clean up, at infrastructure level, all the resources used for creating the data backend machine images but, if further clean up is needed, e.g. for previous runs of POS that were not properly cleaned up, the following command can be used:
 
 ```make clean_all_image_infrastructure```
+
+## Running a data Sync to EBI FTP service
+You need to have access to the LSF setup and your user be a member of the relevant internal groups, able to schedule jobs in the cluster and access the filesystem locations.
 
 # Copyright
 
