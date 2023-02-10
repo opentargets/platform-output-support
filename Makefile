@@ -1,6 +1,8 @@
 .DEFAULT_GOAL:=help
 
 ROOT_DIR_MAKEFILE_POS:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+PATH_SCRIPTS=${ROOT_DIR_MAKEFILE_POS}/scripts
+PATH_SCRIPTS_DATASYNC=${PATH_SCRIPTS}/data_sync
 GS_ETL_DATASET:=$(shell test -f config.tfvars && cat config.tfvars | grep config_gs_etl | awk -F= '{print $$2}' | tr -d ' "')
 GS_SYNC_FROM:=$(shell test -f config.tfvars && cat config.tfvars | grep gs_sync_from | awk -F= '{print $$2}' | tr -d ' "')
 PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
@@ -98,6 +100,6 @@ syncgs: ## Copy data from pre-release to production
 	@echo "==== Sync ===="
 	@echo ${GS_SYNC_FROM}
 	@echo ${RELEASE_ID_PROD}
-	${ROOT_DIR_MAKEFILE_POS}/sync_data_to_prod/syncgs.sh
+	${PATH_SCRIPTS_DATASYNC}/syncgs.sh
 
 .PHONY: clean syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
