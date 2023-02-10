@@ -37,7 +37,7 @@ export path_lsf_job_stdout="${path_lsf_job_logs}/output.out"
 export path_lsf_job_bsub_stderr="${path_lsf_logs}/${job_name}.err"
 export path_lsf_job_bsub_stdout="${path_lsf_logs}/${job_name}.out"
 export path_data_source="gs://${GS_SYNC_FROM}/"
-export filename_release_checksum="release_data_integrity.sha1"
+export filename_release_checksum="release_data_integrity"
 
 # Logging functions
 function log_heading {
@@ -119,9 +119,10 @@ function compute_checksums {
     log_heading "CHECKSUM" "Compute SHA1 checksum for all the files in this release"
     current_dir=`pwd`
     cd ${path_ebi_ftp_destination}
-    find . -type f ! -iname "${filename_release_checksum}" -exec sha1sum \{} \; > ${filename_release_checksum}
+    find . -type f ! -iname "${filename_release_checksum}*" -exec sha1sum \{} \; > ${filename_release_checksum}
+    sha1sum ${filename_release_checksum} > ${filename_release_checksum}.sha1
     log_heading "DATA" "Add the data integrity information back to the source bucket"
-    singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
+    singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil cp ${filename_release_checksum}* ${path_data_source}
     cd ${current_dir}
     log_heading "CHECKSUM" "Done computing SHA1 checksum for all the files in this release"
 }
