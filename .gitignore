@@ -1,6 +1,7 @@
 .idea
 .vscode
 config.tfvars
+tmp
 terraform_create_images/.terraform*
 terraform_create_images/terraform_workspace_id
 
