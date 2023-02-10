@@ -1,26 +1,29 @@
 #!/bin/bash
 # Job requirements
 #BSUB -J ot_platform_ebi_ftp_sync
-#BSUB -W 12:00
-#BSUB -n 2
-#BSUB -M 5120M
-#BUSB -R rusage[mem=5120M]
-#BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.err
-#BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
+#BSUB -W 6:00
+#BSUB -n 1
+#BSUB -M 4604M
+#BUSB -R rusage[mem=4604M]
+##BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.err
+##BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
+#BUSB -N
 #BUSB -B
+#BUSB -u "mbernal@ebi.ac.uk"
 
 # This is an LSF job that uploads Open Targets Platform release data to EBI FTP Service
 
 # Defaults
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
 [ -z "${GS_SYNC_FROM}" ] && export GS_SYNC_FROM="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
+# TODO - Credentials file default
 
 # Helpers and environment
 export job_name="${LSB_JOBNAME}-${LSB_BATCH_JID}"
 export path_private_base='/nfs/ftp/private/otftpuser'
 export path_private_base_ftp_upload="${path_private_base}/opentargets_ebi_ftp_upload"
 export path_private_staging_folder="${path_private_base_ftp_upload}/${RELEASE_ID_PROD}"
-export path_ebi_ftp_base='/nfs/ftp/pub/databases/opentargets/platform'
+export path_ebi_ftp_base='/nfs/ftp/public/databases/opentargets/platform'
 export path_ebi_ftp_destination="${path_ebi_ftp_base}/${RELEASE_ID_PROD}"
 export path_ebi_ftp_destination_latest="${path_ebi_ftp_base}/latest"
 export path_lsf_base="${path_private_base}/lsf"
@@ -88,23 +91,24 @@ make_dirs() {
 
 print_summary
 log_heading "FILESYSTEM" "Preparing destination folders"
-make_dirs
+#make_dirs
 log_heading "GCP" "Copy source data from '${path_data_source}' ---> to ---> '${path_private_staging_folder}'"
-CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
+#CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil -m -u open-targets-prod rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_private_staging_folder}/
 log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_private_staging_folder}'"
-find ${path_private_staging_folder} -type d -exec chmod 775 \{} \;
-find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
+#find ${path_private_staging_folder} -type d -exec chmod 775 \{} \;
+#find ${path_private_staging_folder} -type f -exec chmod 644 \{} \;
 log_heading "DATA" "Compute SHA1 checksum for all the files in this release"
-current_dir=`pwd`
-cd ${path_private_staging_folder}
-find . -type f -exec sha1sum \{} \; > ${filename_release_checksum}
+#current_dir=`pwd`
+#cd ${path_private_staging_folder}
+#find . -type f -exec sha1sum \{} \; > ${filename_release_checksum}
 # TODO - This part needs a different approach
 #log_heading "DATA" "Add the data integrity information back to the source bucket"
 #CLOUDSDK_PYTHON=/nfs/production/opentargets/anaconda3/bin/python /nfs/production/opentargets/google-cloud-sdk/bin/gsutil cp ${filename_release_checksum} ${path_data_source}${filename_release_checksum}
-cd ${current_dir}
+#cd ${current_dir}
 log_heading "RSYNC" "Sync data from '${path_private_staging_folder}' ---> to ---> '${path_ebi_ftp_destination}'"
-rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
+#rsync -vah --stats --delete ${path_private_staging_folder}/ ${path_ebi_ftp_destination}/
 log_heading "LATEST" "Update 'latest' link at '${path_ebi_ftp_destination_latest}' to point to '${path_ebi_ftp_destination}'"
-ln -nsf $( basename ${path_ebi_ftp_destination} ) ${path_ebi_ftp_destination_latest}
+#ln -nsf $( basename ${path_ebi_ftp_destination} ) ${path_ebi_ftp_destination_latest}
 log_heading "SYNC" "Start a sync of the FTP data from HX staging area to the OY and PG London storages"
+# TODO - Remove credentials file
 log_heading "JOB" "END OF JOB ${job_name}"
