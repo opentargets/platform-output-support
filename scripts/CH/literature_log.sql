@@ -1,7 +1,7 @@
 -- cat part-00* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
 create database if not exists ot;
 create table if not exists ot.literature_log(
-    pmid UInt64,
+    pmid String,
     pmcid Nullable(String),
     date Date,
     year UInt16,
