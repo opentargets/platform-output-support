@@ -1,7 +1,7 @@
 -- cat part-00* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
 create database if not exists ot;
 create table if not exists ot.literature_index engine = MergeTree()
-order by (keywordId, intHash64(pmid), year, month, day) as (
+order by (keywordId, SHA512(pmid), year, month, day) as (
         select pmid,
             pmcid,
             keywordId,
@@ -13,7 +13,7 @@ order by (keywordId, intHash64(pmid), year, month, day) as (
         from ot.literature_log
     );
 create table if not exists ot.literature engine = MergeTree()
-order by (intHash64(pmid)) as (
+order by (SHA512(pmid)) as (
         select pmid,
             any(pmcid) as pmcid,
             any(date) as date,
