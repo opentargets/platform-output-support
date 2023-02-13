@@ -83,7 +83,7 @@ echo install clickhouse
 apt-get install apt-transport-https ca-certificates dirmngr
 apt-key adv --keyserver keyserver.ubuntu.com --recv E0C56BD4
 
-echo "deb https://repo.clickhouse.tech/deb/stable/ main/" | sudo tee \
+echo "deb https://repo.clickhouse.tech/deb/dists/stable/ main/" | sudo tee \
     /etc/apt/sources.list.d/clickhouse.list
 
 apt-get update && DEBIAN_FRONTEND=noninteractive \
