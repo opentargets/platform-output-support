@@ -97,7 +97,7 @@ apt-get update && DEBIAN_FRONTEND=noninteractive \
         -o Dpkg::Options::="--force-confnew" \
         --force-yes \
         -fuy \
-        install clickhouse-client=21.9.4.35 clickhouse-server=21.9.4.35 clickhouse-common-static=21.9.4.35
+        install clickhouse-client clickhouse-server clickhouse-common-static
 
 service clickhouse-server stop
 /etc/init.d/clickhouse-server stop
