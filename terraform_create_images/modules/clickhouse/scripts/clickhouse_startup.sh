@@ -81,14 +81,13 @@ echo "block/sda/queue/scheduler = noop" >>/etc/sysfs.conf
 
 systemctl daemon-reload
 
-echo install clickhouse
-#echo "deb http://repo.yandex.ru/clickhouse/deb/dists/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list
+echo "install clickhouse"
 
 apt-get install apt-transport-https ca-certificates dirmngr
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8919F6BD2B48D754
 
 echo "deb https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
-apt-get update ; apt install -y clickhouse-client clickhouse-server
+apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confnew" --force-yes install -y clickhouse-client clickhouse-server
 #DEBIAN_FRONTEND=noninteractive \
 #    apt-get \
 #    -o Dpkg::Options::="--force-confnew" \
