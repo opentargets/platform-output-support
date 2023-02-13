@@ -85,13 +85,10 @@ echo install clickhouse
 #echo "deb http://repo.yandex.ru/clickhouse/deb/dists/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list
 
 apt-get install apt-transport-https ca-certificates dirmngr
-apt-key adv --keyserver keyserver.ubuntu.com --recv E0C56BD4
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8919F6BD2B48D754
 
-#echo "deb https://repo.clickhouse.tech/deb/dists/stable/ main/" | sudo tee \
-#    /etc/apt/sources.list.d/clickhouse.list
-echo "deb https://repo.clickhouse.tech/deb/dists/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list
-
-apt-get update && apt install -y clickhouse-client clickhouse-server
+echo "deb https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
+apt-get update ; apt install -y clickhouse-client clickhouse-server
 #DEBIAN_FRONTEND=noninteractive \
 #    apt-get \
 #    -o Dpkg::Options::="--force-confnew" \
