@@ -78,7 +78,7 @@ echo "block/sda/queue/scheduler = noop" >>/etc/sysfs.conf
 systemctl daemon-reload
 
 echo install clickhouse
-#echo "deb http://repo.yandex.ru/clickhouse/deb/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list
+#echo "deb http://repo.yandex.ru/clickhouse/deb/dists/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list
 
 apt-get install apt-transport-https ca-certificates dirmngr
 apt-key adv --keyserver keyserver.ubuntu.com --recv E0C56BD4
