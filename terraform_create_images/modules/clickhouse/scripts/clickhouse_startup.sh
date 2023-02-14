@@ -245,7 +245,7 @@ clickhouse-client -h localhost --query="drop table ot.associations_otf_log"
 echo "Association on the fly table done"
 
 clickhouse-client --multiline --multiquery <literature_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/etl/parquet/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format Parquet "
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/literatureIndex/part\* | clickhouse-client -h localhost --query="insert into ot.literature_log format JSONEachRow "
 clickhouse-client --multiline --multiquery <literature.sql
 clickhouse-client -h localhost --query="drop table ot.literature_log"
 echo "Literature table done"
@@ -256,7 +256,7 @@ clickhouse-client --multiline --multiquery <w2v.sql
 echo "Literature vectors done"
 
 clickhouse-client --multiline --multiquery <sentences_log.sql
-gsutil -m cat gs://${GS_ETL_DATASET}/etl/parquet/literature/literatureSentences/part\* | clickhouse-client -h localhost --query="insert into ot.sentences_log format Parquet "
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/literatureSentences/part\* | clickhouse-client -h localhost --query="insert into ot.sentences_log format JSONEachRow "
 clickhouse-client --multiline --multiquery <sentences.sql
 clickhouse-client -h localhost --query="drop table ot.sentences_log"
 echo "Literature sentences done"
