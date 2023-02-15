@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x 
+
 OT_RCFILE=/etc/opentargets.rc
 
 if [ -f "$OT_RCFILE" ]; then
@@ -7,18 +9,20 @@ if [ -f "$OT_RCFILE" ]; then
     exit 0
 fi
 
-apt-get update && DEBIAN_FRONTEND=noninteractive \
-    apt-get \
-    -o Dpkg::Options::="--force-confnew" \
-    --force-yes \
-    -fuy \
-    dist-upgrade &&
-    DEBIAN_FRONTEND=noninteractive \
-        apt-get \
-        -o Dpkg::Options::="--force-confnew" \
-        --force-yes \
-        -fuy \
-        install default-jdk openjdk-11-jdk-headless bzip2 unzip zip wget net-tools wget uuid-runtime python-pip python-dev libyaml-dev httpie jq gawk tmux git build-essential less silversearcher-ag dirmngr psmisc
+#apt-get update && DEBIAN_FRONTEND=noninteractive \
+#    apt-get \
+#    -o Dpkg::Options::="--force-confnew" \
+#    --force-yes \
+#    -fuy \
+#    dist-upgrade &&
+#    DEBIAN_FRONTEND=noninteractive \
+#        apt-get \
+#        -o Dpkg::Options::="--force-confnew" \
+#        --force-yes \
+#        -fuy \
+#        install default-jdk openjdk-11-jdk-headless bzip2 unzip zip wget net-tools wget uuid-runtime python-pip python-dev libyaml-dev httpie jq gawk tmux git build-essential less silversearcher-ag dirmngr psmisc
+
+apt update && apt install -y default-jdk openjdk-11-jdk-headless bzip2 unzip zip wget net-tools wget uuid-runtime python-pip python-dev libyaml-dev httpie jq gawk tmux git build-essential less silversearcher-ag dirmngr psmisc
 
 cluster_id=$(uuidgen -r)
 
@@ -77,27 +81,25 @@ echo "block/sda/queue/scheduler = noop" >>/etc/sysfs.conf
 
 systemctl daemon-reload
 
-echo install clickhouse
-#echo "deb http://repo.yandex.ru/clickhouse/deb/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list
+echo "install clickhouse"
 
 apt-get install apt-transport-https ca-certificates dirmngr
-apt-key adv --keyserver keyserver.ubuntu.com --recv E0C56BD4
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8919F6BD2B48D754
 
-echo "deb https://repo.clickhouse.tech/deb/stable/ main/" | sudo tee \
-    /etc/apt/sources.list.d/clickhouse.list
-
-apt-get update && DEBIAN_FRONTEND=noninteractive \
-    apt-get \
-    -o Dpkg::Options::="--force-confnew" \
-    --force-yes \
-    -fuy \
-    dist-upgrade &&
-    DEBIAN_FRONTEND=noninteractive \
-        apt-get \
-        -o Dpkg::Options::="--force-confnew" \
-        --force-yes \
-        -fuy \
-        install clickhouse-client=21.9.4.35 clickhouse-server=21.9.4.35 clickhouse-common-static=21.9.4.35
+echo "deb https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
+apt-get update ; DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confnew" --force-yes install -y clickhouse-client clickhouse-server
+#DEBIAN_FRONTEND=noninteractive \
+#    apt-get \
+#    -o Dpkg::Options::="--force-confnew" \
+#    --force-yes \
+#    -fuy \
+#    dist-upgrade &&
+#    DEBIAN_FRONTEND=noninteractive \
+#        apt-get \
+#        -o Dpkg::Options::="--force-confnew" \
+#        --force-yes \
+#        -fuy \
+#        install clickhouse-client clickhouse-server clickhouse-common-static
 
 service clickhouse-server stop
 /etc/init.d/clickhouse-server stop
