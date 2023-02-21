@@ -1,12 +1,17 @@
 # Variables for Sync data
-release_id_dev      = "23.02"
+# This one is used to feed BigQuery Dev
+release_id_dev      = "23.02.1"
+# This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
 release_id_prod     = "23.02"
-gs_sync_from        = "open-targets-pre-data-releases/23.02"
+# This variable is used in the script as source for the data syncronization to the public release bucket and the EBI FTP
+gs_sync_from        = "open-targets-pre-data-releases/23.02.1"
 is_partner_instance = false
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
-config_direct_json  = "open-targets-pre-data-releases/23.02/input"
-config_gs_etl       = "open-targets-pre-data-releases/23.02/output"
+# This one is used to produce the web application static data context
+config_direct_json  = "open-targets-pre-data-releases/23.02.1"
+# This value is used to feed BigQuery Production and Clickhouse image
+config_gs_etl       = "open-targets-pre-data-releases/23.02.1/output"
 config_script_name  = "posprod"
 config_release_name = "platform2302"
 
