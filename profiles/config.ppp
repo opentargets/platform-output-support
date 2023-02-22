@@ -1,3 +1,6 @@
+# Open Targets Platform - Configuration file for the PPP profile
+
+
 # Variables for Sync data (BigQuery)
 # NOT RELEVANT FOR PPP - This one is used to feed BigQuery Dev
 release_id_dev      = "23.02.1"
