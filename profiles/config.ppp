@@ -1,14 +1,18 @@
 # Variables for Sync data (BigQuery)
-release_id_dev      = "22.11"
-release_id_prod     = "22.11"
-gs_sync_from        = "open-targets-pre-data-releases/partners/22.11"
+# NOT RELEVANT FOR PPP - This one is used to feed BigQuery Dev
+release_id_dev      = "23.02.1"
+# NOT RELEVANT FOR PPP - This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
+release_id_prod     = "23.02"
+gs_sync_from        = "open-targets-pre-data-releases/partners/23.02.1"
 is_partner_instance = true
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
-config_direct_json  = "open-targets-pre-data-releases/partners/22.11/inputs"
-config_gs_etl       = "open-targets-pre-data-releases/partners/22.11/output"
+# This one is used to produce the web application static data context
+config_direct_json  = "open-targets-pre-data-releases/partners/23.02.1"
+# This value is used to feed BigQuery Production and Clickhouse image
+config_gs_etl       = "open-targets-pre-data-releases/partners/23.02.1/output"
 config_script_name  = "posprod"
-config_release_name = "pfppp2211"
+config_release_name = "pfppp2302"
 
 # Project dev info
 config_project_id         = "open-targets-eu-dev"
