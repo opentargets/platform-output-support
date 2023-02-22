@@ -12,6 +12,8 @@ else
     suffix="_dev"
 fi
 
+data_set_id="platform${suffix}"
+
 bq --project_id=${project_id} --location='eu' rm -f -r platform${suffix}
 bq --project_id=${project_id} --location='eu' mk platform${suffix}
 
@@ -23,27 +25,37 @@ datasets=$(curl -X GET https://raw.githubusercontent.com/opentargets/platform-ap
 
 for ds in $datasets
 do
-  echo "[DATASET] Loading '$ds'"
+  echo "[DATASET]---> Loading '$ds' <---]"
+  #gssource=$(gsutil list $path_prefix"/**" | grep -v SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | sed 's/_SUCCESS//g')
+  bq --project_id=${project_id} --location='eu' mk "platform${suffix}.${ds}"
+  #echo -e "[BQ]---> Processing GS path: ${gssource}"
 
-  gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | sed 's/_SUCCESS//g' 2> /dev/null || true
-  status=$?
-
-  if [[ $status == 0 ]]; then
-    gssource=$(gsutil list $path_prefix"/**" | grep SUCCESS | grep -v metadata | grep -v errors | grep $ds"/" | sed 's/_SUCCESS//g')
-    bq --project_id=${project_id} --location='eu' mk platform${suffix}.${ds}
-
-    if [[ $ds = evidence* ]]
-    then
-      bq --project_id=${project_id} --dataset_id=platform${suffix} --location='eu' load --autodetect --source_format=PARQUET \
+  echo "[BQ]---> Processing Evidence GS path: ${path_prefix}/${ds}/"
+  if [[ $ds = evidence* ]]
+  then
+    for evidence_folder in $(gsutil ls "${path_prefix}/${ds}" | grep "sourceId" )
+    do
+      bq --project_id=${project_id} --location='eu' load --autodetect --source_format=PARQUET \
         --hive_partitioning_mode=STRINGS \
-        --hive_partitioning_source_uri_prefix="${path_prefix}/${ds}/" ${ds}  "${gssource}sourceId*"
-    else
-      bq --project_id=${project_id} --dataset_id=platform${suffix} --location='eu' load --autodetect --source_format=PARQUET ${ds} \
-        "${gssource}part*"
-    fi
+        --hive_partitioning_source_uri_prefix="${path_prefix}/${ds}/" $data_set_id.${ds} "${evidence_folder}part*"
+    done
   else
-     echo "=== ERROR " $ds ": table does not exist"
+    gsutil ls "${path_prefix}/${ds}" 2>&1 > /dev/null
+    if [[ $? == 0 ]]
+    then
+      bq --project_id=${project_id} --location='eu' load --autodetect --source_format=PARQUET $data_set_id.${ds} "${path_prefix}/${ds}/part*"
+    else
+      echo "WARNING: No data found for ${ds}, could it be OpenFDA?"
+      bq --project_id=${project_id} --location='eu' load --autodetect --source_format=PARQUET $data_set_id.${ds} "${path_prefix}/fda/${ds}/part*"
+      if [[ $? == 0 ]]
+      then
+        echo "SUCCESS: OpenFDA data found for ${ds}, at ${path_prefix}/fda/${ds}"
+      else
+        echo "ERROR: No data found for ${ds}, at ${path_prefix}/fda/${ds}"
+      fi
+    fi
   fi
+
 done
 
 # Adding allUserAuth roles

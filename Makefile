@@ -91,7 +91,8 @@ bigqueryprod:## Big Query Production
 	@echo "==== Big Query DEV ===="
 	@echo ${GS_ETL_DATASET}
 	export PROJECT_ID=open-targets-prod; \
-    export RELEASE_ID=${RELEASE_ID_PROD}; \${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
+    export RELEASE_ID=${RELEASE_ID_PROD}; \
+	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
 
 sync: tmp credentials ## Sync data to EBI FTP service
 	@echo "==== Sync ===="
