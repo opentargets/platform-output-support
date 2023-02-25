@@ -96,6 +96,7 @@ bigqueryprod:## Big Query Production
 
 sync: tmp credentials ## Sync data to EBI FTP service
 	@echo "==== Sync ===="
+	export GS_SYNC_FROM=${GS_SYNC_FROM}; \
 	${PATH_SCRIPTS_DATASYNC}/launch_ebi_ftp_sync.sh
 
 syncgs: ## Copy data from pre-release to production
