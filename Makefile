@@ -40,9 +40,14 @@ credentials: ## Create a credentials file for Google Cloud
 set_profile: ## Set an active configuration profile, e.g. "make set_profile profile='development'" (see folder 'profiles')
 	@echo "[POS] Setting active profile '${profile}'"
 	@ln -sf profiles/config.${profile} config.tfvars
+	@cd terraform_create_images; ln -sf ../profiles/config.${profile} terraform.tfvars
+
+clean_profile: ## Clean the active configuration profile
+	@echo "[POS] Cleaning active profile"
+	@rm -f config.tfvars
+	@rm -f terraform_create_images/terraform.tfvars
 
 image: ## Create Google cloud Clickhouse image and ElasticSearch image.
-	@cp ${ROOT_DIR_MAKEFILE_POS}/config.tfvars ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images/terraform.tfvars
 	@cd ${ROOT_DIR_MAKEFILE_POS}/terraform_create_images ; \
 		export tf_id="${TF_WORKSPACE_ID}" && \
 		echo "[TERRAFORM] Using Terraform Workspace ID '$${tf_id}'" && \
@@ -105,4 +110,4 @@ syncgs: ## Copy data from pre-release to production
 	@echo "Release ID '${RELEASE_ID_PROD}'"
 	${PATH_SCRIPTS_DATASYNC}/syncgs.sh
 
-.PHONY: credentials clean syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
+.PHONY: credentials clean clean_profile syncgs sync bigqueryprod bigquerydev set_profile image clean_image_infrastructure clean_all_image_infrastructure
