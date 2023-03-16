@@ -235,6 +235,8 @@ wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRA
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/aotf_log.sql
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/sentences_log.sql
 wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/sentences.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/target_engine_log.sql
+wget https://raw.githubusercontent.com/opentargets/platform-output-support/${BRANCH}/scripts/CH/target_engine.sql
 
 clickhouse-client --multiline --multiquery <aotf_log.sql
 echo "create and fill in aotf_log"
@@ -260,6 +262,11 @@ gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/literature/literatureSentences/par
 clickhouse-client --multiline --multiquery <sentences.sql
 clickhouse-client -h localhost --query="drop table ot.sentences_log"
 echo "Literature sentences done"
+
+clickhouse-client --multiline --multiquery <target_engine_log.sql
+gsutil -m cat gs://${GS_ETL_DATASET}/etl/json/targetEngine/part\* | clickhouse-client -h localhost --query="insert into ot.target_engine_log format JSONEachRow "
+clickhouse-client --multiline --multiquery <target_engine.sql
+echo "TargetEngine done"
 
 # Get some data to validate loading was successful
 ch_logs="ch_loading_logs.txt"
