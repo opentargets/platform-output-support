@@ -16,5 +16,6 @@ searchDrug,search_drug,,index_settings_search.json
 searchTarget,search_target,,index_settings_search.json
 searchDisease,search_disease,,index_settings_search.json
 targets,target,id,index_settings.json
+targetPriorisation,targetPriorisation,targetId,index_settings.json
 AOTFElasticsearch,evidences_aotf,,index_settings.json
 mousePhenotypes,mouse_phenotypes,,index_settings.json
