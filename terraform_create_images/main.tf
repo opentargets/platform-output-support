@@ -61,6 +61,7 @@ module "backend_clickhouse" {
   vm_default_zone              = var.config_gcp_default_zone
   vm_clickhouse_boot_image     = var.config_vm_clickhouse_boot_image
   vm_clickhouse_boot_disk_size = var.config_vm_clickhouse_boot_disk_size
+  git_branch                   = var.git_branch
 }
 
 
@@ -83,4 +84,5 @@ module "backend_pos_vm" {
   vm_elasticsearch_uri  = module.backend_elastic_search.elasticsearch_vm_name
   vm_clickhouse_uri     = module.backend_clickhouse.clickhouse_vm_name
   release_name          = var.config_release_name
+  git_branch            = var.git_branch
 }
