@@ -8,6 +8,7 @@ export INDEX_SETTINGS=${ETL_INDEX_SETTINGS:-"index_settings.json"}
 export ES=${ETL_ES:-"http://localhost:9200"}
 
 ./load_targets.sh
+./load_targets_priorisation.sh
 ./load_diseases.sh
 ./load_disease_hpo.sh
 ./load_hpo.sh
