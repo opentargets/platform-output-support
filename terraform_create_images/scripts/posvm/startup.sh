@@ -9,8 +9,8 @@ function log() {
 # Environment variables
 gcp_device_disk_clickhouse="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_CH}"
 gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_ES}"
-mount_point_clickhouse="/mnt/data_clickhouse"
-mount_point_elasticsearch="/mnt/data_elasticsearch"
+mount_point_clickhouse="/mnt/clickhouse"
+mount_point_elasticsearch="/mnt/elasticsearch"
 
 # Environment summary function
 function env_summary() {
@@ -25,6 +25,7 @@ function env_summary() {
   log "  DATA_DISK_DEVICE_NAME_ES: ${DATA_DISK_DEVICE_NAME_ES}"
   log "  DISK_IMAGE_NAME_CH: ${DISK_IMAGE_NAME_CH}"
   log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
+  log "  POS_REPO_BRANCH: ${POS_REPO_BRANCH}"
   log "  CLICKHOUSE_URI: ${CLICKHOUSE_URI}"
   log "  ELASTICSEARCH_URI: ${ELASTICSEARCH_URI}"
   log "  gcp_device_disk_clickhouse: $${gcp_device_disk_clickhouse}"
@@ -49,7 +50,7 @@ function mount_disk() {
 # Main Script
 echo "---> [LAUNCH] POS support VM"
 env_summary
-log "Mount data disks"
+log "Mount data disks for Clickhouse and Elastic Search"
 mount_disk $${gcp_device_disk_clickhouse} $${mount_point_clickhouse}
 mount_disk $${gcp_device_disk_elasticsearch} $${mount_point_elasticsearch}
 # DEBUG - HALT SCRIPT
@@ -60,7 +61,7 @@ exit 0
 
 
 
-sudo sh -c 'apt update && apt -y install wget && apt -y install python3-pip && pip3 install elasticsearch-loader'
+sudo sh -c 'apt update && apt -y install wget vim tmux && apt -y install python3-pip && pip3 install elasticsearch-loader'
 
 
 

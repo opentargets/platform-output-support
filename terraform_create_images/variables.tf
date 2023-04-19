@@ -37,6 +37,12 @@ variable "config_project_id" {
   default     = "open-targets-eu-dev"
 }
 
+variable "config_repo_branch_pos" {
+  description = "Open Targets Platform Output Support repository branch, parameter for building the images, default 'main'"
+  type        = string
+  default     = "main"
+}
+
 // --- ETL info --- //
 variable "is_partner_instance" {
   description = "Is partners instance? By default false"
