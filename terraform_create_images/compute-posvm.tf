@@ -60,15 +60,13 @@ resource "google_compute_instance" "posvm" {
   // Attach Clickhouse data disk
   attached_disk {
     source      = google_compute_disk.clickhouse_data_disk.self_link
-    device_name = local.data_disk_name_clickhouse
-    auto_delete = true
+    device_name = local.data_disk_device_name_clickhouse
   }
 
   // Attach ElasticSearch data disk
   attached_disk {
     source      = google_compute_disk.elastic_search_data_disk.self_link
-    device_name = local.data_disk_name_elastic_search
-    auto_delete = true
+    device_name = local.data_disk_device_name_elastic_search
   }
 
   // WARNING - Does this machine need a public IP. No cloud routing for eu-dev.
@@ -85,20 +83,24 @@ resource "google_compute_instance" "posvm" {
       {
         PROJECT_ID               = var.config_project_id,
         GC_ZONE                  = var.config_gcp_default_zone,
-        GS_ETL_DATASET           = var.gs_etl,
+        GS_ETL_DATASET           = var.config_gs_etl,
         IS_PARTNER_INSTANCE      = var.is_partner_instance,
         GS_DIRECT_FILES          = var.config_direct_json,
-        DATA_DISK_DEVICE_NAME_CH = local.data_disk_name_clickhouse,
-        DATA_DISK_DEVICE_NAME_ES = local.data_disk_name_elastic_search,
-        DISK_IMAGE_NAME_CH       = local.image_name_clickhouse,
-        DISK_IMAGE_NAME_ES       = local.image_name_elastic_search,
+        DATA_DISK_DEVICE_NAME_CH = local.data_disk_device_name_clickhouse,
+        DATA_DISK_DEVICE_NAME_ES = local.data_disk_device_name_elastic_search,
+        DISK_IMAGE_NAME_CH       = local.disk_image_name_clickhouse,
+        DISK_IMAGE_NAME_ES       = local.disk_image_name_elastic_search,
+        # TODO Removev this
+        CLICKHOUSE_URI = "http://localhost:8123",
+        ELASTICSEARCH_URI = "http://localhost:9200",
+        IMAGE_PREFIX = "IMGPREFIX_REMOVE_ME",
       }
     )
     google-logging-enabled = true
   }
 
   service_account {
-    email  = "pos-service-account@${var.project_id}.iam.gserviceaccount.com"
+    email  = "pos-service-account@${var.config_project_id}.iam.gserviceaccount.com"
     scopes = ["cloud-platform"]
   }
 
