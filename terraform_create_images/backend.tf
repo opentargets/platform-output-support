@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "opentargets-eu-dev-terraform"
-    prefix = "pos"
+    bucket = "open-targets-ops"
+    prefix = "terraform/platform-pos"
   }
 }
