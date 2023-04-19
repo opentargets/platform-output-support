@@ -45,7 +45,16 @@ function mount_disk() {
   log "Mounting disk $${device_name} to $${mount_point}"
   mkdir -p $${mount_point}
   mount -o defaults $${device_name} $${mount_point}
-}  
+}
+
+# This function updates the system and installs the required packages
+function install_packages() {
+  log "Updating system"
+  apt-get update
+  log "Installing required packages"
+  apt-get install -y wget vim tmux python3-pip docker.io docker-compose
+  #pip3 install elasticsearch-loader
+}
 
 # Main Script
 echo "---> [LAUNCH] POS support VM"
@@ -53,6 +62,8 @@ env_summary
 log "Mount data disks for Clickhouse and Elastic Search"
 mount_disk $${gcp_device_disk_clickhouse} $${mount_point_clickhouse}
 mount_disk $${gcp_device_disk_elasticsearch} $${mount_point_elasticsearch}
+log "Update system and install required packages"
+install_packages
 # DEBUG - HALT SCRIPT
 exit 0
 
