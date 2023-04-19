@@ -1,6 +1,8 @@
 locals {
   // Loging to the remote host, details
-  remote_user_name = "provisioner"
+  posvm_remote_user_name = "provisioner"
+  // IAM role to be used to create the VM
+  posvm_roles   = ["roles/compute.admin", "roles/logging.viewer","roles/compute.instanceAdmin","roles/storage.objectViewer","roles/storage.admin"]
   // Time Stamp to be used in the image name
   image_timestamp = formatdate("YYYYMMDD-hhmm", timestamp())
   // Elastic Search disk image name
