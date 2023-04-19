@@ -57,6 +57,13 @@ resource "google_compute_instance" "posvm" {
     }
   }
 
+  // Attach Clickhouse data disk
+    attached_disk {
+        source      = google_compute_disk.clickhouse_data_disk.self_link
+        device_name = "clickhouse-data-disk"
+        auto_delete = false
+    }
+
   // WARNING - Does this machine need a public IP. No cloud routing for eu-dev.
   network_interface {
     network = "default"
