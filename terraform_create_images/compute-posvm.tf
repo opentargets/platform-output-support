@@ -91,9 +91,9 @@ resource "google_compute_instance" "posvm" {
         DISK_IMAGE_NAME_CH       = local.disk_image_name_clickhouse,
         DISK_IMAGE_NAME_ES       = local.disk_image_name_elastic_search,
         # TODO Removev this
-        CLICKHOUSE_URI = "http://localhost:8123",
+        CLICKHOUSE_URI    = "http://localhost:8123",
         ELASTICSEARCH_URI = "http://localhost:9200",
-        IMAGE_PREFIX = "IMGPREFIX_REMOVE_ME",
+        IMAGE_PREFIX      = "IMGPREFIX_REMOVE_ME",
       }
     )
     google-logging-enabled = true
