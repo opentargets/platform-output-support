@@ -18,13 +18,14 @@ terraform {
 provider "google" {
   region  = var.config_gcp_default_region
   project = var.config_project_id
+  zone = var.config_gcp_default_zone
 }
 
 
 provider "google-beta" {
   project = var.config_project_id
   region  = var.config_gcp_default_region
-  #zone   = local.gcp_zone
+  zone = var.config_gcp_default_zone
 }
 
 // --- Elastic Search Backend --- //
