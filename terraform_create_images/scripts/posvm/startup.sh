@@ -1,9 +1,41 @@
 #!/bin/bash
 # Startup script for Elastic Search VM Instance
 
+# Logging helper function
+function log() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
+}
+
+# Environment summary function
+function env_summary() {
+  log "Environment summary:"
+  log "  PROJECT_ID: ${PROJECT_ID}"
+  log "  GC_ZONE: ${GC_ZONE}"
+  log "  GS_ETL_DATASET: ${GS_ETL_DATASET}"
+  log "  IS_PARTNER_INSTANCE: ${IS_PARTNER_INSTANCE}"
+  log "  GS_DIRECT_FILES: ${GS_DIRECT_FILES}"
+  log "  DATA_DISK_DEVICE_NAME_CH: ${DATA_DISK_DEVICE_NAME_CH}"
+  log "  DATA_DISK_DEVICE_NAME_ES: ${DATA_DISK_DEVICE_NAME_ES}"
+  log "  DISK_IMAGE_NAME_CH: ${DISK_IMAGE_NAME_CH}"
+  log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
+}
+
+
+
+# Main Script
 echo "---> [LAUNCH] POS support VM"
+env_summary
+# DEBUG - HALT SCRIPT
+exit 0
+
+
+
+
+
 
 sudo sh -c 'apt update && apt -y install wget && apt -y install python3-pip && pip3 install elasticsearch-loader'
+
+
 
 # Install esbulk.
 mkdir /tmp
