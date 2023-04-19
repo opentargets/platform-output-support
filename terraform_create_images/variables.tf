@@ -20,6 +20,7 @@ variable "config_enable_graphQL" {
 variable "config_gcp_default_region" {
   description = "Default region when not specified in the module"
   type = string
+  default = "europe-west1"
 }
 
 variable "config_gcp_default_zone" {
