@@ -23,6 +23,7 @@ resource "google_compute_disk" "clickhouse_data_disk" {
   type    = "pd-ssd"
   zone = var.config_gcp_default_zone
   size    = var.vm_clickhouse_boot_disk_size
+  labels = local.base_labels
 }
 
 
