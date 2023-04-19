@@ -9,6 +9,8 @@ function log() {
 # Environment variables
 gcp_device_disk_clickhouse="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_CH}"
 gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_ES}"
+mount_point_clickhouse="/mnt/data_clickhouse"
+mount_point_elasticsearch="/mnt/data_elasticsearch"
 
 # Environment summary function
 function env_summary() {
@@ -25,15 +27,31 @@ function env_summary() {
   log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
   log "  CLICKHOUSE_URI: ${CLICKHOUSE_URI}"
   log "  ELASTICSEARCH_URI: ${ELASTICSEARCH_URI}"
-  log "  gcp_device_disk_clickhouse: ${gcp_device_disk_clickhouse}"
-  log "  gcp_device_disk_elasticsearch: ${gcp_device_disk_elasticsearch}"
+  log "  gcp_device_disk_clickhouse: $${gcp_device_disk_clickhouse}"
+  log "  gcp_device_disk_elasticsearch: $${gcp_device_disk_elasticsearch}"
+  log "  mount_point_clickhouse: $${mount_point_clickhouse}"
+  log "  mount_point_elasticsearch: $${mount_point_elasticsearch}"
 }
 
-#
+# Function to format and mount a given disk device
+function mount_disk() {
+  local device_name=$1
+  local mount_point=$2
+  # Format the disk using ext4 with no reserved blocks
+  log "Formatting disk ${device_name} with ext4"
+  mkfs.ext4 -m 0 ${device_name}
+  # Mount the disk
+  log "Mounting disk ${device_name} to ${mount_point}"
+  mkdir -p ${mount_point}
+  mount -o defaults ${device_name} ${mount_point}
+}  
 
 # Main Script
 echo "---> [LAUNCH] POS support VM"
 env_summary
+log "Mount data disks"
+mount_disk ${gcp_device_disk_clickhouse} ${mount_point_clickhouse}
+mount_disk ${gcp_device_disk_elasticsearch} ${mount_point_elasticsearch}
 # DEBUG - HALT SCRIPT
 exit 0
 
