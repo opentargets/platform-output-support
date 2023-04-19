@@ -15,7 +15,19 @@ resource "random_string" "posvm" {
   }
 }
 
+// Create a disk volume for Clickhouse data
+resource "google_compute_disk" "clickhouse_data_disk" {
+  project = var.config_project_id
+  name    = "${local.disk_image_name_clickhouse}"
+  description = "Clickhouse data disk"
+  type    = "pd-ssd"
+  zone = var.config_gcp_default_zone
+  size    = var.vm_clickhouse_boot_disk_size
+}
 
+
+
+// POS VM instance definition
 resource "google_compute_instance" "posvm" {
   project                   = var.config_project_id
   name                      = "${local.posvm_name_prefix}-${random_string.posvm.result}"
