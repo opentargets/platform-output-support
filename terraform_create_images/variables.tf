@@ -29,8 +29,9 @@ variable "config_gcp_default_zone" {
 }
 
 variable "config_project_id" {
-  description = "Default project to use when not specified in the module"
+  description = "Default project to use when not specified in the module, default 'open-targets-eu-dev'"
   type = string
+  default = "open-targets-eu-dev"
 }
 
 // --- ETL info --- //
