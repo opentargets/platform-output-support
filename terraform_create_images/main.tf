@@ -81,7 +81,7 @@ module "backend_pos_vm" {
   gs_etl                = var.config_gs_etl
   is_partner_instance   = var.is_partner_instance
   config_direct_json    = var.config_direct_json
-  vm_elasticsearch_uri  = module.backend_elastic_search.elasticsearch_vm_name
-  vm_clickhouse_uri     = module.backend_clickhouse.clickhouse_vm_name
+#  vm_elasticsearch_uri  = module.backend_elastic_search.elasticsearch_vm_name
+#  vm_clickhouse_uri     = module.backend_clickhouse.clickhouse_vm_name
   release_name          = var.config_release_name
 }
