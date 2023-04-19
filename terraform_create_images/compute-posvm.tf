@@ -26,6 +26,17 @@ resource "google_compute_disk" "clickhouse_data_disk" {
   labels = local.base_labels
 }
 
+// Create a disk volume for ElasticSearch data
+resource "google_compute_disk" "elastic_search_data_disk" {
+  project = var.config_project_id
+  name    = "${local.disk_image_name_elastic_search}"
+  description = "ElasticSearch data disk"
+  type    = "pd-ssd"
+  zone = var.config_gcp_default_zone
+  size    = var.vm_elastic_search_boot_disk_size
+  labels = local.base_labels
+}
+
 
 
 // POS VM instance definition
