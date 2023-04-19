@@ -107,6 +107,7 @@ variable "config_api_image_version" {
   default = ""
 }
 
+// TODO: remove this variable
 variable "config_appengine_name" {
   description = "AppEngine dev. promote vs no-promote"
   type = string
