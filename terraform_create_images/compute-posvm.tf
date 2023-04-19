@@ -61,7 +61,14 @@ resource "google_compute_instance" "posvm" {
     attached_disk {
         source      = google_compute_disk.clickhouse_data_disk.self_link
         device_name = "clickhouse-data-disk"
-        auto_delete = false
+        auto_delete = true
+    }
+
+    // Attach ElasticSearch data disk
+    attached_disk {
+        source      = google_compute_disk.elastic_search_data_disk.self_link
+        device_name = "elastic-search-data-disk"
+        auto_delete = true
     }
 
   // WARNING - Does this machine need a public IP. No cloud routing for eu-dev.
