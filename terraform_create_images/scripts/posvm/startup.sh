@@ -6,6 +6,10 @@ function log() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
 }
 
+# Environment variables
+gcp_device_disk_clickhouse="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_CH}"
+gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_ES}"
+
 # Environment summary function
 function env_summary() {
   log "Environment summary:"
@@ -14,13 +18,18 @@ function env_summary() {
   log "  GS_ETL_DATASET: ${GS_ETL_DATASET}"
   log "  IS_PARTNER_INSTANCE: ${IS_PARTNER_INSTANCE}"
   log "  GS_DIRECT_FILES: ${GS_DIRECT_FILES}"
+  log "  GCP_DEVICE_DISK_PREFIX: ${GCP_DEVICE_DISK_PREFIX}"
   log "  DATA_DISK_DEVICE_NAME_CH: ${DATA_DISK_DEVICE_NAME_CH}"
   log "  DATA_DISK_DEVICE_NAME_ES: ${DATA_DISK_DEVICE_NAME_ES}"
   log "  DISK_IMAGE_NAME_CH: ${DISK_IMAGE_NAME_CH}"
   log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
+  log "  CLICKHOUSE_URI: ${CLICKHOUSE_URI}"
+  log "  ELASTICSEARCH_URI: ${ELASTICSEARCH_URI}"
+  log "  gcp_device_disk_clickhouse: ${gcp_device_disk_clickhouse}"
+  log "  gcp_device_disk_elasticsearch: ${gcp_device_disk_elasticsearch}"
 }
 
-
+#
 
 # Main Script
 echo "---> [LAUNCH] POS support VM"

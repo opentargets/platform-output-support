@@ -10,6 +10,8 @@ locals {
   data_disk_device_name_clickhouse = "clickhouse-data-disk"
   // ElasticSearch data disk device name
   data_disk_device_name_elastic_search = "elastic-search-data-disk"
+  // Google Device Disk prefix
+  gcp_device_disk_prefix = "/dev/disk/by-id/google-"
 
   // --- Disk Images Configuration --- //
   // Time Stamp to be used in the image name
