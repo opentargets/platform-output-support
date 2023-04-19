@@ -40,6 +40,7 @@ variable "config_project_id" {
 // --- ETL info --- //
 variable "is_partner_instance" {
   description = "Is partners instance? By default false"
+  type = bool
   default = false
 }
 
