@@ -91,7 +91,7 @@ resource "google_compute_instance" "posvm" {
         DATA_DISK_DEVICE_NAME_ES = local.data_disk_device_name_elastic_search,
         DISK_IMAGE_NAME_CH       = local.disk_image_name_clickhouse,
         DISK_IMAGE_NAME_ES       = local.disk_image_name_elastic_search,
-        POS_REPO_BRANCH          = var.config_pos_repo_branch,
+        POS_REPO_BRANCH          = var.config_repo_branch_pos,
         # TODO Removev this
         CLICKHOUSE_URI    = "http://localhost:8123",
         ELASTICSEARCH_URI = "http://localhost:9200",
