@@ -8,6 +8,7 @@ variable "config_script_name" {
 variable "config_release_name" {
   description = "Open Targets Platform release name, parameter for the images"
   type = string
+  default = "pos-unset"
 }
 
 // TODO: remove this variable
