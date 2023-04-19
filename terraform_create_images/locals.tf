@@ -9,9 +9,17 @@ locals {
 
   // --- Disk Images Configuration --- //
   // Time Stamp to be used in the image name
-  image_timestamp = formatdate("YYYYMMDD-hhmm", timestamp())
+  disk_image_timestamp = formatdate("YYYYMMDD-hhmm", timestamp())
   // Elastic Search disk image name
-  image_name_elastic_search = "${var.config_release_name}-${local.image_timestamp}-es"
+  disk_image_name_elastic_search = "${var.config_release_name}-${local.image_timestamp}-es"
   // Clickhouse disk image name
-  image_name_clickhouse = "${var.config_release_name}-${local.image_timestamp}-ch"
+  disk_image_name_clickhouse = "${var.config_release_name}-${local.image_timestamp}-ch"
+
+  // --- Labels Configuration --- //
+  base_labels = {
+    "team" = "Open Targets"
+    "subteam" = "Backend"
+    "product" = "Open Targets Platform"
+    "tool" = "POS"
+  }
 }
