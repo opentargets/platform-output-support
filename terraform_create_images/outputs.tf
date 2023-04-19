@@ -1,6 +1,6 @@
 // POS VM name
-output "pos_support_vm_name" {
-  value = module.backend_pos_vm.pos_support_vm_name
+output "posvm_name" {
+  value = google_compute_instance.posvm.name
 }
 
 // Clickhouse disk image name

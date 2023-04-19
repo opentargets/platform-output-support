@@ -62,9 +62,9 @@ variable "config_vm_pos_boot_image" {
 }
 
 variable "config_vm_pos_boot_disk_size" {
-  description = "POS VM boot disk size, default '500GB'"
+  description = "POS VM boot disk size, default '64GB'"
   type        = string
-  default     = 500
+  default     = 64
 }
 
 variable "config_vm_pos_machine_type" {

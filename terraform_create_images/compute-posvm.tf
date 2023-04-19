@@ -7,9 +7,9 @@ resource "random_string" "posvm" {
   upper   = false
   special = false
   keepers = {
-    vm_pos_boot_disk_size = var.vm_pos_boot_disk_size
+    vm_pos_boot_disk_size = var.config_vm_pos_boot_disk_size
     // Take into account the machine type as well
-    machine_type = var.vm_pos_machine_type
+    machine_type = var.config_vm_pos_machine_type
     // Be aware of launch script changes
     launch_script_hash = md5(file("${path.module}/scripts/posvm/startup.sh"))
   }
@@ -22,7 +22,7 @@ resource "google_compute_disk" "clickhouse_data_disk" {
   description = "Clickhouse data disk"
   type        = "pd-ssd"
   zone        = var.config_gcp_default_zone
-  size        = var.vm_clickhouse_boot_disk_size
+  size        = var.config_clickhouse_data_disk_size
   labels      = local.base_labels
 }
 
@@ -33,7 +33,7 @@ resource "google_compute_disk" "elastic_search_data_disk" {
   description = "ElasticSearch data disk"
   type        = "pd-ssd"
   zone        = var.config_gcp_default_zone
-  size        = var.vm_elastic_search_boot_disk_size
+  size        = var.config_elastic_search_data_disk_size
   labels      = local.base_labels
 }
 
@@ -43,17 +43,17 @@ resource "google_compute_disk" "elastic_search_data_disk" {
 resource "google_compute_instance" "posvm" {
   project                   = var.config_project_id
   name                      = "${local.posvm_name_prefix}-${random_string.posvm.result}"
-  machine_type              = var.vm_pos_machine_type
-  zone                      = var.vm_default_zone
+  machine_type              = var.config_vm_pos_machine_type
+  zone                      = var.config_gcp_default_zone
   allow_stopping_for_update = true
   // TODO This should be set to false
   can_ip_forward = true
 
   boot_disk {
     initialize_params {
-      image = var.vm_pos_boot_image
+      image = var.config_vm_pos_boot_image
       type  = "pd-ssd"
-      size  = var.vm_pos_boot_disk_size
+      size  = var.config_vm_pos_boot_disk_size
     }
   }
 
@@ -83,8 +83,8 @@ resource "google_compute_instance" "posvm" {
     startup-script = templatefile(
       "${path.module}/scripts/posvm/startup.sh",
       {
-        PROJECT_ID               = var.project_id,
-        GC_ZONE                  = var.vm_default_zone,
+        PROJECT_ID               = var.config_project_id,
+        GC_ZONE                  = var.config_gcp_default_zone,
         GS_ETL_DATASET           = var.gs_etl,
         IS_PARTNER_INSTANCE      = var.is_partner_instance,
         GS_DIRECT_FILES          = var.config_direct_json,
