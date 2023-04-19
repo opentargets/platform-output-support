@@ -38,20 +38,20 @@ function mount_disk() {
   local device_name=$1
   local mount_point=$2
   # Format the disk using ext4 with no reserved blocks
-  log "Formatting disk ${device_name} with ext4"
-  mkfs.ext4 -m 0 ${device_name}
+  log "Formatting disk $${device_name} with ext4"
+  mkfs.ext4 -m 0 $${device_name}
   # Mount the disk
-  log "Mounting disk ${device_name} to ${mount_point}"
-  mkdir -p ${mount_point}
-  mount -o defaults ${device_name} ${mount_point}
+  log "Mounting disk $${device_name} to $${mount_point}"
+  mkdir -p $${mount_point}
+  mount -o defaults $${device_name} $${mount_point}
 }  
 
 # Main Script
 echo "---> [LAUNCH] POS support VM"
 env_summary
 log "Mount data disks"
-mount_disk ${gcp_device_disk_clickhouse} ${mount_point_clickhouse}
-mount_disk ${gcp_device_disk_elasticsearch} ${mount_point_elasticsearch}
+mount_disk $${gcp_device_disk_clickhouse} $${mount_point_clickhouse}
+mount_disk $${gcp_device_disk_elasticsearch} $${mount_point_elasticsearch}
 # DEBUG - HALT SCRIPT
 exit 0
 
