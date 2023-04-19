@@ -116,9 +116,9 @@ variable "config_appengine_name" {
 
 // --- POS VM Configuration --- //
 variable "config_vm_pos_boot_image" {
-  description = "Boot image configuration for POS VM"
+  description = "Boot image configuration for POS VM, default 'Debian 11'"
   type = string
-  default = "debian-10"
+  default = "debian-11"
 }
 
 variable "config_vm_pos_boot_disk_size" {
@@ -128,7 +128,7 @@ variable "config_vm_pos_boot_disk_size" {
 }
 
 variable "config_vm_pos_machine_type" {
-  description = "Machine type for POS vm"
+  description = "Machine type for POS vm, default 'n1-standard-8'"
   type = string
-  default = "debian-10"
+  default = "n1-standard-8"
 }
