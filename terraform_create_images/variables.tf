@@ -54,6 +54,61 @@ variable "config_direct_json" {
   type        = string
 }
 
+// --- POS VM Configuration --- //
+variable "config_vm_pos_boot_image" {
+  description = "Boot image configuration for POS VM, default 'Debian 11'"
+  type        = string
+  default     = "debian-11"
+}
+
+variable "config_vm_pos_boot_disk_size" {
+  description = "POS VM boot disk size, default '500GB'"
+  type        = string
+  default     = 500
+}
+
+variable "config_vm_pos_machine_type" {
+  description = "Machine type for POS vm, default 'n1-standard-8'"
+  type        = string
+  default     = "n1-standard-8"
+}
+
+// --- Clickhouse Configuration --- //
+variable "config_clickhouse_version" {
+  description = "Clickhouse docker image version to deploy"
+  type        = string
+  default     = "22.3.12.19-alpine"
+}
+
+variable "config_clickhouse_data_disk_size" {
+  description = "Clickhouse data disk size to deploy"
+  type        = string
+  default     = "64"
+}
+
+// --- Elastic Search Configuration --- //
+variable "config_elastic_search_version" {
+  description = "Elastic search docker image version to deploy"
+  type        = string
+  default     = "7.13.4"
+}
+
+variable "config_elastic_search_data_disk_size" {
+  description = "Elastic search data disk size to deploy"
+  type        = string
+  default     = "128"
+}
+
+
+
+
+
+
+
+
+
+
+
 // --- Elastic Search Configuration --- //
 variable "config_vm_elastic_boot_image" {
   description = "Boot image configuration for the deployed Elastic Search Instances"
@@ -84,11 +139,6 @@ variable "config_vm_elastic_search_boot_disk_size" {
 
 // --- Clickhouse Configuration --- //
 
-variable "config_vm_clickhouse_boot_image" {
-  description = "Boot image configuration for the deployed clickhouse Instances"
-  type        = string
-  default     = "debian-10"
-}
 
 variable "config_vm_clickhouse_vcpus" {
   description = "CPU count configuration for the deployed clickhouse Instances"
@@ -118,23 +168,4 @@ variable "config_appengine_name" {
   description = "AppEngine dev. promote vs no-promote"
   type        = string
   default     = "pos-api"
-}
-
-// --- POS VM Configuration --- //
-variable "config_vm_pos_boot_image" {
-  description = "Boot image configuration for POS VM, default 'Debian 11'"
-  type        = string
-  default     = "debian-11"
-}
-
-variable "config_vm_pos_boot_disk_size" {
-  description = "POS VM boot disk size, default '500GB'"
-  type        = string
-  default     = 500
-}
-
-variable "config_vm_pos_machine_type" {
-  description = "Machine type for POS vm, default 'n1-standard-8'"
-  type        = string
-  default     = "n1-standard-8"
 }
