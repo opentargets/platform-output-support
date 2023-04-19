@@ -100,6 +100,7 @@ variable "config_vm_clickhouse_boot_disk_size" {
 }
 
 // --- GraphQL VM Configuration. Deploy appEngine. If empty doesn't deploy the appEngine --- //
+// TODO: remove this variable
 variable "config_api_image_version" {
   description = "API Docker image version to use in deployment"
   type = string
