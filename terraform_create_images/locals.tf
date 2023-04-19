@@ -21,9 +21,9 @@ locals {
 
   // --- Labels Configuration --- //
   base_labels = {
-    "team" = "Open Targets"
+    "team"    = "Open Targets"
     "subteam" = "Backend"
     "product" = "Open Targets Platform"
-    "tool" = "POS"
+    "tool"    = "POS"
   }
 }

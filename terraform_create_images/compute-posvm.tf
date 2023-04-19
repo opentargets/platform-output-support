@@ -17,24 +17,24 @@ resource "random_string" "posvm" {
 
 // Create a disk volume for Clickhouse data
 resource "google_compute_disk" "clickhouse_data_disk" {
-  project = var.config_project_id
-  name    = "${local.disk_image_name_clickhouse}"
+  project     = var.config_project_id
+  name        = local.disk_image_name_clickhouse
   description = "Clickhouse data disk"
-  type    = "pd-ssd"
-  zone = var.config_gcp_default_zone
-  size    = var.vm_clickhouse_boot_disk_size
-  labels = local.base_labels
+  type        = "pd-ssd"
+  zone        = var.config_gcp_default_zone
+  size        = var.vm_clickhouse_boot_disk_size
+  labels      = local.base_labels
 }
 
 // Create a disk volume for ElasticSearch data
 resource "google_compute_disk" "elastic_search_data_disk" {
-  project = var.config_project_id
-  name    = "${local.disk_image_name_elastic_search}"
+  project     = var.config_project_id
+  name        = local.disk_image_name_elastic_search
   description = "ElasticSearch data disk"
-  type    = "pd-ssd"
-  zone = var.config_gcp_default_zone
-  size    = var.vm_elastic_search_boot_disk_size
-  labels = local.base_labels
+  type        = "pd-ssd"
+  zone        = var.config_gcp_default_zone
+  size        = var.vm_elastic_search_boot_disk_size
+  labels      = local.base_labels
 }
 
 
@@ -58,18 +58,18 @@ resource "google_compute_instance" "posvm" {
   }
 
   // Attach Clickhouse data disk
-    attached_disk {
-        source      = google_compute_disk.clickhouse_data_disk.self_link
-        device_name = "${local.data_disk_name_clickhouse}"
-        auto_delete = true
-    }
+  attached_disk {
+    source      = google_compute_disk.clickhouse_data_disk.self_link
+    device_name = local.data_disk_name_clickhouse
+    auto_delete = true
+  }
 
-    // Attach ElasticSearch data disk
-    attached_disk {
-        source      = google_compute_disk.elastic_search_data_disk.self_link
-        device_name = "${local.data_disk_name_elastic_search}"
-        auto_delete = true
-    }
+  // Attach ElasticSearch data disk
+  attached_disk {
+    source      = google_compute_disk.elastic_search_data_disk.self_link
+    device_name = local.data_disk_name_elastic_search
+    auto_delete = true
+  }
 
   // WARNING - Does this machine need a public IP. No cloud routing for eu-dev.
   network_interface {
@@ -83,15 +83,15 @@ resource "google_compute_instance" "posvm" {
     startup-script = templatefile(
       "${path.module}/scripts/posvm/startup.sh",
       {
-        PROJECT_ID          = var.project_id,
-        GC_ZONE             = var.vm_default_zone,
-        GS_ETL_DATASET      = var.gs_etl,
-        IS_PARTNER_INSTANCE = var.is_partner_instance,
-        GS_DIRECT_FILES     = var.config_direct_json,
+        PROJECT_ID               = var.project_id,
+        GC_ZONE                  = var.vm_default_zone,
+        GS_ETL_DATASET           = var.gs_etl,
+        IS_PARTNER_INSTANCE      = var.is_partner_instance,
+        GS_DIRECT_FILES          = var.config_direct_json,
         DATA_DISK_DEVICE_NAME_CH = local.data_disk_name_clickhouse,
         DATA_DISK_DEVICE_NAME_ES = local.data_disk_name_elastic_search,
-        DISK_IMAGE_NAME_CH  = local.image_name_clickhouse,
-        DISK_IMAGE_NAME_ES  = local.image_name_elastic_search,
+        DISK_IMAGE_NAME_CH       = local.image_name_clickhouse,
+        DISK_IMAGE_NAME_ES       = local.image_name_elastic_search,
       }
     )
     google-logging-enabled = true
