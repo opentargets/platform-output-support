@@ -3,6 +3,7 @@
 variable "config_script_name" {
   description = "Open Targets Platform script name, not related to any configuration parameter."
   type = string
+  default = "pos-unset"
 }
 
 variable "config_release_name" {
