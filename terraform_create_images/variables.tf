@@ -10,6 +10,7 @@ variable "config_release_name" {
   type = string
 }
 
+// TODO: remove this variable
 variable "config_enable_graphQL" {
   description = "OpenTargets release with graphQL"
   type = bool
