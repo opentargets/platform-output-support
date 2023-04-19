@@ -88,8 +88,8 @@ resource "google_compute_instance" "posvm" {
         GS_ETL_DATASET      = var.gs_etl,
         IS_PARTNER_INSTANCE = var.is_partner_instance,
         GS_DIRECT_FILES     = var.config_direct_json,
-        DATA_DISK_NAME_CH = local.data_disk_name_clickhouse,
-        DATA_DISK_NAME_ES = local.data_disk_name_elastic_search,
+        DATA_DISK_DEVICE_NAME_CH = local.data_disk_name_clickhouse,
+        DATA_DISK_DEVICE_NAME_ES = local.data_disk_name_elastic_search,
         DISK_IMAGE_NAME_CH  = local.image_name_clickhouse,
         DISK_IMAGE_NAME_ES  = local.image_name_elastic_search,
       }
