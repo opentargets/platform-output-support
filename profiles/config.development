@@ -9,6 +9,7 @@ config_direct_json                          = "open-targets-pre-data-releases/ri
 config_gs_etl                               = "open-targets-pre-data-releases/ricardo/23.04.1/output"
 config_script_name                          = "posprod"
 config_release_name                         = "devpfhom"
+git_branch                                  = "2909-aotf-add-tables"
 
 # Project dev info
 config_project_id                           = "open-targets-eu-dev"
