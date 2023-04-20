@@ -9,6 +9,7 @@ resource "random_string" "random" {
     machine_type = var.vm_pos_machine_type
     // Be aware of launch script changes
     launch_script_hash = md5(file("${path.module}/scripts/startup.sh"))
+    git_branch         = var.git_branch
   }
 }
 
@@ -48,6 +49,7 @@ resource "google_compute_instance" "pos_vm" {
         IS_PARTNER_INSTANCE = var.is_partner_instance,
         GS_DIRECT_FILES     = var.config_direct_json,
         IMAGE_PREFIX        = var.release_name
+        GIT_BRANCH          = var.git_branch
       }
     )
     google-logging-enabled = true

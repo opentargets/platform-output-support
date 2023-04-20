@@ -41,16 +41,16 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_p
 
 sudo mkdir -p /tmp
 cd /tmp
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/output_etl_struct.jsonl
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_all_data.sh
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/${GIT_BRANCH}/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/${GIT_BRANCH}/terraform_create_images/modules/posvm/scripts/output_etl_struct.jsonl
+sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/${GIT_BRANCH}/terraform_create_images/modules/posvm/scripts/load_all_data.sh
 sudo chmod 555 load_all_data.sh
 sudo chmod 555 load_json_esbulk.sh
 
-sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings.json
-sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search_known_drugs.json
-sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search.json
-sudo wget -O /tmp/data/index_settings_genetics_evidence.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_genetics_evidence.json
+sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-output-support/${GIT_BRANCH}/scripts/ES/index_settings.json
+sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-output-support/${GIT_BRANCH}/scripts/ES/index_settings_search_known_drugs.json
+sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-output-support/${GIT_BRANCH}/scripts/ES/index_settings_search.json
+sudo wget -O /tmp/data/index_settings_genetics_evidence.json https://raw.githubusercontent.com/opentargets/platform-output-support/${GIT_BRANCH}/scripts/ES/index_settings_genetics_evidence.json
 
 export ES=${ELASTICSEARCH_URI}:9200
 export PREFIX_DATA=/tmp/data/
