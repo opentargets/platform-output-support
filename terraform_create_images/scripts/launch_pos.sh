@@ -22,3 +22,5 @@ source ${SCRIPTDIR}/config.sh
 log "Mount data disks for Clickhouse and Elastic Search"
 mount_disk $${gcp_device_disk_clickhouse} $${mount_point_data_clickhouse}
 mount_disk $${gcp_device_disk_elasticsearch} $${mount_point_data_elasticsearch}
+log "Make sure the list of folders needed to operate the postprocessing pipeline exist"
+ensure_folders_exist
