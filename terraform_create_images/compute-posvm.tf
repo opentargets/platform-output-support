@@ -15,6 +15,12 @@ resource "random_string" "posvm" {
   }
 }
 
+// Key pair for SSH access
+resource "tls_private_key" "posvm" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 // Create a disk volume for Clickhouse data
 resource "google_compute_disk" "clickhouse_data_disk" {
   project     = var.config_project_id
@@ -101,6 +107,7 @@ resource "google_compute_instance" "posvm" {
         IMAGE_PREFIX      = "IMGPREFIX_REMOVE_ME",
       }
     )
+    ssh-keys               = "${local.posvm_remote_user_name}:${tls_private_key.posvm.public_key_openssh}"
     google-logging-enabled = true
   }
 
@@ -115,6 +122,18 @@ resource "google_compute_instance" "posvm" {
   }
 
   // Provision the postproduction scripts
+  connection {
+    type        = "ssh"
+    host        = self.network_interface[0].access_config[0].nat_ip
+    user        = local.posvm_remote_user_name
+    private_key = tls_private_key.posvm.private_key_pem
+  }
+  // Create remote folders
+  provisioner "remote-exec" {
+    inline = [
+        "mkdir -p ${local.path_postprocessing_scripts}",
+    ]
+  }
   // Commong configuration
   provisioner "file" {
     content = templatefile("${path.module}/scripts/config.sh", {
