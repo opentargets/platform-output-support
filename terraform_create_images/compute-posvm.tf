@@ -92,6 +92,9 @@ resource "google_compute_instance" "posvm" {
         DISK_IMAGE_NAME_CH       = local.disk_image_name_clickhouse,
         DISK_IMAGE_NAME_ES       = local.disk_image_name_elastic_search,
         POS_REPO_BRANCH          = var.config_repo_branch_pos,
+        FLAG_POSTPROCESSING_SCRIPTS_READY = local.flag_postprocessing_scripts_ready,
+        PATH_POSTPROCESSING_SCRIPTS = local.path_postprocessing_scripts,
+        FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT = local.filename_postprocessing_scripts_entry_point,
         # TODO Removev this
         CLICKHOUSE_URI    = "http://localhost:8123",
         ELASTICSEARCH_URI = "http://localhost:9200",
