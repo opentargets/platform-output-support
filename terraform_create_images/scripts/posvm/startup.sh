@@ -14,7 +14,7 @@ function install_packages() {
   log "Updating system"
   apt-get update
   log "Installing required packages"
-  apt-get install -y wget vim tmux python3-pip docker.io docker-compose
+  apt-get install -y wget vim tmux python3-pip docker.io docker-compose tree
   #pip3 install elasticsearch-loader
 }
 
