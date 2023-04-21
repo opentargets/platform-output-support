@@ -8,8 +8,8 @@ locals {
   // VM name
   posvm_name_prefix = "${var.config_release_name}-posvm"
   // Postproduction source provisioning root path
-  path_source_postprocessing_scripts = "${path.module}/scripts/posvm/postproduction"
-  path_source_postprocessing_scripts_clickhouse = "${local.path_source_postprocessing_scripts}/clickhouse"
+  path_source_postprocessing_scripts                = "${path.module}/scripts/posvm/postproduction"
+  path_source_postprocessing_scripts_clickhouse     = "${local.path_source_postprocessing_scripts}/clickhouse"
   path_source_postprocessing_scripts_elastic_search = "${local.path_source_postprocessing_scripts}/elasticsearch"
 
   // --- POS VM data load process configuration --- //
@@ -24,14 +24,21 @@ locals {
   // ElasticSearch path to data mount point
   path_mount_data_elastic_search = "/mnt/elasticsearch"
   // Base path to the postprocessing pipeline scripts
-  path_postprocessing_root    = "/${local.posvm_remote_path_home}/pos"
-  path_postprocessing_scripts = "/${local.path_postprocessing_root}/scripts"
+  path_postprocessing_root                               = "/${local.posvm_remote_path_home}/pos"
+  path_postprocessing_scripts                            = "/${local.path_postprocessing_root}/scripts"
+  path_postprocessing_scripts_clickhouse                 = "/${local.path_postprocessing_scripts}/clickhouse"
+  path_postprocessing_scripts_elastic_search             = "/${local.path_postprocessing_scripts}/elasticsearch"
+  path_postprocessing_scripts_entry_point_clickhouse     = "/${local.path_postprocessing_scripts_clickhouse}/run.sh"
+  path_postprocessing_scripts_entry_point_elastic_search = "/${local.path_postprocessing_scripts_elastic_search}/run.sh"
   // Name of the postprocessing pipeline scripts entry point
   filename_postprocessing_scripts_entry_point = "launch_pos.sh"
   // Flag to signal that the postprocessing pipeline scripts are ready to run
   flag_postprocessing_scripts_ready = "/${local.path_postprocessing_root}/ready"
   // --- [END] POS VM data load process configuration [END] --- //
 
+  // --- Clickhouse specific configuration --- //
+  clickhouse_docker_image         = "clickhouse/clickhouse-server"
+  clickhouse_docker_image_version = var.config_clickhouse_version
   // --- Disk Images Configuration --- //
   // Time Stamp to be used in the image name
   disk_image_timestamp = formatdate("YYYYMMDD-hhmm", timestamp())

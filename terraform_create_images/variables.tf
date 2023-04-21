@@ -81,9 +81,9 @@ variable "config_vm_pos_machine_type" {
 
 // --- Clickhouse Configuration --- //
 variable "config_clickhouse_version" {
-  description = "Clickhouse docker image version to deploy"
+  description = "Clickhouse docker image version to deploy, default '23.3.1.2823'"
   type        = string
-  default     = "22.3.12.19-alpine"
+  default     = "23.3.1.2823"
 }
 
 variable "config_clickhouse_data_disk_size" {
@@ -114,7 +114,7 @@ variable "config_elastic_search_data_disk_size" {
 
 
 
-
+// --- REMOVE FROM HERE --- //
 // --- Elastic Search Configuration --- //
 variable "config_vm_elastic_boot_image" {
   description = "Boot image configuration for the deployed Elastic Search Instances"
