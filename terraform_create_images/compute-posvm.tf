@@ -81,19 +81,19 @@ resource "google_compute_instance" "posvm" {
     startup-script = templatefile(
       "${path.module}/scripts/posvm/startup.sh",
       {
-        PROJECT_ID               = var.config_project_id,
-        GC_ZONE                  = var.config_gcp_default_zone,
-        GS_ETL_DATASET           = var.config_gs_etl,
-        IS_PARTNER_INSTANCE      = var.is_partner_instance,
-        GS_DIRECT_FILES          = var.config_direct_json,
-        GCP_DEVICE_DISK_PREFIX  = local.gcp_device_disk_prefix,
-        DATA_DISK_DEVICE_NAME_CH = local.data_disk_device_name_clickhouse,
-        DATA_DISK_DEVICE_NAME_ES = local.data_disk_device_name_elastic_search,
-        DISK_IMAGE_NAME_CH       = local.disk_image_name_clickhouse,
-        DISK_IMAGE_NAME_ES       = local.disk_image_name_elastic_search,
-        POS_REPO_BRANCH          = var.config_repo_branch_pos,
-        FLAG_POSTPROCESSING_SCRIPTS_READY = local.flag_postprocessing_scripts_ready,
-        PATH_POSTPROCESSING_SCRIPTS = local.path_postprocessing_scripts,
+        PROJECT_ID                                  = var.config_project_id,
+        GC_ZONE                                     = var.config_gcp_default_zone,
+        GS_ETL_DATASET                              = var.config_gs_etl,
+        IS_PARTNER_INSTANCE                         = var.is_partner_instance,
+        GS_DIRECT_FILES                             = var.config_direct_json,
+        GCP_DEVICE_DISK_PREFIX                      = local.gcp_device_disk_prefix,
+        DATA_DISK_DEVICE_NAME_CH                    = local.data_disk_device_name_clickhouse,
+        DATA_DISK_DEVICE_NAME_ES                    = local.data_disk_device_name_elastic_search,
+        DISK_IMAGE_NAME_CH                          = local.disk_image_name_clickhouse,
+        DISK_IMAGE_NAME_ES                          = local.disk_image_name_elastic_search,
+        POS_REPO_BRANCH                             = var.config_repo_branch_pos,
+        FLAG_POSTPROCESSING_SCRIPTS_READY           = local.flag_postprocessing_scripts_ready,
+        PATH_POSTPROCESSING_SCRIPTS                 = local.path_postprocessing_scripts,
         FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT = local.filename_postprocessing_scripts_entry_point,
         # TODO Removev this
         CLICKHOUSE_URI    = "http://localhost:8123",
@@ -112,5 +112,39 @@ resource "google_compute_instance" "posvm" {
   // We add the lifecyle configuration
   lifecycle {
     create_before_destroy = true
+  }
+
+  // Provision the postproduction scripts
+  // Commong configuration
+  provisioner "file" {
+    content = templatefile("${path.module}/scripts/config.sh", {
+      PROJECT_ID                                  = var.config_project_id,
+      GC_ZONE                                     = var.config_gcp_default_zone,
+      GS_ETL_DATASET                              = var.config_gs_etl,
+      IS_PARTNER_INSTANCE                         = var.is_partner_instance,
+      GS_DIRECT_FILES                             = var.config_direct_json,
+      GCP_DEVICE_DISK_PREFIX                      = local.gcp_device_disk_prefix,
+      DATA_DISK_DEVICE_NAME_CH                    = local.data_disk_device_name_clickhouse,
+      DATA_DISK_DEVICE_NAME_ES                    = local.data_disk_device_name_elastic_search,
+      DISK_IMAGE_NAME_CH                          = local.disk_image_name_clickhouse,
+      DISK_IMAGE_NAME_ES                          = local.disk_image_name_elastic_search,
+      PATH_MOUNT_DATA_CLICKHOUSE                  = local.path_mount_data_clickhouse,
+      PATH_MOUNT_DATA_ELASTICSEARCH               = local.path_mount_data_elastic_search,
+      POS_REPO_BRANCH                             = var.config_repo_branch_pos,
+      FLAG_POSTPROCESSING_SCRIPTS_READY           = local.flag_postprocessing_scripts_ready,
+      PATH_POSTPROCESSING_SCRIPTS                 = local.path_postprocessing_scripts,
+      FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT = local.filename_postprocessing_scripts_entry_point,
+      # TODO Removev this
+      CLICKHOUSE_URI    = "http://localhost:8123",
+      ELASTICSEARCH_URI = "http://localhost:9200",
+      IMAGE_PREFIX      = "IMGPREFIX_REMOVE_ME",
+      }
+    )
+    destination = "${local.path_postprocessing_scripts}/config.sh"
+  }
+  // Postproduction script launcher
+  provisioner "file" {
+    source      = "${path.module}/scripts/posvm/launch_pos.sh"
+    destination = "${local.path_postprocessing_scripts}/launch_pos.sh"
   }
 }

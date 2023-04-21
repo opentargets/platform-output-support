@@ -6,7 +6,7 @@ locals {
   posvm_roles = ["roles/compute.admin", "roles/logging.viewer", "roles/compute.instanceAdmin", "roles/storage.objectViewer", "roles/storage.admin"]
   // VM name
   posvm_name_prefix = "${var.config_release_name}-posvm"
-  
+
   // --- POS VM data load process configuration --- //
   // Clickhouse data disk device name
   data_disk_device_name_clickhouse = "clickhouse-data-disk"

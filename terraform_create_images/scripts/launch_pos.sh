@@ -2,7 +2,7 @@
 # This script launches the postprocessing pipeline
 
 # Bootstrapping environment
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SCRIPTDIR="$( cd "$( dirname "$${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Create a temporary folder for the script
 TMPDIR=$(mktemp -d)
 
