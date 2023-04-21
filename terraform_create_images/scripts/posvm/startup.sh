@@ -1,37 +1,16 @@
 #!/bin/bash
 # Startup script for Elastic Search VM Instance
 
-# Logging helper function
-function log() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
-}
-
 # Environment variables
 gcp_device_disk_clickhouse="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_CH}"
 gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_ES}"
 mount_point_clickhouse="/mnt/clickhouse"
 mount_point_elasticsearch="/mnt/elasticsearch"
+flag_startup_completed="/tmp/posvm_startup_complete"
 
-# Environment summary function
-function env_summary() {
-  log "Environment summary:"
-  log "  PROJECT_ID: ${PROJECT_ID}"
-  log "  GC_ZONE: ${GC_ZONE}"
-  log "  GS_ETL_DATASET: ${GS_ETL_DATASET}"
-  log "  IS_PARTNER_INSTANCE: ${IS_PARTNER_INSTANCE}"
-  log "  GS_DIRECT_FILES: ${GS_DIRECT_FILES}"
-  log "  GCP_DEVICE_DISK_PREFIX: ${GCP_DEVICE_DISK_PREFIX}"
-  log "  DATA_DISK_DEVICE_NAME_CH: ${DATA_DISK_DEVICE_NAME_CH}"
-  log "  DATA_DISK_DEVICE_NAME_ES: ${DATA_DISK_DEVICE_NAME_ES}"
-  log "  DISK_IMAGE_NAME_CH: ${DISK_IMAGE_NAME_CH}"
-  log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
-  log "  POS_REPO_BRANCH: ${POS_REPO_BRANCH}"
-  log "  CLICKHOUSE_URI: ${CLICKHOUSE_URI}"
-  log "  ELASTICSEARCH_URI: ${ELASTICSEARCH_URI}"
-  log "  gcp_device_disk_clickhouse: $${gcp_device_disk_clickhouse}"
-  log "  gcp_device_disk_elasticsearch: $${gcp_device_disk_elasticsearch}"
-  log "  mount_point_clickhouse: $${mount_point_clickhouse}"
-  log "  mount_point_elasticsearch: $${mount_point_elasticsearch}"
+# Logging helper function
+function log() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
 }
 
 # Function to format and mount a given disk device
@@ -55,6 +34,43 @@ function install_packages() {
   apt-get install -y wget vim tmux python3-pip docker.io docker-compose
   #pip3 install elasticsearch-loader
 }
+
+# Script completion hook to flag that 'startup script' has already been run
+function startup_complete() {
+  log "Startup script completed"
+  touch $${flag_startup_completed}
+}
+
+# Environment summary function
+function env_summary() {
+  log "Environment summary:"
+  log "  PROJECT_ID: ${PROJECT_ID}"
+  log "  GC_ZONE: ${GC_ZONE}"
+  log "  GS_ETL_DATASET: ${GS_ETL_DATASET}"
+  log "  IS_PARTNER_INSTANCE: ${IS_PARTNER_INSTANCE}"
+  log "  GS_DIRECT_FILES: ${GS_DIRECT_FILES}"
+  log "  GCP_DEVICE_DISK_PREFIX: ${GCP_DEVICE_DISK_PREFIX}"
+  log "  DATA_DISK_DEVICE_NAME_CH: ${DATA_DISK_DEVICE_NAME_CH}"
+  log "  DATA_DISK_DEVICE_NAME_ES: ${DATA_DISK_DEVICE_NAME_ES}"
+  log "  DISK_IMAGE_NAME_CH: ${DISK_IMAGE_NAME_CH}"
+  log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
+  log "  POS_REPO_BRANCH: ${POS_REPO_BRANCH}"
+  log "  CLICKHOUSE_URI: ${CLICKHOUSE_URI}"
+  log "  ELASTICSEARCH_URI: ${ELASTICSEARCH_URI}"
+  log "  gcp_device_disk_clickhouse: $${gcp_device_disk_clickhouse}"
+  log "  gcp_device_disk_elasticsearch: $${gcp_device_disk_elasticsearch}"
+  log "  mount_point_clickhouse: $${mount_point_clickhouse}"
+  log "  mount_point_elasticsearch: $${mount_point_elasticsearch}"
+}
+
+# Set trap to run 'startup_complete' function on exit
+trap startup_complete EXIT
+
+# Check if startup script has already been run
+if [[ -f $${flag_startup_completed} ]]; then
+  log "Startup script already completed, skipping"
+  exit 0
+fi
 
 # Main Script
 echo "---> [LAUNCH] POS support VM"
