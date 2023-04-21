@@ -29,7 +29,7 @@ locals {
   // Name of the postprocessing pipeline scripts entry point
   filename_postprocessing_scripts_entry_point = "launch_pos.sh"
   // Flag to signal that the postprocessing pipeline scripts are ready to run
-  flag_postprocessing_scripts_ready = "/${local.posvm_remote_path_home}/pos/scripts/ready"
+  flag_postprocessing_scripts_ready = "/${local.path_postprocessing_root}/ready"
   // --- [END] POS VM data load process configuration [END] --- //
 
   // --- Disk Images Configuration --- //
