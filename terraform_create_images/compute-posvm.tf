@@ -136,7 +136,7 @@ resource "google_compute_instance" "posvm" {
   }
   // Commong configuration
   provisioner "file" {
-    content = templatefile("${path.module}/scripts/config.sh", {
+    content = templatefile("${local.path_source_postprocessing_scripts}/config.sh", {
       PROJECT_ID                                  = var.config_project_id,
       GC_ZONE                                     = var.config_gcp_default_zone,
       GS_ETL_DATASET                              = var.config_gs_etl,
@@ -164,7 +164,7 @@ resource "google_compute_instance" "posvm" {
   }
   // Postproduction script launcher
   provisioner "file" {
-    source      = "${path.module}/scripts/launch_pos.sh"
+    source      = "${local.path_source_postprocessing_scripts}/launch_pos.sh"
     destination = "${local.path_postprocessing_scripts}/launch_pos.sh"
   }
   // Adjust scripts permissions

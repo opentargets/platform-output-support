@@ -7,6 +7,10 @@ locals {
   posvm_roles = ["roles/compute.admin", "roles/logging.viewer", "roles/compute.instanceAdmin", "roles/storage.objectViewer", "roles/storage.admin"]
   // VM name
   posvm_name_prefix = "${var.config_release_name}-posvm"
+  // Postproduction source provisioning root path
+  path_source_postprocessing_scripts = "${path.module}/scripts/posvm/postproduction"
+  path_source_postprocessing_scripts_clickhouse = "${local.path_source_postprocessing_scripts}/clickhouse"
+  path_source_postprocessing_scripts_elastic_search = "${local.path_source_postprocessing_scripts}/elasticsearch"
 
   // --- POS VM data load process configuration --- //
   // Clickhouse data disk device name
