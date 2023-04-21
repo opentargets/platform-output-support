@@ -7,13 +7,33 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Environment variables
 gcp_device_disk_clickhouse="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_CH}"
 gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_ES}"
+# Data mount points
 mount_point_data_clickhouse="${PATH_MOUNT_DATA_CLICKHOUSE}"
 mount_point_data_elasticsearch="${PATH_MOUNT_DATA_ELASTICSEARCH}"
+# Log folders
+path_logs_postprocessing="/srv/pos/logs"
+path_logs_clickhouse="$${path_logs_postprocessing}/clickhouse"
+path_logs_elastic_search="$${path_logs_postprocessing}/elasticsearch"
+# List of folders that need to exist for the postprocessing scripts to run
+list_folders_postprocessing="$${path_logs_postprocessing} $${path_logs_clickhouse} $${path_logs_elastic_search}"
 
 # Helper functions
 # Logging helper function
 function log() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
+}
+
+# Print a summary with the running environment
+function env_summary() {
+    log "(COMMON) Environment summary:"
+    log "  - gcp_device_disk_clickhouse: $${gcp_device_disk_clickhouse}"
+    log "  - gcp_device_disk_elasticsearch: $${gcp_device_disk_elasticsearch}"
+    log "  - mount_point_data_clickhouse: $${mount_point_data_clickhouse}"
+    log "  - mount_point_data_elasticsearch: $${mount_point_data_elasticsearch}"
+    log "  - path_logs_postprocessing: $${path_logs_postprocessing}"
+    log "  - path_logs_clickhouse: $${path_logs_clickhouse}"
+    log "  - path_logs_elastic_search: $${path_logs_elastic_search}"
+    log "  - list_folders_postprocessing: $${list_folders_postprocessing}"
 }
 
 # Function to format and mount a given disk device
@@ -29,3 +49,15 @@ function mount_disk() {
   mount -o defaults $${device_name} $${mount_point}
 }
 
+# Ensure that the list of folders that need to exist for the postprocessing scripts to run exist
+function ensure_folders_exist() {
+  for folder in $${list_folders_postprocessing}; do
+    if [[ ! -d $${folder} ]]; then
+      log "Creating folder $${folder}"
+      mkdir -p $${folder}
+    fi
+  done
+}
+
+# Commong environment summary
+env_summary
