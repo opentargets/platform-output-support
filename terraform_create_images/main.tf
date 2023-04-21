@@ -16,14 +16,14 @@ terraform {
 }
 
 provider "google" {
-  region  = var.config_gcp_default_region
-  project = var.config_project_id
-  zone    = var.config_gcp_default_zone
+  region  = var.gcp_default_region
+  project = var.project_id
+  zone    = var.gcp_default_zone
 }
 
 
 provider "google-beta" {
-  project = var.config_project_id
-  region  = var.config_gcp_default_region
-  zone    = var.config_gcp_default_zone
+  project = var.project_id
+  region  = var.gcp_default_region
+  zone    = var.gcp_default_zone
 }

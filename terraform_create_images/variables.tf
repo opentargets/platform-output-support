@@ -105,45 +105,45 @@ variable "config_direct_json" {
 }
 
 // --- POS VM Configuration --- //
-variable "config_vm_pos_boot_image" {
+variable "vm_pos_boot_image" {
   description = "Boot image configuration for POS VM, default 'Debian 11'"
   type        = string
   default     = "debian-11"
 }
 
-variable "config_vm_pos_boot_disk_size" {
+variable "vm_pos_boot_disk_size" {
   description = "POS VM boot disk size, default '64GB'"
   type        = string
   default     = 64
 }
 
-variable "config_vm_pos_machine_type" {
+variable "vm_pos_machine_type" {
   description = "Machine type for POS vm, default 'n1-standard-8'"
   type        = string
   default     = "n1-standard-8"
 }
 
 // --- Clickhouse Configuration --- //
-variable "config_clickhouse_version" {
+variable "clickhouse_docker_image_version" {
   description = "Clickhouse docker image version to deploy, default '23.3.1.2823'"
   type        = string
   default     = "23.3.1.2823"
 }
 
-variable "config_clickhouse_data_disk_size" {
+variable "clickhouse_data_disk_size" {
   description = "Clickhouse data disk size to deploy"
   type        = string
   default     = "64"
 }
 
 // --- Elastic Search Configuration --- //
-variable "config_elastic_search_version" {
+variable "elastic_search_docker_image_version" {
   description = "Elastic search docker image version to deploy"
   type        = string
   default     = "7.13.4"
 }
 
-variable "config_elastic_search_data_disk_size" {
+variable "elastic_search_data_disk_size" {
   description = "Elastic search data disk size to deploy"
   type        = string
   default     = "128"

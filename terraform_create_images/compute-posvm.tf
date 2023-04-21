@@ -7,9 +7,9 @@ resource "random_string" "posvm" {
   upper   = false
   special = false
   keepers = {
-    vm_pos_boot_disk_size = var.config_vm_pos_boot_disk_size
+    vm_pos_boot_disk_size = var.vm_pos_boot_disk_size
     // Take into account the machine type as well
-    machine_type = var.config_vm_pos_machine_type
+    machine_type = var.vm_pos_machine_type
     // Be aware of launch script changes
     launch_script_hash = md5(file("${path.module}/scripts/posvm/startup.sh"))
   }
@@ -23,23 +23,23 @@ resource "tls_private_key" "posvm" {
 
 // Create a disk volume for Clickhouse data
 resource "google_compute_disk" "clickhouse_data_disk" {
-  project     = var.config_project_id
+  project     = var.project_id
   name        = local.disk_image_name_clickhouse
   description = "Clickhouse data disk"
   type        = "pd-ssd"
-  zone        = var.config_gcp_default_zone
-  size        = var.config_clickhouse_data_disk_size
+  zone        = var.gcp_default_zone
+  size        = var.clickhouse_data_disk_size
   labels      = local.base_labels
 }
 
 // Create a disk volume for ElasticSearch data
 resource "google_compute_disk" "elastic_search_data_disk" {
-  project     = var.config_project_id
+  project     = var.project_id
   name        = local.disk_image_name_elastic_search
   description = "ElasticSearch data disk"
   type        = "pd-ssd"
-  zone        = var.config_gcp_default_zone
-  size        = var.config_elastic_search_data_disk_size
+  zone        = var.gcp_default_zone
+  size        = var.elastic_search_data_disk_size
   labels      = local.base_labels
 }
 
@@ -47,19 +47,19 @@ resource "google_compute_disk" "elastic_search_data_disk" {
 
 // POS VM instance definition
 resource "google_compute_instance" "posvm" {
-  project                   = var.config_project_id
+  project                   = var.project_id
   name                      = "${local.posvm_name_prefix}-${random_string.posvm.result}"
-  machine_type              = var.config_vm_pos_machine_type
-  zone                      = var.config_gcp_default_zone
+  machine_type              = var.vm_pos_machine_type
+  zone                      = var.gcp_default_zone
   allow_stopping_for_update = true
   // TODO This should be set to false
   can_ip_forward = true
 
   boot_disk {
     initialize_params {
-      image = var.config_vm_pos_boot_image
+      image = var.vm_pos_boot_image
       type  = "pd-ssd"
-      size  = var.config_vm_pos_boot_disk_size
+      size  = var.vm_pos_boot_disk_size
     }
   }
 
@@ -87,8 +87,8 @@ resource "google_compute_instance" "posvm" {
     startup-script = templatefile(
       "${path.module}/scripts/posvm/startup.sh",
       {
-        PROJECT_ID                                  = var.config_project_id,
-        GC_ZONE                                     = var.config_gcp_default_zone,
+        PROJECT_ID                                  = var.project_id,
+        GC_ZONE                                     = var.gcp_default_zone,
         GS_ETL_DATASET                              = var.config_gs_etl,
         IS_PARTNER_INSTANCE                         = var.is_partner_instance,
         GS_DIRECT_FILES                             = var.config_direct_json,
@@ -112,7 +112,7 @@ resource "google_compute_instance" "posvm" {
   }
 
   service_account {
-    email  = "pos-service-account@${var.config_project_id}.iam.gserviceaccount.com"
+    email  = "pos-service-account@${var.project_id}.iam.gserviceaccount.com"
     scopes = ["cloud-platform"]
   }
 
@@ -137,8 +137,8 @@ resource "google_compute_instance" "posvm" {
   // Commong configuration
   provisioner "file" {
     content = templatefile("${local.path_source_postprocessing_scripts}/config.sh", {
-      PROJECT_ID                                             = var.config_project_id,
-      GC_ZONE                                                = var.config_gcp_default_zone,
+      PROJECT_ID                                             = var.project_id,
+      GC_ZONE                                                = var.gcp_default_zone,
       GS_ETL_DATASET                                         = var.config_gs_etl,
       IS_PARTNER_INSTANCE                                    = var.is_partner_instance,
       GS_DIRECT_FILES                                        = var.config_direct_json,

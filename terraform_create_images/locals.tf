@@ -6,7 +6,7 @@ locals {
   // IAM role to be used to create the VM
   posvm_roles = ["roles/compute.admin", "roles/logging.viewer", "roles/compute.instanceAdmin", "roles/storage.objectViewer", "roles/storage.admin"]
   // VM name
-  posvm_name_prefix = "${var.config_release_name}-posvm"
+  posvm_name_prefix = "${var.resources_prefix}-posvm"
   // Postproduction source provisioning root path
   path_source_postprocessing_scripts                = "${path.module}/scripts/posvm/postproduction"
   path_source_postprocessing_scripts_clickhouse     = "${local.path_source_postprocessing_scripts}/clickhouse"
@@ -38,14 +38,14 @@ locals {
 
   // --- Clickhouse specific configuration --- //
   clickhouse_docker_image         = "clickhouse/clickhouse-server"
-  clickhouse_docker_image_version = var.config_clickhouse_version
+  clickhouse_docker_image_version = var.clickhouse_docker_image_version
   // --- Disk Images Configuration --- //
   // Time Stamp to be used in the image name
   disk_image_timestamp = formatdate("YYYYMMDD-hhmm", timestamp())
   // Elastic Search disk image name
-  disk_image_name_elastic_search = "${var.config_release_name}-${local.disk_image_timestamp}-es"
+  disk_image_name_elastic_search = "${var.resources_prefix}-${local.disk_image_timestamp}-es"
   // Clickhouse disk image name
-  disk_image_name_clickhouse = "${var.config_release_name}-${local.disk_image_timestamp}-ch"
+  disk_image_name_clickhouse = "${var.resources_prefix}-${local.disk_image_timestamp}-ch"
 
   // --- Labels Configuration --- //
   base_labels = {
