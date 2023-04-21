@@ -18,6 +18,10 @@ locals {
   path_mount_data_clickhouse = "/mnt/clickhouse"
   // ElasticSearch path to data mount point
   path_mount_data_elastic_search = "/mnt/elasticsearch"
+  // Base path to the postprocessing pipeline scripts
+  path_postprocessing_scripts = "/srv/pos/scripts"
+  // Flag to signal that the postprocessing pipeline scripts are ready to run
+  flag_postprocessing_scripts_ready = "/srv/pos/scripts/ready"
   // --- [END] POS VM data load process configuration [END] --- //
 
   // --- Disk Images Configuration --- //
