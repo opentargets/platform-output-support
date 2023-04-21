@@ -64,12 +64,12 @@ env_summary
 install_packages
 # Wait until the "ready" flag for postprocessing scripts is set, timeout after 20 minutes
 log "Waiting for postprocessing scripts to be ready, timeout after 20 minutes"
-timeout 1200 bash -c "until [[ -f $${FLAG_POSTPROCESSING_SCRIPTS_READY} ]]; do sleep 1; done"
+timeout 1200 bash -c "until [[ -f ${FLAG_POSTPROCESSING_SCRIPTS_READY} ]]; do sleep 1; done"
 # Change current dir to the postprocessing scripts dir
-cd $${PATH_POSTPROCESSING_SCRIPTS}
+cd ${PATH_POSTPROCESSING_SCRIPTS}
 # Launch the postprocessing scripts
 log "Launching postprocessing scripts, at $$(pwd)"
-./$${FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT}
+./${FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT}
 # DEBUG - HALT SCRIPT
 exit 0
 
