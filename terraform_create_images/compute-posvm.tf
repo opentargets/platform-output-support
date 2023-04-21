@@ -164,7 +164,7 @@ resource "google_compute_instance" "posvm" {
   }
   // Postproduction script launcher
   provisioner "file" {
-    source      = "${path.module}/scripts/posvm/launch_pos.sh"
+    source      = "${path.module}/scripts/launch_pos.sh"
     destination = "${local.path_postprocessing_scripts}/launch_pos.sh"
   }
   // Adjust scripts permissions
