@@ -20,6 +20,8 @@ locals {
   path_mount_data_elastic_search = "/mnt/elasticsearch"
   // Base path to the postprocessing pipeline scripts
   path_postprocessing_scripts = "/srv/pos/scripts"
+  // Name of the postprocessing pipeline scripts entry point
+  filename_postprocessing_scripts_entry_point = "launch_pos.sh"
   // Flag to signal that the postprocessing pipeline scripts are ready to run
   flag_postprocessing_scripts_ready = "/srv/pos/scripts/ready"
   // --- [END] POS VM data load process configuration [END] --- //
