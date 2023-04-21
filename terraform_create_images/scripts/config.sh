@@ -11,7 +11,7 @@ gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_
 mount_point_data_clickhouse="${PATH_MOUNT_DATA_CLICKHOUSE}"
 mount_point_data_elasticsearch="${PATH_MOUNT_DATA_ELASTICSEARCH}"
 # Log folders
-path_logs_postprocessing="/srv/pos/logs"
+path_logs_postprocessing="${PATH_POSTPROCESSING_ROOT}/logs"
 path_logs_clickhouse="$${path_logs_postprocessing}/clickhouse"
 path_logs_elastic_search="$${path_logs_postprocessing}/elasticsearch"
 # List of folders that need to exist for the postprocessing scripts to run

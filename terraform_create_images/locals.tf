@@ -2,6 +2,7 @@ locals {
   // --- POS VM Configuration --- //
   // Loging to the remote host, details
   posvm_remote_user_name = "provisioner"
+  posvm_remote_path_home = "/home/${local.posvm_remote_user_name}"
   // IAM role to be used to create the VM
   posvm_roles = ["roles/compute.admin", "roles/logging.viewer", "roles/compute.instanceAdmin", "roles/storage.objectViewer", "roles/storage.admin"]
   // VM name
@@ -19,11 +20,12 @@ locals {
   // ElasticSearch path to data mount point
   path_mount_data_elastic_search = "/mnt/elasticsearch"
   // Base path to the postprocessing pipeline scripts
-  path_postprocessing_scripts = "/srv/pos/scripts"
+  path_postprocessing_root    = "/${local.posvm_remote_path_home}/pos"
+  path_postprocessing_scripts = "/${local.path_postprocessing_root}/scripts"
   // Name of the postprocessing pipeline scripts entry point
   filename_postprocessing_scripts_entry_point = "launch_pos.sh"
   // Flag to signal that the postprocessing pipeline scripts are ready to run
-  flag_postprocessing_scripts_ready = "/srv/pos/scripts/ready"
+  flag_postprocessing_scripts_ready = "/${local.posvm_remote_path_home}/pos/scripts/ready"
   // --- [END] POS VM data load process configuration [END] --- //
 
   // --- Disk Images Configuration --- //

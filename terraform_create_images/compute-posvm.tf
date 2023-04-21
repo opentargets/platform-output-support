@@ -131,7 +131,7 @@ resource "google_compute_instance" "posvm" {
   // Create remote folders
   provisioner "remote-exec" {
     inline = [
-        "mkdir -p ${local.path_postprocessing_scripts}",
+      "mkdir -p ${local.path_postprocessing_scripts}",
     ]
   }
   // Commong configuration
@@ -151,6 +151,7 @@ resource "google_compute_instance" "posvm" {
       PATH_MOUNT_DATA_ELASTICSEARCH               = local.path_mount_data_elastic_search,
       POS_REPO_BRANCH                             = var.config_repo_branch_pos,
       FLAG_POSTPROCESSING_SCRIPTS_READY           = local.flag_postprocessing_scripts_ready,
+      PATH_POSTPROCESSING_ROOT                    = local.path_postprocessing_root,
       PATH_POSTPROCESSING_SCRIPTS                 = local.path_postprocessing_scripts,
       FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT = local.filename_postprocessing_scripts_entry_point,
       # TODO Removev this
@@ -165,5 +166,11 @@ resource "google_compute_instance" "posvm" {
   provisioner "file" {
     source      = "${path.module}/scripts/posvm/launch_pos.sh"
     destination = "${local.path_postprocessing_scripts}/launch_pos.sh"
+  }
+  // Adjust scripts permissions
+  provisioner "remote-exec" {
+    inline = [
+      "chmod 755 ${local.path_postprocessing_scripts}/launch_pos.sh",
+    ]
   }
 }
