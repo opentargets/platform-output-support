@@ -173,4 +173,10 @@ resource "google_compute_instance" "posvm" {
       "chmod 755 ${local.path_postprocessing_scripts}/launch_pos.sh",
     ]
   }
+  // Set the 'ready' flag for the postprocessing pipeline to start
+  provisioner "remote-exec" {
+    inline = [
+      "touch ${local.flag_postprocessing_scripts_ready}",
+    ]
+  }
 }
