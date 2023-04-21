@@ -2,28 +2,11 @@
 # Startup script for Elastic Search VM Instance
 
 # Environment variables
-gcp_device_disk_clickhouse="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_CH}"
-gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_ES}"
-mount_point_clickhouse="/mnt/clickhouse"
-mount_point_elasticsearch="/mnt/elasticsearch"
 flag_startup_completed="/tmp/posvm_startup_complete"
 
 # Logging helper function
 function log() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
-}
-
-# Function to format and mount a given disk device
-function mount_disk() {
-  local device_name=$1
-  local mount_point=$2
-  # Format the disk using ext4 with no reserved blocks
-  log "Formatting disk $${device_name} with ext4"
-  mkfs.ext4 -m 0 $${device_name}
-  # Mount the disk
-  log "Mounting disk $${device_name} to $${mount_point}"
-  mkdir -p $${mount_point}
-  mount -o defaults $${device_name} $${mount_point}
 }
 
 # This function updates the system and installs the required packages
@@ -55,6 +38,9 @@ function env_summary() {
   log "  DISK_IMAGE_NAME_CH: ${DISK_IMAGE_NAME_CH}"
   log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
   log "  POS_REPO_BRANCH: ${POS_REPO_BRANCH}"
+  log "  FLAG_POSTPROCESSING_SCRIPTS_READY: ${FLAG_POSTPROCESSING_SCRIPTS_READY}"
+  log "  PATH_POSTPROCESSING_SCRIPTS: ${PATH_POSTPROCESSING_SCRIPTS}"
+  log "  FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT: ${FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT}"
   log "  CLICKHOUSE_URI: ${CLICKHOUSE_URI}"
   log "  ELASTICSEARCH_URI: ${ELASTICSEARCH_URI}"
   log "  gcp_device_disk_clickhouse: $${gcp_device_disk_clickhouse}"
@@ -73,13 +59,17 @@ if [[ -f $${flag_startup_completed} ]]; then
 fi
 
 # Main Script
-echo "---> [LAUNCH] POS support VM"
+log "===> [BOOTSTRAP] POS support VM <==="
 env_summary
-log "Mount data disks for Clickhouse and Elastic Search"
-mount_disk $${gcp_device_disk_clickhouse} $${mount_point_clickhouse}
-mount_disk $${gcp_device_disk_elasticsearch} $${mount_point_elasticsearch}
-log "Update system and install required packages"
 install_packages
+# Wait until the "ready" flag for postprocessing scripts is set, timeout after 20 minutes
+log "Waiting for postprocessing scripts to be ready, timeout after 20 minutes"
+timeout 1200 bash -c "until [[ -f $${FLAG_POSTPROCESSING_SCRIPTS_READY} ]]; do sleep 1; done"
+# Change current dir to the postprocessing scripts dir
+cd $${PATH_POSTPROCESSING_SCRIPTS}
+# Launch the postprocessing scripts
+log "Launching postprocessing scripts, at $$(pwd)"
+./$${FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT}
 # DEBUG - HALT SCRIPT
 exit 0
 
