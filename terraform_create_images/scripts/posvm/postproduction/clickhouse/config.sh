@@ -9,9 +9,13 @@ SCRIPTDIR="$( cd "$( dirname "$${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source ${SCRIPTDIR}/../config.sh
 
 # Local configuration
+# Clickhouse related postprocessing script paths
+pos_ch_path_config="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/config.d"
+pos_ch_path_users="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/users.d"
+# Clickhouse Storage Volume paths
 # Path to the folder with clickhouse configuration files
-path_config_clickhouse="${mount_point_data_clickhouse}/config.d"
+ch_vol_path_clickhouse_config="${mount_point_data_clickhouse}/config.d"
 # Path to the folder with clickhouse users configuration files
-path_config_clickhouse_users="${mount_point_data_clickhouse}/users.d"
+ch_vol_path_clickhouse_users="${mount_point_data_clickhouse}/users.d"
 # Path to the folder with clickhouse data files
-path_data_clickhouse="${mount_point_data_clickhouse}/data"
+ch_vol_path_clickhouse_data="${mount_point_data_clickhouse}/data"
