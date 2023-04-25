@@ -41,7 +41,6 @@ set_profile: ## Set an active configuration profile, e.g. "make set_profile prof
 	@echo "[POS] Setting active profile '${profile}'"
 	@ln -sf profiles/config.${profile} config.tfvars
 	@cd terraform_create_images; ln -sf ../profiles/config.${profile} terraform.tfvars
-	@cd terraform_create_images; terraform workspace select ${profile}
 
 clean_profile: ## Clean the active configuration profile
 	@echo "[POS] Cleaning active profile"
