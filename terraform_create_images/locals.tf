@@ -24,12 +24,12 @@ locals {
   // ElasticSearch path to data mount point
   path_mount_data_elastic_search = "/mnt/elasticsearch"
   // Base path to the postprocessing pipeline scripts
-  path_postprocessing_root                               = "/${local.posvm_remote_path_home}/pos"
-  path_postprocessing_scripts                            = "/${local.path_postprocessing_root}/scripts"
-  path_postprocessing_scripts_clickhouse                 = "/${local.path_postprocessing_scripts}/clickhouse"
-  path_postprocessing_scripts_elastic_search             = "/${local.path_postprocessing_scripts}/elasticsearch"
-  path_postprocessing_scripts_entry_point_clickhouse     = "/${local.path_postprocessing_scripts_clickhouse}/run.sh"
-  path_postprocessing_scripts_entry_point_elastic_search = "/${local.path_postprocessing_scripts_elastic_search}/run.sh"
+  path_postprocessing_root                               = "${local.posvm_remote_path_home}/pos"
+  path_postprocessing_scripts                            = "${local.path_postprocessing_root}/scripts"
+  path_postprocessing_scripts_clickhouse                 = "${local.path_postprocessing_scripts}/clickhouse"
+  path_postprocessing_scripts_elastic_search             = "${local.path_postprocessing_scripts}/elasticsearch"
+  path_postprocessing_scripts_entry_point_clickhouse     = "${local.path_postprocessing_scripts_clickhouse}/run.sh"
+  path_postprocessing_scripts_entry_point_elastic_search = "${local.path_postprocessing_scripts_elastic_search}/run.sh"
   // Name of the postprocessing pipeline scripts entry point
   filename_postprocessing_scripts_entry_point = "launch_pos.sh"
   // Flag to signal that the postprocessing pipeline scripts are ready to run
