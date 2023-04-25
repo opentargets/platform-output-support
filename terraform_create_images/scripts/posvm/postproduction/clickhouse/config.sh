@@ -14,6 +14,8 @@ pos_ch_path_config="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/config.d"
 pos_ch_path_users="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/users.d"
 # Database initialization schemas path
 pos_ch_path_schemas="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/db_schemas"
+# Database post-dataload scripts path
+pos_ch_path_sql_scripts_postdataload="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/sql_scripts_postdataload"
 # Clickhouse Storage Volume paths
 # Path to the folder with clickhouse configuration files
 ch_vol_path_clickhouse_config="${mount_point_data_clickhouse}/config.d"
