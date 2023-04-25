@@ -8,6 +8,20 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source ${SCRIPTDIR}/config.sh
 
 # Helper functions
+# Prepare Clickhouse Storage Volume
+function prepare_clickhouse_storage_volume() {
+  log "[START] Preparing Clickhouse Storage Volume"
+  # Create Clickhouse Storage Volume folders
+  mkdir -p ${ch_vol_path_clickhouse_config}
+  mkdir -p ${ch_vol_path_clickhouse_users}
+  mkdir -p ${ch_vol_path_clickhouse_data}
+  # Copy Clickhouse configuration files
+  cp ${pos_ch_path_config}/* ${ch_vol_path_clickhouse_config}
+  # Copy Clickhouse users configuration files
+  cp ${pos_ch_path_users}/* ${ch_vol_path_clickhouse_users}
+  log "[DONE] Preparing Clickhouse Storage Volume"
+}
+
 # Run clickhouse via Docker 
 function run_clickhouse() {
   log "[START] Running clickhouse via Docker, using image ${CLICKHOUSE_DOCKER_IMAGE}:${CLICKHOUSE_DOCKER_IMAGE_VERSION}"
@@ -22,3 +36,12 @@ function run_clickhouse() {
     --ulimit nofile=262144:262144 \
     ${CLICKHOUSE_DOCKER_IMAGE}:${CLICKHOUSE_DOCKER_IMAGE_VERSION}
 }
+
+
+
+
+# Main
+# Prepare Clickhouse Storage Volume
+prepare_clickhouse_storage_volume
+# Launch Clickhouse
+run_clickhouse
