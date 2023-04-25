@@ -12,6 +12,8 @@ source ${SCRIPTDIR}/../config.sh
 # Clickhouse related postprocessing script paths
 pos_ch_path_config="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/config.d"
 pos_ch_path_users="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/users.d"
+# Database schemas path
+pos_ch_path_schemas="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/db_schemas"
 # Clickhouse Storage Volume paths
 # Path to the folder with clickhouse configuration files
 ch_vol_path_clickhouse_config="${mount_point_data_clickhouse}/config.d"
