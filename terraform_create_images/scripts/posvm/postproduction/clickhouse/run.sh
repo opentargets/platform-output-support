@@ -15,7 +15,9 @@ function run_clickhouse() {
     --name otp-ch \
     -p 9000:9000 \
     -p 8123:8123 \
-    -v ${mount_point_data_clickhouse}:/var/lib/clickhouse \
+    -v ${ch_vol_path_clickhouse_config}:/etc/clickhouse-server/config.d \
+    -v ${ch_vol_path_clickhouse_users}:/etc/clickhouse-server/users.d \
+    -v ${ch_vol_path_clickhouse_data}:/var/lib/clickhouse \
     -v ${path_logs_clickhouse}:/var/log/clickhouse-server \
     --ulimit nofile=262144:262144 \
     ${CLICKHOUSE_DOCKER_IMAGE}:${CLICKHOUSE_DOCKER_IMAGE_VERSION}
