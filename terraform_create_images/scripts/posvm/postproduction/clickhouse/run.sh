@@ -34,7 +34,7 @@ function run_clickhouse() {
     -v ${ch_vol_path_clickhouse_data}:/var/lib/clickhouse \
     -v ${path_logs_clickhouse}:/var/log/clickhouse-server \
     -v ${pos_ch_path_schemas}:/docker-entrypoint-initdb.d \
-    -v ${pos_ch_path_sql_scripts_postdataload}:/sql_scripts_postdataload \
+    -v ${pos_ch_path_sql_scripts_postdataload}:${ch_path_sql_scripts_postdataload} \
     --ulimit nofile=262144:262144 \
     ${CLICKHOUSE_DOCKER_IMAGE}:${CLICKHOUSE_DOCKER_IMAGE_VERSION}
 }

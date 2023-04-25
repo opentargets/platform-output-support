@@ -23,6 +23,8 @@ ch_vol_path_clickhouse_config="${mount_point_data_clickhouse}/config.d"
 ch_vol_path_clickhouse_users="${mount_point_data_clickhouse}/users.d"
 # Path to the folder with clickhouse data files
 ch_vol_path_clickhouse_data="${mount_point_data_clickhouse}/data"
+# Clickhouse path for SQL scripts used after data load
+ch_path_sql_scripts_postdataload="/sql_scripts_postdataload"
 
 # Local environment summary
 function env_summary() {
