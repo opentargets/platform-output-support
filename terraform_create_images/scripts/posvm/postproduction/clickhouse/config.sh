@@ -19,3 +19,18 @@ ch_vol_path_clickhouse_config="${mount_point_data_clickhouse}/config.d"
 ch_vol_path_clickhouse_users="${mount_point_data_clickhouse}/users.d"
 # Path to the folder with clickhouse data files
 ch_vol_path_clickhouse_data="${mount_point_data_clickhouse}/data"
+
+# Local environment summary
+function env_summary() {
+    log "[INFO] Clickhouse postprocessing pipeline (LOCAL) configuration:"
+    log "[INFO] Clickhouse related postprocessing script paths:"
+    log "[INFO] pos_ch_path_config=${pos_ch_path_config}"
+    log "[INFO] pos_ch_path_users=${pos_ch_path_users}"
+    log "[INFO] Clickhouse Storage Volume paths:"
+    log "[INFO] ch_vol_path_clickhouse_config=${ch_vol_path_clickhouse_config}"
+    log "[INFO] ch_vol_path_clickhouse_users=${ch_vol_path_clickhouse_users}"
+    log "[INFO] ch_vol_path_clickhouse_data=${ch_vol_path_clickhouse_data}"
+}
+
+# Main
+env_summary
