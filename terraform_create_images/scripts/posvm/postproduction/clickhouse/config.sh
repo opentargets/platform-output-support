@@ -32,20 +32,32 @@ export pos_ch_docker_container_name="otp-ch"
 export pos_ch_docker_image="${pos_clickhouse_docker_image}:${pos_clickhouse_docker_image_version}"
 
 # Data loading configuration, data sources and destination tables
-export pos_ch_data_release_sources=(
-    ["ot.associations_otf_log"]="AOTFClickhouse/part*"
-    ["ot.literature_log"]="literature/literatureIndex/part*"
-    ["ot.ml_w2v_log"]="literature/vectors/part*"
-    ["ot.sentences_log"]="literature/literatureSentences/part*"
+declare -A pos_ch_data_release_sources=(
+    ["ot.associations_otf_log"]="AOTFClickhouse/part*" \
+    ["ot.literature_log"]="literature/literatureIndex/part*" \
+    ["ot.ml_w2v_log"]="literature/vectors/part*" \
+    ["ot.sentences_log"]="literature/literatureSentences/part*" \
 )
 
 # Print summary of the environment by looping through all those variables that start with "pos_ch_"
 function env_summary() {
     echo "[CLICKHOUSE] Postprocessing pipeline environment summary:"
     for var in "${!pos_ch_@}"; do
-        echo "    $var=${!var}"
+        var_declaration=$(declare -p $var 2>/dev/null)
+        if [[ $var_declaration == *"declare -A"* ]]; then
+            # The variable is an associative array
+            local -n array_reference=${var}
+	    for key in "${!array_reference[@]}"; do
+                echo "    ${var}[$key]=${array_reference[$key]}"
+            done
+        else
+            # The variable is a primitive variable
+            echo "    $var=${!var}"
+        fi
     done
 }
+
+
 
 # Main
 env_summary
