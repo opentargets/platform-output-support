@@ -2,43 +2,43 @@
 
 variable "resources_prefix" {
   description = "Prefix to use for all resources deployed in the cloud, default 'pos-unset'"
-  type = string
-  default = "pos-unset"
+  type        = string
+  default     = "pos-unset"
 }
 variable "data_images_prefix" {
   description = "Prefix to use for all data images created by this postprocessing pipeline, default 'pos-unset'"
-  type = string
-  default = "pos-unset"
+  type        = string
+  default     = "pos-unset"
 }
 variable "data_location_source" {
   description = "Source location for the data release being processed, default 'open-targets-pre-data-releases/dev'"
-  type = string
-  default = "open-targets-pre-data-releases/dev"
+  type        = string
+  default     = "open-targets-pre-data-releases/dev"
 }
 variable "data_location_production" {
   description = "Location where the data release being processed will be stored for production, default 'open-targets-data-releases/dev'"
-  type = string
-  default = "open-targets-data-releases/dev"
+  type        = string
+  default     = "open-targets-data-releases/dev"
 }
 variable "project_id" {
   description = "GCP project where the resources will be deployed, default 'open-targets-eu-dev'"
-  type = string
-  default = "open-targets-eu-dev"
+  type        = string
+  default     = "open-targets-eu-dev"
 }
 variable "gcp_default_region" {
   description = "GCP region where the resources will be deployed, default 'europe-west1'"
-  type = string
-  default = "europe-west1"
+  type        = string
+  default     = "europe-west1"
 }
 variable "gcp_default_zone" {
   description = "GCP zone where the resources will be deployed, default 'europe-west1-d'"
-  type = string
-  default = "europe-west1-d"
+  type        = string
+  default     = "europe-west1-d"
 }
 variable "is_public_data_images" {
   description = "This flag signals where the produced data images should be made publicly available, default 'false'"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 
