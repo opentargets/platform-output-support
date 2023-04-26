@@ -26,7 +26,7 @@ function prepare_clickhouse_storage_volume() {
 function run_clickhouse() {
   log "[START] Running clickhouse via Docker, using image ${CLICKHOUSE_DOCKER_IMAGE}:${CLICKHOUSE_DOCKER_IMAGE_VERSION}"
   docker run --rm -d \
-    --name otp-ch \
+    --name ${ch_docker_container_name} \
     -p 9000:9000 \
     -p 8123:8123 \
     -v ${ch_vol_path_clickhouse_config}:/etc/clickhouse-server/config.d \
@@ -36,7 +36,31 @@ function run_clickhouse() {
     -v ${pos_ch_path_schemas}:/docker-entrypoint-initdb.d \
     -v ${pos_ch_path_sql_scripts_postdataload}:${ch_path_sql_scripts_postdataload} \
     --ulimit nofile=262144:262144 \
-    ${CLICKHOUSE_DOCKER_IMAGE}:${CLICKHOUSE_DOCKER_IMAGE_VERSION}
+    ${ch_docker_image}
+}
+
+# Wait for Clickhouse to be ready
+function wait_for_clickhouse() {
+  log "[INFO] Waiting for Clickhouse to be ready"
+  while ! docker exec ${ch_docker_container_name} clickhouse-client --query "SELECT 1" &> /dev/null; do
+    sleep 1
+  done
+  log "[INFO] Clickhouse is ready"
+}
+
+# Load release data into Clickhouse
+function load_release_data() {
+  log "[START] Loading release data into Clickhouse"
+  # Wait for Clickhouse to be ready
+  wait_for_clickhouse
+  # Load release data
+  log "[INFO] Loading release data from '${DATA_RELEASE_PATH_SOURCE_ROOT}' into Clickhouse"
+  for table in "$(!ch_data_release_sources[@])"; do
+    export path_source="${DATA_RELEASE_PATH_ETL_JSON}/${ch_data_release_sources[$table]}"
+    log "[INFO] Loading release data from '${path_source}' into Clickhouse table '${table}'"
+    gsutil -m cat ${path_source} | docker exec -i ${ch_docker_container_name} clickhouse-client --query="insert into ${table} format JSONEachRow "
+  done
+  log "[DONE] Loading release data into Clickhouse"
 }
 
 
@@ -47,3 +71,5 @@ function run_clickhouse() {
 prepare_clickhouse_storage_volume
 # Launch Clickhouse
 run_clickhouse
+# Load release data into Clickhouse
+load_release_data
