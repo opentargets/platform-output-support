@@ -41,13 +41,13 @@ pos_elasticsearch_uri=${POS_ELASTICSEARCH_URI}
 pos_image_prefix=${POS_IMAGE_PREFIX}
 
 # Newly defined
-pos_gcp_device_disk_clickhouse="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_CH}"
-pos_gcp_device_disk_elasticsearch="${GCP_DEVICE_DISK_PREFIX}${DATA_DISK_DEVICE_NAME_ES}"
+pos_gcp_device_disk_clickhouse="${POS_GCP_DEVICE_DISK_PREFIX}${POS_DATA_DISK_DEVICE_NAME_CH}"
+pos_gcp_device_disk_elasticsearch="${POS_GCP_DEVICE_DISK_PREFIX}${POS_DATA_DISK_DEVICE_NAME_ES}"
 # Data mount points
-pos_mount_point_data_clickhouse="${PATH_MOUNT_DATA_CLICKHOUSE}"
-pos_mount_point_data_elasticsearch="${PATH_MOUNT_DATA_ELASTICSEARCH}"
+pos_mount_point_data_clickhouse="${POS_PATH_MOUNT_DATA_CLICKHOUSE}"
+pos_mount_point_data_elasticsearch="${POS_PATH_MOUNT_DATA_ELASTICSEARCH}"
 # Log folders
-pos_path_logs_postprocessing="${PATH_POSTPROCESSING_ROOT}/logs"
+pos_path_logs_postprocessing="${POS_PATH_POSTPROCESSING_ROOT}/logs"
 pos_path_logs_clickhouse="$${pos_path_logs_postprocessing}/clickhouse"
 pos_path_logs_elastic_search="$${pos_path_logs_postprocessing}/elasticsearch"
 # List of folders that need to exist for the postprocessing scripts to run
