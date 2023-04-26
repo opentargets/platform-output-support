@@ -11,3 +11,4 @@ source ${SCRIPTDIR}/config.sh
 
 # POS operational helpers
 alias pos_logs_startup="sudo journalctl -u google-startup-scripts.service"
+alias pos_logs_startup_tail="sudo journalctl -u google-startup-scripts.service -f"
