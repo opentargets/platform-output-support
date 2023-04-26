@@ -1,9 +1,9 @@
 # ---[IN_PROGRESS]--- Refactoring the configuration file ---[IN_PROGRESS]---
-resources_prefix = "mbdevpos"
-data_images_prefix    = "mbdevpos"
+resources_prefix   = "mbdevpos"
+data_images_prefix = "mbdevpos"
 
 # Data release configuration
-data_location_source = "open-targets-data-releases/XXXXX"
+data_location_source     = "open-targets-data-releases/23.04"
 data_location_production = "open-targets-data-releases/XXXXX"
 
 # GCP config to use
