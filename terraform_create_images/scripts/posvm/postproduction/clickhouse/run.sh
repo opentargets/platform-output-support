@@ -49,6 +49,20 @@ function wait_for_clickhouse() {
 }
 
 # Load release data into Clickhouse
+#function load_release_data() {
+#  log "[START] Loading release data into Clickhouse"
+#  # Wait for Clickhouse to be ready
+#  wait_for_clickhouse
+#  # Load release data
+#  log "[INFO] Loading release data from '${pos_data_release_path_source_root}' into Clickhouse"
+#  for table in "${!pos_ch_data_release_sources[@]}"; do
+#    export path_source="${pos_data_release_path_etl_json}/${pos_ch_data_release_sources[$table]}"
+#    log "[INFO] Loading release data from '${path_source}' into Clickhouse table '${table}'"
+#    gsutil -m cat ${path_source} | docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="insert into ${table} format JSONEachRow "
+#  done
+#  log "[DONE] Loading release data into Clickhouse"
+#}
+
 function load_release_data() {
   log "[START] Loading release data into Clickhouse"
   # Wait for Clickhouse to be ready
@@ -57,8 +71,19 @@ function load_release_data() {
   log "[INFO] Loading release data from '${pos_data_release_path_source_root}' into Clickhouse"
   for table in "${!pos_ch_data_release_sources[@]}"; do
     export path_source="${pos_data_release_path_etl_json}/${pos_ch_data_release_sources[$table]}"
-    log "[INFO] Loading release data from '${path_source}' into Clickhouse table '${table}'"
-    gsutil -m cat ${path_source} | docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="insert into ${table} format JSONEachRow "
+    success=0
+    # Attempts for the current table
+    for attempt in {1..7}; do
+      log "[INFO] (Attempt ${attempt}) ${path_source}' -> '${table}'"
+      gsutil -m cat ${path_source} | docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="insert into ${table} format JSONEachRow" && success=1 && break
+      log "[ERROR] Attempt ${attempt} failed. Truncating table '${table}' before retrying"
+      docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="TRUNCATE TABLE ${table}"
+    done
+    if [ $success -eq 1 ]; then
+      log "[SUCCESS] Data loaded into Clickhouse table '${table}' after ${attempt} attempts"
+    else
+      log "[ERROR] Failed to load data into Clickhouse table '${table}' after 7 attempts"
+    fi
   done
   log "[DONE] Loading release data into Clickhouse"
 }
