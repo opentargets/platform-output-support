@@ -25,7 +25,7 @@ export pos_ch_vol_path_clickhouse_users="${pos_mount_point_data_clickhouse}/user
 # Path to the folder with clickhouse data files
 export pos_ch_vol_path_clickhouse_data="${pos_mount_point_data_clickhouse}/data"
 # Clickhouse path for SQL scripts used after data load
-export pos_ch_path_sql_scripts_postdataload="/sql_scripts_postdataload"
+export pos_ch_vol_path_sql_scripts_postdataload="/sql_scripts_postdataload"
 
 # Clickhouse runtime configuration
 export pos_ch_docker_container_name="otp-ch"
