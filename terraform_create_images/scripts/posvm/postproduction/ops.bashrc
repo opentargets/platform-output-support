@@ -8,6 +8,8 @@ alias l="ls -alh"
 
 # Load common configuration script
 source ${SCRIPTDIR}/config.sh
+# Load Clickhouse configuration script (TODO maybe parameterize this in the future)
+source ${pos_path_postprocessing_scripts_clickhouse}/config.sh
 
 # POS operational helpers
 alias pos_logs_startup="sudo journalctl -u google-startup-scripts.service"
