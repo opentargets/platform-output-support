@@ -11,7 +11,7 @@ source ${SCRIPTDIR}/../config.sh
 # Local configuration
 # Clickhouse related postprocessing script paths
 export pos_ch_path_config="${pos_path_postprocessing_scripts_clickhouse}/config.d"
-pos_ch_path_users="${pos_path_postprocessing_scripts_clickhouse}/users.d"
+export pos_ch_path_users="${pos_path_postprocessing_scripts_clickhouse}/users.d"
 # Database initialization schemas path
 export pos_ch_path_schemas="${pos_path_postprocessing_scripts_clickhouse}/db_schemas"
 # Database post-dataload scripts path
