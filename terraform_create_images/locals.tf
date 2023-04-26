@@ -1,7 +1,7 @@
 locals {
   // --- POS VM Configuration --- //
   // Loging to the remote host, details
-  posvm_remote_user_name = "provisioner"
+  posvm_remote_user_name = "otops"
   posvm_remote_path_home = "/home/${local.posvm_remote_user_name}"
   // IAM role to be used to create the VM
   posvm_roles = ["roles/compute.admin", "roles/logging.viewer", "roles/compute.instanceAdmin", "roles/storage.objectViewer", "roles/storage.admin"]
