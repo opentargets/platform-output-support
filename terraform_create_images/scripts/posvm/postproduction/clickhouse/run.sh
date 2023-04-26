@@ -7,6 +7,12 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Local configuration
 source ${SCRIPTDIR}/config.sh
 
+# DEBUG - exit here
+exit 0
+
+
+
+
 # Helper functions
 # Prepare Clickhouse Storage Volume
 function prepare_clickhouse_storage_volume() {
