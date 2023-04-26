@@ -191,7 +191,7 @@ resource "google_compute_instance" "posvm" {
     source   = "${local.path_source_postprocessing_scripts_clickhouse}"
     destination = "${local.path_postprocessing_scripts_clickhouse}"
   }
-  // Make Clickhouse post-processing scripts executable
+  // Make Clickhouse postproduction scripts executable
   provisioner "remote-exec" {
     inline = [
       "find ${local.path_postprocessing_scripts_clickhouse} -type f -iname \"*.sh\" -exec chmod 755 {} \\;",
