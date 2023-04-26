@@ -12,3 +12,4 @@ source ${SCRIPTDIR}/config.sh
 # POS operational helpers
 alias pos_logs_startup="sudo journalctl -u google-startup-scripts.service"
 alias pos_logs_startup_tail="sudo journalctl -u google-startup-scripts.service -f"
+alias pos_ch_client="docker exec -it ${pos_ch_docker_container_name} clickhouse-client"
