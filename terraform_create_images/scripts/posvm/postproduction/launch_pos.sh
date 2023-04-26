@@ -25,5 +25,5 @@ mount_disk ${pos_gcp_device_disk_elasticsearch} ${pos_mount_point_data_elasticse
 log "Make sure the list of folders needed to operate the postprocessing pipeline exist"
 ensure_folders_exist
 # TODO run Clickhouse data load in the background and wait for it to finish
-log "Run Clickhouse data pipeline"
-#cd $(dirname ${PATH_POSTPROCESSING_SCRIPTS_ENTRY_POINT_CLICKHOUSE}) ; ${PATH_POSTPROCESSING_SCRIPTS_ENTRY_POINT_CLICKHOUSE}
+log "[--- Run Clickhouse data pipeline ---]"
+cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
