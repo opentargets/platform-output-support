@@ -73,7 +73,7 @@ function load_release_data() {
     export path_source="${pos_data_release_path_etl_json}/${pos_ch_data_release_sources[$table]}"
     success=0
     # Attempts for the current table
-    for attempt in {1..7}; do
+    for attempt in {1..12}; do
       log "[INFO] (Attempt ${attempt}) ${path_source}' -> '${table}'"
       gsutil -m cat ${path_source} | docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="insert into ${table} format JSONEachRow" && success=1 && break
       log "[ERROR] Attempt ${attempt} failed. Truncating table '${table}' before retrying"
