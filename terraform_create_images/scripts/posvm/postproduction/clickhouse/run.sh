@@ -63,6 +63,18 @@ function load_release_data() {
   log "[DONE] Loading release data into Clickhouse"
 }
 
+# Show a summary of the Clickhouse data loaded
+function show_clickhouse_data_summary() {
+  log "[INFO] Showing a summary of the Clickhouse data loaded"
+  local CHCLIENT="docker exec ${pos_ch_docker_container_name} clickhouse-client"
+  for table in $( ${CHCLIENT} -q "show tables in ot" ) ; do
+    local fqdn=ot.$table
+    local table_count=$( ${CHCLIENT} -q "select count() from $fqdn" )
+    log " Count for '$fqdn' ---> $table_count"
+  done
+  log "[DONE] Showing a summary of the Clickhouse data loaded"
+}
+
 
 
 
@@ -73,3 +85,8 @@ prepare_clickhouse_storage_volume
 run_clickhouse
 # Load release data into Clickhouse
 load_release_data
+# Show a summary of the Clickhouse data loaded
+show_clickhouse_data_summary
+# TODO - Stop Clickhouse
+# TODO - Detach Clickhouse storage volume
+# TODO - Create Clickhouse storage volume image
