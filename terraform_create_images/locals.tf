@@ -12,6 +12,17 @@ locals {
   path_source_postprocessing_scripts_clickhouse     = "${local.path_source_postprocessing_scripts}/clickhouse"
   path_source_postprocessing_scripts_elastic_search = "${local.path_source_postprocessing_scripts}/elasticsearch"
 
+  // --- Open Targets Data Release Skeleton --- //
+  data_release_skeleton_path_output_root      = "output"
+  data_release_skeleton_path_etl_root         = "${local.data_release_skeleton_path_output_root}/etl"
+  data_release_skeleton_path_etl_json_root    = "${local.data_release_skeleton_path_etl_root}/json"
+  data_release_skeleton_path_etl_parquet_root = "${local.data_release_skeleton_path_etl_root}/parquet"
+
+  // --- Open Targets Data Release --- //
+  data_release_path_source_root = "gs://${var.data_location_source}"
+  data_release_path_etl_json    = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_etl_json_root}"
+  data_release_path_etl_parquet = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_etl_parquet_root}"
+
   // --- POS VM data load process configuration --- //
   // Clickhouse data disk device name
   data_disk_device_name_clickhouse = "clickhouse-data-disk"
