@@ -93,6 +93,7 @@ resource "google_compute_instance" "posvm" {
         IS_PARTNER_INSTANCE                         = var.is_partner_instance,
         GS_DIRECT_FILES                             = var.config_direct_json,
         GCP_DEVICE_DISK_PREFIX                      = local.gcp_device_disk_prefix,
+        POS_USER_NAME                               = local.posvm_remote_user_name
         DATA_DISK_DEVICE_NAME_CH                    = local.data_disk_device_name_clickhouse,
         DATA_DISK_DEVICE_NAME_ES                    = local.data_disk_device_name_elastic_search,
         DISK_IMAGE_NAME_CH                          = local.disk_image_name_clickhouse,
@@ -199,8 +200,8 @@ resource "google_compute_instance" "posvm" {
   }
   // Provision the postproduction scripts for Clickhouse
   provisioner "file" {
-    source   = "${local.path_source_postprocessing_scripts_clickhouse}"
-    destination = "${local.path_postprocessing_scripts_clickhouse}"
+    source      = local.path_source_postprocessing_scripts_clickhouse
+    destination = local.path_postprocessing_scripts_clickhouse
   }
   // Make Clickhouse postproduction scripts executable
   provisioner "remote-exec" {

@@ -15,6 +15,8 @@ function install_packages() {
   apt-get update
   log "Installing required packages"
   apt-get install -y wget vim tmux python3-pip docker.io docker-compose tree
+  log "Adding POS user '${POS_USER_NAME}' to docker group"
+  usermod -aG docker ${POS_USER_NAME}
   #pip3 install elasticsearch-loader
 }
 
