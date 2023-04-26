@@ -85,6 +85,7 @@ function load_release_data() {
       log "[ERROR] Failed to load data into Clickhouse table '${table}' after 7 attempts"
     fi
   done
+  # TODO - Run post data load scripts
   log "[DONE] Loading release data into Clickhouse"
 }
 
