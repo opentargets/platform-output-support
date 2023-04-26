@@ -36,7 +36,7 @@ function run_clickhouse() {
     -v ${pos_ch_path_schemas}:/docker-entrypoint-initdb.d \
     -v ${pos_ch_path_sql_scripts_postdataload}:${pos_ch_vol_path_sql_scripts_postdataload} \
     --ulimit nofile=262144:262144 \
-    ${ch_docker_image}
+    ${pos_ch_docker_image}
 }
 
 # Wait for Clickhouse to be ready
