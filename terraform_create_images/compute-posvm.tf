@@ -186,6 +186,17 @@ resource "google_compute_instance" "posvm" {
       "chmod 755 ${local.path_postprocessing_scripts}/launch_pos.sh",
     ]
   }
+  // Provision the operations extensions for BASH
+  provisioner "file" {
+    source      = "${local.path_source_postprocessing_scripts}/ops.bashrc"
+    destination = "${local.path_postprocessing_scripts}/ops.bashrc"
+  }
+  // Tell BASH to load the operations extensions
+  provisioner "remote-exec" {
+    inline = [
+      "echo \"source ${local.path_postprocessing_scripts}/ops.bashrc\" >> ~/.bashrc",
+    ]
+  }
   // Provision the postproduction scripts for Clickhouse
   provisioner "file" {
     source   = "${local.path_source_postprocessing_scripts_clickhouse}"
