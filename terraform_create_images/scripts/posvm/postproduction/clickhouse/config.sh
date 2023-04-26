@@ -10,51 +10,41 @@ source ${SCRIPTDIR}/../config.sh
 
 # Local configuration
 # Clickhouse related postprocessing script paths
-pos_ch_path_config="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/config.d"
-pos_ch_path_users="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/users.d"
+export pos_ch_path_config="${pos_path_postprocessing_scripts_clickhouse}/config.d"
+pos_ch_path_users="${pos_path_postprocessing_scripts_clickhouse}/users.d"
 # Database initialization schemas path
-pos_ch_path_schemas="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/db_schemas"
+export pos_ch_path_schemas="${pos_path_postprocessing_scripts_clickhouse}/db_schemas"
 # Database post-dataload scripts path
-pos_ch_path_sql_scripts_postdataload="${PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE}/sql_scripts_postdataload"
+export pos_ch_path_sql_scripts_postdataload="${pos_path_postprocessing_scripts_clickhouse}/sql_scripts_postdataload"
 
 # Clickhouse Storage Volume paths
 # Path to the folder with clickhouse configuration files
-ch_vol_path_clickhouse_config="${mount_point_data_clickhouse}/config.d"
+export pos_ch_vol_path_clickhouse_config="${pos_mount_point_data_clickhouse}/config.d"
 # Path to the folder with clickhouse users configuration files
-ch_vol_path_clickhouse_users="${mount_point_data_clickhouse}/users.d"
+export pos_ch_vol_path_clickhouse_users="${pos_mount_point_data_clickhouse}/users.d"
 # Path to the folder with clickhouse data files
-ch_vol_path_clickhouse_data="${mount_point_data_clickhouse}/data"
+export pos_ch_vol_path_clickhouse_data="${pos_mount_point_data_clickhouse}/data"
 # Clickhouse path for SQL scripts used after data load
-ch_path_sql_scripts_postdataload="/sql_scripts_postdataload"
+export pos_ch_path_sql_scripts_postdataload="/sql_scripts_postdataload"
 
 # Clickhouse runtime configuration
-ch_docker_container_name="otp-ch"
-ch_docker_image="${CLICKHOUSE_DOCKER_IMAGE}:${CLICKHOUSE_DOCKER_IMAGE_VERSION}"
+export pos_ch_docker_container_name="otp-ch"
+export pos_ch_docker_image="${pos_clickhouse_docker_image}:${pos_clickhouse_docker_image_version}"
 
 # Data loading configuration, data sources and destination tables
-ch_data_release_sources=(
+export pos_ch_data_release_sources=(
     ["ot.associations_otf_log"]="AOTFClickhouse/part*"
     ["ot.literature_log"]="literature/literatureIndex/part*"
     ["ot.ml_w2v_log"]="literature/vectors/part*"
     ["ot.sentences_log"]="literature/literatureSentences/part*"
 )
 
-# Local environment summary
+# Print summary of the environment by looping through all those variables that start with "pos_ch_"
 function env_summary() {
-    log "[INFO] Clickhouse postprocessing pipeline (LOCAL) configuration:"
-    log "[INFO] Clickhouse related postprocessing script paths:"
-    log "[INFO] pos_ch_path_config=${pos_ch_path_config}"
-    log "[INFO] pos_ch_path_users=${pos_ch_path_users}"
-    log "[INFO] pos_ch_path_schemas=${pos_ch_path_schemas}"
-    log "[INFO] pos_ch_path_sql_scripts_postdataload=${pos_ch_path_sql_scripts_postdataload}"
-    log "[INFO] Clickhouse Storage Volume paths:"
-    log "[INFO] ch_vol_path_clickhouse_config=${ch_vol_path_clickhouse_config}"
-    log "[INFO] ch_vol_path_clickhouse_users=${ch_vol_path_clickhouse_users}"
-    log "[INFO] ch_vol_path_clickhouse_data=${ch_vol_path_clickhouse_data}"
-    log "[INFO] ch_docker_container_name=${ch_docker_container_name}"
-    log "[INFO] ch_docker_image=${ch_docker_image}"
-    log "[INFO] Data loading configuration, data sources and destination tables:"
-    log "[INFO] ch_data_release_sources=${ch_data_release_sources[@]}"
+    echo "[CLICKHOUSE] Postprocessing pipeline environment summary:"
+    for var in "${!pos_ch_@}"; do
+        echo "    $var=${!var}"
+    done
 }
 
 # Main
