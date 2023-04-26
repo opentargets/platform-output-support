@@ -55,7 +55,7 @@ function load_release_data() {
   wait_for_clickhouse
   # Load release data
   log "[INFO] Loading release data from '${pos_data_release_path_source_root}' into Clickhouse"
-  for table in "$(!pos_ch_data_release_sources[@])"; do
+  for table in "${!pos_ch_data_release_sources[@]}"; do
     export path_source="${pos_data_release_path_etl_json}/${pos_ch_data_release_sources[$table]}"
     log "[INFO] Loading release data from '${path_source}' into Clickhouse table '${table}'"
     gsutil -m cat ${path_source} | docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="insert into ${table} format JSONEachRow "
