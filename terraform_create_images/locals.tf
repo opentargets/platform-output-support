@@ -50,6 +50,11 @@ locals {
   // --- Clickhouse specific configuration --- //
   clickhouse_docker_image         = "clickhouse/clickhouse-server"
   clickhouse_docker_image_version = var.clickhouse_docker_image_version
+
+  // --- Elastic Search specific configuration --- //
+  elastic_search_docker_image         = "docker.elastic.co/elasticsearch/elasticsearch"
+  elastic_search_docker_image_version = var.elastic_search_docker_image_version
+  
   // --- Disk Images Configuration --- //
   // Time Stamp to be used in the image name
   disk_image_timestamp = formatdate("YYYYMMDD-hhmm", timestamp())
