@@ -19,13 +19,13 @@ function run_elasticsearch() {
     --name ${pos_es_docker_container_name} \
     -p 9200:9200 \
     -p 9300:9300 \
-    -e path.data=/usr/share/elasticsearch/data \
-    -e path.logs=/usr/share/elasticsearch/logs \
-    -e cluster.name=${pos_es_cluster_name} \
-    -e network.host=0.0.0.0 \
-    -e discovery.type=single-node \
-    -e bootstrap.memory_lock=true \
-    -e search.max_open_scroll_context=5000 \
+    -e ES_SETTING_PATH_DATA=/usr/share/elasticsearch/data \
+    -e ES_SETTING_PATH_LOGS=/usr/share/elasticsearch/logs \
+    -e ES_SETTING_CLUSTER_NAME=${pos_es_cluster_name} \
+    -e ES_SETTING_NETWORK_HOST=0.0.0.0 \
+    -e ES_SETTING_DISCOVERY_TYPE=single-node \
+    -e ES_SETTING_BOOTSTRAP_MEMORY__LOCK=true \
+    -e ES_SETTING_SEARCH_MAX__OPEN__SCROLL__CONTEXT=5000 \
     -v ${pos_es_vol_path_data}:/usr/share/elasticsearch/data \
     -v ${pos_path_logs_elastic_search}:/usr/share/elasticsearch/logs \
     --ulimit memlock=-1:-1 \
