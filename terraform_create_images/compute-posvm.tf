@@ -163,6 +163,8 @@ resource "google_compute_instance" "posvm" {
       POS_DATA_RELEASE_PATH_ETL_PARQUET                          = local.data_release_path_etl_parquet,
       POS_CLICKHOUSE_DOCKER_IMAGE                                = local.clickhouse_docker_image,
       POS_CLICKHOUSE_DOCKER_IMAGE_VERSION                        = local.clickhouse_docker_image_version,
+      POS_ELASTIC_SEARCH_DOCKER_IMAGE                            = local.elastic_search_docker_image,
+      POS_ELASTIC_SEARCH_DOCKER_IMAGE_VERSION                    = local.elastic_search_docker_image_version,
       POS_POS_REPO_BRANCH                                        = var.config_repo_branch_pos,
       POS_FLAG_POSTPROCESSING_SCRIPTS_READY                      = local.flag_postprocessing_scripts_ready,
       POS_PATH_POSTPROCESSING_ROOT                               = local.path_postprocessing_root,
