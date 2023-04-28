@@ -77,20 +77,10 @@ exit 0
 
 
 
-
-
-
-sudo sh -c 'apt update && apt -y install wget vim tmux && apt -y install python3-pip && pip3 install elasticsearch-loader'
-
-
-
 # Install esbulk.
 mkdir /tmp
 wget https://github.com/miku/esbulk/releases/download/v0.7.3/esbulk_0.7.3_amd64.deb
 sudo dpkg -i esbulk_0.7.3_amd64.deb
-
-echo "CH: "${CLICKHOUSE_URI}", ES:"${ELASTICSEARCH_URI}", GS: "${GS_ETL_DATASET}
-echo "Partner instance: "${IS_PARTNER_INSTANCE}
 
 #Query the elasticsearch - log purpose
 curl -X GET ${ELASTICSEARCH_URI}:9200/_cat/indices
@@ -106,19 +96,33 @@ mkdir -p /tmp/data/webapp
 # Copy files locally. Robust vs streaming
 echo "Copy from GS to local HD"
 gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
-
 gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
 
+
+# [START] ??? [START]
+# gsutil ls "gs://${GS_DIRECT_FILES}/**/so.json"
 gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp % /tmp/data/so
+# gsutil ls "gs://${GS_DIRECT_FILES}/**/diseases_efo.json"
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
+# [END] ??? [END]
+
+# Downloads information metadata
 echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
 gsutil cat 'gs://${GS_ETL_DATASET}/metadata/**/*.json' >/tmp/data/webapp/downloads.json
 gsutil cp /tmp/data/webapp/downloads.json gs://${GS_DIRECT_FILES}/webapp/downloads.json
+# END - Downloads information metadata
+
+
 #TODO: remove in the next release. Used to test the command output
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % /tmp/data/
-gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_projects/
 
-sudo mkdir -p /tmp
+# [START] ??? [START]
+gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_projects/
+# [END] ??? [END]
+
+
+
+# [START] POS VM ELASTIC SEARCH [START]
 cd /tmp
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
 sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/output_etl_struct.jsonl
@@ -126,16 +130,20 @@ sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/
 sudo chmod 555 load_all_data.sh
 sudo chmod 555 load_json_esbulk.sh
 
-sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings.json
-sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search_known_drugs.json
-sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search.json
-sudo wget -O /tmp/data/index_settings_genetics_evidence.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_genetics_evidence.json
+#sudo wget -O /tmp/data/index_settings.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings.json
+#sudo wget -O /tmp/data/index_settings_search_known_drugs.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search_known_drugs.json
+#sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search.json
+#sudo wget -O /tmp/data/index_settings_genetics_evidence.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_genetics_evidence.json
 
 export ES=${ELASTICSEARCH_URI}:9200
 export PREFIX_DATA=/tmp/data/
 echo "starting the insertion of data ... Elasticsearch."
 time ./load_all_data.sh
+# [END] POS VM ELASTIC SEARCH [END]
 
+
+
+# WAIT for the CH and ES VMs to finish loading the data
 POLL=1
 echo "POLL="$POLL
 while [ $POLL != "0" ]; do
@@ -154,7 +162,12 @@ while [ $POLL != "0" ]; do
   #disallow non zero exit codes again since that is sensible
   set -e
 done
+# [END] WAIT for the CH and ES VMs to finish loading the data
 
+
+
+
+# [START] POS VM FINAL STAGE [START]
 # Get some data to validate loading was successful
 es_logs="es_loading_logs.txt"
 date >>$es_logs
@@ -165,7 +178,12 @@ gcloud compute --project=${PROJECT_ID} instances stop ${ELASTICSEARCH_URI} --zon
 
 # stop Clickhouse
 gcloud compute --project=${PROJECT_ID} instances stop ${CLICKHOUSE_URI} --zone ${GC_ZONE}
+# [END] POS VM FINAL STAGE [END]
 
+
+
+
+# [START] POS IMAGE CREATION [START]
 NOW=$(date +'%y%m%d-%H%M%S')
 echo $NOW
 #create image from elasticsearch machine
@@ -173,3 +191,4 @@ gcloud compute --project=${PROJECT_ID} images create ${IMAGE_PREFIX}-$NOW-es --s
 
 #create image from clickhouse image
 gcloud compute --project=${PROJECT_ID} images create ${IMAGE_PREFIX}-$NOW-ch --source-disk ${CLICKHOUSE_URI} --family ot-ch --source-disk-zone ${GC_ZONE}
+# [END] POS IMAGE CREATION [END]
