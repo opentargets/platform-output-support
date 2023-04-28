@@ -10,14 +10,6 @@ TMPDIR=$(mktemp -d)
 source ${SCRIPTDIR}/config.sh
 
 
-
-
-
-
-
-
-
-
 # --- Main ---
 log "Mount data disks for Clickhouse and Elastic Search"
 mount_disk ${pos_gcp_device_disk_clickhouse} ${pos_mount_point_data_clickhouse}
