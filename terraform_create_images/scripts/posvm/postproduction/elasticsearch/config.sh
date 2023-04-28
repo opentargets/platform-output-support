@@ -12,6 +12,12 @@ source ${SCRIPTDIR}/../config.sh
 # Elastic Search volume paths
 # Path to the folder with Elastic Search data files
 export pos_es_vol_path_data="${pos_mount_point_data_elasticsearch}/data"
+# Path to the folder with Elastic Search metadata files
+export pos_es_path_metadata="${pos_path_postprocessing_scripts_elastic_search}/metadata"
+# Path to folder with Elastic Search index settings files
+export pos_es_path_index_settings="${pos_path_postprocessing_scripts_elastic_search}/index_settings"
+# Path to ETL ingestion configuration file
+export pos_es_path_etl_ingestion_config="${pos_es_path_metadata}/etl_ingest_config.json"
 
 # Elastic Search runtime configuration
 export pos_es_docker_container_name="otp-es"
