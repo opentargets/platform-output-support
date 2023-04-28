@@ -114,5 +114,3 @@ load_release_data
 # Show a summary of the Clickhouse data loaded
 show_clickhouse_data_summary
 # TODO - Stop Clickhouse
-# TODO - Detach Clickhouse storage volume
-# TODO - Create Clickhouse storage volume image
