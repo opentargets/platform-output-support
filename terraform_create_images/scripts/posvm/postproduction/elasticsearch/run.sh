@@ -41,3 +41,10 @@ function wait_for_elasticsearch() {
   done
   log "[INFO] Elastic Search is ready"
 }
+
+
+# Main
+# Prepare Elastic Search Storage Volume
+prepare_elasticsearch_storage_volume
+# Run Elastic Search via Docker
+run_elasticsearch
