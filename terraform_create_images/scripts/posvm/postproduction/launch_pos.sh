@@ -24,3 +24,5 @@ log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
 # TODO - Create Clickhouse storage volume image
 
 # Run Elastic Search data loading process
+log "[--- Run Elastic Search data pipeline ---]"
+cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elasticsearch}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_elasticsearch})
