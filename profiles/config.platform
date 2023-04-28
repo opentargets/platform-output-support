@@ -1,19 +1,19 @@
 # Variables for Sync data
 # This one is used to feed BigQuery Dev
-release_id_dev      = "23.02.1"
+release_id_dev      = "ricardo/23.04.1"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
-release_id_prod     = "23.02"
+release_id_prod     = "23.04"
 # This variable is used in the script as source for the data syncronization to the public release bucket and the EBI FTP
-gs_sync_from        = "open-targets-pre-data-releases/23.02.1"
+gs_sync_from        = "open-targets-pre-data-releases/ricardo/23.04.1"
 is_partner_instance = false
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
 # This one is used to produce the web application static data context
-config_direct_json  = "open-targets-pre-data-releases/23.02.1"
+config_direct_json  = "open-targets-pre-data-releases/ricardo/23.04.1"
 # This value is used to feed BigQuery Production and Clickhouse image
-config_gs_etl       = "open-targets-pre-data-releases/23.02.1/output"
+config_gs_etl       = "open-targets-pre-data-releases/ricardo/23.04.1/output"
 config_script_name  = "posprod"
-config_release_name = "platform2302"
+config_release_name = "platform2304"
 
 # Project dev info
 config_project_id         = "open-targets-eu-dev"
@@ -22,14 +22,15 @@ config_gcp_default_zone   = "europe-west1-d"
 
 config_vm_elastic_search_vcpus          = "4"
 config_vm_elastic_search_mem            = "32768"
-config_vm_elastic_search_boot_disk_size = 350
+config_vm_elastic_search_boot_disk_size = 64
 config_vm_elastic_search_version        = "7.10.2"
 
 config_vm_clickhouse_vcpus          = "4"
 config_vm_clickhouse_mem            = "26624"
-config_vm_clickhouse_boot_disk_size = 300
+config_vm_clickhouse_boot_disk_size = 64
 
 config_vm_pos_machine_type = "n1-standard-8"
 config_vm_pos_boot_image   = "debian-10"
+config_vm_pos_boot_disk_size                = 750
 
 
