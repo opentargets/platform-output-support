@@ -32,3 +32,12 @@ function run_elasticsearch() {
     --ulimit nofile=65536:65536 \
     ${pos_es_docker_image}
 }
+
+# Wait for Elastic Search to be ready
+function wait_for_elasticsearch() {
+  log "[INFO] Waiting for Elastic Search to be ready"
+  while ! curl -s http://localhost:9200/_cluster/health?pretty | grep -q '"status" : "green"'; do
+    sleep 1
+  done
+  log "[INFO] Elastic Search is ready"
+}
