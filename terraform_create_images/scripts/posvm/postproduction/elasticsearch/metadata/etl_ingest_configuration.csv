@@ -1,0 +1,27 @@
+# This file contains information on how the ETL output is mapped to different inexes in Elastic Search, and the settings for each of those indexes.
+#
+# Columns:
+#   - input: is the folder under <data_release>/etl/output/ where the ETL output data for that particular index is stored.
+#   - index_name: is the name of the index in Elastic Search.
+#   - id: is the name of the field in the ETL output, for that particular dataset, that will be used as the id for the Elastic Search document.
+#   - index_settings: is the name of the file that contains the settings for the index in Elastic Search.
+baselineExpression,expression,id,common.json
+diseaseToPhenotype,disease_hpo,,common.json
+diseases,disease,id,common.json
+drugWarnings,drug_warnings,,common.json
+go,go,id,common.json
+hpo,hpo,id,common.json
+indication,indication,,common.json
+interaction,interaction,,common.json
+interactionEvidence,interaction_evidence,,common.json
+knownDrugsAggregated,known_drugs,,search_known_drugs.json
+mechanismOfAction,mechanism_of_action,,common.json
+molecule,drug,,common.json
+otar_projects,otar_projects,efo_id,common.json
+reactome,reactome,id,common.json
+searchDrug,search_drug,,search.json
+searchTarget,search_target,,search.json
+searchDisease,search_disease,,search.json
+targets,target,id,common.json
+AOTFElasticsearch,evidences_aotf,,common.json
+mousePhenotypes,mouse_phenotypes,,common.json
