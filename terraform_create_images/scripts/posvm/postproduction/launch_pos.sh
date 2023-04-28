@@ -18,7 +18,9 @@ log "Make sure the list of folders needed to operate the postprocessing pipeline
 ensure_folders_exist
 # Run Clickhouse data load in the background and wait for it to finish
 log "[--- Run Clickhouse data pipeline ---]"
-cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
+log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
+#cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
 # TODO - Detach Clickhouse storage volume
 # TODO - Create Clickhouse storage volume image
-# TODO - Run Elastic Search data loading process
+
+# Run Elastic Search data loading process
