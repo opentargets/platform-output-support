@@ -211,6 +211,17 @@ resource "google_compute_instance" "posvm" {
       "find ${local.path_postprocessing_scripts_clickhouse} -type f -iname \"*.sh\" -exec chmod 755 {} \\;",
     ]
   }
+  // Provision the postproduction scripts for Elastic Search
+  provisioner "file" {
+    source      = local.path_source_postprocessing_scripts_elastic_search
+    destination = local.path_postprocessing_scripts_elastic_search
+  }
+  // Make Elastic Search postproduction scripts executable
+  provisioner "remote-exec" {
+    inline = [
+      "find ${local.path_postprocessing_scripts_elastic_search} -type f -iname \"*.sh\" -exec chmod 755 {} \\;",
+    ]
+  }
   // Set the 'ready' flag for the postprocessing pipeline to start
   provisioner "remote-exec" {
     inline = [
