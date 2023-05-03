@@ -146,24 +146,24 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_p
 
 
 # WAIT for the CH and ES VMs to finish loading the data
-POLL=1
-echo "POLL="$POLL
-while [ $POLL != "0" ]; do
-  sleep 30
-  #allow non zero exit codes since that is what we are checking for
-  set +e
-  #pipeline script will put a tag on the instance here it checks for this tag
-  gcloud --project ${PROJECT_ID} compute instances list --filter='tags:startup-done' >instance_tmp.txt
-  cat instance_tmp.txt
-
-  # Check if clickhouse is done with the insertion of the data
-  grep ${CLICKHOUSE_URI} instance_tmp.txt
-  POLL=$?
-  echo "POLL="$POLL
-
-  #disallow non zero exit codes again since that is sensible
-  set -e
-done
+#POLL=1
+#echo "POLL="$POLL
+#while [ $POLL != "0" ]; do
+#  sleep 30
+#  #allow non zero exit codes since that is what we are checking for
+#  set +e
+#  #pipeline script will put a tag on the instance here it checks for this tag
+#  gcloud --project ${PROJECT_ID} compute instances list --filter='tags:startup-done' >instance_tmp.txt
+#  cat instance_tmp.txt
+#
+#  # Check if clickhouse is done with the insertion of the data
+#  grep ${CLICKHOUSE_URI} instance_tmp.txt
+#  POLL=$?
+#  echo "POLL="$POLL
+#
+#  #disallow non zero exit codes again since that is sensible
+#  set -e
+#done
 # [END] WAIT for the CH and ES VMs to finish loading the data
 
 
