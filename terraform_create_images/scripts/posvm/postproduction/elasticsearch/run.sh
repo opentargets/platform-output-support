@@ -63,6 +63,8 @@ function load_data_into_es_index() {
   log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
 }
 
+# TODO - Load Evidence data into Elastic Search
+
 # Iterate over the ETL ingestion configuration file and load data into Elastic Search
 function load_etl_data_into_es() {
   while IFS= read -r line

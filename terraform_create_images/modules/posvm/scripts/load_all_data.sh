@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo ${ELASTICSEARCH_URI}
 echo ${GS_ETL_DATASET}
 
@@ -26,6 +27,16 @@ export ID=""
 export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 
 ./load_json_esbulk.sh
+
+
+
+
+
+
+
+
+
+# --- PENDING ---
 
 # Load evidence
 FOLDER_PREFIX="${PREFIX_DATA}/evidence"
