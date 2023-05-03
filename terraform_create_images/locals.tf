@@ -14,6 +14,7 @@ locals {
 
   // --- Open Targets Data Release Skeleton --- //
   data_release_skeleton_path_output_root      = "output"
+  data_release_skeleton_path_input_root       = "input"
   data_release_skeleton_path_etl_root         = "${local.data_release_skeleton_path_output_root}/etl"
   data_release_skeleton_path_etl_json_root    = "${local.data_release_skeleton_path_etl_root}/json"
   data_release_skeleton_path_etl_parquet_root = "${local.data_release_skeleton_path_etl_root}/parquet"
@@ -54,7 +55,7 @@ locals {
   // --- Elastic Search specific configuration --- //
   elastic_search_docker_image         = "docker.elastic.co/elasticsearch/elasticsearch"
   elastic_search_docker_image_version = var.elastic_search_docker_image_version
-  
+
   // --- Disk Images Configuration --- //
   // Time Stamp to be used in the image name
   disk_image_timestamp = formatdate("YYYYMMDD-hhmm", timestamp())
