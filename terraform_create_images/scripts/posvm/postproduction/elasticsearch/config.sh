@@ -40,3 +40,6 @@ function env_summary() {
         fi
     done
 }
+
+# Print summary of the environment
+env_summary
