@@ -47,6 +47,8 @@ locals {
   filename_postprocessing_scripts_entry_point = "launch_pos.sh"
   // Flag to signal that the postprocessing pipeline scripts are ready to run
   flag_postprocessing_scripts_ready = "/${local.path_postprocessing_root}/ready"
+  // POS pipeline session logs upload path
+  gcp_path_pos_pipeline_session_logs = "${var.pos_logs_path_root}/${terraform.workspace}"
   // --- [END] POS VM data load process configuration [END] --- //
 
   // --- Clickhouse specific configuration --- //
