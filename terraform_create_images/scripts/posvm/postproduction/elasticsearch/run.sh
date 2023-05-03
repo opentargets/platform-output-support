@@ -2,6 +2,12 @@
 
 # This script starts the postprocessing pipeline for loading data into Elastic Search
 
+# Bootstrapping environment
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# Load local configuration
+source ${SCRIPTDIR}/config.sh
+
 # Helper functions
 # Prepare Elastic Search Storage Volume
 function prepare_elasticsearch_storage_volume() {
@@ -57,8 +63,13 @@ function load_data_into_es_index() {
   log "[INFO][${index_name}] Data source at '${path_to_input_folder}'"
   # Iterate over all .json files in the input folder and load them into the created index
   for file in $(gsutil list ${path_to_input_folder}/*.json); do
-    log "[INFO][${index_name}] Loading data file '${file}'"
-    # TODO - curl -X POST "localhost:9200/${index_name}/_bulk?pretty" -H 'Content-Type: application/json' --data-binary "@${file}"
+    if [[ -n "$id" ]]; then
+      log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
+      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
+    else
+      log "[INFO][${index_name}] Loading data file '${file}' without id"
+      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
+    fi
   done
   log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
 }
