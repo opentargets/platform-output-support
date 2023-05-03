@@ -155,6 +155,7 @@ resource "google_compute_instance" "posvm" {
       POS_PATH_POSTPROCESSING_SCRIPTS_ENTRY_POINT_CLICKHOUSE     = local.path_postprocessing_scripts_entry_point_clickhouse,
       POS_PATH_POSTPROCESSING_SCRIPTS_ENTRY_POINT_ELASTIC_SEARCH = local.path_postprocessing_scripts_entry_point_elastic_search,
       POS_DATA_RELEASE_SEKELETON_PATH_OUTPUT_ROOT                = local.data_release_skeleton_path_output_root,
+      POS_DATA_RELEASE_SEKELETON_PATH_INPUT_ROOT                 = local.data_release_skeleton_path_input_root,
       POS_DATA_RELEASE_SEKELETON_PATH_ETL_ROOT                   = local.data_release_skeleton_path_etl_root,
       POS_DATA_RELEASE_SEKELETON_PATH_ETL_JSON_ROOT              = local.data_release_skeleton_path_etl_json_root,
       POS_DATA_RELEASE_SEKELETON_PATH_ETL_PARQUET_ROOT           = local.data_release_skeleton_path_etl_parquet_root,
