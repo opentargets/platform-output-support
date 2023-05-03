@@ -12,6 +12,8 @@ source ${SCRIPTDIR}/../config.sh
 # Elastic Search volume paths
 # Path to the folder with Elastic Search data files
 export pos_es_vol_path_data="${pos_mount_point_data_elasticsearch}/data"
+export pos_es_docker_vol_data="esdata"
+export pos_es_docker_vol_logs="pos_eslogs"
 # Path to the folder with Elastic Search metadata files
 export pos_es_path_metadata="${pos_path_postprocessing_scripts_elastic_search}/metadata"
 # Path to folder with Elastic Search index settings files
