@@ -69,13 +69,24 @@ function load_data_into_es_index() {
   curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
   log "[INFO][${index_name}] Data source at '${path_to_input_folder}'"
   # Iterate over all .json files in the input folder and load them into the created index
+  max_retries=12
   for file in $(gsutil list ${path_to_input_folder}/*.json); do
     if [[ -n "$id" ]]; then
-      log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
-      gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
+      #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
+      for ((i = 1; i <= max_retries; i++)); do
+        echo "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
+        gsutil cp "${file}" - | esbulk -size 2000 -w 8 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || echo "Failed, retrying..."
+        sleep 1
+      done
+      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
     else
-      log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
-      gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
+      #log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
+      for ((i = 1; i <= max_retries; i++)); do
+        echo "[INFO][${index_name}] Loading data file '${file}' WITHOUT id - Attempt #$i"
+        gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 && break || echo "Failed, retrying..."
+        sleep 1
+      done
+      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
     fi
   done
   log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
