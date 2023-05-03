@@ -42,6 +42,8 @@ function wait_for_elasticsearch() {
   log "[INFO] Elastic Search is ready"
 }
 
+# TODO - Load 
+
 
 # Main
 # Prepare Elastic Search Storage Volume
