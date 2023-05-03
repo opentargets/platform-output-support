@@ -74,16 +74,16 @@ function load_data_into_es_index() {
     if [[ -n "$id" ]]; then
       #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
       for ((i = 1; i <= max_retries; i++)); do
-        echo "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
-        gsutil cp "${file}" - | esbulk -size 2000 -w 8 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || echo "Failed, retrying..."
+        log "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
+        gsutil cp "${file}" - | esbulk -size 2000 -w 8 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
     else
       #log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
       for ((i = 1; i <= max_retries; i++)); do
-        echo "[INFO][${index_name}] Loading data file '${file}' WITHOUT id - Attempt #$i"
-        gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 && break || echo "Failed, retrying..."
+        log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id - Attempt #$i"
+        gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
