@@ -101,6 +101,7 @@ function load_etl_data_into_es() {
   declare -A job_param_index_settings
   declare -A job_param_id
 
+  # Iterate over the ETL ingestion configuration
   while IFS= read -r line
   do
       # Skip lines starting with '#'
@@ -118,6 +119,28 @@ function load_etl_data_into_es() {
       job_param_index_settings["$index_name"]=${index_settings}
       job_param_id["$index_name"]=${id}
   done < "${pos_es_path_etl_ingestion_config}"
+  
+  # Add the jobs for loading Evidence data into Elastic Search
+  for evidence_path in $( gsutil ls ${pos_data_release_path_etl_json}/evidence | grep sourceId ); do
+    # Extract the sourceId from the path
+    export full_path="${evidence_path%/}"
+    export source_id="${full_path##*/}"
+    # Compute the relative input folder and index name
+    export input_folder=evidence/"${source_id}"
+    export index_name_suffix="${source_id#*=}"
+    export index_name=evidence_datasource_"${index_name_suffix}"
+    # Initialize job status and retry count
+    job_status["$index_name"]=1
+    job_retries["$index_name"]=0
+    job_param_input_folder["$index_name"]=${input_folder}
+    if [[ "${index_name_suffix}" == "ot_genetics_portal" ]]; then
+      job_param_index_settings["$index_name"]=${pos_es_index_settings_genetics_evidence}
+    else
+      job_param_index_settings["$index_name"]=${pos_es_default_index_settings}
+    fi
+    job_param_id["$index_name"]=${pos_es_default_id}
+  done
+  
   # Parallelize the ingestion of the ETL data into Elastic Search by running each job in a separate process per index
   while true; do
     all_jobs_done=true
@@ -149,7 +172,6 @@ function load_etl_data_into_es() {
     fi
   done 
     #load_data_into_es_index ${input_folder} ${index_name} ${index_settings} ${id}
-  # TODO - Load Evidence data into Elastic Search
   # TODO - Load SO data into Elastic Search
 }
 
