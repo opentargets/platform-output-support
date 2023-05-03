@@ -54,13 +54,19 @@ export pos_mount_point_data_elasticsearch="${POS_PATH_MOUNT_DATA_ELASTICSEARCH}"
 export pos_path_logs_postprocessing="${POS_PATH_POSTPROCESSING_ROOT}/logs"
 export pos_path_logs_clickhouse="$${pos_path_logs_postprocessing}/clickhouse"
 export pos_path_logs_elastic_search="$${pos_path_logs_postprocessing}/elasticsearch"
+export pos_path_logs_pos="$${pos_path_logs_postprocessing}/pos"
+export pos_path_logs_startup_script="$${pos_path_logs_pos}/startup_script.log"
 # List of folders that need to exist for the postprocessing scripts to run
-export pos_list_folders_postprocessing="$${pos_path_logs_postprocessing} $${pos_path_logs_clickhouse} $${pos_path_logs_elastic_search}"
+export pos_list_folders_postprocessing="$${pos_path_logs_postprocessing} $${pos_path_logs_clickhouse} $${pos_path_logs_elastic_search} $${pos_path_logs_pos}"
 
 # Helper functions
 # Logging helper function
 function log() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
+}
+
+function logf() {
+  log "$@" | tee -a $${pos_path_logs_startup_script}
 }
 
 # Print a summary with the running environment (all environment variables starting with POS_)
