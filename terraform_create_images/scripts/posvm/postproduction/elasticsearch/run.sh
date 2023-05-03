@@ -202,8 +202,6 @@ function load_etl_data_into_es() {
       sleep 1
     fi
   done 
-    #load_data_into_es_index ${input_folder} ${index_name} ${index_settings} ${id}
-  # TODO - Load SO data into Elastic Search
 }
 
 
