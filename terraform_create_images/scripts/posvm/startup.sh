@@ -89,21 +89,21 @@ exit 0
 #echo
 
 mkdir -p /tmp/data
-mkdir -p /tmp/data/so
-mkdir -p /tmp/data/mp
+#mkdir -p /tmp/data/so
+#mkdir -p /tmp/data/mp
 #mkdir -p /tmp/data/otar_projects
 #mkdir -p /tmp/data/faers/
 mkdir -p /tmp/data/webapp
 
 # Copy files locally. Robust vs streaming
-echo "Copy from GS to local HD"
-gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
+#echo "Copy from GS to local HD"
+#gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
 #gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
 
 
 # [START] ??? [START]
 # gsutil ls "gs://${GS_DIRECT_FILES}/**/so.json"
-gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp % /tmp/data/so
+#gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp % /tmp/data/so
 # gsutil ls "gs://${GS_DIRECT_FILES}/**/diseases_efo.json"
 gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
 # [END] ??? [END]
@@ -116,10 +116,10 @@ gsutil cp /tmp/data/webapp/downloads.json gs://${GS_DIRECT_FILES}/webapp/downloa
 
 
 #TODO: remove in the next release. Used to test the command output
-gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % /tmp/data/
+#gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % /tmp/data/
 
 # [START] ??? [START]
-gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_projects/
+#gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_projects/
 # [END] ??? [END]
 
 
