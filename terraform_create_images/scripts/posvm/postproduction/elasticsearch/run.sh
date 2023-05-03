@@ -59,8 +59,8 @@ function wait_for_elasticsearch() {
 function load_data_into_es_index() {
   local input_folder=$1
   local index_name=$2
-  local id=$3
-  local index_settings=$4
+  local index_settings=$3
+  local id=$4
   local path_to_index_settings="${pos_es_path_index_settings}/${index_settings}"
   local path_to_input_folder="${pos_data_release_path_etl_json}/${input_folder}"
   log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
@@ -74,7 +74,7 @@ function load_data_into_es_index() {
       log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
       #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
     else
-      log "[INFO][${index_name}] Loading data file '${file}' without id"
+      log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
       #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
     fi
   done
@@ -92,7 +92,7 @@ function load_etl_data_into_es() {
 
       # Process the line as CSV
       IFS=, read -r input_folder index_name id index_settings <<< "$line"
-      load_data_into_es_index ${input_folder} ${index_name} ${id} ${index_settings}
+      load_data_into_es_index ${input_folder} ${index_name} ${index_settings} ${id}
   done < "${pos_es_path_etl_ingestion_config}"
   # TODO - Load Evidence data into Elastic Search
   # TODO - Load SO data into Elastic Search
