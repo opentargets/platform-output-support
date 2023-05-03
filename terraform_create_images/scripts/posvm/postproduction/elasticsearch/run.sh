@@ -42,7 +42,41 @@ function wait_for_elasticsearch() {
   log "[INFO] Elastic Search is ready"
 }
 
-# TODO - Load 
+# Load data into Elastic Search for a given input_folder, index_name, id and index_settings
+function load_data_into_es_index() {
+  local input_folder=$1
+  local index_name=$2
+  local id=$3
+  local index_settings=$4
+  local path_to_index_settings="${pos_es_path_index_settings}/${index_settings}"
+  local path_to_input_folder="${pos_data_release_path_etl_json}/${input_folder}"
+  log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
+  # Create index
+  log "[INFO][${index_name}] Creating index"
+  curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
+  log "[INFO][${index_name}] Data source at '${path_to_input_folder}'"
+  # Iterate over all .json files in the input folder and load them into the created index
+  for file in $(gsutil list ${path_to_input_folder}/*.json); do
+    log "[INFO][${index_name}] Loading data file '${file}'"
+    # TODO - curl -X POST "localhost:9200/${index_name}/_bulk?pretty" -H 'Content-Type: application/json' --data-binary "@${file}"
+  done
+  log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
+}
+
+# Iterate over the ETL ingestion configuration file and load data into Elastic Search
+function load_etl_data_into_es() {
+  while IFS= read -r line
+  do
+      # Skip lines starting with '#'
+      if [[ $line =~ ^# ]]; then
+          continue
+      fi
+
+      # Process the line as CSV
+      IFS=, read -r input_folder index_name id index_settings <<< "$line"
+      load_data_into_es_index ${input_folder} ${index_name} ${id} ${index_settings}
+  done < "${pos_es_path_etl_ingestion_config}"
+}
 
 
 # Main
@@ -50,3 +84,7 @@ function wait_for_elasticsearch() {
 prepare_elasticsearch_storage_volume
 # Run Elastic Search via Docker
 run_elasticsearch
+# Wait for Elastic Search to be ready
+wait_for_elasticsearch
+# Load data into Elastic Search
+load_etl_data_into_es
