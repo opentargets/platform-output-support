@@ -94,6 +94,13 @@ function load_data_into_es_index() {
 
 # Iterate over the ETL ingestion configuration file and load data into Elastic Search
 function load_etl_data_into_es() {
+  local max_retries=12
+  declare -A job_status
+  declare -A job_retries
+  declare -A job_param_input_folder
+  declare -A job_param_index_settings
+  declare -A job_param_id
+
   while IFS= read -r line
   do
       # Skip lines starting with '#'
@@ -103,8 +110,45 @@ function load_etl_data_into_es() {
 
       # Process the line as CSV
       IFS=, read -r input_folder index_name id index_settings <<< "$line"
-      load_data_into_es_index ${input_folder} ${index_name} ${index_settings} ${id}
+
+      # Initialize job status and retry count
+      job_status["$index_name"]=1
+      job_retries["$index_name"]=0
+      job_param_input_folder["$index_name"]=${input_folder}
+      job_param_index_settings["$index_name"]=${index_settings}
+      job_param_id["$index_name"]=${id}
   done < "${pos_es_path_etl_ingestion_config}"
+  # Parallelize the ingestion of the ETL data into Elastic Search by running each job in a separate process per index
+  while true; do
+    all_jobs_done=true
+
+    for index_name in "${!job_status[@]}"; do
+      if [ ${job_status["$index_name"]} -ne 0 ] && [ ${job_retries["$index_name"]} -lt $max_retries ]; then
+        all_jobs_done=false
+        (
+          load_data_into_es_index ${job_param_input_folder["$index_name"]} ${index_name} ${job_param_index_settings["$index_name"]} ${job_param_id["$index_name"]}
+          job_exit_status=$?
+          if [ $job_exit_status -eq 0 ]; then
+            job_status["$index_name"]=0
+            log "Job for index $index_name completed successfully."
+          else
+            job_retries["$index_name"]=$((job_retries["$index_name"] + 1))
+            log "Job for index $index_name failed. Retrying (attempt ${job_retries["$index_name"]} of $max_retries)..."
+          fi
+        ) &
+      fi
+    done
+    
+    # Wait for all background jobs to complete
+    wait
+
+    if $all_jobs_done; then
+      break
+    else
+      sleep 1
+    fi
+  done 
+    #load_data_into_es_index ${input_folder} ${index_name} ${index_settings} ${id}
   # TODO - Load Evidence data into Elastic Search
   # TODO - Load SO data into Elastic Search
 }
