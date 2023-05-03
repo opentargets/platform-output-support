@@ -33,4 +33,6 @@ cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search}) ; .
 # TODO - Dump all POS pipeline logs to file
 log "[--- Dumping all POS pipeline logs to file '${pos_path_logs_startup_script}' ---]"
 sudo journalctl -u google-startup-scripts.service > ${pos_path_logs_startup_script}
-# TODO - Upload POS pipeline logs to GCS - Where??????
+# Upload POS pipeline logs to GCS
+log "[--- Uploading POS pipeline logs to GCS, at '${pos_gcp_path_pos_pipeline_session_logs}' ---]"
+gsutil -m rsync -r ${pos_path_logs_postprocessing}/ ${pos_gcp_path_pos_pipeline_session_logs}/
