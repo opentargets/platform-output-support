@@ -17,7 +17,9 @@ function install_packages() {
   apt-get install -y wget vim tmux python3-pip docker.io docker-compose tree
   log "Adding POS user '${POS_USER_NAME}' to docker group"
   usermod -aG docker ${POS_USER_NAME}
-  #pip3 install elasticsearch-loader
+  log "Installing esbulk loader"
+  wget https://github.com/miku/esbulk/releases/download/v0.7.3/esbulk_0.7.3_amd64.deb
+  dpkg -i esbulk_0.7.3_amd64.deb
 }
 
 # Script completion hook to flag that 'startup script' has already been run
@@ -78,25 +80,25 @@ exit 0
 
 
 # Install esbulk.
-mkdir /tmp
-wget https://github.com/miku/esbulk/releases/download/v0.7.3/esbulk_0.7.3_amd64.deb
-sudo dpkg -i esbulk_0.7.3_amd64.deb
+#mkdir /tmp
+#wget https://github.com/miku/esbulk/releases/download/v0.7.3/esbulk_0.7.3_amd64.deb
+#sudo dpkg -i esbulk_0.7.3_amd64.deb
 
 #Query the elasticsearch - log purpose
-curl -X GET ${ELASTICSEARCH_URI}:9200/_cat/indices
-echo
+#curl -X GET ${ELASTICSEARCH_URI}:9200/_cat/indices
+#echo
 
 mkdir -p /tmp/data
 mkdir -p /tmp/data/so
 mkdir -p /tmp/data/mp
-mkdir -p /tmp/data/otar_projects
-mkdir -p /tmp/data/faers/
+#mkdir -p /tmp/data/otar_projects
+#mkdir -p /tmp/data/faers/
 mkdir -p /tmp/data/webapp
 
 # Copy files locally. Robust vs streaming
 echo "Copy from GS to local HD"
 gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/* /tmp/data/
-gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
+#gsutil -m -q cp -r gs://${GS_ETL_DATASET}/etl/json/fda/significantAdverseDrugReactions/* /tmp/data/faers/
 
 
 # [START] ??? [START]
@@ -123,10 +125,10 @@ gsutil -m cp -r gs://${GS_ETL_DATASET}/etl/json/otar_projects/* /tmp/data/otar_p
 
 
 # [START] POS VM ELASTIC SEARCH [START]
-cd /tmp
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
+#cd /tmp
+#sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_json_esbulk.sh
 #sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/output_etl_struct.jsonl
-sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_all_data.sh
+#sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/main/terraform_create_images/modules/posvm/scripts/load_all_data.sh
 #sudo chmod 555 load_all_data.sh
 #sudo chmod 555 load_json_esbulk.sh
 
@@ -135,10 +137,10 @@ sudo wget https://raw.githubusercontent.com/opentargets/platform-output-support/
 #sudo wget -O /tmp/data/index_settings_search.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_search.json
 #sudo wget -O /tmp/data/index_settings_genetics_evidence.json https://raw.githubusercontent.com/opentargets/platform-output-support/main/scripts/ES/index_settings_genetics_evidence.json
 
-export ES=${ELASTICSEARCH_URI}:9200
-export PREFIX_DATA=/tmp/data/
-echo "starting the insertion of data ... Elasticsearch."
-time ./load_all_data.sh
+#export ES=${ELASTICSEARCH_URI}:9200
+#export PREFIX_DATA=/tmp/data/
+#echo "starting the insertion of data ... Elasticsearch."
+#time ./load_all_data.sh
 # [END] POS VM ELASTIC SEARCH [END]
 
 
