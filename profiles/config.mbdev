@@ -45,7 +45,7 @@ config_vm_clickhouse_vcpus          = "4"
 config_vm_clickhouse_mem            = "26624"
 config_vm_clickhouse_boot_disk_size = 300
 
-config_vm_pos_machine_type = "n1-standard-8"
+config_vm_pos_machine_type = "n1-highcpu-32"
 config_vm_pos_boot_image   = "debian-11"
 
 
