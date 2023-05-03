@@ -204,6 +204,12 @@ function load_etl_data_into_es() {
   done 
 }
 
+# Print a summary that shows all the indexes in Elastic Search and their details
+function print_es_summary() {
+  log "[INFO] Printing Elastic Search summary"
+  curl -X GET "localhost:9200/_cat/indices?pretty&s=i"
+}
+
 
 # Main
 # Prepare Elastic Search Storage Volume
@@ -214,3 +220,6 @@ run_elasticsearch
 wait_for_elasticsearch
 # Load data into Elastic Search
 load_etl_data_into_es
+# Print Elastic Search summary
+print_es_summary
+# TODO - Stop Elastic Search
