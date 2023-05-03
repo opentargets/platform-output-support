@@ -23,7 +23,7 @@ locals {
   data_release_path_source_root = "gs://${var.data_location_source}"
   data_release_path_etl_json    = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_etl_json_root}"
   data_release_path_etl_parquet = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_etl_parquet_root}"
-  data_release_path_input_root = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_input_root}"
+  data_release_path_input_root  = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_input_root}"
 
   // --- POS VM data load process configuration --- //
   // Clickhouse data disk device name

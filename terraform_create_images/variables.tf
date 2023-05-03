@@ -126,7 +126,7 @@ variable "vm_pos_machine_type" {
 variable "pos_logs_path_root" {
   description = "GCS root path where POS pipeline logs will be uploaded for the different POS sessions, default 'gs://open-targets-ops/logs/platform-pos'"
   type        = string
-  defdefault = "gs://open-targets-ops/logs/platform-pos"  
+  default     = "gs://open-targets-ops/logs/platform-pos"
 }
 
 // --- Clickhouse Configuration --- //
