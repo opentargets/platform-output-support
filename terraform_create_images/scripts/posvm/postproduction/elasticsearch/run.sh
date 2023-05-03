@@ -14,26 +14,33 @@ function prepare_elasticsearch_storage_volume() {
   log "[START] Preparing Elastic Search Storage Volume"
   # Create Elastic Search Storage Volume folders
   mkdir -p ${pos_es_vol_path_data}
+  # Create a docker volume that points to the Elastic Search Storage Volume data folder
+  docker volume create --name ${pos_es_docker_vol_data} --opt type=none --opt device=${pos_es_vol_path_data} --opt o=bind
+  docker volume create --name ${pos_es_docker_vol_logs} --opt type=none --opt device=${pos_path_logs_elastic_search} --opt o=bind
   log "[DONE] Preparing Elastic Search Storage Volume"
 }
 
 # Run Elastic Search via Docker
 function run_elasticsearch() {
   log "[START] Running Elastic Search via Docker, using image ${pos_es_docker_image}"
+  log "[INFO] Setting vm.max_map_count to 262144"
+  sysctl -w vm.max_map_count=262144
+  log "[INFO] Elastic Search docker container name: ${pos_es_docker_container_name}, cluster name: ${pos_es_cluster_name}, data volume: ${pos_es_vol_path_data}, data load logs at ${pos_path_logs_elastic_search}"
   local pos_es_cluster_name=`hostname`
   docker run --rm -d \
     --name ${pos_es_docker_container_name} \
     -p 9200:9200 \
     -p 9300:9300 \
-    -e ES_SETTING_PATH_DATA=/usr/share/elasticsearch/data \
-    -e ES_SETTING_PATH_LOGS=/usr/share/elasticsearch/logs \
-    -e ES_SETTING_CLUSTER_NAME=${pos_es_cluster_name} \
-    -e ES_SETTING_NETWORK_HOST=0.0.0.0 \
-    -e ES_SETTING_DISCOVERY_TYPE=single-node \
-    -e ES_SETTING_BOOTSTRAP_MEMORY__LOCK=true \
-    -e ES_SETTING_SEARCH_MAX__OPEN__SCROLL__CONTEXT=5000 \
-    -v ${pos_es_vol_path_data}:/usr/share/elasticsearch/data \
-    -v ${pos_path_logs_elastic_search}:/usr/share/elasticsearch/logs \
+    -e "path.data=/usr/share/elasticsearch/data" \
+    -e "path.logs=/usr/share/elasticsearch/logs" \
+    -e "cluster.name=${pos_es_cluster_name}" \
+    -e "network.host=0.0.0.0" \
+    -e "discovery.type=single-node" \
+    -e "discovery.seed_hosts=[]" \
+    -e "bootstrap.memory_lock=true" \
+    -e "search.max_open_scroll_context=5000" \
+    -v ${pos_es_docker_vol_data}:/usr/share/elasticsearch/data \
+    -v ${pos_es_docker_vol_logs}:/usr/share/elasticsearch/logs \
     --ulimit memlock=-1:-1 \
     --ulimit nofile=65536:65536 \
     ${pos_es_docker_image}
