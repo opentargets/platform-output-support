@@ -69,7 +69,12 @@ function load_data_into_es_index() {
   curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
   log "[INFO][${index_name}] Data source at '${input_folder}'"
   # Iterate over all .json files in the input folder and load them into the created index
-  max_retries=12
+  # When an ID has been provided, we can re-try loading the data into the given elastic search index, otherwise we can't, as it would create duplicates
+  if [[ -n "$id" ]]; then
+    max_retries=12
+  else
+    max_retries=1
+  fi
   for file in $(gsutil list ${input_folder}/*.json); do
     if [[ -n "$id" ]]; then
       #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
@@ -78,6 +83,10 @@ function load_data_into_es_index() {
         gsutil cp "${file}" - | esbulk -w 4 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
         sleep 1
       done
+      if [ $i -gt $max_retries ]; then
+        log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - ALL ATTEMPTS FAILED."
+        return 1
+      fi
       #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
     else
       #log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
@@ -86,20 +95,26 @@ function load_data_into_es_index() {
         gsutil cp ${file} - | esbulk -w 4 -index ${index_name} -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
         sleep 1
       done
+      if [ $i -gt $max_retries ]; then
+        log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - ALL ATTEMPTS FAILED."
+        return 1
+      fi
       #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
     fi
   done
   log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
+  # Report whether the data load was successful or not for the given index
+  return 0
 }
 
 # Iterate over the ETL ingestion configuration file and load data into Elastic Search
 function load_etl_data_into_es() {
-  local max_retries=12
   declare -A job_status
   declare -A job_retries
   declare -A job_param_input_folder
   declare -A job_param_index_settings
   declare -A job_param_id
+  max_retries=12
 
   # Iterate over the ETL ingestion configuration
   while IFS= read -r line
@@ -113,7 +128,17 @@ function load_etl_data_into_es() {
       IFS=, read -r input_folder index_name id index_settings <<< "$line"
 
       # Initialize job status and retry count
+      log "[INFO] Initializing job status and retry count for index_name=${index_name}"
       job_status["$index_name"]=1
+      if [[ -n "$id" ]]; then
+        # We have ID, so we can retry this dataset
+        log "[INFO][${index_name}] ENABLED RETRY - max_retries=${max_retries}"
+        job_retries["$index_name"]=0
+      else
+        # We don't have ID, so we can't retry this dataset
+        log "[INFO][${index_name}] DISABLED RETRY - max_retries=1 (no ID provided)"
+        job_retries["$index_name"]=$((max_retries - 1))
+      fi
       job_retries["$index_name"]=0
       job_param_input_folder["$index_name"]="${pos_data_release_path_etl_json}/${input_folder}"
       job_param_index_settings["$index_name"]=${index_settings}
