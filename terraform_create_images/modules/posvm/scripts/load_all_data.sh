@@ -28,16 +28,6 @@ export INDEX_SETTINGS=$PREFIX_DATA/index_settings.json
 
 ./load_json_esbulk.sh
 
-
-
-
-
-
-
-
-
-# --- PENDING ---
-
 # Load evidence
 FOLDER_PREFIX="${PREFIX_DATA}/evidence"
 FOLDERS=$(ls -1 $FOLDER_PREFIX | grep 'sourceId')
