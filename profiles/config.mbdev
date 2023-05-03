@@ -11,8 +11,10 @@ project_id         = "open-targets-eu-dev"
 gcp_default_region = "europe-west1"
 gcp_default_zone   = "europe-west1-d"
 
-# POS VM machine configuration
+# POS pipeline configuration
 vm_pos_machine_type = "n1-highcpu-32"
+pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
+
 
 # Publishing configuration
 is_public_data_images = true
