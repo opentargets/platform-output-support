@@ -123,6 +123,12 @@ variable "vm_pos_machine_type" {
   default     = "n1-standard-8"
 }
 
+variable "pos_logs_path_root" {
+  description = "GCS root path where POS pipeline logs will be uploaded for the different POS sessions, default 'gs://open-targets-ops/logs/platform-pos'"
+  type        = string
+  defdefault = "gs://open-targets-ops/logs/platform-pos"  
+}
+
 // --- Clickhouse Configuration --- //
 variable "clickhouse_docker_image_version" {
   description = "Clickhouse docker image version to deploy, default '23.3.1.2823'"
