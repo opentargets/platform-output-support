@@ -96,6 +96,7 @@ function load_etl_data_into_es() {
       IFS=, read -r input_folder index_name id index_settings <<< "$line"
       load_data_into_es_index ${input_folder} ${index_name} ${id} ${index_settings}
   done < "${pos_es_path_etl_ingestion_config}"
+  # TODO - Load Evidence data into Elastic Search
 }
 
 
