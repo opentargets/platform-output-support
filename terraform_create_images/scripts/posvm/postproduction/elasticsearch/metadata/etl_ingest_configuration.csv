@@ -25,3 +25,4 @@ searchDisease,search_disease,,search.json
 targets,target,id,common.json
 AOTFElasticsearch,evidences_aotf,,common.json
 mousePhenotypes,mouse_phenotypes,,common.json
+fda/significantAdverseDrugReactions,openfda_faers,,common.json
