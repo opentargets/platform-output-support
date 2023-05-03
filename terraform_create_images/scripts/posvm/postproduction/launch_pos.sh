@@ -30,4 +30,7 @@ cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search}) ; .
 # TODO - Create Tarballs of Clickhouse and Elastic Search data volumes
 # TODO - Upload Tarballs to GCS
 # TODO - Create GCP images for the Clickhouse and Elastic Search data volumes
-# TODO - Dump all POS pipeline logs to GCS
+# TODO - Dump all POS pipeline logs to file
+log "[--- Dumping all POS pipeline logs to file '${pos_path_logs_startup_script}' ---]"
+sudo journalctl -u google-startup-scripts.service > ${pos_path_logs_startup_script}
+# TODO - Upload POS pipeline logs to GCS - Where??????
