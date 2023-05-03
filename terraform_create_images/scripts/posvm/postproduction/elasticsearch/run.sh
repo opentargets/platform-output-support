@@ -62,15 +62,15 @@ function load_data_into_es_index() {
   local index_settings=$3
   local id=$4
   local path_to_index_settings="${pos_es_path_index_settings}/${index_settings}"
-  local path_to_input_folder="${pos_data_release_path_etl_json}/${input_folder}"
-  log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
+  local input_folder_name=$(basename ${input_folder})
+  log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
   # Create index
   log "[INFO][${index_name}] Creating index"
   curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
-  log "[INFO][${index_name}] Data source at '${path_to_input_folder}'"
+  log "[INFO][${index_name}] Data source at '${input_folder}'"
   # Iterate over all .json files in the input folder and load them into the created index
   max_retries=12
-  for file in $(gsutil list ${path_to_input_folder}/*.json); do
+  for file in $(gsutil list ${input_folder}/*.json); do
     if [[ -n "$id" ]]; then
       #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
       for ((i = 1; i <= max_retries; i++)); do
@@ -89,7 +89,7 @@ function load_data_into_es_index() {
       #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
     fi
   done
-  log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
+  log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
 }
 
 # Iterate over the ETL ingestion configuration file and load data into Elastic Search
@@ -115,7 +115,7 @@ function load_etl_data_into_es() {
       # Initialize job status and retry count
       job_status["$index_name"]=1
       job_retries["$index_name"]=0
-      job_param_input_folder["$index_name"]=${input_folder}
+      job_param_input_folder["$index_name"]="${pos_data_release_path_etl_json}/${input_folder}"
       job_param_index_settings["$index_name"]=${index_settings}
       job_param_id["$index_name"]=${id}
   done < "${pos_es_path_etl_ingestion_config}"
@@ -126,13 +126,12 @@ function load_etl_data_into_es() {
     export full_path="${evidence_path%/}"
     export source_id="${full_path##*/}"
     # Compute the relative input folder and index name
-    export input_folder=evidence/"${source_id}"
     export index_name_suffix="${source_id#*=}"
     export index_name=evidence_datasource_"${index_name_suffix}"
     # Initialize job status and retry count
     job_status["$index_name"]=1
     job_retries["$index_name"]=0
-    job_param_input_folder["$index_name"]=${input_folder}
+    job_param_input_folder["$index_name"]=${full_path}
     if [[ "${index_name_suffix}" == "ot_genetics_portal" ]]; then
       job_param_index_settings["$index_name"]=${pos_es_index_settings_genetics_evidence}
     else
@@ -140,6 +139,13 @@ function load_etl_data_into_es() {
     fi
     job_param_id["$index_name"]=${pos_es_default_id}
   done
+
+  # Add SO data to Elastic Search
+  job_status["${pos_es_so_index_name}"]=1
+  job_retries["${pos_es_so_index_name}"]=0
+  job_param_input_folder["${pos_es_so_index_name}"]=${pos_es_path_so_file}
+  job_param_index_settings["${pos_es_so_index_name}"]=${pos_es_default_index_settings}
+  job_param_id["${pos_es_so_index_name}"]=${pos_es_default_id}
   
   # Parallelize the ingestion of the ETL data into Elastic Search by running each job in a separate process per index
   while true; do
