@@ -72,10 +72,10 @@ function load_data_into_es_index() {
   for file in $(gsutil list ${path_to_input_folder}/*.json); do
     if [[ -n "$id" ]]; then
       log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
-      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
+      gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
     else
       log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
-      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
+      gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
     fi
   done
   log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
