@@ -84,7 +84,7 @@ function mount_disk() {
 
 # Ensure that the list of folders that need to exist for the postprocessing scripts to run exist
 function ensure_folders_exist() {
-  for folder in $${list_folders_postprocessing}; do
+  for folder in $${pos_list_folders_postprocessing}; do
     if [[ ! -d $${folder} ]]; then
       log "Creating folder $${folder}"
       mkdir -p $${folder}
@@ -92,5 +92,5 @@ function ensure_folders_exist() {
   done
 }
 
-# Commong environment summary
+# Common environment summary
 env_summary
