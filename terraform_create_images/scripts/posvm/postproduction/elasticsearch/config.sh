@@ -18,6 +18,7 @@ export pos_es_docker_vol_logs="pos_eslogs"
 export pos_es_path_metadata="${pos_path_postprocessing_scripts_elastic_search}/metadata"
 # Path to folder with Elastic Search index settings files
 export pos_es_path_index_settings="${pos_path_postprocessing_scripts_elastic_search}/index_settings"
+export pos_es_index_settings_default="default.json"
 # Path to ETL ingestion configuration file
 export pos_es_path_etl_ingestion_config="${pos_es_path_metadata}/etl_ingest_configuration.csv"
 
