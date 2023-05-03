@@ -26,3 +26,8 @@ log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
 # Run Elastic Search data loading process
 log "[--- Run Elastic Search data pipeline ---]"
 cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
+
+# TODO - Create Tarballs of Clickhouse and Elastic Search data volumes
+# TODO - Upload Tarballs to GCS
+# TODO - Create GCP images for the Clickhouse and Elastic Search data volumes
+# TODO - Dump all POS pipeline logs to GCS
