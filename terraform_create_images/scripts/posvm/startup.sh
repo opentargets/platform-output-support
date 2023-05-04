@@ -77,4 +77,4 @@ log "Launching postprocessing scripts, at $$(pwd)"
 log "Postprocessing scripts completed"
 # Shutting down this postproduction machine
 log "[--- Shutting down this postproduction machine ---]"
-#poweroff
+poweroff
