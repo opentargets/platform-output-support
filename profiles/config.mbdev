@@ -15,7 +15,6 @@ gcp_default_zone   = "europe-west1-d"
 vm_pos_machine_type = "n1-highcpu-32"
 pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
 
-
 # Publishing configuration
 is_public_data_images = true
 
