@@ -88,12 +88,12 @@ exit 0
 #curl -X GET ${ELASTICSEARCH_URI}:9200/_cat/indices
 #echo
 
-mkdir -p /tmp/data
+#mkdir -p /tmp/data
 #mkdir -p /tmp/data/so
 #mkdir -p /tmp/data/mp
 #mkdir -p /tmp/data/otar_projects
 #mkdir -p /tmp/data/faers/
-mkdir -p /tmp/data/webapp
+#mkdir -p /tmp/data/webapp
 
 # Copy files locally. Robust vs streaming
 #echo "Copy from GS to local HD"
@@ -109,9 +109,9 @@ mkdir -p /tmp/data/webapp
 # [END] ??? [END]
 
 # Downloads information metadata
-echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
-gsutil cat 'gs://${GS_ETL_DATASET}/metadata/**/*.json' >/tmp/data/webapp/downloads.json
-gsutil cp /tmp/data/webapp/downloads.json gs://${GS_DIRECT_FILES}/webapp/downloads.json
+#echo "---> Create the downloads information file object, metadata collection from 'gs://${GS_ETL_DATASET}/metadata/**/*.json' to 'gs://${GS_DIRECT_FILES}/webapp/downloads.json'"
+#gsutil cat 'gs://${GS_ETL_DATASET}/metadata/**/*.json' >/tmp/data/webapp/downloads.json
+#gsutil cp /tmp/data/webapp/downloads.json gs://${GS_DIRECT_FILES}/webapp/downloads.json
 # END - Downloads information metadata
 
 
