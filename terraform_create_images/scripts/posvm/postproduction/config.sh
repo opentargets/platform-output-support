@@ -33,6 +33,7 @@ export pos_data_release_path_etl_parquet=${POS_DATA_RELEASE_PATH_ETL_PARQUET}
 export pos_data_release_path_input_root=${POS_DATA_RELEASE_PATH_INPUT_ROOT}
 export pos_data_release_path_webapp_root="${pos_data_release_path_source_root}/webapp"
 export pos_data_release_path_metadata_root="${pos_data_release_path_source_root}/metadata"
+export pos_data_release_path_disk_images_root="${pos_data_release_path_source_root}/disk_images"
 export pos_clickhouse_docker_image=${POS_CLICKHOUSE_DOCKER_IMAGE}
 export pos_clickhouse_docker_image_version=${POS_CLICKHOUSE_DOCKER_IMAGE_VERSION}
 export pos_elasticsearch_docker_image=${POS_ELASTIC_SEARCH_DOCKER_IMAGE}
