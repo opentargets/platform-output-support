@@ -12,7 +12,7 @@ gcp_default_region = "europe-west1"
 gcp_default_zone   = "europe-west1-d"
 
 # POS pipeline configuration
-vm_pos_machine_type = "n1-highcpu-32"
+vm_pos_machine_type = "n1-highcpu-64"
 pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
 
 # Publishing configuration
