@@ -37,6 +37,7 @@ function run_data_ingestion_pipeline() {
     # TODO - Parallelize the data ingestion pipeline
     # Run Clickhouse data load in the background and wait for it to finish
     log "[--- Launch Clickhouse data pipeline ---]"
+    current_dir=`pwd`
     cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse})
     ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
 
@@ -44,6 +45,7 @@ function run_data_ingestion_pipeline() {
     log "[--- Launch Elastic Search data pipeline ---]"
     #cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search})
     #./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
+    cd ${current_dir}
 }
 
 # Create tarball from given source local path into given destination GCS path
