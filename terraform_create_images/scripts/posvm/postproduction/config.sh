@@ -31,6 +31,7 @@ export pos_data_release_path_source_root=${POS_DATA_RELEASE_PATH_SOURCE_ROOT}
 export pos_data_release_path_etl_json=${POS_DATA_RELEASE_PATH_ETL_JSON}
 export pos_data_release_path_etl_parquet=${POS_DATA_RELEASE_PATH_ETL_PARQUET}
 export pos_data_release_path_input_root=${POS_DATA_RELEASE_PATH_INPUT_ROOT}
+export pos_data_release_path_webapp_root="${pos_data_release_path_source_root}/webapp"
 export pos_clickhouse_docker_image=${POS_CLICKHOUSE_DOCKER_IMAGE}
 export pos_clickhouse_docker_image_version=${POS_CLICKHOUSE_DOCKER_IMAGE_VERSION}
 export pos_elasticsearch_docker_image=${POS_ELASTIC_SEARCH_DOCKER_IMAGE}
@@ -48,6 +49,8 @@ export pos_image_prefix=${POS_IMAGE_PREFIX}
 # Newly defined
 export pos_gcp_device_disk_clickhouse="${POS_GCP_DEVICE_DISK_PREFIX}${POS_DATA_DISK_DEVICE_NAME_CH}"
 export pos_gcp_device_disk_elasticsearch="${POS_GCP_DEVICE_DISK_PREFIX}${POS_DATA_DISK_DEVICE_NAME_ES}"
+export pos_webapp_source_diseases_efo="${pos_data_release_path_input_root}/ontology-inputs/diseases_efo.jsonl"
+export pos_webapp_destination_diseases_efo="${pos_data_release_path_webapp_root}/ontology/efo_json/diseases_efo.jsonl"
 # Data mount points
 export pos_mount_point_data_clickhouse="${POS_PATH_MOUNT_DATA_CLICKHOUSE}"
 export pos_mount_point_data_elasticsearch="${POS_PATH_MOUNT_DATA_ELASTICSEARCH}"
