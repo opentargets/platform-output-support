@@ -210,6 +210,13 @@ function print_es_summary() {
   curl -X GET "localhost:9200/_cat/indices?pretty&s=i"
 }
 
+# Stop the running Elastic Search docker container
+function stop_elasticsearch() {
+  log "[START] Stopping Elastic Search docker container, '${pos_es_docker_container_name}'"
+  docker stop ${pos_es_docker_container_name}
+  log "[DONE] Stopping Elastic Search docker container, '${pos_es_docker_container_name}'"
+}
+
 
 # Main
 # Prepare Elastic Search Storage Volume
@@ -222,4 +229,5 @@ wait_for_elasticsearch
 load_etl_data_into_es
 # Print Elastic Search summary
 print_es_summary
-# TODO - Stop Elastic Search
+# Stop Elastic Search
+stop_elasticsearch
