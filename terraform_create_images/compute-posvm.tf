@@ -139,7 +139,7 @@ resource "google_compute_instance" "posvm" {
   provisioner "file" {
     content = templatefile("${local.path_source_postprocessing_scripts}/config.sh", {
       POS_PROJECT_ID                                             = var.project_id,
-      POS_GC_ZONE                                                = var.gcp_default_zone,
+      POS_GCP_ZONE                                                = var.gcp_default_zone,
       POS_GS_ETL_DATASET                                         = var.config_gs_etl,
       POS_IS_PARTNER_INSTANCE                                    = var.is_partner_instance,
       POS_GS_DIRECT_FILES                                        = var.config_direct_json,
