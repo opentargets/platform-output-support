@@ -39,13 +39,40 @@ function run_data_ingestion_pipeline() {
     log "[--- Launch Clickhouse data pipeline ---]"
     current_dir=`pwd`
     cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse})
-    ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
+    ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse}) &
+    # Get the PID of the Clickhouse background job
+    pid_clickhouse=$!
 
     # Run Elastic Search data loading process
     log "[--- Launch Elastic Search data pipeline ---]"
     cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search})
-    ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
+    ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search}) &
+    # Get the PID of the Elastic Search background job
+    pid_elastic_search=$!
+
+    # Get back to the original directory
     cd ${current_dir}
+
+    # Wait for the Clickhouse and Elastic Search data loading processes to finish, and capture their exit codes
+    wait ${pid_clickhouse}
+    exit_code_clickhouse=$?
+    wait ${pid_elastic_search}
+    exit_code_elastic_search=$?
+
+    # Check the exit status of the background jobs
+    if [ ${exit_code_clickhouse} -ne 0 ]; then
+        log "[ERROR] Clickhouse data loading process exited with code ${exit_code_clickhouse}"
+    fi
+    if [ ${exit_code_elastic_search} -ne 0 ]; then
+        log "[ERROR] Elastic Search data loading process exited with code ${exit_code_elastic_search}"
+    fi
+
+    # If any of the background jobs exited with an error, exit the script with an error code
+    if [ ${exit_code_clickhouse} -ne 0 ] || [ ${exit_code_elastic_search} -ne 0 ]; then
+        log "[ERROR] Data ingestion pipeline exited with errors"
+        return 1
+    fi
+    return 0
 }
 
 # Create tarball from given source local path into given destination GCS path
@@ -113,10 +140,16 @@ ensure_folders_exist
 prepare_webapp_static_data_context
 create_webapp_downloads_metadata
 run_data_ingestion_pipeline
-# Create Tarballs of Clickhouse and Elastic Search data volumes
-create_disk_data_tarballs
-# Create GCP images for the Clickhouse and Elastic Search data volumes
-# create_gcp_images
+# Check the status of the data ingestion pipeline
+if [ $? -eq 0 ]; then
+    log "[INFO] Data ingestion pipeline exited with success"
+    # Create Tarballs of Clickhouse and Elastic Search data volumes
+    create_disk_data_tarballs
+    # Create GCP images for the Clickhouse and Elastic Search data volumes
+    create_gcp_images
+else
+    log "[ERROR] Data ingestion pipeline exited with errors, skipping creation of disk data tarballs and GCP images"
+fi
 # Dump all POS pipeline logs to file
 log "[--- Dumping all POS pipeline logs to file '${pos_path_logs_startup_script}' ---]"
 sudo journalctl -u google-startup-scripts.service > ${pos_path_logs_startup_script}
