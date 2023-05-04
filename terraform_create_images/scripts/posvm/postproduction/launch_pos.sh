@@ -24,18 +24,25 @@ function prepare_webapp_static_data_context() {
     log "[DONE] Preparing web application static data context"
 }
 
+# Create the metadata information for downloads in the web application
+function create_webapp_downloads_metadata() {
+    log "[START] Creating web application downloads metadata at '${pos_webapp_destination_downloads_metadata}', source data at '${pos_data_release_path_metadata_root}'"
+    gsutil cat "${pos_data_release_path_metadata_root}/**/*.json" | gsutil cp - ${pos_webapp_destination_downloads_metadata}
+    log "[DONE] Creating web application downloads metadata"
+}
+
 
 # --- Main ---
 mount_data_volumes
 log "Make sure the list of folders needed to operate the postprocessing pipeline exist"
 ensure_folders_exist
 prepare_webapp_static_data_context
+create_webapp_downloads_metadata
+
 # Run Clickhouse data load in the background and wait for it to finish
 log "[--- Run Clickhouse data pipeline ---]"
 log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
 #cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
-# TODO - Detach Clickhouse storage volume
-# TODO - Create Clickhouse storage volume image
 
 # Run Elastic Search data loading process
 log "[--- Run Elastic Search data pipeline ---]"
