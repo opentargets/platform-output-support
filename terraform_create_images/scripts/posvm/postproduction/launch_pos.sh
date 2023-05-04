@@ -92,7 +92,13 @@ function create_gcp_image() {
 # Create GCP images for the Clickhouse and Elastic Search data volumes
 function create_gcp_images() {
     log "[START] Creating GCP images for the Clickhouse and Elastic Search data volumes"
-    # TODO - Create GCP images for the Clickhouse and Elastic Search data volumes
+    # Unmount data disks for Clickhouse and Elastic Search
+    log "[INFO] Unmounting data disk for Clickhouse, from '${pos_mount_point_data_clickhouse}'"
+    unmount_disk ${pos_mount_point_data_clickhouse}
+    log "[INFO] Unmounting data disk for Elastic Search, from '${pos_mount_point_data_elasticsearch}'"
+    unmount_disk ${pos_mount_point_data_elasticsearch}
+    create_gcp_image ${pos_disk_image_name_ch} ${pos_gcp_zone} ${pos_disk_image_name_ch} ${pos_disk_image_family_ch}
+    create_gcp_image ${pos_disk_image_name_es} ${pos_gcp_zone} ${pos_disk_image_name_es} ${pos_disk_image_family_es}
     log "[DONE] Creating GCP images for the Clickhouse and Elastic Search data volumes"
 }
 
@@ -106,12 +112,14 @@ create_webapp_downloads_metadata
 run_data_ingestion_pipeline
 # Create Tarballs of Clickhouse and Elastic Search data volumes
 create_disk_data_tarballs
-
-# TODO - Create GCP images for the Clickhouse and Elastic Search data volumes
-
-# TODO - Dump all POS pipeline logs to file
+# Create GCP images for the Clickhouse and Elastic Search data volumes
+create_gcp_images
+# Dump all POS pipeline logs to file
 log "[--- Dumping all POS pipeline logs to file '${pos_path_logs_startup_script}' ---]"
 sudo journalctl -u google-startup-scripts.service > ${pos_path_logs_startup_script}
 # Upload POS pipeline logs to GCS
 log "[--- Uploading POS pipeline logs to GCS, at '${pos_gcp_path_pos_pipeline_session_logs}' ---]"
 gsutil -m rsync -r ${pos_path_logs_postprocessing}/ ${pos_gcp_path_pos_pipeline_session_logs}/
+# Shutting down this postproduction machine
+log "[--- Shutting down this postproduction machine ---]"
+poweroff
