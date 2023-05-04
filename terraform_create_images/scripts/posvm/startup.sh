@@ -105,7 +105,7 @@ mkdir -p /tmp/data/webapp
 # gsutil ls "gs://${GS_DIRECT_FILES}/**/so.json"
 #gsutil list -r gs://${GS_DIRECT_FILES} | grep so.json | xargs -t -I % gsutil cp % /tmp/data/so
 # gsutil ls "gs://${GS_DIRECT_FILES}/**/diseases_efo.json"
-gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
+#gsutil list -r gs://${GS_DIRECT_FILES} | grep diseases_efo | xargs -t -I % gsutil cp % gs://${GS_DIRECT_FILES}/webapp/ontology/efo_json/
 # [END] ??? [END]
 
 # Downloads information metadata
