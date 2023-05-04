@@ -41,6 +41,19 @@ variable "is_public_data_images" {
   default     = false
 }
 
+// --- Data Images --- //
+variable "pos_ch_tarball_name" {
+  description = "Filename for the tarball release of the Clickhouse data image"
+  type = string
+  default = "clickhouse.tgz"
+}
+
+variable "pos_es_tarball_name" {
+  description = "Filename for the tarball release of the Elastic Search data image"
+  type = string
+  default = "elastic_search.tgz"
+}
+
 
 // --- RELEASE INFORMATION --- //
 
@@ -121,6 +134,12 @@ variable "vm_pos_machine_type" {
   description = "Machine type for POS vm, default 'n1-standard-8'"
   type        = string
   default     = "n1-standard-8"
+}
+
+variable "vm_pos_machine_spot" {
+  description = "Should SPOT provisioning model be used for POS VM?, default 'true'"
+  type        = bool
+  default     = true
 }
 
 variable "pos_logs_path_root" {
