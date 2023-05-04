@@ -44,14 +44,14 @@ variable "is_public_data_images" {
 // --- Data Images --- //
 variable "pos_ch_tarball_name" {
   description = "Filename for the tarball release of the Clickhouse data image"
-  type = string
-  default = "clickhouse.tgz"
+  type        = string
+  default     = "clickhouse.tgz"
 }
 
 variable "pos_es_tarball_name" {
   description = "Filename for the tarball release of the Elastic Search data image"
-  type = string
-  default = "elastic_search.tgz"
+  type        = string
+  default     = "elastic_search.tgz"
 }
 
 
