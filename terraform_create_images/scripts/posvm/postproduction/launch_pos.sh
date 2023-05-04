@@ -9,13 +9,27 @@ TMPDIR=$(mktemp -d)
 # Load common configuration script
 source ${SCRIPTDIR}/config.sh
 
+# Helper functions
+function mount_data_volumes() {
+    log "Mount data disks for Clickhouse and Elastic Search"
+    mount_disk ${pos_gcp_device_disk_clickhouse} ${pos_mount_point_data_clickhouse}
+    mount_disk ${pos_gcp_device_disk_elasticsearch} ${pos_mount_point_data_elasticsearch}
+}
+
+# Prepare the web application static data context
+function prepare_webapp_static_data_context() {
+    log "[START] Preparing web application static data context"
+    log "[INFO] Copying web application static data from '${pos_webapp_source_diseases_efo}' to '${pos_webapp_destination_diseases_efo}'"
+    gsutil cp ${pos_webapp_source_diseases_efo} ${pos_webapp_destination_diseases_efo}
+    log "[DONE] Preparing web application static data context"
+}
+
 
 # --- Main ---
-log "Mount data disks for Clickhouse and Elastic Search"
-mount_disk ${pos_gcp_device_disk_clickhouse} ${pos_mount_point_data_clickhouse}
-mount_disk ${pos_gcp_device_disk_elasticsearch} ${pos_mount_point_data_elasticsearch}
+mount_data_volumes
 log "Make sure the list of folders needed to operate the postprocessing pipeline exist"
 ensure_folders_exist
+prepare_webapp_static_data_context
 # Run Clickhouse data load in the background and wait for it to finish
 log "[--- Run Clickhouse data pipeline ---]"
 log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
