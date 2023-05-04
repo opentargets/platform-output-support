@@ -87,6 +87,13 @@ function show_clickhouse_data_summary() {
   log "[DONE] Showing a summary of the Clickhouse data loaded"
 }
 
+# Stop the running Clickhouse container
+function stop_clickhouse() {
+  log "[START] Stopping Clickhouse, container name: ${pos_ch_docker_container_name}"
+  docker stop ${pos_ch_docker_container_name}
+  log "[DONE] Stopping Clickhouse, container name: ${pos_ch_docker_container_name}"
+}
+
 
 
 
@@ -99,4 +106,5 @@ run_clickhouse
 load_release_data
 # Show a summary of the Clickhouse data loaded
 show_clickhouse_data_summary
-# TODO - Stop Clickhouse
+# Stop Clickhouse
+stop_clickhouse
