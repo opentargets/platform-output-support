@@ -38,11 +38,12 @@ function run_data_ingestion_pipeline() {
     # Run Clickhouse data load in the background and wait for it to finish
     log "[--- Run Clickhouse data pipeline ---]"
     log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
+    ${pos_path_postprocessing_scripts_entry_point_clickhouse}
     #cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
 
     # Run Elastic Search data loading process
     log "[--- Run Elastic Search data pipeline ---]"
-    cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
+    #cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
 }
 
 # Create tarball from given source local path into given destination GCS path
