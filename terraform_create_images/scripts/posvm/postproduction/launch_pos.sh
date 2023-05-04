@@ -116,7 +116,7 @@ run_data_ingestion_pipeline
 # Create Tarballs of Clickhouse and Elastic Search data volumes
 create_disk_data_tarballs
 # Create GCP images for the Clickhouse and Elastic Search data volumes
-create_gcp_images
+# create_gcp_images
 # Dump all POS pipeline logs to file
 log "[--- Dumping all POS pipeline logs to file '${pos_path_logs_startup_script}' ---]"
 sudo journalctl -u google-startup-scripts.service > ${pos_path_logs_startup_script}
