@@ -43,8 +43,8 @@ function run_data_ingestion_pipeline() {
 
     # Run Elastic Search data loading process
     log "[--- Launch Elastic Search data pipeline ---]"
-    #cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search})
-    #./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
+    cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search})
+    ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
     cd ${current_dir}
 }
 
