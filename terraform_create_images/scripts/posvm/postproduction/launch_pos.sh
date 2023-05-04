@@ -31,6 +31,38 @@ function create_webapp_downloads_metadata() {
     log "[DONE] Creating web application downloads metadata"
 }
 
+# Run the data ingestion pipeline for Clickhouse and Elastic Search
+function run_data_ingestion_pipeline() {
+    log "[START] Running data ingestion pipeline"
+    # TODO - Parallelize the data ingestion pipeline
+    # Run Clickhouse data load in the background and wait for it to finish
+    log "[--- Run Clickhouse data pipeline ---]"
+    log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
+    #cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
+
+    # Run Elastic Search data loading process
+    log "[--- Run Elastic Search data pipeline ---]"
+    cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
+}
+
+# Create tarball from given source local path into given destination GCS path
+function create_tarball() {
+    local path_source=$1
+    local path_destination=$2
+    log "[START] Creating tarball from '${path_source}' to '${path_destination}'"
+    tar czf - -C ${path_source} . | gsutil cp - ${path_destination}
+    log "[DONE] Creating tarball from '${path_source}' to '${path_destination}'"
+}
+
+# Create the disk data tarballs for Clickhouse and Elastic Search
+function create_disk_data_tarballs() {
+    log "[START] Creating disk data tarballs for Clickhouse and Elastic Search"
+    # TODO - Create Tarballs of Clickhouse and Elastic Search data volumes
+    create_tarball "${pos_mount_point_data_clickhouse}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_clickhouse}"
+    create_tarball "${pos_mount_point_data_elasticsearch}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_elastic_earch}"
+    log "[DONE] Creating disk data tarballs for Clickhouse and Elastic Search"
+}
+
 
 # --- Main ---
 mount_data_volumes
@@ -38,19 +70,12 @@ log "Make sure the list of folders needed to operate the postprocessing pipeline
 ensure_folders_exist
 prepare_webapp_static_data_context
 create_webapp_downloads_metadata
+run_data_ingestion_pipeline
+# Create Tarballs of Clickhouse and Elastic Search data volumes
+create_disk_data_tarballs
 
-# Run Clickhouse data load in the background and wait for it to finish
-log "[--- Run Clickhouse data pipeline ---]"
-log "[DEBUG] --- SKIP RUNNING CLICKHOUSE DATA PIPELINE ---"
-#cd $( dirname ${pos_path_postprocessing_scripts_entry_point_clickhouse}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_clickhouse})
-
-# Run Elastic Search data loading process
-log "[--- Run Elastic Search data pipeline ---]"
-cd $( dirname ${pos_path_postprocessing_scripts_entry_point_elastic_search}) ; ./$(basename ${pos_path_postprocessing_scripts_entry_point_elastic_search})
-
-# TODO - Create Tarballs of Clickhouse and Elastic Search data volumes
-# TODO - Upload Tarballs to GCS
 # TODO - Create GCP images for the Clickhouse and Elastic Search data volumes
+
 # TODO - Dump all POS pipeline logs to file
 log "[--- Dumping all POS pipeline logs to file '${pos_path_logs_startup_script}' ---]"
 sudo journalctl -u google-startup-scripts.service > ${pos_path_logs_startup_script}
