@@ -63,6 +63,39 @@ function create_disk_data_tarballs() {
     log "[DONE] Creating disk data tarballs for Clickhouse and Elastic Search"
 }
 
+# Create GCP image for the given source GCP disk name and zone, using the given image name and family
+function create_gcp_image() {
+    local gcp_disk_name=$1
+    local gcp_disk_zone=$2
+    local gcp_image_name=$3
+    local gcp_image_family=$4
+    local gcp_snapshot_name="${gcp_disk_name}-snapshot"
+
+    log "[START] Creating GCP snapshot '${gcp_snapshot_name}' from GCP disk '${gcp_disk_name}' in zone '${gcp_disk_zone}'"
+    gcloud compute disks snapshot ${gcp_disk_name} \
+        --zone ${gcp_disk_zone} \
+        --snapshot-names ${gcp_snapshot_name}
+    log "[DONE] Creating GCP snapshot '${gcp_snapshot_name}' from GCP disk '${gcp_disk_name}' in zone '${gcp_disk_zone}'"
+
+    log "[START] Creating GCP image '${gcp_image_name}' from GCP snapshot '${gcp_snapshot_name}'"
+    gcloud compute images create ${gcp_image_name} \
+        --source-snapshot ${gcp_snapshot_name} \
+        --family ${gcp_image_family}
+    log "[DONE] Creating GCP image '${gcp_image_name}' from GCP snapshot '${gcp_snapshot_name}'"
+
+    log "[START] Deleting GCP snapshot '${gcp_snapshot_name}'"
+    gcloud compute snapshots delete ${gcp_snapshot_name} --quiet
+    log "[DONE] Deleting GCP snapshot '${gcp_snapshot_name}'"
+}
+
+
+# Create GCP images for the Clickhouse and Elastic Search data volumes
+function create_gcp_images() {
+    log "[START] Creating GCP images for the Clickhouse and Elastic Search data volumes"
+    # TODO - Create GCP images for the Clickhouse and Elastic Search data volumes
+    log "[DONE] Creating GCP images for the Clickhouse and Elastic Search data volumes"
+}
+
 
 # --- Main ---
 mount_data_volumes
