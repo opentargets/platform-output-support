@@ -97,9 +97,9 @@ function create_gcp_images() {
     log "[START] Creating GCP images for the Clickhouse and Elastic Search data volumes"
     # Unmount data disks for Clickhouse and Elastic Search
     log "[INFO] Unmounting data disk for Clickhouse, from '${pos_mount_point_data_clickhouse}'"
-    unmount_disk ${pos_mount_point_data_clickhouse}
+    umount ${pos_mount_point_data_clickhouse}
     log "[INFO] Unmounting data disk for Elastic Search, from '${pos_mount_point_data_elasticsearch}'"
-    unmount_disk ${pos_mount_point_data_elasticsearch}
+    umount ${pos_mount_point_data_elasticsearch}
     create_gcp_image ${pos_disk_image_name_ch} ${pos_gcp_zone} ${pos_disk_image_name_ch} ${pos_disk_image_family_ch}
     create_gcp_image ${pos_disk_image_name_es} ${pos_gcp_zone} ${pos_disk_image_name_es} ${pos_disk_image_family_es}
     log "[DONE] Creating GCP images for the Clickhouse and Elastic Search data volumes"
