@@ -10,8 +10,9 @@ source ${SCRIPTDIR}/../config.sh
 
 # Local configuration
 # Clickhouse related postprocessing script paths
-export pos_ch_path_config="${pos_path_postprocessing_scripts_clickhouse}/config.d"
-export pos_ch_path_users="${pos_path_postprocessing_scripts_clickhouse}/users.d"
+export pos_ch_path_config_root="${pos_path_postprocessing_scripts_clickhouse}/configuration"
+export pos_ch_path_config="${pos_ch_path_config_root}/config.d"
+export pos_ch_path_users="${pos_ch_path_config_root}/users.d"
 # Database initialization schemas path
 export pos_ch_path_schemas="${pos_path_postprocessing_scripts_clickhouse}/db_schemas"
 # Database post-dataload scripts path
