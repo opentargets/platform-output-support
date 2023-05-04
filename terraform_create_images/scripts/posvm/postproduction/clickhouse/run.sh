@@ -74,7 +74,7 @@ function load_release_data() {
   # Run post data load scripts located at ${pos_ch_path_sql_scripts_postdataload}
   for sql_file in $( ls ${pos_ch_path_sql_scripts_postdataload}/*.sql ); do
     log "[INFO] Running post data load script '${sql_file}'"
-    docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="$( cat ${sql_file} )"
+    cat ${sql_file} | docker exec -i ${pos_ch_docker_container_name} clickhouse-client --multiline --multiquery
   done
   log "[DONE] Loading release data into Clickhouse"
 }
