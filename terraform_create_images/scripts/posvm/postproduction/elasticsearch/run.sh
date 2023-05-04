@@ -39,7 +39,7 @@ function run_elasticsearch() {
     -e "discovery.seed_hosts=[]" \
     -e "bootstrap.memory_lock=true" \
     -e "search.max_open_scroll_context=5000" \
-    -e "thread_pool.write.queue_size=1000" \
+    -e "thread_pool.write.queue_size=2000" \
     -v ${pos_es_docker_vol_data}:/usr/share/elasticsearch/data \
     -v ${pos_es_docker_vol_logs}:/usr/share/elasticsearch/logs \
     --ulimit memlock=-1:-1 \
@@ -72,7 +72,7 @@ function load_data_into_es_index() {
   # Iterate over all .json files in the input folder and load them into the created index
   # When an ID has been provided, we can re-try loading the data into the given elastic search index, otherwise we can't, as it would create duplicates
   if [[ -n "$id" ]]; then
-    max_retries=12
+    max_retries=7
   else
     max_retries=1
   fi
@@ -81,7 +81,7 @@ function load_data_into_es_index() {
       #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
-        gsutil cp "${file}" - | esbulk -w 1 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
+        gsutil cp "${file}" - | esbulk -w 4 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       if [ $i -gt $max_retries ]; then
@@ -93,7 +93,7 @@ function load_data_into_es_index() {
       #log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id - Attempt #$i"
-        gsutil cp ${file} - | esbulk -w 1 -index ${index_name} -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
+        gsutil cp ${file} - | esbulk -w 4 -index ${index_name} -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       if [ $i -gt $max_retries ]; then
@@ -115,7 +115,7 @@ function load_etl_data_into_es() {
   declare -A job_param_input_folder
   declare -A job_param_index_settings
   declare -A job_param_id
-  max_retries=12
+  max_retries=3
 
   # Iterate over the ETL ingestion configuration
   while IFS= read -r line
