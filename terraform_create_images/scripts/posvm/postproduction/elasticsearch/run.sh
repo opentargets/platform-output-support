@@ -159,8 +159,10 @@ function load_etl_data_into_es() {
     job_retries["$index_name"]=0
     job_param_input_folder["$index_name"]=${full_path}
     if [[ "${index_name_suffix}" == "ot_genetics_portal" ]]; then
+      log "[INFO] Using custom index settings for index_name=${index_name}, index settings '${pos_es_index_settings_genetics_evidence}'"
       job_param_index_settings["$index_name"]=${pos_es_index_settings_genetics_evidence}
     else
+      log "[INFO] Using default index settings for index_name=${index_name}, index settings '${pos_es_default_index_settings}'"
       job_param_index_settings["$index_name"]=${pos_es_default_index_settings}
     fi
     job_param_id["$index_name"]=${pos_es_default_id}
