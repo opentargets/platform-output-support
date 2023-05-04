@@ -55,6 +55,14 @@ resource "google_compute_instance" "posvm" {
   // TODO This should be set to false
   can_ip_forward = true
 
+  scheduling {
+    automatic_restart   = !var.vm_pos_machine_spot
+    on_host_maintenance = var.vm_pos_machine_spot ? "TERMINATE" : "MIGRATE"
+    preemptible         = var.vm_pos_machine_spot
+    provisioning_model  = var.vm_pos_machine_spot ? "SPOT" : "STANDARD"
+    instance_termination_action = var.vm_pos_machine_spot ? "STOP" : null
+  }
+
   boot_disk {
     initialize_params {
       image = var.vm_pos_boot_image
