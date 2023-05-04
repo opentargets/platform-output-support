@@ -24,7 +24,7 @@ function prepare_clickhouse_storage_volume() {
 
 # Run clickhouse via Docker 
 function run_clickhouse() {
-  log "[START] Running clickhouse via Docker, using image ${pos_ch_docker_image}"
+  log "[START] Running clickhouse via Docker, using image ${pos_ch_docker_image}, container with name '${pos_ch_docker_container_name}'"
   docker run --rm -d \
     --name ${pos_ch_docker_container_name} \
     -p 9000:9000 \
@@ -43,7 +43,7 @@ function run_clickhouse() {
 function wait_for_clickhouse() {
   log "[INFO] Waiting for Clickhouse to be ready"
   while ! docker exec ${pos_ch_docker_container_name} clickhouse-client --query "SELECT 1" &> /dev/null; do
-    sleep 1
+    sleep 3
   done
   log "[INFO] Clickhouse is ready"
 }
