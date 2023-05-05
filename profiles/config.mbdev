@@ -12,7 +12,8 @@ gcp_default_region = "europe-west1"
 gcp_default_zone   = "europe-west1-d"
 
 # POS pipeline configuration
-vm_pos_machine_type = "n1-highcpu-32"
+# Use default value for machine type
+# vm_pos_machine_type = "n1-highcpu-32"
 pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
 
 # Publishing configuration
@@ -49,7 +50,6 @@ config_vm_clickhouse_vcpus          = "4"
 config_vm_clickhouse_mem            = "26624"
 config_vm_clickhouse_boot_disk_size = 300
 
-# config_vm_pos_machine_type = "n1-highcpu-16"
 config_vm_pos_boot_image   = "debian-11"
 
 
