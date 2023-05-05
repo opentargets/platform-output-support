@@ -176,6 +176,11 @@ function do_load_etl_data_into_es_sequential() {
       fi
     done
     
+    if $all_jobs_done; then
+      break
+    else
+      sleep 1
+    fi
   done 
 }
 
