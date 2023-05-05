@@ -56,10 +56,10 @@ resource "google_compute_instance" "posvm" {
   can_ip_forward = true
 
   scheduling {
-    automatic_restart   = !var.vm_pos_machine_spot
-    on_host_maintenance = var.vm_pos_machine_spot ? "TERMINATE" : "MIGRATE"
-    preemptible         = var.vm_pos_machine_spot
-    provisioning_model  = var.vm_pos_machine_spot ? "SPOT" : "STANDARD"
+    automatic_restart           = !var.vm_pos_machine_spot
+    on_host_maintenance         = var.vm_pos_machine_spot ? "TERMINATE" : "MIGRATE"
+    preemptible                 = var.vm_pos_machine_spot
+    provisioning_model          = var.vm_pos_machine_spot ? "SPOT" : "STANDARD"
     instance_termination_action = var.vm_pos_machine_spot ? "STOP" : null
   }
 
@@ -147,7 +147,7 @@ resource "google_compute_instance" "posvm" {
   provisioner "file" {
     content = templatefile("${local.path_source_postprocessing_scripts}/config.sh", {
       POS_PROJECT_ID                                             = var.project_id,
-      POS_GCP_ZONE                                                = var.gcp_default_zone,
+      POS_GCP_ZONE                                               = var.gcp_default_zone,
       POS_GS_ETL_DATASET                                         = var.config_gs_etl,
       POS_IS_PARTNER_INSTANCE                                    = var.is_partner_instance,
       POS_GS_DIRECT_FILES                                        = var.config_direct_json,
