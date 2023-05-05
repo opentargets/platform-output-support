@@ -39,7 +39,7 @@ function run_elasticsearch() {
     -e "discovery.seed_hosts=[]" \
     -e "bootstrap.memory_lock=true" \
     -e "search.max_open_scroll_context=5000" \
-    -e "thread_pool.write.queue_size=2000" \
+    -e "thread_pool.write.queue_size=1000" \
     -v ${pos_es_docker_vol_data}:/usr/share/elasticsearch/data \
     -v ${pos_es_docker_vol_logs}:/usr/share/elasticsearch/logs \
     --ulimit memlock=-1:-1 \
