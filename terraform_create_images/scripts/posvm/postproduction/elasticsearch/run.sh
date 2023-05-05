@@ -148,6 +148,38 @@ function do_load_etl_data_into_es_parallel() {
     fi
   done 
 }
+
+# Sequential data load implementation given job_status, job_retries, job_param_input_folder, job_param_index_settings and job_param_id details
+function do_load_etl_data_into_es_sequential() {
+  job_status = $1
+  job_retries = $2
+  job_param_input_folder = $3
+  job_param_index_settings = $4
+  job_param_id = $5
+
+  # Seriallize the ingestion of the ETL data into Elastic Search by running each job in a separate process per index
+  while true; do
+    all_jobs_done=true
+
+    for index_name in "${!job_status[@]}"; do
+      if [ ${job_status["$index_name"]} -ne 0 ] && [ ${job_retries["$index_name"]} -lt $max_retries ]; then
+        all_jobs_done=false
+        load_data_into_es_index ${job_param_input_folder["$index_name"]} ${index_name} ${job_param_index_settings["$index_name"]} ${job_param_id["$index_name"]}
+        job_exit_status=$?
+        if [ $job_exit_status -eq 0 ]; then
+          job_status["$index_name"]=0
+          log "Job for index $index_name completed successfully."
+        else
+          job_retries["$index_name"]=$((job_retries["$index_name"] + 1))
+          log "Job for index $index_name FAILED. RETRYING (attempt ${job_retries["$index_name"]} of $max_retries)..."
+        fi
+      fi
+    done
+    
+  done 
+}
+
+
 # Iterate over the ETL ingestion configuration file and load data into Elastic Search
 function load_etl_data_into_es() {
   declare -A job_status
@@ -216,7 +248,9 @@ function load_etl_data_into_es() {
   job_param_id["${pos_es_so_index_name}"]=${pos_es_default_id}
 
   # Run data load jobs in parallel
-  do_load_etl_data_into_es_parallel job_status job_retries job_param_input_folder job_param_index_settings job_param_id
+  # do_load_etl_data_into_es_parallel job_status job_retries job_param_input_folder job_param_index_settings job_param_id
+  # Run data load sequentially
+  do_load_etl_data_into_es_sequential job_status job_retries job_param_input_folder job_param_index_settings job_param_id
 }
 
 # Print a summary that shows all the indexes in Elastic Search and their details
