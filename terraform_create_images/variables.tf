@@ -137,9 +137,9 @@ variable "vm_pos_machine_type" {
 }
 
 variable "vm_pos_machine_spot" {
-  description = "Should SPOT provisioning model be used for POS VM?, default 'true'"
+  description = "Should SPOT provisioning model be used for POS VM?, default 'false'"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "pos_logs_path_root" {
