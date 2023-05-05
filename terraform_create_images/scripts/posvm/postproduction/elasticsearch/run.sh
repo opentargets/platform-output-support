@@ -67,7 +67,8 @@ function load_data_into_es_index() {
   log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
   # Create index
   log "[INFO][${index_name}] Creating index"
-  curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
+  #curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
+  curl -XPUT -H 'Content-Type: application/json' --data @${path_to_index_settings} http://localhost:9200/${index_name}
   log "[INFO][${index_name}] Data source at '${input_folder}'"
   # Iterate over all .json files in the input folder and load them into the created index
   # When an ID has been provided, we can re-try loading the data into the given elastic search index, otherwise we can't, as it would create duplicates
