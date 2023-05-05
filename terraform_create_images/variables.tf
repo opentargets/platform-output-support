@@ -163,9 +163,9 @@ variable "clickhouse_data_disk_size" {
 
 // --- Elastic Search Configuration --- //
 variable "elastic_search_docker_image_version" {
-  description = "Elastic search docker image version to deploy"
+  description = "Elastic search docker image version to deploy, default '7.10.2'"
   type        = string
-  default     = "7.13.4"
+  default     = "7.10.2"
 }
 
 variable "elastic_search_data_disk_size" {
