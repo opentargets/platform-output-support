@@ -56,7 +56,7 @@ locals {
   clickhouse_docker_image_version = var.clickhouse_docker_image_version
 
   // --- Elastic Search specific configuration --- //
-  elastic_search_docker_image         = "docker.elastic.co/elasticsearch/elasticsearch"
+  elastic_search_docker_image         = "docker.elastic.co/elasticsearch/elasticsearch-oss"
   elastic_search_docker_image_version = var.elastic_search_docker_image_version
 
   // --- Disk Images Configuration --- //
