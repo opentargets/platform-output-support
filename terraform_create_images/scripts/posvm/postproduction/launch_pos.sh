@@ -143,13 +143,13 @@ run_data_ingestion_pipeline
 # Check the status of the data ingestion pipeline
 if [ $? -eq 0 ]; then
     log "[INFO] Data ingestion pipeline exited with success"
-    # Create Tarballs of Clickhouse and Elastic Search data volumes
-    create_disk_data_tarballs
-    # Create GCP images for the Clickhouse and Elastic Search data volumes
-    create_gcp_images
 else
-    log "[ERROR] Data ingestion pipeline exited with errors, skipping creation of disk data tarballs and GCP images"
+    log "[ERROR] Data ingestion pipeline exited with errors, (should) skipping creation of disk data tarballs and GCP images"
 fi
+# Create Tarballs of Clickhouse and Elastic Search data volumes
+create_disk_data_tarballs
+# Create GCP images for the Clickhouse and Elastic Search data volumes
+create_gcp_images
 # Dump all POS pipeline logs to file
 log "[--- Dumping all POS pipeline logs to file '${pos_path_logs_startup_script}' ---]"
 sudo journalctl -u google-startup-scripts.service > ${pos_path_logs_startup_script}
