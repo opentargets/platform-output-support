@@ -167,6 +167,7 @@ resource "google_compute_instance" "posvm" {
       POS_DATA_RELEASE_SEKELETON_PATH_ETL_ROOT                   = local.data_release_skeleton_path_etl_root,
       POS_DATA_RELEASE_SEKELETON_PATH_ETL_JSON_ROOT              = local.data_release_skeleton_path_etl_json_root,
       POS_DATA_RELEASE_SEKELETON_PATH_ETL_PARQUET_ROOT           = local.data_release_skeleton_path_etl_parquet_root,
+      POS_DATA_RELEASE_SEKELETON_PATH_METADATA_ROOT                   = local.data_release_skeleton_path_metadata_root,
       POS_DATA_RELEASE_PATH_SOURCE_ROOT                          = local.data_release_path_source_root,
       POS_DATA_RELEASE_PATH_ETL_JSON                             = local.data_release_path_etl_json,
       POS_DATA_RELEASE_PATH_ETL_PARQUET                          = local.data_release_path_etl_parquet,
