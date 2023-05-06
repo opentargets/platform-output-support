@@ -248,7 +248,7 @@ function load_etl_data_into_es() {
   # Add SO data to Elastic Search
   job_status["${pos_es_so_index_name}"]=1
   job_retries["${pos_es_so_index_name}"]=0
-  job_param_input_folder["${pos_es_so_index_name}"]=${pos_es_path_so_file}
+  job_param_input_folder["${pos_es_so_index_name}"]=$( dirname ${pos_es_path_so_file} )
   job_param_index_settings["${pos_es_so_index_name}"]=${pos_es_default_index_settings}
   job_param_id["${pos_es_so_index_name}"]=${pos_es_default_id}
 
