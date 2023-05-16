@@ -4,6 +4,8 @@
 
 set -e
 
+# TODO - DO NOT RUN IF THIS IS A PPP INSTANCE
+
 # Environment
 export BASEDIR=$(dirname $0)
 export LSF_JOB_SCRIPT="${BASEDIR}/lsf_ftp_sync.sh"
