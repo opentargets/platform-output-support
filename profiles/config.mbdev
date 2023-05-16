@@ -19,15 +19,17 @@ pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
 # Publishing configuration
 is_public_data_images = true
 
-
-
-
-
 # Variables for Sync data
 # This one is used to feed BigQuery Dev
 release_id_dev = "23.04"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
 release_id_prod = "23.04"
+
+
+
+
+
+
 # This variable is used in the script as source for the data syncronization to the public release bucket and the EBI FTP
 gs_sync_from        = "open-targets-pre-data-releases/23.04"
 is_partner_instance = false
