@@ -27,7 +27,3 @@ is_partner_instance = true
 release_id_dev = "23.04"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
 release_id_prod = "23.04"
-
-
-
-
