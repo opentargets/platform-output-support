@@ -20,23 +20,13 @@ pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
 
 # Publishing configuration
 is_public_data_images = true
-is_partner_instance = false
+is_partner_instance = true
 
 # Variables for Sync data
 # This one is used to feed BigQuery Dev
 release_id_dev = "23.04"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
 release_id_prod = "23.04"
-
-
-
-
-
-
-# Variable for creating IMAGES : ElasticSearch and Clickhouse
-# This value is used to feed BigQuery Production and Clickhouse image
-config_script_name  = "mbdevpos"
-config_release_name = "mbdevplatform"
 
 
 
