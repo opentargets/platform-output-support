@@ -7,7 +7,7 @@ path_data_source="gs://${DATA_LOCATION_SOURCE}/"
 # TODO - Skipped failed matches from literature
 # Check if it's partner instance
 if [ "${IS_PARTNER_INSTANCE}" = true ]; then
-    echo "This is a partner instance, skipping the sync process"
+    echo "This is a PARTNER INSTANCE, SKIPPING the sync process"
     exit 0
 fi
 
