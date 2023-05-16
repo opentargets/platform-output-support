@@ -56,14 +56,6 @@ variable "pos_es_tarball_name" {
 
 
 // --- RELEASE INFORMATION --- //
-
-// TODO: remove this variable
-variable "config_enable_graphQL" {
-  description = "OpenTargets release with graphQL"
-  type        = bool
-  default     = true
-}
-
 variable "config_gcp_default_region" {
   description = "Default region when not specified in the module"
   type        = string
