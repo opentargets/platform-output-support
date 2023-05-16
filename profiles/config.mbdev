@@ -34,8 +34,6 @@ release_id_prod = "23.04"
 
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
-# This one is used to produce the web application static data context
-config_direct_json = "open-targets-pre-data-releases/23.04/input"
 # This value is used to feed BigQuery Production and Clickhouse image
 config_gs_etl       = "open-targets-pre-data-releases/23.04/output"
 config_script_name  = "mbdevpos"
