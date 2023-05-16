@@ -35,7 +35,6 @@ release_id_prod = "23.04"
 
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
 # This value is used to feed BigQuery Production and Clickhouse image
-config_gs_etl       = "open-targets-pre-data-releases/23.04/output"
 config_script_name  = "mbdevpos"
 config_release_name = "mbdevplatform"
 
