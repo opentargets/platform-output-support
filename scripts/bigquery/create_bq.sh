@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check if it's partner instance
+if [ "${IS_PARTNER_INSTANCE}" = true ]; then
+    echo "This is a PARTNER INSTANCE, SKIPPING the data sync process for BigQuery"
+    exit 0
+fi
+
 version_tag=${RELEASE_ID}
 project_id=${PROJECT_ID}
 path_prefix="gs://${DATA_LOCATION_SOURCE}/output/etl/parquet"
