@@ -2,7 +2,7 @@
 
 version_tag=${RELEASE_ID}
 project_id=${PROJECT_ID}
-path_prefix="gs://${GS_ETL_DATASET}/etl/parquet"
+path_prefix="gs://${DATA_LOCATION_SOURCE}/output/etl/parquet"
 
 if [ ${project_id} == "open-targets-prod" ]; then
     echo "Production - no suffix - allAuthenticatedUsers ON"
