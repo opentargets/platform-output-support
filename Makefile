@@ -6,7 +6,6 @@ PATH_SCRIPTS_DATASYNC=${PATH_SCRIPTS}/data_sync
 PATH_TMP=${ROOT_DIR_MAKEFILE_POS}/tmp
 PATH_CREDENTIALS=${PATH_TMP}/credentials
 DATA_LOCATION_SOURCE:=$(shell test -f config.tfvars && cat config.tfvars | grep data_location_source | awk -F= '{print $$2}' | tr -d ' "')
-GS_SYNC_FROM:=$(shell test -f config.tfvars && cat config.tfvars | grep gs_sync_from | awk -F= '{print $$2}' | tr -d ' "')
 PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_PROD=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
@@ -17,7 +16,6 @@ TF_WORKSPACE_ID_FILE='terraform_workspace_id'
 
 export ROOT_DIR_MAKEFILE_POS
 export DATA_LOCATION_SOURCE
-export GS_SYNC_FROM
 export PROJECT_ID_DEV
 export RELEASE_ID_DEV
 export RELEASE_ID_PROD
@@ -100,12 +98,12 @@ bigqueryprod:## Big Query Production
 
 sync: tmp credentials ## Sync data to EBI FTP service
 	@echo "==== Sync ===="
-	export GS_SYNC_FROM=${GS_SYNC_FROM}; \
+	export DATA_LOCATION_SOURCE=${DATA_LOCATION_SOURCE}; \
 	${PATH_SCRIPTS_DATASYNC}/launch_ebi_ftp_sync.sh
 
 syncgs: ## Copy data from pre-release to production
 	@echo "==== Sync ===="
-	@echo "Sync from '${GS_SYNC_FROM}'"
+	@echo "Sync from '${DATA_LOCATION_SOURCE}'"
 	@echo "Release ID '${RELEASE_ID_PROD}'"
 	${PATH_SCRIPTS_DATASYNC}/syncgs.sh
 
