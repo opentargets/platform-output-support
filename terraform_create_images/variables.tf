@@ -57,18 +57,6 @@ variable "pos_es_tarball_name" {
 
 // --- RELEASE INFORMATION --- //
 
-variable "config_script_name" {
-  description = "Open Targets Platform script name, not related to any configuration parameter."
-  type        = string
-  default     = "pos-unset"
-}
-
-variable "config_release_name" {
-  description = "Open Targets Platform release name, parameter for the images"
-  type        = string
-  default     = "pos-unset"
-}
-
 // TODO: remove this variable
 variable "config_enable_graphQL" {
   description = "OpenTargets release with graphQL"
