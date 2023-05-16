@@ -8,6 +8,7 @@ PATH_CREDENTIALS=${PATH_TMP}/credentials
 DATA_LOCATION_SOURCE:=$(shell test -f config.tfvars && cat config.tfvars | grep data_location_source | awk -F= '{print $$2}' | tr -d ' "')
 PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
+IS_PARTNER_INSTANCE=$(shell test -f config.tfvars && cat config.tfvars | grep is_partner_instance | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_PROD=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
 TF_WORKSPACE_ID=$(shell uuidgen | tr '''[:upper:]''' '''[:lower:]''' | cut -f5 -d'-')
 PATH_GCS_CREDENTIALS_FILE=${PATH_CREDENTIALS}/gcs_credentials.json
@@ -20,6 +21,7 @@ export PROJECT_ID_DEV
 export RELEASE_ID_DEV
 export RELEASE_ID_PROD
 export PATH_GCS_CREDENTIALS_FILE
+export IS_PARTNER_INSTANCE
 
 check:
 	[ -e "/you/file.file" ] && echo 1 || $error("Bad svnversion v1.4, please install v1.6")

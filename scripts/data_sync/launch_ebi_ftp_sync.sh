@@ -19,6 +19,7 @@ export DST_PATH_RELATIVE_CREDENTIALS_FILE="${DST_PATH_RELATIVE_CREDENTIALS}/${DS
 [ -z "${EBI_LOGIN_NODE}" ] && export EBI_LOGIN_NODE="codon-login-02"
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
 [ -z "${DATA_LOCATION_SOURCE}" ] && export DATA_LOCATION_SOURCE="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
+[ -z "${IS_PARTNER_INSTANCE}" ] && export IS_PARTNER_INSTANCE=true
 
 # Helpers
 function log {
@@ -53,6 +54,12 @@ log_body "INFO" "Release ID (Production): ${RELEASE_ID_PROD}"
 log_body "INFO" "GCP Credentials file: ${PATH_GCS_CREDENTIALS_FILE}"
 log_body "INFO" "Destination PATH Operations folder: \$HOME/${DST_PATH_RELATIVE_OPS}"
 log_body "INFO" "Destination PATH Credentials folder: \$HOME/${DST_PATH_RELATIVE_CREDENTIALS}"
+
+# Check if it's partner instance
+if [ "${IS_PARTNER_INSTANCE}" = true ]; then
+    log_body "INFO" "This is a partner instance, skipping the sync process"
+    exit 0
+fi
 
 # Prepare the credentials file
 log_body "INFO" "Preparing ops folder, \$HOME/${DST_PATH_RELATIVE_OPS} and credentials file, \$HOME/${DST_PATH_RELATIVE_CREDENTIALS_FILE}"
