@@ -14,6 +14,8 @@ gcp_default_zone   = "europe-west1-d"
 # POS pipeline configuration
 # Use default value for machine type
 # vm_pos_machine_type = "n1-highcpu-32"
+# Variables for creating VMs
+config_vm_pos_boot_image   = "debian-11"
 pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
 
 # Publishing configuration
@@ -43,15 +45,5 @@ config_script_name  = "mbdevpos"
 config_release_name = "mbdevplatform"
 
 
-config_vm_elastic_search_vcpus          = "4"
-config_vm_elastic_search_mem            = "32768"
-config_vm_elastic_search_boot_disk_size = 350
-config_vm_elastic_search_version        = "7.10.2"
-
-config_vm_clickhouse_vcpus          = "4"
-config_vm_clickhouse_mem            = "26624"
-config_vm_clickhouse_boot_disk_size = 300
-
-config_vm_pos_boot_image   = "debian-11"
 
 
