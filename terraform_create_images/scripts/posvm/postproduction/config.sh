@@ -8,7 +8,6 @@ SCRIPTDIR="$( cd "$( dirname "$${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Remapping of values rendered by Terraform into environment variables (there must way another way to do this, that it is not so ugly)
 export pos_project_id=${POS_PROJECT_ID}
 export pos_gcp_zone=${POS_GCP_ZONE}
-export pos_gs_etl_dataset=${POS_GS_ETL_DATASET}
 export pos_is_partner_instance=${POS_IS_PARTNER_INSTANCE}
 export pos_gs_direct_files=${POS_GS_DIRECT_FILES}
 export pos_gcp_device_disk_prefix=${POS_GCP_DEVICE_DISK_PREFIX}
