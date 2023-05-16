@@ -107,16 +107,6 @@ variable "is_partner_instance" {
   default     = false
 }
 
-variable "config_gs_etl" {
-  description = "Output of the ETL [root]. Eg. open-targets-data-releases/21.04/output"
-  type        = string
-}
-
-variable "config_direct_json" {
-  description = "External JSon to laod. Used for SO. Eg. open-targets-data-releases/21.09/input"
-  type        = string
-}
-
 // --- POS VM Configuration --- //
 variable "vm_pos_boot_image" {
   description = "Boot image configuration for POS VM, default 'Debian 11'"

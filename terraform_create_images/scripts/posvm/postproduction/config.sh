@@ -9,7 +9,6 @@ SCRIPTDIR="$( cd "$( dirname "$${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export pos_project_id=${POS_PROJECT_ID}
 export pos_gcp_zone=${POS_GCP_ZONE}
 export pos_is_partner_instance=${POS_IS_PARTNER_INSTANCE}
-export pos_gs_direct_files=${POS_GS_DIRECT_FILES}
 export pos_gcp_device_disk_prefix=${POS_GCP_DEVICE_DISK_PREFIX}
 export pos_data_disk_device_name_ch=${POS_DATA_DISK_DEVICE_NAME_CH}
 export pos_data_disk_device_name_es=${POS_DATA_DISK_DEVICE_NAME_ES}
