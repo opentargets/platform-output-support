@@ -89,14 +89,14 @@ bigquerydev:  ## Big Query Dev
 	@echo "==== Big Query DEV ===="
 	export PROJECT_ID=${PROJECT_ID_DEV}; \
 	export RELEASE_ID=${RELEASE_ID_DEV}; \
-	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
+	${ROOT_DIR_MAKEFILE_POS}/scripts/bigquery/create_bq.sh
 
 
 bigqueryprod:## Big Query Production
 	@echo "==== Big Query Production ===="
 	export PROJECT_ID=open-targets-prod; \
     export RELEASE_ID=${RELEASE_ID_PROD}; \
-	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
+	${ROOT_DIR_MAKEFILE_POS}/scripts/bigquery/create_bq.sh
 
 sync: tmp credentials ## Sync data to EBI FTP service
 	@echo "==== Sync ===="
