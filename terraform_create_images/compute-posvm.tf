@@ -97,23 +97,10 @@ resource "google_compute_instance" "posvm" {
       {
         PROJECT_ID                                  = var.project_id,
         GC_ZONE                                     = var.gcp_default_zone,
-        GS_ETL_DATASET                              = var.config_gs_etl,
-        IS_PARTNER_INSTANCE                         = var.is_partner_instance,
-        GS_DIRECT_FILES                             = var.config_direct_json,
-        GCP_DEVICE_DISK_PREFIX                      = local.gcp_device_disk_prefix,
         POS_USER_NAME                               = local.posvm_remote_user_name
-        DATA_DISK_DEVICE_NAME_CH                    = local.data_disk_device_name_clickhouse,
-        DATA_DISK_DEVICE_NAME_ES                    = local.data_disk_device_name_elastic_search,
-        DISK_IMAGE_NAME_CH                          = local.disk_image_name_clickhouse,
-        DISK_IMAGE_NAME_ES                          = local.disk_image_name_elastic_search,
-        POS_REPO_BRANCH                             = var.config_repo_branch_pos,
         FLAG_POSTPROCESSING_SCRIPTS_READY           = local.flag_postprocessing_scripts_ready,
         PATH_POSTPROCESSING_SCRIPTS                 = local.path_postprocessing_scripts,
         FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT = local.filename_postprocessing_scripts_entry_point,
-        # TODO Removev this
-        CLICKHOUSE_URI    = "http://localhost:8123",
-        ELASTICSEARCH_URI = "http://localhost:9200",
-        IMAGE_PREFIX      = "IMGPREFIX_REMOVE_ME",
       }
     )
     ssh-keys               = "${local.posvm_remote_user_name}:${tls_private_key.posvm.public_key_openssh}"

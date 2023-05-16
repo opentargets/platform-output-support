@@ -32,25 +32,9 @@ function startup_complete() {
 function env_summary() {
   log "Environment summary:"
   log "  PROJECT_ID: ${PROJECT_ID}"
-  log "  GC_ZONE: ${GC_ZONE}"
-  log "  GS_ETL_DATASET: ${GS_ETL_DATASET}"
-  log "  IS_PARTNER_INSTANCE: ${IS_PARTNER_INSTANCE}"
-  log "  GS_DIRECT_FILES: ${GS_DIRECT_FILES}"
-  log "  GCP_DEVICE_DISK_PREFIX: ${GCP_DEVICE_DISK_PREFIX}"
-  log "  DATA_DISK_DEVICE_NAME_CH: ${DATA_DISK_DEVICE_NAME_CH}"
-  log "  DATA_DISK_DEVICE_NAME_ES: ${DATA_DISK_DEVICE_NAME_ES}"
-  log "  DISK_IMAGE_NAME_CH: ${DISK_IMAGE_NAME_CH}"
-  log "  DISK_IMAGE_NAME_ES: ${DISK_IMAGE_NAME_ES}"
-  log "  POS_REPO_BRANCH: ${POS_REPO_BRANCH}"
   log "  FLAG_POSTPROCESSING_SCRIPTS_READY: ${FLAG_POSTPROCESSING_SCRIPTS_READY}"
   log "  PATH_POSTPROCESSING_SCRIPTS: ${PATH_POSTPROCESSING_SCRIPTS}"
   log "  FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT: ${FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT}"
-  log "  CLICKHOUSE_URI: ${CLICKHOUSE_URI}"
-  log "  ELASTICSEARCH_URI: ${ELASTICSEARCH_URI}"
-  log "  gcp_device_disk_clickhouse: $${gcp_device_disk_clickhouse}"
-  log "  gcp_device_disk_elasticsearch: $${gcp_device_disk_elasticsearch}"
-  log "  mount_point_clickhouse: $${mount_point_clickhouse}"
-  log "  mount_point_elasticsearch: $${mount_point_elasticsearch}"
 }
 
 # Set trap to run 'startup_complete' function on exit
