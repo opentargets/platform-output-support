@@ -163,7 +163,6 @@ resource "google_compute_instance" "posvm" {
       POS_ELASTIC_SEARCH_DOCKER_IMAGE_VERSION                    = local.elastic_search_docker_image_version,
       POS_DATA_DISK_TARBALL_CLICKHOUSE                           = var.pos_ch_tarball_name,
       POS_DATA_DISK_TARBALL_ELASTIC_SEARCH                       = var.pos_es_tarball_name,
-      POS_POS_REPO_BRANCH                                        = var.config_repo_branch_pos,
       POS_FLAG_POSTPROCESSING_SCRIPTS_READY                      = local.flag_postprocessing_scripts_ready,
       POS_GCP_PATH_POS_PIPELINE_SESSION_LOGS                     = local.gcp_path_pos_pipeline_session_logs,
       POS_PATH_POSTPROCESSING_ROOT                               = local.path_postprocessing_root,

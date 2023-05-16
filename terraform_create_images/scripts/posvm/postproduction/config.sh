@@ -41,7 +41,6 @@ export pos_clickhouse_docker_image=${POS_CLICKHOUSE_DOCKER_IMAGE}
 export pos_clickhouse_docker_image_version=${POS_CLICKHOUSE_DOCKER_IMAGE_VERSION}
 export pos_elasticsearch_docker_image=${POS_ELASTIC_SEARCH_DOCKER_IMAGE}
 export pos_elasticsearch_docker_image_version=${POS_ELASTIC_SEARCH_DOCKER_IMAGE_VERSION}
-export pos_pos_repo_branch=${POS_POS_REPO_BRANCH}
 export pos_flag_postprocessing_scripts_ready=${POS_FLAG_POSTPROCESSING_SCRIPTS_READY}
 export pos_gcp_path_pos_pipeline_session_logs=${POS_GCP_PATH_POS_PIPELINE_SESSION_LOGS}
 export pos_path_postprocessing_root=${POS_PATH_POSTPROCESSING_ROOT}
