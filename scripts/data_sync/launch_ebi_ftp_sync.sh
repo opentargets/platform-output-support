@@ -44,20 +44,20 @@ log_error() {
 
 # Summary of the environment
 log_heading "INFO" "Launching EBI FTP sync job"
-log_body "INFO" "LSF User: ${LSF_USER}"
-log_body "INFO" "LSF Queue: ${LSF_QUEUE}"
-log_body "INFO" "EBI Login Gate: ${EBI_LOGIN_GATE}"
-log_body "INFO" "EBI Login Node: ${EBI_LOGIN_NODE}"
-log_body "INFO" "LSF Job Script: ${LSF_JOB_SCRIPT}"
-log_body "INFO" "GS Sync From: ${DATA_LOCATION_SOURCE}"
-log_body "INFO" "Release ID (Production): ${RELEASE_ID_PROD}"
-log_body "INFO" "GCP Credentials file: ${PATH_GCS_CREDENTIALS_FILE}"
-log_body "INFO" "Destination PATH Operations folder: \$HOME/${DST_PATH_RELATIVE_OPS}"
-log_body "INFO" "Destination PATH Credentials folder: \$HOME/${DST_PATH_RELATIVE_CREDENTIALS}"
+log_body "INFO" "                                LSF User: ${LSF_USER}"
+log_body "INFO" "                               LSF Queue: ${LSF_QUEUE}"
+log_body "INFO" "                          EBI Login Gate: ${EBI_LOGIN_GATE}"
+log_body "INFO" "                          EBI Login Node: ${EBI_LOGIN_NODE}"
+log_body "INFO" "                          LSF Job Script: ${LSF_JOB_SCRIPT}"
+log_body "INFO" "                    Data Source Location: ${DATA_LOCATION_SOURCE}"
+log_body "INFO" "                 Release ID (Production): ${RELEASE_ID_PROD}"
+log_body "INFO" "                    GCP Credentials file: ${PATH_GCS_CREDENTIALS_FILE}"
+log_body "INFO" "      Destination PATH Operations folder: \$HOME/${DST_PATH_RELATIVE_OPS}"
+log_body "INFO" "     Destination PATH Credentials folder: \$HOME/${DST_PATH_RELATIVE_CREDENTIALS}"
 
 # Check if it's partner instance
 if [ "${IS_PARTNER_INSTANCE}" = true ]; then
-    log_body "INFO" "This is a partner instance, skipping the sync process"
+    log_body "INFO" "This is a PARTNER INSTANCE, SKIPPING the sync process"
     exit 0
 fi
 
