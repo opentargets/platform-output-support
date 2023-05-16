@@ -14,7 +14,7 @@
 
 # Defaults
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
-[ -z "${GS_SYNC_FROM}" ] && export GS_SYNC_FROM="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
+[ -z "${DATA_LOCATION_SOURCE}" ] && export DATA_LOCATION_SOURCE="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
 [ -z $PATH_OPS_ROOT_FOLDER ] && echo "PATH to operations root folder is required" && exit 1
 [ -z $PATH_OPS_CREDENTIALS ] && echo "PATH to operations credentials folder is required" && exit 1
 
@@ -35,7 +35,7 @@ export path_lsf_job_stderr="${path_lsf_job_logs}/output.err"
 export path_lsf_job_stdout="${path_lsf_job_logs}/output.out"
 export path_lsf_job_bsub_stderr="${path_lsf_logs}/${job_name}.err"
 export path_lsf_job_bsub_stdout="${path_lsf_logs}/${job_name}.out"
-export path_data_source="gs://${GS_SYNC_FROM}/"
+export path_data_source="gs://${DATA_LOCATION_SOURCE}/"
 export filename_release_checksum="release_data_integrity"
 
 # Logging functions

@@ -16,7 +16,7 @@ export DST_PATH_RELATIVE_CREDENTIALS_FILE="${DST_PATH_RELATIVE_CREDENTIALS}/${DS
 [ -z "${EBI_LOGIN_GATE}" ] && export EBI_LOGIN_GATE="ligate.ebi.ac.uk"
 [ -z "${EBI_LOGIN_NODE}" ] && export EBI_LOGIN_NODE="codon-login-02"
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
-[ -z "${GS_SYNC_FROM}" ] && export GS_SYNC_FROM="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
+[ -z "${DATA_LOCATION_SOURCE}" ] && export DATA_LOCATION_SOURCE="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
 
 # Helpers
 function log {
@@ -46,8 +46,8 @@ log_body "INFO" "LSF Queue: ${LSF_QUEUE}"
 log_body "INFO" "EBI Login Gate: ${EBI_LOGIN_GATE}"
 log_body "INFO" "EBI Login Node: ${EBI_LOGIN_NODE}"
 log_body "INFO" "LSF Job Script: ${LSF_JOB_SCRIPT}"
-log_body "INFO" "GS Sync From: ${GS_SYNC_FROM}"
-log_body "INFO" "Release ID: ${RELEASE_ID_PROD}"
+log_body "INFO" "GS Sync From: ${DATA_LOCATION_SOURCE}"
+log_body "INFO" "Release ID (Production): ${RELEASE_ID_PROD}"
 log_body "INFO" "GCP Credentials file: ${PATH_GCS_CREDENTIALS_FILE}"
 log_body "INFO" "Destination PATH Operations folder: \$HOME/${DST_PATH_RELATIVE_OPS}"
 log_body "INFO" "Destination PATH Credentials folder: \$HOME/${DST_PATH_RELATIVE_CREDENTIALS}"
@@ -57,4 +57,4 @@ log_body "INFO" "Preparing ops folder, \$HOME/${DST_PATH_RELATIVE_OPS} and crede
 cat ${PATH_GCS_CREDENTIALS_FILE} | ssh -o proxycommand="ssh -p 2244 ${LSF_USER}@${EBI_LOGIN_GATE} proxy %h" ${LSF_USER}@${EBI_LOGIN_NODE} "/bin/bash -c 'source /etc/bashrc; mkdir -p \$HOME/${DST_PATH_RELATIVE_CREDENTIALS}; chmod -R 750 \$HOME/${DST_PATH_RELATIVE_OPS}; cat - > \$HOME/${DST_PATH_RELATIVE_CREDENTIALS_FILE}; chmod 640 \$HOME/${DST_PATH_RELATIVE_CREDENTIALS_FILE}'"
 # Launch the job
 log_body "INFO" "Launching the job on the LSF cluster"
-cat ${LSF_JOB_SCRIPT} | ssh -o proxycommand="ssh -p 2244 ${LSF_USER}@${EBI_LOGIN_GATE} proxy %h" ${LSF_USER}@${EBI_LOGIN_NODE} "/bin/bash -c 'source /etc/bashrc; export PATH_OPS_ROOT_FOLDER=\$HOME/${DST_PATH_RELATIVE_OPS}; export PATH_OPS_CREDENTIALS=\$HOME/${DST_PATH_RELATIVE_CREDENTIALS_FILE}; export RELEASE_ID_PROD=${RELEASE_ID_PROD}; export GS_SYNC_FROM=${GS_SYNC_FROM}; export LSF_QUEUE=${LSF_QUEUE}; bsub -q ${LSF_QUEUE}'"
+cat ${LSF_JOB_SCRIPT} | ssh -o proxycommand="ssh -p 2244 ${LSF_USER}@${EBI_LOGIN_GATE} proxy %h" ${LSF_USER}@${EBI_LOGIN_NODE} "/bin/bash -c 'source /etc/bashrc; export PATH_OPS_ROOT_FOLDER=\$HOME/${DST_PATH_RELATIVE_OPS}; export PATH_OPS_CREDENTIALS=\$HOME/${DST_PATH_RELATIVE_CREDENTIALS_FILE}; export RELEASE_ID_PROD=${RELEASE_ID_PROD}; export DATA_LOCATION_SOURCE=${DATA_LOCATION_SOURCE}; export LSF_QUEUE=${LSF_QUEUE}; bsub -q ${LSF_QUEUE}'"
