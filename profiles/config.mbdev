@@ -33,9 +33,6 @@ release_id_prod = "23.04"
 
 
 
-# This variable is used in the script as source for the data syncronization to the public release bucket and the EBI FTP
-gs_sync_from        = "open-targets-pre-data-releases/23.04"
-
 # Variable for creating IMAGES : ElasticSearch and Clickhouse
 # This one is used to produce the web application static data context
 config_direct_json = "open-targets-pre-data-releases/23.04/input"
