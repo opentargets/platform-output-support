@@ -26,4 +26,5 @@ gcp_default_zone   = "europe-west1-d"
 # vm_pos_machine_type = "n1-highcpu-32"
 # Variables for creating VMs
 config_vm_pos_boot_image   = "debian-11"
-pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
+# Use default logging location
+# pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
