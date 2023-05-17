@@ -1,9 +1,13 @@
 # POS pipelines configuration file for Open Targets Platform
+# This is the prefix that will be used for all the resources created in the cloud for running the pipelines
 resources_prefix   = "pospf"
+# This is the prefix that will be used for all the data images created in the cloud for running the pipelines
 data_images_prefix = "pospf"
 
 # Publishing configuration
+# This flag indicates whether the data images can be made publicly available
 is_public_data_images = true
+# This flag indicates whether this is a PPP profile
 is_partner_instance = false
 
 # Variables for Sync data
@@ -11,9 +15,9 @@ is_partner_instance = false
 release_id_dev = "23.06"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
 release_id_prod = "23.06"
-# Data release configuration
+# Data release configuration, source path in GCS for the data in this release
 data_location_source     = "open-targets-pre-data-releases/23.06"
-# This one may not be used, and it will probably be removed in the future, if no use case comes up
+# This one may not be used, and it will probably be removed in the future, if no use case comes up (NO NEED TO TOUCH THIS)
 data_location_production = "open-targets-data-releases/XXXXX"
 
 # GCP config to use
