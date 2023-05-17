@@ -3,6 +3,7 @@ output "posvm" {
   value = {
     name = google_compute_instance.posvm.name
     zone = google_compute_instance.posvm.zone
+    username = local.posvm_remote_user_name
   }
   description = "POS VM information"
 }
