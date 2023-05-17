@@ -17,11 +17,3 @@ output "data_disk_images" {
   description = "Data disk images names"
 }
 
-// Clickhouse disk image name
-//output "disk_image_name_clickhouse" {
-//  value = local.disk_image_name_clickhouse
-//}
-// ElasticSearch disk image name
-//output "disk_image_name_elastic_search" {
-//  value = local.disk_image_name_elastic_search
-//}
