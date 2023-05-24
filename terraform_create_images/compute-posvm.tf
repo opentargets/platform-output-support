@@ -168,10 +168,6 @@ resource "google_compute_instance" "posvm" {
       POS_PATH_POSTPROCESSING_ROOT                               = local.path_postprocessing_root,
       POS_PATH_POSTPROCESSING_SCRIPTS                            = local.path_postprocessing_scripts,
       POS_FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT            = local.filename_postprocessing_scripts_entry_point,
-      # TODO Removev this
-      POS_CLICKHOUSE_URI    = "http://localhost:8123",
-      POS_ELASTICSEARCH_URI = "http://localhost:9200",
-      POS_IMAGE_PREFIX      = "IMGPREFIX_REMOVE_ME",
       }
     )
     destination = "${local.path_postprocessing_scripts}/config.sh"

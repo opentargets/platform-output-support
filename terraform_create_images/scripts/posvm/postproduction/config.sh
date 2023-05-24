@@ -46,9 +46,6 @@ export pos_gcp_path_pos_pipeline_session_logs=${POS_GCP_PATH_POS_PIPELINE_SESSIO
 export pos_path_postprocessing_root=${POS_PATH_POSTPROCESSING_ROOT}
 export pos_path_postprocessing_scripts=${POS_PATH_POSTPROCESSING_SCRIPTS}
 export pos_filename_postprocessing_scripts_entry_point=${POS_FILENAME_POSTPROCESSING_SCRIPTS_ENTRY_POINT}
-export pos_clickhouse_uri=${POS_CLICKHOUSE_URI}
-export pos_elasticsearch_uri=${POS_ELASTICSEARCH_URI}
-export pos_image_prefix=${POS_IMAGE_PREFIX}
 
 # Newly defined
 export pos_gcp_device_disk_clickhouse="${POS_GCP_DEVICE_DISK_PREFIX}${POS_DATA_DISK_DEVICE_NAME_CH}"
