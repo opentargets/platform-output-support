@@ -95,9 +95,9 @@ variable "vm_pos_boot_disk_size" {
 }
 
 variable "vm_pos_machine_type" {
-  description = "Machine type for POS vm, default 'n1-standard-8'"
+  description = "Machine type for POS vm, default 'n1-highcpu-64'"
   type        = string
-  default     = "n1-standard-8"
+  default     = "n1-highcpu-64"
 }
 
 variable "vm_pos_machine_spot" {
