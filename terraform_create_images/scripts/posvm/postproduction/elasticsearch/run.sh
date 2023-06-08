@@ -25,7 +25,12 @@ function run_elasticsearch() {
   log "[START] Running Elastic Search via Docker, using image ${pos_es_docker_image}"
   log "[INFO] Setting vm.max_map_count to 262144"
   sysctl -w vm.max_map_count=262144
-  log "[INFO] Elastic Search docker container name: ${pos_es_docker_container_name}, cluster name: ${pos_es_cluster_name}, data volume: ${pos_es_vol_path_data}, data load logs at ${pos_path_logs_elastic_search}"
+  # Get machine available memory (KiB)
+  export MACHINE_SIZE=`cat /proc/meminfo | grep MemTotal | grep -o '[0-9]\+'`
+  # Use all the machine memory for the JVM minus 1GiB
+  export JVM_SIZE=`expr $(expr $MACHINE_SIZE / 1048576) - 1`
+  export JVM_SIZE_HALF=`expr $MACHINE_SIZE / 2097152`
+  log "[INFO] Elastic Search docker container name: ${pos_es_docker_container_name}, cluster name: ${pos_es_cluster_name}, data volume: ${pos_es_vol_path_data}, data load logs at ${pos_path_logs_elastic_search}, JVM size: ${JVM_SIZE}GiB, JVM size half: ${JVM_SIZE_HALF}GiB"
   local pos_es_cluster_name=`hostname`
   docker run --rm -d \
     --name ${pos_es_docker_container_name} \
@@ -39,6 +44,7 @@ function run_elasticsearch() {
     -e "discovery.seed_hosts=[]" \
     -e "bootstrap.memory_lock=true" \
     -e "search.max_open_scroll_context=5000" \
+    -e ES_JAVA_OPTS="-Xms${JVM_SIZE_HALF}g -Xmx${JVM_SIZE_HALF}g" \
     -e "thread_pool.write.queue_size=1000" \
     -v ${pos_es_docker_vol_data}:/usr/share/elasticsearch/data \
     -v ${pos_es_docker_vol_logs}:/usr/share/elasticsearch/logs \
@@ -64,11 +70,11 @@ function load_data_into_es_index() {
   local id=$4
   local path_to_index_settings="${pos_es_path_index_settings}/${index_settings}"
   local input_folder_name=$(basename ${input_folder})
-  log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
+  log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}, path_to_index_settings='${path_to_index_settings}'"
   # Create index
   log "[INFO][${index_name}] Creating index"
   #curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
-  curl -XPUT -H 'Content-Type: application/json' --data @${path_to_index_settings} http://localhost:9200/${index_name}
+  curl -XPUT -H 'Content-Type: application/json' --data @"${path_to_index_settings}" http://localhost:9200/${index_name}
   log "[INFO][${index_name}] Data source at '${input_folder}'"
   # Iterate over all .json files in the input folder and load them into the created index
   # When an ID has been provided, we can re-try loading the data into the given elastic search index, otherwise we can't, as it would create duplicates
@@ -109,30 +115,61 @@ function load_data_into_es_index() {
   return 0
 }
 
+function cleanup {
+  for index_name in "${!job_status_temp[@]}"; do
+    rm -f ${job_status_temp["$index_name"]}
+    rm -f ${job_retries_temp["$index_name"]}
+  done
+}
+
 # Parallel data load implementation given job_status, job_retries, job_param_input_folder, job_param_index_settings and job_param_id details
 function do_load_etl_data_into_es_parallel() {
-  job_status = $1
-  job_retries = $2
-  job_param_input_folder = $3
-  job_param_index_settings = $4
-  job_param_id = $5
+  job_status=$1
+  job_retries=$2
+  job_param_input_folder=$3
+  job_param_index_settings=$4
+  job_param_id=$5
+
+  # Array of status and retries files per index
+  declare -A job_status_temp
+  declare -A job_retries_temp
+
+  trap cleanup EXIT  # Setup the trap to cleanup the temp files on exit
+
+  for index_name in "${!job_status[@]}"; do
+    job_status_temp["$index_name"]=$(mktemp -p ${pos_path_tmp})
+    job_retries_temp["$index_name"]=$(mktemp -p ${pos_path_tmp})
+    status_value=${job_status["$index_name"]}
+    retries_value=${job_retries["$index_name"]}
+    status_file_name=${job_status_temp["$index_name"]}
+    retries_file_name=${job_retries_temp["$index_name"]}
+    echo -e "$status_value" > $status_file_name
+    echo -e "$retries_value" > $retries_file_name
+    log "[INFO] Initialize job status for index '${index_name}' to '" ${job_status["$index_name"]} "' in file '" ${job_status_temp["$index_name"]} "' file content ---> $(cat ${status_file_name})"
+    log "[INFO] Initialize job retries for index '${index_name}' to '" ${job_retries["$index_name"]} "' in file '" ${job_retries_temp["$index_name"]} "' file content ---> $(cat ${retries_file_name})"
+  done
 
   # Parallelize the ingestion of the ETL data into Elastic Search by running each job in a separate process per index
   while true; do
     all_jobs_done=true
 
-    for index_name in "${!job_status[@]}"; do
-      if [ ${job_status["$index_name"]} -ne 0 ] && [ ${job_retries["$index_name"]} -lt $max_retries ]; then
+    for index_name in "${!job_status_temp[@]}"; do
+      status_file_name=${job_status_temp["$index_name"]}
+      retries_file_name=${job_retries_temp["$index_name"]}
+      job_status_value=$(<${status_file_name})
+      job_retries_value=$(<${retries_file_name})
+      log "[INFO] Job status for index '${index_name}' is '${job_status_value}' in file '${status_file_name}' file content ---> $(cat ${status_file_name})"
+      if [ ${job_status_value} -ne 0 ] && [ ${job_retries_value} -lt $max_retries ]; then
         all_jobs_done=false
         (
           load_data_into_es_index ${job_param_input_folder["$index_name"]} ${index_name} ${job_param_index_settings["$index_name"]} ${job_param_id["$index_name"]}
           job_exit_status=$?
           if [ $job_exit_status -eq 0 ]; then
-            job_status["$index_name"]=0
+            echo -e "0" > ${status_file_name}
             log "Job for index $index_name completed successfully."
           else
-            job_retries["$index_name"]=$((job_retries["$index_name"] + 1))
-            log "Job for index $index_name failed. Retrying (attempt ${job_retries["$index_name"]} of $max_retries)..."
+            echo -e "$(($job_retries_value + 1))" > ${retries_file_name}
+            log "Job for index $index_name failed. Retrying (attempt $(($job_retries_value + 1)) of $max_retries)..."
           fi
         ) &
       fi
@@ -146,16 +183,22 @@ function do_load_etl_data_into_es_parallel() {
     else
       sleep 1
     fi
-  done 
+  done
+
+  # Cleanup the status and retries files per index
+  for index_name in "${!job_status_temp[@]}"; do
+    rm ${job_status_temp["$index_name"]}
+    rm ${job_retries_temp["$index_name"]}
+  done
 }
 
 # Sequential data load implementation given job_status, job_retries, job_param_input_folder, job_param_index_settings and job_param_id details
 function do_load_etl_data_into_es_sequential() {
-  job_status = $1
-  job_retries = $2
-  job_param_input_folder = $3
-  job_param_index_settings = $4
-  job_param_id = $5
+  job_status=$1
+  job_retries=$2
+  job_param_input_folder=$3
+  job_param_index_settings=$4
+  job_param_id=$5
 
   # Seriallize the ingestion of the ETL data into Elastic Search by running each job in a separate process per index
   while true; do
@@ -253,9 +296,9 @@ function load_etl_data_into_es() {
   job_param_id["${pos_es_so_index_name}"]=${pos_es_default_id}
 
   # Run data load jobs in parallel
-  # do_load_etl_data_into_es_parallel job_status job_retries job_param_input_folder job_param_index_settings job_param_id
+  do_load_etl_data_into_es_parallel job_status job_retries job_param_input_folder job_param_index_settings job_param_id
   # Run data load sequentially
-  do_load_etl_data_into_es_sequential job_status job_retries job_param_input_folder job_param_index_settings job_param_id
+  #do_load_etl_data_into_es_sequential job_status job_retries job_param_input_folder job_param_index_settings job_param_id
 }
 
 # Print a summary that shows all the indexes in Elastic Search and their details
