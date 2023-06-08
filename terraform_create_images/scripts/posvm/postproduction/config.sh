@@ -62,8 +62,10 @@ export pos_path_logs_clickhouse="$${pos_path_logs_postprocessing}/clickhouse"
 export pos_path_logs_elastic_search="$${pos_path_logs_postprocessing}/elasticsearch"
 export pos_path_logs_pos="$${pos_path_logs_postprocessing}/pos"
 export pos_path_logs_startup_script="$${pos_path_logs_pos}/startup_script.log"
+# Temporary folders
+export pos_path_tmp="${POS_PATH_POSTPROCESSING_ROOT}/tmp"
 # List of folders that need to exist for the postprocessing scripts to run
-export pos_list_folders_postprocessing="$${pos_path_logs_postprocessing} $${pos_path_logs_clickhouse} $${pos_path_logs_elastic_search} $${pos_path_logs_pos}"
+export pos_list_folders_postprocessing="$${pos_path_logs_postprocessing} $${pos_path_logs_clickhouse} $${pos_path_logs_elastic_search} $${pos_path_logs_pos} $${pos_path_tmp}"
 
 # Helper functions
 # Logging helper function
