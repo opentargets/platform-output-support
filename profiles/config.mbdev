@@ -3,7 +3,7 @@ resources_prefix   = "mbdevpos"
 data_images_prefix = "mbdevpos"
 
 # Data release configuration
-data_location_source     = "open-targets-pre-data-releases/23.06.littest"
+data_location_source     = "open-targets-pre-data-releases/23.06"
 data_location_production = "open-targets-data-releases/XXXXX"
 
 # GCP config to use
