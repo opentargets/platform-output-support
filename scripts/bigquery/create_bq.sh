@@ -27,7 +27,7 @@ echo ${version_tag} > platform_sync_v.csv
 bq --project_id=${project_id} --location='eu' mk platform${suffix}.ot_release
 bq --project_id=${project_id} --dataset_id=platform${suffix} --location='eu' load platform${suffix}.ot_release platform_sync_v.csv release:string
 
-datasets=$(curl -X GET https://raw.githubusercontent.com/opentargets/platform-app/main/src/pages/DownloadsPage/dataset-mappings.json | jq -r '.[] | select( .include_in_bq == true) | .id ')
+datasets=$(curl -X GET https://raw.githubusercontent.com/opentargets/ot-ui-apps/main/apps/platform/src/pages/DownloadsPage/dataset-mappings.json | jq -r '.[] | select( .include_in_bq == true) | .id ')
 
 for ds in $datasets
 do
