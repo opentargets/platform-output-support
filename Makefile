@@ -6,7 +6,7 @@ PATH_SCRIPTS_DATASYNC=${PATH_SCRIPTS}/data_sync
 PATH_TMP=${ROOT_DIR_MAKEFILE_POS}/tmp
 PATH_CREDENTIALS=${PATH_TMP}/credentials
 DATA_LOCATION_SOURCE:=$(shell test -f config.tfvars && cat config.tfvars | grep data_location_source | awk -F= '{print $$2}' | tr -d ' "')
-PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
+PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep project_id | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
 IS_PARTNER_INSTANCE=$(shell test -f config.tfvars && cat config.tfvars | grep is_partner_instance | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_PROD=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
