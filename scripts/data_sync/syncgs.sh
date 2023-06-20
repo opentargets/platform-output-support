@@ -12,5 +12,5 @@ if [ "${IS_PARTNER_INSTANCE}" = true ]; then
 fi
 
 echo "=== Start copying..."
-cmd=`gsutil -m rsync -r -x '^input/fda-inputs/*' -x '^output/etl/parquet/failedMatches/*' -x '^output/etl/json/failedMatches/*' $path_data_source gs://open-targets-data-releases/${RELEASE_ID_PROD}/`
+gsutil -m rsync -r -x '^input/fda-inputs/*' -x '^output/etl/parquet/failedMatches/*' -x '^output/etl/json/failedMatches/*' $path_data_source gs://open-targets-data-releases/${RELEASE_ID_PROD}/
 echo "=== Copying done."
