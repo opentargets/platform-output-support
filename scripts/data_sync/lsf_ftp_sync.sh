@@ -3,8 +3,8 @@
 #BSUB -J ot_platform_ebi_ftp_sync
 #BSUB -W 24:00
 #BSUB -n 1
-#BSUB -M 4604M
-#BUSB -R rusage[mem=4604M]
+#BSUB -M 16384M
+#BUSB -R rusage[mem=16384M]
 #BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.err
 #BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
 #BUSB -N
