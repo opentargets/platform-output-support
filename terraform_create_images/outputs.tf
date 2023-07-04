@@ -1,11 +1,19 @@
-output "elasticsearch_hostname" {
-  value = module.backend_elastic_search.*
+// POS VM name
+output "posvm" {
+  value = {
+    name = google_compute_instance.posvm.name
+    zone = google_compute_instance.posvm.zone
+    username = local.posvm_remote_user_name
+  }
+  description = "POS VM information"
 }
 
-output "clickhouse_hostname" {
-  value = module.backend_clickhouse.*
+// Disk Images
+output "data_disk_images" {
+  value = {
+    clickhouse     = local.disk_image_name_clickhouse
+    elastic_search = local.disk_image_name_elastic_search
+  }
+  description = "Data disk images names"
 }
 
-output "pos_support_vm_name" {
-  value = module.backend_pos_vm.pos_support_vm_name
-}

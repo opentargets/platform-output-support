@@ -1,0 +1,30 @@
+# This file contains information on how the ETL output is mapped to different inexes in Elastic Search, and the settings for each of those indexes.
+#
+# Columns:
+#   - input: is the folder under <data_release>/output/etl/json where the ETL output data for that particular index is stored.
+#   - index_name: is the name of the index in Elastic Search.
+#   - id: is the name of the field in the ETL output, for that particular dataset, that will be used as the id for the Elastic Search document.
+#   - index_settings: is the name of the file that contains the settings for the index in Elastic Search.
+baselineExpression,expression,id,default.json
+diseaseToPhenotype,disease_hpo,,default.json
+diseases,disease,id,default.json
+drugWarnings,drug_warnings,,default.json
+go,go,id,default.json
+hpo,hpo,id,default.json
+indication,indication,,default.json
+interaction,interaction,,default.json
+interactionEvidence,interaction_evidence,,default.json
+knownDrugsAggregated,known_drugs,,search_known_drugs.json
+mechanismOfAction,mechanism_of_action,,default.json
+molecule,drug,,default.json
+otar_projects,otar_projects,efo_id,default.json
+reactome,reactome,id,default.json
+searchDrug,search_drug,,search.json
+searchTarget,search_target,,search.json
+searchDisease,search_disease,,search.json
+targets,target,id,default.json
+targetsPriorisation,targets_priorisation,targetId,default.json
+targetEssentiality,target_essentiality,id,default.json
+AOTFElasticsearch,evidences_aotf,,default.json
+mousePhenotypes,mouse_phenotypes,,default.json
+fda/significantAdverseDrugReactions,openfda_faers,,default.json

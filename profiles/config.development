@@ -1,29 +1,34 @@
+# POS pipelines configuration file for Open Targets Platform - Development
+# This is the prefix that will be used for all the resources created in the cloud for running the pipelines
+resources_prefix   = "posdevpf"
+# This is the prefix that will be used for all the data images created in the cloud for running the pipelines
+data_images_prefix = "posdevpf"
+
+# Publishing configuration
+# This flag indicates whether the data images can be made publicly available
+is_public_data_images = true
+# This flag indicates whether this is a PPP profile
+is_partner_instance = false
+
 # Variables for Sync data
-release_id_dev                            = "development"
-release_id_prod                           = "development"
-gs_sync_from                              = "open-targets-pre-data-releases/development"
-is_partner_instance                       = false
+# This one is used to feed BigQuery Dev
+release_id_dev = "23.06"
+# This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
+release_id_prod = "23.06"
+# Data release configuration, source path in GCS for the data in this release
+data_location_source     = "open-targets-pre-data-releases/23.06"
+# This one may not be used, and it will probably be removed in the future, if no use case comes up (NO NEED TO TOUCH THIS)
+data_location_production = "open-targets-data-releases/XXXXX"
 
-# Variable for creating IMAGES : ElasticSearch and Clickhouse
-config_direct_json                         = "open-targets-pre-data-releases/development"
-config_gs_etl                              = "open-targets-pre-data-releases/development/output"
-config_script_name                         = "posprod"
-config_release_name                        = "devpfXX"
+# GCP config to use
+project_id         = "open-targets-eu-dev"
+gcp_default_region = "europe-west1"
+gcp_default_zone   = "europe-west1-d"
 
-# Project dev info
-config_project_id                           = "open-targets-eu-dev"
-config_gcp_default_region                   = "europe-west1"
-config_gcp_default_zone                     = "europe-west1-d"
-
-config_vm_elastic_search_vcpus              = "4"
-config_vm_elastic_search_mem                = "32768"
-config_vm_elastic_search_boot_disk_size     = 64
-config_vm_elastic_search_version            = "7.10.2"
-
-config_vm_clickhouse_vcpus                  = "4"
-config_vm_clickhouse_mem                    = "26624"
-config_vm_clickhouse_boot_disk_size         = 64
-
-config_vm_pos_machine_type                  = "n1-standard-8"
-config_vm_pos_boot_image                    = "debian-10"
-config_vm_pos_boot_disk_size                = 750
+# POS pipeline configuration
+# Use default value for machine type (use default, 'n1-standard-8')
+# vm_pos_machine_type = "n1-highcpu-32"
+# Variables for creating VMs
+config_vm_pos_boot_image   = "debian-11"
+# Use default logging location
+# pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"

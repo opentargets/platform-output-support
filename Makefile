@@ -5,10 +5,10 @@ PATH_SCRIPTS=${ROOT_DIR_MAKEFILE_POS}/scripts
 PATH_SCRIPTS_DATASYNC=${PATH_SCRIPTS}/data_sync
 PATH_TMP=${ROOT_DIR_MAKEFILE_POS}/tmp
 PATH_CREDENTIALS=${PATH_TMP}/credentials
-GS_ETL_DATASET:=$(shell test -f config.tfvars && cat config.tfvars | grep config_gs_etl | awk -F= '{print $$2}' | tr -d ' "')
-GS_SYNC_FROM:=$(shell test -f config.tfvars && cat config.tfvars | grep gs_sync_from | awk -F= '{print $$2}' | tr -d ' "')
-PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep config_project_id | awk -F= '{print $$2}' | tr -d ' "')
+DATA_LOCATION_SOURCE:=$(shell test -f config.tfvars && cat config.tfvars | grep data_location_source | awk -F= '{print $$2}' | tr -d ' "')
+PROJECT_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep project_id | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_DEV=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_dev | awk -F= '{print $$2}' | tr -d ' "')
+IS_PARTNER_INSTANCE=$(shell test -f config.tfvars && cat config.tfvars | grep is_partner_instance | awk -F= '{print $$2}' | tr -d ' "')
 RELEASE_ID_PROD=$(shell test -f config.tfvars && cat config.tfvars | grep release_id_prod | awk -F= '{print $$2}' | tr -d ' "')
 TF_WORKSPACE_ID=$(shell uuidgen | tr '''[:upper:]''' '''[:lower:]''' | cut -f5 -d'-')
 PATH_GCS_CREDENTIALS_FILE=${PATH_CREDENTIALS}/gcs_credentials.json
@@ -16,12 +16,12 @@ PATH_GCS_CREDENTIALS_GCP_FILE="gs://open-targets-ops/credentials/pis-service_acc
 TF_WORKSPACE_ID_FILE='terraform_workspace_id'
 
 export ROOT_DIR_MAKEFILE_POS
-export GS_ETL_DATASET
-export GS_SYNC_FROM
+export DATA_LOCATION_SOURCE
 export PROJECT_ID_DEV
 export RELEASE_ID_DEV
 export RELEASE_ID_PROD
 export PATH_GCS_CREDENTIALS_FILE
+export IS_PARTNER_INSTANCE
 
 check:
 	[ -e "/you/file.file" ] && echo 1 || $error("Bad svnversion v1.4, please install v1.6")
@@ -89,24 +89,23 @@ bigquerydev:  ## Big Query Dev
 	@echo "==== Big Query DEV ===="
 	export PROJECT_ID=${PROJECT_ID_DEV}; \
 	export RELEASE_ID=${RELEASE_ID_DEV}; \
-	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
+	${ROOT_DIR_MAKEFILE_POS}/scripts/bigquery/create_bq.sh
 
 
 bigqueryprod:## Big Query Production
-	@echo "==== Big Query DEV ===="
-	@echo ${GS_ETL_DATASET}
+	@echo "==== Big Query Production ===="
 	export PROJECT_ID=open-targets-prod; \
     export RELEASE_ID=${RELEASE_ID_PROD}; \
-	${ROOT_DIR_MAKEFILE_POS}/deploy_bq/create_bq.sh
+	${ROOT_DIR_MAKEFILE_POS}/scripts/bigquery/create_bq.sh
 
 sync: tmp credentials ## Sync data to EBI FTP service
 	@echo "==== Sync ===="
-	export GS_SYNC_FROM=${GS_SYNC_FROM}; \
+	export DATA_LOCATION_SOURCE=${DATA_LOCATION_SOURCE}; \
 	${PATH_SCRIPTS_DATASYNC}/launch_ebi_ftp_sync.sh
 
 syncgs: ## Copy data from pre-release to production
 	@echo "==== Sync ===="
-	@echo "Sync from '${GS_SYNC_FROM}'"
+	@echo "Sync from '${DATA_LOCATION_SOURCE}'"
 	@echo "Release ID '${RELEASE_ID_PROD}'"
 	${PATH_SCRIPTS_DATASYNC}/syncgs.sh
 

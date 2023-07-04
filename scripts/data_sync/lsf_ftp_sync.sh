@@ -1,10 +1,10 @@
 #!/bin/bash
 # Job requirements
 #BSUB -J ot_platform_ebi_ftp_sync
-#BSUB -W 6:00
+#BSUB -W 24:00
 #BSUB -n 1
-#BSUB -M 4604M
-#BUSB -R rusage[mem=4604M]
+#BSUB -M 16384M
+#BUSB -R rusage[mem=16384M]
 #BSUB -e /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.err
 #BSUB -o /nfs/ftp/private/otftpuser/lsf/logs/ot_platform_ebi_ftp_sync-%J.out
 #BUSB -N
@@ -14,7 +14,7 @@
 
 # Defaults
 [ -z "${RELEASE_ID_PROD}" ] && export RELEASE_ID_PROD='dev.default_release_id'
-[ -z "${GS_SYNC_FROM}" ] && export GS_SYNC_FROM="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
+[ -z "${DATA_LOCATION_SOURCE}" ] && export DATA_LOCATION_SOURCE="open-targets-pre-data-releases/${RELEASE_ID_PROD}"
 [ -z $PATH_OPS_ROOT_FOLDER ] && echo "PATH to operations root folder is required" && exit 1
 [ -z $PATH_OPS_CREDENTIALS ] && echo "PATH to operations credentials folder is required" && exit 1
 
@@ -35,7 +35,7 @@ export path_lsf_job_stderr="${path_lsf_job_logs}/output.err"
 export path_lsf_job_stdout="${path_lsf_job_logs}/output.out"
 export path_lsf_job_bsub_stderr="${path_lsf_logs}/${job_name}.err"
 export path_lsf_job_bsub_stdout="${path_lsf_logs}/${job_name}.out"
-export path_data_source="gs://${GS_SYNC_FROM}/"
+export path_data_source="gs://${DATA_LOCATION_SOURCE}/"
 export filename_release_checksum="release_data_integrity"
 
 # Logging functions
@@ -105,7 +105,7 @@ function deactivate_service_account {
 
 function pull_data_from_gcp {
     log_heading "GCP" "Pulling data from GCP, '${path_data_source}' ---> to ---> '${path_ebi_ftp_destination}"
-    singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil -m rsync -r -x ^input/fda-inputs/* ${path_data_source} ${path_ebi_ftp_destination}/
+    singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil -m rsync -r -x ^input/fda-inputs/* -x ^output/etl/parquet/failedMatches/* -x ^output/etl/json/failedMatches/* ${path_data_source} ${path_ebi_ftp_destination}/
     log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_ebi_ftp_destination}'"
     # We don't really need to do this for the production folder, but it's nice to have the permissions set correctly (although you'd need to be 'otftpuser' to do it)
     find ${path_ebi_ftp_destination} -type d -exec chmod 775 {} \;
