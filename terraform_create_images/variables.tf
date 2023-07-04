@@ -137,3 +137,10 @@ variable "elastic_search_data_disk_size" {
   type        = string
   default     = "128"
 }
+
+variable "git_branch" {
+  description = "Git branch to aquire SQL scripts from: useful for developing on feature branches."
+  type        = string
+  default     = "main"
+}
+
