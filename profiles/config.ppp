@@ -3,7 +3,7 @@ resources_prefix   = "ppp"
 data_images_prefix = "ppp"
 
 # Data release configuration
-data_location_source     = "open-targets-pre-data-releases/partners/23.06"
+data_location_source     = "open-targets-pre-data-releases/partners/23.09"
 data_location_production = "open-targets-data-releases/XXXXX"
 
 # GCP config to use
@@ -24,6 +24,6 @@ is_partner_instance = true
 
 # Variables for Sync data
 # This one is used to feed BigQuery Dev
-release_id_dev = "partners/23.06"
+release_id_dev = "partners/23.09"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
-release_id_prod = "partners/23.06"
+release_id_prod = "partners/23.09"
