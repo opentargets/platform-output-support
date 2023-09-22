@@ -29,7 +29,7 @@ export pos_es_path_etl_ingestion_config="${pos_es_path_metadata}/etl_ingest_conf
 
 # Elastic Search runtime configuration
 export pos_es_docker_container_name="otp-es"
-export pos_es_docker_image="${pos_elasticsearch_docker_image}:${pos_elasticsearch_docker_image_version}"
+export pos_es_docker_image="opensearchproject/opensearch:2"
 
 # Print summary of the environment by looping through all those variables that start with "pos_es_"
 function env_summary() {

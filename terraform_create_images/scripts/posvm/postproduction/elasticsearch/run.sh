@@ -35,23 +35,32 @@ function run_elasticsearch() {
   docker run --rm -d \
     --name ${pos_es_docker_container_name} \
     -p 9200:9200 \
-    -p 9300:9300 \
-    -e "path.data=/usr/share/elasticsearch/data" \
-    -e "path.logs=/usr/share/elasticsearch/logs" \
+    -p 9300:9600 \
+    -e "path.data=/usr/share/opensearch/data" \
+    -e "path.logs=/usr/share/opensearch/logs" \
     -e "cluster.name=${pos_es_cluster_name}" \
     -e "network.host=0.0.0.0" \
     -e "discovery.type=single-node" \
     -e "discovery.seed_hosts=[]" \
     -e "bootstrap.memory_lock=true" \
     -e "search.max_open_scroll_context=5000" \
+    -e "compatibility.override_main_response_version=true" \
     -e ES_JAVA_OPTS="-Xms${JVM_SIZE_HALF}g -Xmx${JVM_SIZE_HALF}g" \
+    -e DISABLE_SECURITY_PLUGIN=true \
     -e "thread_pool.write.queue_size=1000" \
-    -v ${pos_es_docker_vol_data}:/usr/share/elasticsearch/data \
-    -v ${pos_es_docker_vol_logs}:/usr/share/elasticsearch/logs \
+    -v ${pos_es_docker_vol_data}:/usr/share/opensearch/data \
+    -v ${pos_es_docker_vol_logs}:/usr/share/opensearch/logs \
     --ulimit memlock=-1:-1 \
     --ulimit nofile=65536:65536 \
     ${pos_es_docker_image}
+  # remove plugins
+  docker exec ${pos_es_docker_container_name} ./bin/opensearch-plugin remove opensearch-ml
+  docker exec ${pos_es_docker_container_name} ./bin/opensearch-plugin remove opensearch-security-analytics
+  curl -X DELETE http://localhost:9200/.opensearch-sap-log-types-config
+  curl -X DELETE http://localhost:9200/.opensearch-sap-pre-packaged-rules-config
+  curl -X DELETE http://localhost:9200/.plugins-ml-config
 }
+
 
 # Wait for Elastic Search to be ready
 function wait_for_elasticsearch() {
@@ -88,7 +97,7 @@ function load_data_into_es_index() {
       #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
-        gsutil cp "${file}" - | esbulk -size 2000 -w 4 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
+        gsutil cp "${file}" - | esbulk -size 2000 -w 4 -index "${index_name}" -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       if [ $i -gt $max_retries ]; then
@@ -100,7 +109,7 @@ function load_data_into_es_index() {
       #log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id - Attempt #$i"
-        gsutil cp ${file} - | esbulk -size 2000 -w 4 -index ${index_name} -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
+        gsutil cp ${file} - | esbulk -size 2000 -w 4 -index ${index_name} -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       if [ $i -gt $max_retries ]; then
