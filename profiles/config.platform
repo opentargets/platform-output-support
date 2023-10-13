@@ -5,8 +5,8 @@ resources_prefix   = "platform"
 data_images_prefix = "platform"
 
 # Data release configuration
-data_location_source     = "open-targets-pre-data-releases/23.09"
-data_location_production = "open-targets-data-releases/23.09"
+data_location_source     = "open-targets-pre-data-releases/23.12"
+data_location_production = "open-targets-data-releases/23.12"
 
 # GCP config to use
 project_id         = "open-targets-eu-dev"
@@ -28,7 +28,7 @@ is_partner_instance = false
 
 # Variables for Sync data
 # This one is used to feed BigQuery Dev
-release_id_dev = "23.09"
+release_id_dev = "23.12"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
-release_id_prod = "23.09"
+release_id_prod = "23.12"
 
