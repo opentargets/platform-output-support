@@ -6,7 +6,7 @@
 #   - id: is the name of the field in the ETL output, for that particular dataset, that will be used as the id for the Elastic Search document.
 #   - index_settings: is the name of the file that contains the settings for the index in Elastic Search.
 baselineExpression,expression,id,default.json
-expressionSpecificity,expressionSpecificity,ensemblGeneId,default.json
+expressionSpecificity,expression_specificity,ensemblGeneId,default.json
 diseaseToPhenotype,disease_hpo,,default.json
 diseases,disease,id,default.json
 drugWarnings,drug_warnings,,default.json
