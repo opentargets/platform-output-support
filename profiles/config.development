@@ -12,11 +12,11 @@ is_partner_instance = false
 
 # Variables for Sync data
 # This one is used to feed BigQuery Dev
-release_id_dev = "23.09"
+release_id_dev = "23.12"
 # This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
-release_id_prod = "23.09"
+release_id_prod = "23.12"
 # Data release configuration, source path in GCS for the data in this release
-data_location_source     = "open-targets-pre-data-releases/23.09"
+data_location_source     = "open-targets-pre-data-releases/23.12"
 # This one may not be used, and it will probably be removed in the future, if no use case comes up (NO NEED TO TOUCH THIS)
 data_location_production = "open-targets-data-releases/XXXXX"
 
