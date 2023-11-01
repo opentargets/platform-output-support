@@ -29,3 +29,4 @@ targetEssentiality,target_essentiality,id,default.json
 AOTFElasticsearch,evidences_aotf,,default.json
 mousePhenotypes,mouse_phenotypes,,default.json
 fda/significantAdverseDrugReactions,openfda_faers,,default.json
+pharmacogenomics,pharmacogenomics,,default.json
