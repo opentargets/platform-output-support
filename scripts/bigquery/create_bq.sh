@@ -9,6 +9,7 @@ fi
 version_tag=${RELEASE_ID}
 project_id=${PROJECT_ID}
 path_prefix="gs://${DATA_LOCATION_SOURCE}/output/etl/parquet"
+platform_version_tempfile=$(mktemp)
 
 if [ "${project_id}" == "open-targets-prod" ]; then
     echo "Production - no suffix - allAuthenticatedUsers ON"
@@ -23,9 +24,9 @@ data_set_id="platform${suffix}"
 bq --project_id=${project_id} --location='eu' rm -f -r platform${suffix}
 bq --project_id=${project_id} --location='eu' mk platform${suffix}
 
-echo ${version_tag} > platform_sync_v.csv
+echo ${version_tag} > ${platform_version_tempfile}
 bq --project_id=${project_id} --location='eu' mk platform${suffix}.ot_release
-bq --project_id=${project_id} --dataset_id=platform${suffix} --location='eu' load platform${suffix}.ot_release platform_sync_v.csv release:string
+bq --project_id=${project_id} --dataset_id=platform${suffix} --location='eu' load --source_format=CSV platform${suffix}.ot_release ${platform_version_tempfile} release:string
 
 datasets=$(curl -X GET https://raw.githubusercontent.com/opentargets/ot-ui-apps/main/apps/platform/src/pages/DownloadsPage/dataset-mappings.json | jq -r '.[] | select( .include_in_bq == true) | .id ')
 
@@ -72,7 +73,7 @@ if [ ${project_id} == "open-targets-prod" ]; then
 
   bq update --source platform_new_schema.json ${project_id}:platform
 
-  rm platform_sync_v.csv
+  rm ${platform_version_tempfile}
   rm platform_schema.json
   rm platform_meta.json
   rm platform_new_schema.json
