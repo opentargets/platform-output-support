@@ -60,7 +60,7 @@ The last step, *clean_image_infrastructure*, will clean up, at infrastructure le
 ```make clean_all_image_infrastructure```
 
 ## Running a data Sync to EBI FTP service
-You need to have access to the LSF setup and your user be a member of the relevant internal groups, able to schedule jobs in the cluster and access the filesystem locations.
+You need to have access to the SLURM cluster and your user be a member of the relevant internal groups, able to schedule jobs in the cluster and access the filesystem locations.
 
 # Copyright
 
