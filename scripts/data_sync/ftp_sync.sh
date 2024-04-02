@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J ot_platform_ebi_ftp_sync
-#SBATCH -t 12:00:00
-#SBATCH --mem=12G
+#SBATCH -t 14:00:00
+#SBATCH --mem=10G
 #SBATCH -e /nfs/ftp/private/otftpuser/slurm/logs/ot_platform_ebi_ftp_sync-%J.err
 #SBATCH -o /nfs/ftp/private/otftpuser/slurm/logs/ot_platform_ebi_ftp_sync-%J.out
 #SBATCH --mail-type=BEGIN,END,FAIL
