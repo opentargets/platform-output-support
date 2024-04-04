@@ -1,0 +1,94 @@
+{
+    "mappings": {
+      "properties": {
+        "label": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            },
+            "analyzer": "default",
+            "index": true
+          },
+        "category": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            },
+            "analyzer": "default",
+            "index": true
+          },
+        "facetIds": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            },
+            "analyzer": "default",
+            "index": true
+          },
+        "entityIds": {
+          "type": "text",
+          "index": false
+        },
+        "field_to_exclude": {
+            "type": "text",
+            "index": false
+          }
+      }
+    },
+    "settings": {
+      "index": {
+        "number_of_replicas": 0,
+        "number_of_shards": 5,
+        "analysis": {
+          "normalizer": {
+            "custom": {
+              "type": "custom",
+              "char_filter": [],
+              "filter": ["lowercase"]
+            }
+          },
+          "filter": {
+            "autocomplete_filter": {
+              "type": "edge_ngram",
+              "min_gram": 1,
+              "max_gram": 20
+            }
+          },
+          "analyzer": {
+            "default": {
+              "type": "custom",
+              "tokenizer": "standard",
+              "filter": [
+                "lowercase",
+                "autocomplete_filter"
+              ]
+            },
+            "default_search": {
+              "type": "custom",
+              "tokenizer": "standard",
+              "filter": [
+                "lowercase"
+              ]
+            },
+            "token": {
+              "type": "custom",
+              "tokenizer": "keyword",
+              "filter": [
+                "lowercase"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+  
