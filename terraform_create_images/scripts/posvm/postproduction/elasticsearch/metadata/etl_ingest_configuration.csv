@@ -30,3 +30,5 @@ AOTFElasticsearch,evidences_aotf,,default.json
 mousePhenotypes,mouse_phenotypes,,default.json
 fda/significantAdverseDrugReactions,openfda_faers,,default.json
 pharmacogenomics,pharmacogenomics,,default.json
+facetSearchTarget,facet_search_target,,facet_search.json
+facetSearchDisease,facet_search_disease,,facet_search.json
