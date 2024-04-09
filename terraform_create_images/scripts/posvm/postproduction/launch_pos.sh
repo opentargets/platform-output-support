@@ -89,7 +89,7 @@ function create_disk_data_tarballs() {
     log "[START] Creating disk data tarballs for Clickhouse and Elastic Search"
     # TODO - Create Tarballs of Clickhouse and Elastic Search data volumes
     create_tarball "${pos_mount_point_data_clickhouse}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_clickhouse}"
-    create_tarball "${pos_mount_point_data_elasticsearch}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_elastic_earch}"
+    create_tarball "${pos_mount_point_data_elasticsearch}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_elastic_search}"
     log "[DONE] Creating disk data tarballs for Clickhouse and Elastic Search"
 }
 
