@@ -67,6 +67,10 @@ locals {
   disk_image_name_elastic_search = "${var.resources_prefix}-${local.disk_image_timestamp}-es"
   // Clickhouse disk image name
   disk_image_name_clickhouse = "${var.resources_prefix}-${local.disk_image_timestamp}-ch"
+  // Elastic Search disk image labels
+  disk_image_labels_es = join(",", formatlist("%s=%s", keys(local.base_labels), values(local.base_labels)))
+  // Clickhouse disk image labels
+  disk_image_labels_ch = join(",", formatlist("%s=%s", keys(local.base_labels), values(local.base_labels)))
 
   // --- Labels Configuration --- //
   base_labels = {

@@ -141,6 +141,8 @@ resource "google_compute_instance" "posvm" {
       POS_DATA_DISK_DEVICE_NAME_ES                               = local.data_disk_device_name_elastic_search,
       POS_DISK_IMAGE_NAME_CH                                     = local.disk_image_name_clickhouse,
       POS_DISK_IMAGE_NAME_ES                                     = local.disk_image_name_elastic_search,
+      POS_DISK_IMAGE_LABELS_CH                                   = local.disk_image_labels_ch,
+      POS_DISK_IMAGE_LABELS_ES                                   = local.disk_image_labels_es,
       POS_PATH_MOUNT_DATA_CLICKHOUSE                             = local.path_mount_data_clickhouse,
       POS_PATH_MOUNT_DATA_ELASTICSEARCH                          = local.path_mount_data_elastic_search,
       POS_PATH_POSTPROCESSING_SCRIPTS_CLICKHOUSE                 = local.path_postprocessing_scripts_clickhouse,
