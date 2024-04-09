@@ -18,7 +18,7 @@ locals {
   data_release_skeleton_path_etl_root         = "${local.data_release_skeleton_path_output_root}/etl"
   data_release_skeleton_path_etl_json_root    = "${local.data_release_skeleton_path_etl_root}/json"
   data_release_skeleton_path_etl_parquet_root = "${local.data_release_skeleton_path_etl_root}/parquet"
-  data_release_skeleton_path_metadata_root     = "${local.data_release_skeleton_path_output_root}/metadata"
+  data_release_skeleton_path_metadata_root    = "${local.data_release_skeleton_path_output_root}/metadata"
 
   // --- Open Targets Data Release --- //
   data_release_path_source_root = "gs://${var.data_location_source}"
