@@ -23,7 +23,7 @@
             "analyzer": "default",
             "index": true
           },
-        "facetIds": {
+        "datasourceId": {
             "type": "text",
             "fields": {
               "keyword": {
