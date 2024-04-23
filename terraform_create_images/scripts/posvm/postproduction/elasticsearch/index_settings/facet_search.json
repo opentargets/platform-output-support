@@ -23,7 +23,7 @@
             "analyzer": "default",
             "index": true
           },
-        "facetIds": {
+        "datasourceId": {
             "type": "text",
             "fields": {
               "keyword": {
@@ -37,11 +37,7 @@
         "entityIds": {
           "type": "text",
           "index": false
-        },
-        "field_to_exclude": {
-            "type": "text",
-            "index": false
-          }
+        }
       }
     },
     "settings": {
