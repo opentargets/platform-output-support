@@ -37,11 +37,7 @@
         "entityIds": {
           "type": "text",
           "index": false
-        },
-        "field_to_exclude": {
-            "type": "text",
-            "index": false
-          }
+        }
       }
     },
     "settings": {
