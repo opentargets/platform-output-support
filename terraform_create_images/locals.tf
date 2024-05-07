@@ -18,7 +18,7 @@ locals {
   data_release_skeleton_path_etl_root         = "${local.data_release_skeleton_path_output_root}/etl"
   data_release_skeleton_path_etl_json_root    = "${local.data_release_skeleton_path_etl_root}/json"
   data_release_skeleton_path_etl_parquet_root = "${local.data_release_skeleton_path_etl_root}/parquet"
-  data_release_skeleton_path_metadata_root     = "${local.data_release_skeleton_path_output_root}/metadata"
+  data_release_skeleton_path_metadata_root    = "${local.data_release_skeleton_path_output_root}/metadata"
 
   // --- Open Targets Data Release --- //
   data_release_path_source_root = "gs://${var.data_location_source}"
@@ -67,6 +67,10 @@ locals {
   disk_image_name_elastic_search = "${var.resources_prefix}-${local.disk_image_timestamp}-es"
   // Clickhouse disk image name
   disk_image_name_clickhouse = "${var.resources_prefix}-${local.disk_image_timestamp}-ch"
+  // Elastic Search disk image labels
+  disk_image_labels_es = join(",", formatlist("%s=%s", keys(local.base_labels), values(local.base_labels)))
+  // Clickhouse disk image labels
+  disk_image_labels_ch = join(",", formatlist("%s=%s", keys(local.base_labels), values(local.base_labels)))
 
   // --- Labels Configuration --- //
   base_labels = {

@@ -89,7 +89,7 @@ function create_disk_data_tarballs() {
     log "[START] Creating disk data tarballs for Clickhouse and Elastic Search"
     # TODO - Create Tarballs of Clickhouse and Elastic Search data volumes
     create_tarball "${pos_mount_point_data_clickhouse}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_clickhouse}"
-    create_tarball "${pos_mount_point_data_elasticsearch}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_elastic_earch}"
+    create_tarball "${pos_mount_point_data_elasticsearch}" "${pos_data_release_path_disk_images_root}/${pos_data_disk_tarball_elastic_search}"
     log "[DONE] Creating disk data tarballs for Clickhouse and Elastic Search"
 }
 
@@ -99,6 +99,7 @@ function create_gcp_image() {
     local gcp_disk_zone=$2
     local gcp_image_name=$3
     local gcp_image_family=$4
+    local gcp_image_labels=$5
     local gcp_snapshot_name="${gcp_disk_name}-snapshot"
 
     log "[START] Creating GCP snapshot '${gcp_snapshot_name}' from GCP disk '${gcp_disk_name}' in zone '${gcp_disk_zone}'"
@@ -110,7 +111,8 @@ function create_gcp_image() {
     log "[START] Creating GCP image '${gcp_image_name}' from GCP snapshot '${gcp_snapshot_name}'"
     gcloud compute images create ${gcp_image_name} \
         --source-snapshot ${gcp_snapshot_name} \
-        --family ${gcp_image_family}
+        --family ${gcp_image_family} \
+        --labels ${gcp_image_labels}
     log "[DONE] Creating GCP image '${gcp_image_name}' from GCP snapshot '${gcp_snapshot_name}'"
 
     log "[START] Deleting GCP snapshot '${gcp_snapshot_name}'"
@@ -127,8 +129,8 @@ function create_gcp_images() {
     umount ${pos_mount_point_data_clickhouse}
     log "[INFO] Unmounting data disk for Elastic Search, from '${pos_mount_point_data_elasticsearch}'"
     umount ${pos_mount_point_data_elasticsearch}
-    create_gcp_image ${pos_disk_image_name_ch} ${pos_gcp_zone} ${pos_disk_image_name_ch} ${pos_disk_image_family_ch}
-    create_gcp_image ${pos_disk_image_name_es} ${pos_gcp_zone} ${pos_disk_image_name_es} ${pos_disk_image_family_es}
+    create_gcp_image ${pos_disk_image_name_ch} ${pos_gcp_zone} ${pos_disk_image_name_ch} ${pos_disk_image_family_ch} ${pos_disk_image_labels_ch}
+    create_gcp_image ${pos_disk_image_name_es} ${pos_gcp_zone} ${pos_disk_image_name_es} ${pos_disk_image_family_es} ${pos_disk_image_labels_es}
     log "[DONE] Creating GCP images for the Clickhouse and Elastic Search data volumes"
 }
 

@@ -12,7 +12,7 @@ This VM 'drives' the process, in that it downloads various datasets, loads Elast
 
 The main logic is in the script `startup.sh`.
 
-Once Elasticsearch is loaded (see `load_all_data.sh`) and Clickhouse has a tag indicating it has completed all of its processes, POSVM will stop each machine and  then create machine images.
+Once Elasticsearch is loaded (see `load_all_data.sh`) and Clickhouse has a tag indicating it has completed all of its processes, POSVM will stop each machine and then create machine images.
 
 ## Clickhouse
 
