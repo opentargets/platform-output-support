@@ -1,0 +1,33 @@
+# POS pipelines configuration file for Open Targets Platform
+# This is the prefix that will be used for all the resources created in the cloud for running the pipelines
+resources_prefix   = "platform"
+# This is the prefix that will be used for all the data images created in the cloud for running the pipelines
+data_images_prefix = "platform"
+
+# Data release configuration
+data_location_source     = "open-targets-pre-data-releases/24.06"
+data_location_production = "open-targets-data-releases/24.06"
+
+# GCP config to use
+project_id         = "open-targets-eu-dev"
+gcp_default_region = "europe-west1"
+gcp_default_zone   = "europe-west1-d"
+
+# POS pipeline configuration
+# Use default value for machine type
+# vm_pos_machine_type = "n1-highcpu-32"
+# Variables for creating VMs
+config_vm_pos_boot_image   = "debian-11"
+pos_logs_path_root  = "gs://open-targets-ops/logs/platform-pos"
+
+# Publishing configuration
+# This flag indicates whether the data images can be made publicly available
+is_public_data_images = true
+# This flag indicates whether this is a PPP profile
+is_partner_instance = false
+
+# Variables for Sync data
+# This one is used to feed BigQuery Dev
+release_id_dev = "24.06"
+# This one is used to feed BigQuery Prod, and as destination folder in the public release bucket
+release_id_prod = "24.06"
