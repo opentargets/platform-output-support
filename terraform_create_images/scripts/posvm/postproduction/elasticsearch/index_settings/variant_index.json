@@ -1,0 +1,38 @@
+{
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "nesteds": {
+          "match_mapping_type": "object",
+          "match": "facet_*",
+          "mapping": {
+            "type": "nested"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "score": {
+        "type": "double"
+      },
+      "distance": {
+        "type": "double"
+      },
+      "polyphenPrediction": {
+        "type": "double"
+      },
+      "alleleFrequency": {
+        "type": "double"
+      },
+      "siftPrediction": {
+        "type": "double"
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "number_of_replicas": 0,
+      "number_of_shards": 5
+    }
+  }
+}
