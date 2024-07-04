@@ -26,7 +26,6 @@ searchDisease,search_disease,,search.json
 targets,target,id,default.json
 targetPrioritisation,target_prioritisation,targetId,default.json
 targetEssentiality,target_essentiality,id,default.json
-AOTFElasticsearch,evidences_aotf,,default.json
 mousePhenotypes,mouse_phenotypes,,default.json
 fda/significantAdverseDrugReactions,openfda_faers,,default.json
 pharmacogenomics,pharmacogenomics,,default.json
