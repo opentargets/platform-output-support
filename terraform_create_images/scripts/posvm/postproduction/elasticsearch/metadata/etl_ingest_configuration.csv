@@ -32,4 +32,5 @@ fda/significantAdverseDrugReactions,openfda_faers,,default.json
 pharmacogenomics,pharmacogenomics,,default.json
 facetSearchTarget,facet_search_target,,facet_search.json
 facetSearchDisease,facet_search_disease,,facet_search.json
-variantIndex,variant_index,variantId,variant_index.json
+variantIndex,variant_index,variantId,default.json
+gwasIndex,gwas_index,studyId,default.json
