@@ -36,7 +36,14 @@
           },
         "entityIds": {
           "type": "text",
-          "index": false
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          },
+          "analyzer": "default",
+          "index": true
         }
       }
     },
