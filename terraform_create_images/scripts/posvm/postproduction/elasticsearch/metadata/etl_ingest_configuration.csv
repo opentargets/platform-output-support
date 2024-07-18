@@ -23,6 +23,7 @@ reactome,reactome,id,default.json
 searchDrug,search_drug,,search.json
 searchTarget,search_target,,search.json
 searchDisease,search_disease,,search.json
+searchVariant,search_variant,,search.json
 targets,target,id,default.json
 targetPrioritisation,target_prioritisation,targetId,default.json
 targetEssentiality,target_essentiality,id,default.json
@@ -33,5 +34,5 @@ pharmacogenomics,pharmacogenomics,,default.json
 facetSearchTarget,facet_search_target,,facet_search.json
 facetSearchDisease,facet_search_disease,,facet_search.json
 variantIndex,variant_index,variantId,default.json
-gwasIndex,gwas_index,studyId,default.json
+gwasIndex,gwas_index,studyId,study.json
 credibleSet,credible_set,studyLocusId,study.json
