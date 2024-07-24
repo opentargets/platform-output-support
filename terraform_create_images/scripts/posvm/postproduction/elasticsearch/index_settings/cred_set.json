@@ -1,0 +1,32 @@
+{
+    "mappings": {
+      "dynamic_templates": [
+            {
+                "nesteds": {
+                    "match": "facet_*",
+                    "match_mapping_type": "object",
+                    "mapping": {
+                        "type": "nested"
+                    }
+                }
+            }
+        ],
+      "properties": {
+        "beta": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        }
+      }
+    },
+    "settings": {
+        "index": {
+            "number_of_replicas": 0,
+            "number_of_shards": 5
+        }
+    }
+}
