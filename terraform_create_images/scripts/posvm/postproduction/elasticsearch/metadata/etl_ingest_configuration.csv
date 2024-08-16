@@ -35,3 +35,4 @@ facetSearchTarget,facet_search_target,,facet_search.json
 facetSearchDisease,facet_search_disease,,facet_search.json
 variantIndex,variant_index,variantId,default.json
 gwasIndex,gwas_index,studyId,study.json
+credibleSet,credible_set,studyLocusId,cred_set.json
