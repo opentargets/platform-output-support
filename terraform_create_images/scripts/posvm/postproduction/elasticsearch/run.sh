@@ -45,7 +45,7 @@ function run_elasticsearch() {
     -e "bootstrap.memory_lock=true" \
     -e "search.max_open_scroll_context=5000" \
     -e ES_JAVA_OPTS="-Xms${JVM_SIZE_HALF}g -Xmx${JVM_SIZE_HALF}g" \
-    -e "thread_pool.write.queue_size=1000" \
+    -e "thread_pool.write.queue_size=-1" \
     -v ${pos_es_docker_vol_data}:/usr/share/elasticsearch/data \
     -v ${pos_es_docker_vol_logs}:/usr/share/elasticsearch/logs \
     --ulimit memlock=-1:-1 \
@@ -88,19 +88,19 @@ function load_data_into_es_index() {
       #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
-        gsutil cp "${file}" - | esbulk -size 2000 -w 4 -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
+        gsutil cp "${file}" - | esbulk -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       if [ $i -gt $max_retries ]; then
         log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - ALL ATTEMPTS FAILED."
         return 1
       fi
-      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id} 
+      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id}
     else
       #log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id - Attempt #$i"
-        gsutil cp ${file} - | esbulk -size 2000 -w 4 -index ${index_name} -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
+        gsutil cp "${file}" - | esbulk -index "${index_name}" -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
         sleep 1
       done
       if [ $i -gt $max_retries ]; then
@@ -174,7 +174,7 @@ function do_load_etl_data_into_es_parallel() {
         ) &
       fi
     done
-    
+
     # Wait for all background jobs to complete
     wait
 
@@ -218,13 +218,13 @@ function do_load_etl_data_into_es_sequential() {
         fi
       fi
     done
-    
+
     if $all_jobs_done; then
       break
     else
       sleep 1
     fi
-  done 
+  done
 }
 
 
@@ -265,7 +265,7 @@ function load_etl_data_into_es() {
       job_param_index_settings["$index_name"]=${index_settings}
       job_param_id["$index_name"]=${id}
   done < "${pos_es_path_etl_ingestion_config}"
-  
+
   # Add the jobs for loading Evidence data into Elastic Search
   for evidence_path in $( gsutil ls ${pos_data_release_path_etl_json}/evidence | grep sourceId ); do
     # Extract the sourceId from the path
