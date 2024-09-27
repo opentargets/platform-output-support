@@ -37,3 +37,4 @@ variantIndex,variant_index,variantId,default.json
 gwasIndex,gwas_index,studyId,study.json
 credibleSet,credible_set,studyLocusId,cred_set.json
 colocalisation,colocalisation,,colocalisation.json
+biosample,biosample,,default.json
