@@ -14,13 +14,25 @@ function install_packages() {
   log "Updating system"
   apt-get update
   log "Installing required packages"
-  apt-get install -y wget vim tmux python3-pip docker.io docker-compose tree htop
+  apt-get install -y wget vim tmux python3-pip docker.io docker-compose curl git tree htop
   log "Adding POS user '${POS_USER_NAME}' to docker group"
   usermod -aG docker ${POS_USER_NAME}
   log "Installing esbulk loader"
   wget https://github.com/miku/esbulk/releases/download/v0.7.3/esbulk_0.7.3_amd64.deb
   dpkg -i esbulk_0.7.3_amd64.deb
+  log "Installing parquet2json"
+  git clone https://github.com/opentargets/parquet2json.git
+  docker build -t p2j parquet2json
+  # curl -LsSf https://astral.sh/uv/install.sh | sudo -u ${POS_USER_NAME} sh
+  # log "Installing python packages"
+  # su - ${POS_USER_NAME} -c "source /home/${POS_USER_NAME}/.cargo/env;
+  # uv python install 3.12;
+  # uv venv /home/${POS_USER_NAME}/.venv;
+  # source /home/${POS_USER_NAME}/.venv/bin/activate;
+  # uv pip install 'git+https://github.com/opentargets/parquet2json'"
 }
+
+
 
 # Script completion hook to flag that 'startup script' has already been run
 function startup_complete() {
