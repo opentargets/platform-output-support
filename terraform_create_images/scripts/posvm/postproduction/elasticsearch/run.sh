@@ -13,10 +13,11 @@ source ${SCRIPTDIR}/config.sh
 function prepare_elasticsearch_storage_volume() {
   log "[START] Preparing Elastic Search Storage Volume"
   # Create Elastic Search Storage Volume folders
-  mkdir -p ${pos_es_vol_path_data}
+  mkdir -p ${pos_es_vol_path_data} ${pos_es_vol_path_json}
   # Create a docker volume that points to the Elastic Search Storage Volume data folder
   docker volume create --name ${pos_es_docker_vol_data} --opt type=none --opt device=${pos_es_vol_path_data} --opt o=bind
   docker volume create --name ${pos_es_docker_vol_logs} --opt type=none --opt device=${pos_path_logs_elastic_search} --opt o=bind
+  docker volume create --name ${pos_es_docker_vol_json} --opt type=none --opt device=${pos_es_vol_path_json} --opt o=bind
   log "[DONE] Preparing Elastic Search Storage Volume"
 }
 
@@ -48,6 +49,7 @@ function run_elasticsearch() {
     -e "thread_pool.write.queue_size=-1" \
     -v ${pos_es_docker_vol_data}:/usr/share/elasticsearch/data \
     -v ${pos_es_docker_vol_logs}:/usr/share/elasticsearch/logs \
+    -v ${pos_es_docker_vol_json}:/usr/share/elasticsearch/json \
     --ulimit memlock=-1:-1 \
     --ulimit nofile=65536:65536 \
     ${pos_es_docker_image}
@@ -83,36 +85,54 @@ function load_data_into_es_index() {
   else
     max_retries=1
   fi
-  for file in $(gsutil list ${input_folder}/*.json); do
+  for file in $(gsutil list "${input_folder}/*.parquet*"); do
+    filename=$(basename "${file}")
+    json_path="${pos_es_vol_path_json}/${index_name}"
+    json_file="${json_path}/${filename}.json"
+    mkdir -p $json_path
     if [[ -n "$id" ]]; then
-      #log "[INFO][${index_name}] Loading data file '${file}' with id '${id}'"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
-        gsutil cp "${file}" - | esbulk -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
+        parquet_to_json $file $json_path &&
+        esbulk -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" "${json_file}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
         sleep 1
       done
+      clean_json $json_file
       if [ $i -gt $max_retries ]; then
         log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - ALL ATTEMPTS FAILED."
         return 1
       fi
-      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200 -id ${id}
     else
-      #log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id"
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' WITHOUT id - Attempt #$i"
-        gsutil cp "${file}" - | esbulk -index "${index_name}" -type _doc -server http://localhost:9200 && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
+        parquet_to_json $file $json_path &&
+        esbulk -index "${index_name}" -type _doc -server http://localhost:9200 "${json_file}" && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
         sleep 1
       done
+      clean_json $json_file
       if [ $i -gt $max_retries ]; then
         log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - ALL ATTEMPTS FAILED."
         return 1
       fi
-      #gsutil cp ${file} - | esbulk -size 2000 -w 8 -index ${index_name} -type _doc -server http://localhost:9200
     fi
   done
   log "[DONE][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}"
   # Report whether the data load was successful or not for the given index
   return 0
+}
+
+function clean_json() {
+  # in future we may decide to gzip and cp the json 
+  json_file=$1
+  log "[INFO] cleaning ${json_file}"
+  rm -f "${json_file}"
+}
+
+function parquet_to_json() {
+  parquet_path=$1
+  json_path=$2
+  filename=$(basename "${parquet_path}")
+  docker run -v "${json_path}":/data p2j "${parquet_path}" "/data/${filename}.json"
 }
 
 function cleanup {
@@ -192,42 +212,6 @@ function do_load_etl_data_into_es_parallel() {
   done
 }
 
-# Sequential data load implementation given job_status, job_retries, job_param_input_folder, job_param_index_settings and job_param_id details
-function do_load_etl_data_into_es_sequential() {
-  job_status=$1
-  job_retries=$2
-  job_param_input_folder=$3
-  job_param_index_settings=$4
-  job_param_id=$5
-
-  # Seriallize the ingestion of the ETL data into Elastic Search by running each job in a separate process per index
-  while true; do
-    all_jobs_done=true
-
-    for index_name in "${!job_status[@]}"; do
-      if [ ${job_status["$index_name"]} -ne 0 ] && [ ${job_retries["$index_name"]} -lt $max_retries ]; then
-        all_jobs_done=false
-        load_data_into_es_index ${job_param_input_folder["$index_name"]} ${index_name} ${job_param_index_settings["$index_name"]} ${job_param_id["$index_name"]}
-        job_exit_status=$?
-        if [ $job_exit_status -eq 0 ]; then
-          job_status["$index_name"]=0
-          log "Job for index $index_name completed successfully."
-        else
-          job_retries["$index_name"]=$((job_retries["$index_name"] + 1))
-          log "Job for index $index_name FAILED. RETRYING (attempt ${job_retries["$index_name"]} of $max_retries)..."
-        fi
-      fi
-    done
-
-    if $all_jobs_done; then
-      break
-    else
-      sleep 1
-    fi
-  done
-}
-
-
 # Iterate over the ETL ingestion configuration file and load data into Elastic Search
 function load_etl_data_into_es() {
   declare -A job_status
@@ -261,13 +245,13 @@ function load_etl_data_into_es() {
         job_retries["$index_name"]=$((max_retries - 1))
       fi
       job_retries["$index_name"]=0
-      job_param_input_folder["$index_name"]="${pos_data_release_path_etl_json}/${input_folder}"
+      job_param_input_folder["$index_name"]="${pos_data_release_path_etl_parquet}/${input_folder}"
       job_param_index_settings["$index_name"]=${index_settings}
       job_param_id["$index_name"]=${id}
   done < "${pos_es_path_etl_ingestion_config}"
 
   # Add the jobs for loading Evidence data into Elastic Search
-  for evidence_path in $( gsutil ls ${pos_data_release_path_etl_json}/evidence | grep sourceId ); do
+  for evidence_path in $( gsutil ls ${pos_data_release_path_etl_parquet}/evidence | grep sourceId ); do
     # Extract the sourceId from the path
     export full_path="${evidence_path%/}"
     export source_id="${full_path##*/}"
@@ -297,8 +281,6 @@ function load_etl_data_into_es() {
 
   # Run data load jobs in parallel
   do_load_etl_data_into_es_parallel job_status job_retries job_param_input_folder job_param_index_settings job_param_id
-  # Run data load sequentially
-  #do_load_etl_data_into_es_sequential job_status job_retries job_param_input_folder job_param_index_settings job_param_id
 }
 
 # Print a summary that shows all the indexes in Elastic Search and their details
@@ -313,7 +295,6 @@ function stop_elasticsearch() {
   docker stop ${pos_es_docker_container_name}
   log "[DONE] Stopping Elastic Search docker container, '${pos_es_docker_container_name}'"
 }
-
 
 # Main
 # Prepare Elastic Search Storage Volume
