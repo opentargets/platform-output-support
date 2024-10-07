@@ -15,6 +15,7 @@ function prepare_clickhouse_storage_volume() {
   mkdir -p ${pos_ch_vol_path_clickhouse_config}
   mkdir -p ${pos_ch_vol_path_clickhouse_users}
   mkdir -p ${pos_ch_vol_path_clickhouse_data}
+  mkdir -p ${pos_ch_vol_path_parquet}
   # Copy Clickhouse configuration files
   cp ${pos_ch_path_config}/* ${pos_ch_vol_path_clickhouse_config}
   # Copy Clickhouse users configuration files
@@ -56,14 +57,29 @@ function load_release_data() {
   # Load release data
   log "[INFO] Loading release data from '${pos_data_release_path_source_root}' into Clickhouse"
   for table in "${!pos_ch_data_release_sources[@]}"; do
-    export path_source="${pos_data_release_path_etl_json}/${pos_ch_data_release_sources[$table]}"
+    export path_source="${pos_data_release_path_etl_parquet}/${pos_ch_data_release_sources[$table]}"
     success=0
     # Attempts for the current table
     for attempt in {1..12}; do
       log "[INFO] (Attempt ${attempt}) ${path_source}' -> '${table}'"
-      gsutil -m cat ${path_source} | docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="insert into ${table} format JSONEachRow" && success=1 && break
-      log "[ERROR] Attempt ${attempt} failed. Truncating table '${table}' before retrying"
-      docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="TRUNCATE TABLE ${table}"
+      gsutil -m rsync -r -d ${path_source} "${pos_ch_vol_path_parquet}/"
+      shopt -s globstar
+      pq_failed=0
+      for pq in ${pos_ch_vol_path_parquet}/**/*.parquet; do
+        insert_query="insert into ${table} format Parquet"
+        if docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="${insert_query}" < $pq ; then
+          log "[INFO] Loaded '${pq}' into Clickhouse table '${table}'"
+        else
+          log "[ERROR] Failed to load '${pq}' into Clickhouse table '${table}'"
+          pq_failed=1
+          docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="TRUNCATE TABLE ${table}" 
+        fi
+        rm -f $pq
+      done
+      if [ $pq_failed -eq 0 ]; then
+        success=1
+        break
+      fi
     done
     if [ $success -eq 1 ]; then
       log "[SUCCESS] Data loaded into Clickhouse table '${table}' after ${attempt} attempts"
