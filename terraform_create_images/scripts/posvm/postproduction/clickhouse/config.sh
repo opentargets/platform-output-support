@@ -25,6 +25,7 @@ export pos_ch_vol_path_clickhouse_config="${pos_mount_point_data_clickhouse}/con
 export pos_ch_vol_path_clickhouse_users="${pos_mount_point_data_clickhouse}/users.d"
 # Path to the folder with clickhouse data files
 export pos_ch_vol_path_clickhouse_data="${pos_mount_point_data_clickhouse}/data"
+export pos_ch_vol_path_parquet="${pos_mount_point_data_clickhouse}/parquet"
 # Clickhouse path for SQL scripts used after data load
 export pos_ch_vol_path_sql_scripts_postdataload="/sql_scripts_postdataload"
 
@@ -34,10 +35,10 @@ export pos_ch_docker_image="${pos_clickhouse_docker_image}:${pos_clickhouse_dock
 
 # Data loading configuration, data sources and destination tables
 declare -A pos_ch_data_release_sources=(
-    ["ot.associations_otf_log"]="AOTFClickhouse/part*" \
-    ["ot.literature_log"]="literature/literatureIndex/part*" \
-    ["ot.ml_w2v_log"]="literature/vectors/part*" \
-    ["ot.sentences_log"]="literature/literatureSentences/part*" \
+    ["ot.associations_otf_log"]="AOTFClickhouse/" \
+    ["ot.literature_log"]="literature/literatureIndex/" \
+    ["ot.ml_w2v_log"]="literature/vectors/" \
+    ["ot.sentences_log"]="literature/literatureSentences/" \
 )
 
 # Print summary of the environment by looping through all those variables that start with "pos_ch_"

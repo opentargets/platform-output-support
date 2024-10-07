@@ -23,13 +23,6 @@ function install_packages() {
   log "Installing parquet2json"
   git clone https://github.com/opentargets/parquet2json.git
   docker build -t p2j parquet2json
-  # curl -LsSf https://astral.sh/uv/install.sh | sudo -u ${POS_USER_NAME} sh
-  # log "Installing python packages"
-  # su - ${POS_USER_NAME} -c "source /home/${POS_USER_NAME}/.cargo/env;
-  # uv python install 3.12;
-  # uv venv /home/${POS_USER_NAME}/.venv;
-  # source /home/${POS_USER_NAME}/.venv/bin/activate;
-  # uv pip install 'git+https://github.com/opentargets/parquet2json'"
 }
 
 
