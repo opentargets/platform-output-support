@@ -1,0 +1,33 @@
+{
+    "mappings": {
+      "properties": {
+        "studyLocusId": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "geneId": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "score": {
+          "type": "double"
+        }
+      }
+    },
+    "settings": {
+        "index": {
+            "number_of_replicas": 0,
+            "number_of_shards": 5
+        }
+    }
+}

@@ -6,7 +6,6 @@
 #   - id: is the name of the field in the ETL output, for that particular dataset, that will be used as the id for the Elastic Search document.
 #   - index_settings: is the name of the file that contains the settings for the index in Elastic Search.
 baselineExpression,expression,id,default.json
-expressionSpecificity,expression_specificity,ensemblGeneId,default.json
 diseaseToPhenotype,disease_hpo,,default.json
 diseases,disease,id,default.json
 drugWarnings,drug_warnings,,default.json
@@ -27,14 +26,14 @@ searchVariant,search_variant,,search.json
 targets,target,id,default.json
 targetPrioritisation,target_prioritisation,targetId,default.json
 targetEssentiality,target_essentiality,id,default.json
-AOTFElasticsearch,evidences_aotf,,default.json
 mousePhenotypes,mouse_phenotypes,,default.json
 fda/significantAdverseDrugReactions,openfda_faers,,default.json
 pharmacogenomics,pharmacogenomics,,default.json
 facetSearchTarget,facet_search_target,,facet_search.json
 facetSearchDisease,facet_search_disease,,facet_search.json
-variantIndex,variant_index,variantId,default.json
-gwasIndex,gwas_index,studyId,study.json
-credibleSet,credible_set,studyLocusId,cred_set.json
+variantIndex,variant_index,,default.json
+gwasIndex,gwas_index,,study.json
+credibleSet,credible_set,,cred_set.json
 colocalisation,colocalisation,,colocalisation.json
 biosample,biosample,,default.json
+locusToGenePredictions,l2g_predictions,,l2g_predictions.json
