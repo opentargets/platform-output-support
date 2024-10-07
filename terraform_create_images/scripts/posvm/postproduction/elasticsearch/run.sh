@@ -75,18 +75,18 @@ function load_data_into_es_index() {
   log "[START][${index_name}] Loading data into Elastic Search for input_folder=${input_folder_name}, index_name=${index_name}, id=${id}, index_settings=${index_settings}, path_to_index_settings='${path_to_index_settings}'"
   # Create index
   log "[INFO][${index_name}] Creating index"
-  #curl -X PUT "localhost:9200/${index_name}?pretty" -H 'Content-Type: application/json' -d"${path_to_index_settings}"
   curl -XPUT -H 'Content-Type: application/json' --data @"${path_to_index_settings}" http://localhost:9200/${index_name}
   log "[INFO][${index_name}] Data source at '${input_folder}'"
-  # Iterate over all .json files in the input folder and load them into the created index
+  # Iterate over all .parquet files in the input folder and load them into the created index
   # When an ID has been provided, we can re-try loading the data into the given elastic search index, otherwise we can't, as it would create duplicates
   if [[ -n "$id" ]]; then
     max_retries=7
   else
     max_retries=1
   fi
-  for file in $(gsutil list "${input_folder}/*.parquet*"); do
-    filename=$(basename "${file}")
+  # Iterate over all parquet files, and json (just maintained fo "so")
+  for file in $(gsutil list "${input_folder}/*parquet*" "${input_folder}/*json"); do
+    filename=$(basename "${file}" | cut -f1 -d ".")
     json_path="${pos_es_vol_path_json}/${index_name}"
     json_file="${json_path}/${filename}.json"
     mkdir -p $json_path
@@ -97,7 +97,7 @@ function load_data_into_es_index() {
         esbulk -index "${index_name}" -type _doc -server http://localhost:9200 -id "${id}" "${json_file}" && break || log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - FAILED Attempt #$i, retrying..."
         sleep 1
       done
-      clean_json $json_file
+      cp_json_to_bucket $json_file
       if [ $i -gt $max_retries ]; then
         log "[ERROR][${index_name}] Loading data file '${file}' with id '${id}' - ALL ATTEMPTS FAILED."
         return 1
@@ -109,7 +109,7 @@ function load_data_into_es_index() {
         esbulk -index "${index_name}" -type _doc -server http://localhost:9200 "${json_file}" && break || log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - FAILED Attempt #$i, retrying..."
         sleep 1
       done
-      clean_json $json_file
+      cp_json_to_bucket $json_file
       if [ $i -gt $max_retries ]; then
         log "[ERROR][${index_name}] Loading data file '${file}' WITHOUT id - ALL ATTEMPTS FAILED."
         return 1
@@ -121,9 +121,12 @@ function load_data_into_es_index() {
   return 0
 }
 
-function clean_json() {
-  # in future we may decide to gzip and cp the json 
+function cp_json_to_bucket() {
   json_file=$1
+  index=$(basename $(dirname "${json_file}"))
+  filename=$(basename "${json_file}")
+  log "[INFO] copying ${json_file} to ${pos_data_release_path_etl_json}/${index}/${filename}"
+  gsutil cp "${json_file}" "${pos_data_release_path_etl_json}/${index}/${filename}"
   log "[INFO] cleaning ${json_file}"
   rm -f "${json_file}"
 }
@@ -131,8 +134,15 @@ function clean_json() {
 function parquet_to_json() {
   parquet_path=$1
   json_path=$2
-  filename=$(basename "${parquet_path}")
-  docker run -v "${json_path}":/data p2j "${parquet_path}" "/data/${filename}.json"
+  filename=$(basename "${parquet_path}" | cut -f1 -d ".")
+  # Have to maintain this for "so" which is a json file
+  if [[ "${parquet_path}" == *".json" ]]; then
+    log "[INFO] Copying ${parquet_path} to ${json_path}/${filename}.json"
+    gsutil cp "${parquet_path}" "${json_path}/${filename}.json"
+  else
+    log "[INFO] Converting ${parquet_path} to ${json_path}/${filename}.json"
+    docker run -v "${json_path}":/data --rm p2j "${parquet_path}" "/data/${filename}.json"
+  fi
 }
 
 function cleanup {
@@ -275,7 +285,7 @@ function load_etl_data_into_es() {
   # Add SO data to Elastic Search
   job_status["${pos_es_so_index_name}"]=1
   job_retries["${pos_es_so_index_name}"]=0
-  job_param_input_folder["${pos_es_so_index_name}"]=$( dirname ${pos_es_path_so_file} )
+  job_param_input_folder["${pos_es_so_index_name}"]=$( dirname ${pos_es_path_so_file})
   job_param_index_settings["${pos_es_so_index_name}"]=${pos_es_default_index_settings}
   job_param_id["${pos_es_so_index_name}"]=${pos_es_default_id}
 
