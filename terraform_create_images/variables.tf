@@ -135,7 +135,7 @@ variable "elastic_search_docker_image_version" {
 variable "elastic_search_data_disk_size" {
   description = "Elastic search data disk size to deploy"
   type        = string
-  default     = "128"
+  default     = "256"
 }
 
 

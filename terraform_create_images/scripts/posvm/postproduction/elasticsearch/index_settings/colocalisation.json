@@ -54,6 +54,10 @@
             "clpp": {
                 "type": "double",
                 "index": false
+            },
+            "betaRatioSignAverage": {
+                "type": "double",
+                "index": false
             }
         }
     },
