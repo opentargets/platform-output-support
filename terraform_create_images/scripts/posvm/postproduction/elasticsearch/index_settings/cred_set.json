@@ -9,13 +9,17 @@
               "ignore_above": 256
             }
           }
+        },
+        "locus": {
+          "type": "nested"
         }
       }
     },
     "settings": {
         "index": {
             "number_of_replicas": 0,
-            "number_of_shards": 5
+            "number_of_shards": 5,
+            "mapping.nested_objects.limit": 11000
         }
     }
 }
