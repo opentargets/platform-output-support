@@ -83,7 +83,7 @@ function load_data_into_es_index() {
     max_retries=1
   fi
   # Iterate over all parquet files, and json (just maintained fo "so")
-  for file in $(gsutil list "${input_folder}/**parquet*" "${input_folder}/*json"); do
+  for file in $(gsutil list "${input_folder}/**parquet" "${input_folder}/*json"); do
     if [[ -n "$id" ]]; then
       for ((i = 1; i <= max_retries; i++)); do
         log "[INFO][${index_name}] Loading data file '${file}' with id '${id}' - Attempt #$i"
