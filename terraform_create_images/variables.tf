@@ -122,7 +122,7 @@ variable "clickhouse_docker_image_version" {
 variable "clickhouse_data_disk_size" {
   description = "Clickhouse data disk size to deploy"
   type        = string
-  default     = "64"
+  default     = "128"
 }
 
 // --- Elastic Search Configuration --- //
