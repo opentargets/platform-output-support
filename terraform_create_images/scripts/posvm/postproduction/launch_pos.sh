@@ -149,7 +149,7 @@ else
     log "[ERROR] Data ingestion pipeline exited with errors, (should) skipping creation of disk data tarballs and GCP images"
 fi
 # Create Tarballs of Clickhouse and Elastic Search data volumes
-# create_disk_data_tarballs # Disabled for now due to opentargets/issues#3542
+create_disk_data_tarballs # See opentargets/issues#3542 - you may want to comment this line out
 # Create GCP images for the Clickhouse and Elastic Search data volumes
 create_gcp_images
 # Dump all POS pipeline logs to file
