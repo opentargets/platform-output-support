@@ -19,7 +19,8 @@
         "index": {
             "number_of_replicas": 0,
             "number_of_shards": 5,
-            "mapping.nested_objects.limit": 11000
+            "mapping.nested_objects.limit": 11000,
+            "max_inner_result_window": 11000
         }
     }
 }
