@@ -23,6 +23,7 @@ searchDrug,search_drug,,search.json
 searchTarget,search_target,,search.json
 searchDisease,search_disease,,search.json
 searchVariant,search_variant,,search.json
+searchStudy,search_study,,search.json
 targets,target,id,default.json
 targetPrioritisation,target_prioritisation,targetId,default.json
 targetEssentiality,target_essentiality,id,default.json
