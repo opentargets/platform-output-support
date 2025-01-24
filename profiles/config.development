@@ -27,7 +27,7 @@ gcp_default_zone   = "europe-west1-d"
 
 # POS pipeline configuration
 # Use default value for machine type (use default, 'n1-standard-8')
-# vm_pos_machine_type = "n1-highcpu-32"
+vm_pos_machine_type = "n1-highmem-96"
 # Variables for creating VMs
 config_vm_pos_boot_image   = "debian-11"
 # Use default logging location
