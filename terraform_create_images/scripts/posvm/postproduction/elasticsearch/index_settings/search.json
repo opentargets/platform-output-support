@@ -89,7 +89,8 @@
             "type": "custom",
             "tokenizer": "keyword",
             "filter": [
-              "lowercase"
+              "lowercase",
+              "trim"
             ]
           }
         }
