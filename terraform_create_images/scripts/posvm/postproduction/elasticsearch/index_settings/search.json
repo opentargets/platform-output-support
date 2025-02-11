@@ -40,7 +40,7 @@
           "autocomplete_filter": {
             "type": "edge_ngram",
             "min_gram": 2,
-            "max_gram": 100,
+            "max_gram": 102,
             "token_chars": [
               "letter",
               "digit",
