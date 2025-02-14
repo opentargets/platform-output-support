@@ -27,7 +27,13 @@
   "settings": {
     "index": {
       "number_of_replicas": 0,
-      "number_of_shards": 5,
+      "number_of_shards": 1,
+      "similarity": {
+        "default": {
+          "type": "BM25",
+          "b": 0 
+        }
+      },
       "analysis": {
         "normalizer": {
           "custom": {
