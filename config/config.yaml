@@ -1,0 +1,206 @@
+---
+work_path: ./work
+log_level: TRACE
+scratchpad:
+  parquet_input_path: gs://open-targets-pre-data-releases/2503-testrun-2
+  opensearch_java_opts: -Xms2g -Xmx4g
+  json_output_path: output
+  opensearch_data: es/data
+  opensearch_logs: es/logs
+  opensearch_creds: pos-gac.json
+  snapshot_repository_name: platform-opensearch-snapshots
+  snapshot_name: 2
+  snapshot_bucket: open-targets-pre-data-releases
+  snapshot_base_path: jamesh/snapshots
+steps:
+  data_prep:
+    - name: data_prep l2g
+      source: ${parquet_input_path}/locusToGenePredictions/part-00001-3563e8c9-205f-4478-affc-7b17ede97027-c000.snappy.parquet
+      destination: ${json_output_path}/locusToGenePredictions.json
+    - name: data_prep moa
+      source: ${parquet_input_path}/mechanismOfAction/*.parquet
+      destination: ${json_output_path}/mechanismOfAction.json
+  open_search_start:
+    - name: open_search_start opensearch start
+      service_name: os-pos
+      volume_data: ${opensearch_data}
+      volume_logs: ${opensearch_logs}
+      volume_creds: ${opensearch_creds}
+      opensearch_java_opts: ${opensearch_java_opts}
+  open_search_create_index:
+    - name: open_search_create_index opensearch create index l2g
+      service_name: os-pos
+      dataset: disease
+  open_search_load:
+    - name: open_search_load opensearch load l2g
+      service_name: os-pos
+      index: l2g_predictions
+      data: ${json_output_path}/locusToGenePredictions.json
+  open_search_snapshot:
+    - name: open_search_snapshot opensearch snapshot
+      snapshot_repository_name: ${snapshot_repository_name}
+      snapshot_name: ${snapshot_name}
+      snapshot_bucket: ${snapshot_bucket}
+      snapshot_base_path: ${snapshot_base_path}
+      indices: "*,-.*"
+  open_search_restore:
+    - name: open_search_restore opensearch restore
+      snapshot_repository_name: ${snapshot_repository_name}
+      snapshot_name: ${snapshot_name}
+      snapshot_bucket: ${snapshot_bucket}
+      snapshot_base_path: ${snapshot_base_path}
+  open_search_stop:
+    - name: open_search_stop opensearch stop
+      service_name: os-pos
+  open_search_prep_all:
+    - name: explode prep all datasets
+      foreach:
+        - biosample
+        - colocalisation_coloc
+        - colocalisation_ecaviar
+        - credible_set
+        - disease
+        - disease_hpo
+        - drug
+        - drug_warnings
+        - evidence_cancer_biomarkers
+        - evidence_cancer_gene_census
+        - evidence_chembl
+        - evidence_clingen
+        - evidence_crispr
+        - evidence_crispr_screen
+        - evidence_encore
+        - evidence_europepmc
+        - evidence_eva
+        - evidence_eva
+        - evidence_eva_somatic
+        - evidence_expression_atlas
+        - evidence_gene_burden
+        - evidence_gene2phenotype
+        - evidence_genomics_england
+        - evidence_gwas_credible_sets
+        - evidence_impc
+        - evidence_intogen
+        - evidence_orphanet
+        - evidence_ot_crispr
+        - evidence_ot_crispr_validation
+        - evidence_ot_genetics_portal
+        - evidence_progeny
+        - evidence_reactome
+        - evidence_slapenrich
+        - evidence_sysbio
+        - evidence_uniprot_literature
+        - evidence_uniprot_variants
+        - expression
+        - facet_search_disease
+        - facet_search_target
+        - go
+        - gwas_index
+        - hpo
+        - indication
+        - interaction
+        - interaction_evidence
+        - known_drugs
+        - l2g_predictions
+        - mechanism_of_action
+        - mouse_phenotypes
+        - openfda_faers
+        - otar_projects
+        - pharmacogenomics
+        - reactome
+        - search_disease
+        - search_drug
+        - search_study
+        - search_target
+        - search_target
+        - so
+        - target
+        - target_essentiality
+        - target_prioritisation
+        - variant_index
+      do: 
+        - name: explode_datasets ${each}
+          parquet_parent: ${parquet_input_path}
+          json_parent: ${json_output_path}
+          dataset: ${each}
+  open_search_load_all:
+    - name: open_search_start opensearch start
+      volume_data: ${opensearch_data}
+      volume_logs: ${opensearch_logs}
+      volume_creds: ${opensearch_creds}
+      opensearch_java_opts: ${opensearch_java_opts}
+    - name: explode load all datasets
+      foreach:
+        - biosample
+        - colocalisation_coloc
+        - colocalisation_ecaviar
+        - credible_set
+        - disease
+        - disease_hpo
+        - drug
+        - drug_warnings
+        - evidence_cancer_biomarkers
+        - evidence_cancer_gene_census
+        - evidence_chembl
+        - evidence_clingen
+        - evidence_crispr
+        - evidence_crispr_screen
+        - evidence_encore
+        - evidence_europepmc
+        - evidence_eva
+        - evidence_eva
+        - evidence_eva_somatic
+        - evidence_expression_atlas
+        - evidence_gene_burden
+        - evidence_gene2phenotype
+        - evidence_genomics_england
+        - evidence_gwas_credible_sets
+        - evidence_impc
+        - evidence_intogen
+        - evidence_orphanet
+        - evidence_ot_crispr
+        - evidence_ot_crispr_validation
+        - evidence_ot_genetics_portal
+        - evidence_progeny
+        - evidence_reactome
+        - evidence_slapenrich
+        - evidence_sysbio
+        - evidence_uniprot_literature
+        - evidence_uniprot_variants
+        - expression
+        - facet_search_disease
+        - facet_search_target
+        - go
+        - gwas_index
+        - hpo
+        - indication
+        - interaction
+        - interaction_evidence
+        - known_drugs
+        - l2g_predictions
+        - mechanism_of_action
+        - mouse_phenotypes
+        - openfda_faers
+        - otar_projects
+        - pharmacogenomics
+        - reactome
+        - search_disease
+        - search_drug
+        - search_study
+        - search_target
+        - search_target
+        - so
+        - target
+        - target_essentiality
+        - target_prioritisation
+        - variant_index
+      do:
+        - name: open_search_create_index opensearch create index ${each}
+          requires:
+            - open_search_start opensearch start
+          dataset: ${each}
+        - name: open_search_load opensearch load ${each}
+          requires:
+            - open_search_create_index opensearch create index ${each}
+          dataset: ${each}
+          json_parent: ${json_output_path}
