@@ -12,17 +12,20 @@ from docker.models.images import Image
 from docker.types import Ulimit
 
 
+class OpenSearchError(Exception):
+    pass
+
 class OpenSearch:
     def __init__(
         self,
         name: str,
-        volume_data: str,
-        volume_logs: str,
-        volume_creds: str,
-        snapshot_name: str,
-        snapshot_bucket: str,
-        snapshot_base_path: str,
-        opensearch_java_opts: str,
+        volume_data: str = None,
+        volume_logs: str = None,
+        volume_creds: str = None,
+        snapshot_name: str = None,
+        snapshot_bucket: str = None,
+        snapshot_base_path: str = None,
+        opensearch_java_opts: str = None
     ) -> None:
         self._client: DockerClient = docker.from_env()
         self.name = name
@@ -74,18 +77,30 @@ class OpenSearch:
                 ]
             )
         self._update_keystore()
-        self._register_snapshot_repository()
+        if self.is_healthy():
+            self._register_snapshot_repository()
+        else:
+            raise OpenSearchError("Could not start OpenSearch, it failed health check")
 
     def stop(self):
-        self.container.stop()
+        self._client.containers.get(self.name).stop()
 
-    def isHealthy(self, timeout: int = 6) -> Boolean:
+    def is_healthy(self, timeout: int = 6, retries: int = 3, delay: int = 10) -> Boolean:
         logger.debug("Waiting for OpenSearch health")
         url = f"http://localhost:9200/_cluster/health?wait_for_status=green&timeout={timeout}s"
-        response = requests.get(url)
-        if response.status_code != 200:
-            return False
-        return True
+        while retries > 0:
+            try:
+                response = requests.get(url)
+                logger.debug(f"Health check response: {response.json()}")
+                if response.status_code != 200:
+                    return False
+                return True
+            except requests.exceptions.ConnectionError:
+                logger.debug("Connection error, retrying")
+                retries -= 1
+                time.sleep(delay)
+                continue
+        return False
 
     def _update_keystore(self):
         logger.debug("Updating keystore")
@@ -100,8 +115,12 @@ class OpenSearch:
         return image
 
     def _register_snapshot_repository(self) -> HTTPError | None:
-        logger.debug("Registering snapshot repository")
         url = f'http://localhost:9200/_snapshot/{self.snapshot_name}'
+        repo_check = requests.get(url)
+        logger.debug(f"Checking if snapshot repository exists: {repo_check.json()}")
+        if repo_check.status_code == 200:
+            # Repository already exists, no need to register.
+            return
         payload = {
             "type": "gcs",
             "settings": {
@@ -112,3 +131,4 @@ class OpenSearch:
         }
         response = requests.put(url, json=payload)
         response.raise_for_status()
+

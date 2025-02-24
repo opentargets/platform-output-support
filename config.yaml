@@ -1,6 +1,6 @@
 ---
 work_path: ./work
-log_level: SUCCESS
+log_level: TRACE
 scratchpad:
 steps:
   hello:
@@ -22,4 +22,7 @@ steps:
       snapshot_bucket: "open-targets-pre-data-releases"
       snapshot_base_path: "snapshots"
       opensearch_java_opts: "-Xms2g -Xmx4g"
+  open_search_stop:
+    - name: open_search_stop open search stop
+      service_name: "os-pos"
   
