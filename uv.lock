@@ -229,7 +229,7 @@ wheels = [
 
 [[package]]
 name = "opentargets-otter"
-version = "25.0.0a5"
+version = "25.0.0a11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
@@ -240,9 +240,9 @@ dependencies = [
     { name = "requests" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4a/46/709c897acd62380f1d7ef2e7eeacd2e0374d5b3f7e20802905b93c6f048d/opentargets_otter-25.0.0a5.tar.gz", hash = "sha256:67dc2757462aac689f88334a1f43a9e4a96e524e336dc047c9b6e857fb76ac2e", size = 73797 }
+sdist = { url = "https://files.pythonhosted.org/packages/43/f4/08dd56d87714aedbadb9e9e1c05d747a868d909ddf17819617c315b24cbe/opentargets_otter-25.0.0a11.tar.gz", hash = "sha256:69a84c4383713b82ddb1453d29e7229ce767821a1e33431d82beff5c677559c5", size = 74065 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e0/a7/9703b38debe83559c7d49ed6afda28d499fa9854b6d3a2bb488c66b4acb9/opentargets_otter-25.0.0a5-py3-none-any.whl", hash = "sha256:43e0ad1bf093591627442660fe4951fd7b6bcd792b750cf366f89dc63cf83186", size = 48639 },
+    { url = "https://files.pythonhosted.org/packages/8a/a8/bbbc627a88fc01b56a08e97ca3749688431015c968979bd663647c015f7a/opentargets_otter-25.0.0a11-py3-none-any.whl", hash = "sha256:794bf15e42c5eef62025ed1ec75b3a68439b1602f45a329e7a0abf608f896f32", size = 49066 },
 ]
 
 [[package]]
@@ -298,7 +298,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "docker", specifier = ">=7.1.0" },
-    { name = "opentargets-otter", specifier = "==25.0.0a5" },
+    { name = "opentargets-otter", specifier = ">=25.0.0a11" },
     { name = "orjson", specifier = ">=3.10.15" },
     { name = "polars", specifier = ">=1.22.0" },
     { name = "pyarrow", specifier = ">=19.0.0" },
