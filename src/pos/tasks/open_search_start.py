@@ -1,5 +1,6 @@
 # Data prep task
 
+from otter.task.task_reporter import report
 from otter.task.model import Spec, Task, TaskContext
 from otter.util.errors import OtterError
 
@@ -28,6 +29,7 @@ class OpenSearchStart(Task):
         super().__init__(spec, context)
         self.spec: OpenSearchStartSpec
 
+    @report
     def run(self) -> None:
         print("opensearch start run")
         opensearch = OpenSearch(
