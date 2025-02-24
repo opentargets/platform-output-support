@@ -1,8 +1,11 @@
 # Data prep task
 
+from typing import Self
+
+from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
-from otter.util.errors import OtterError
 from otter.task.task_reporter import report
+from otter.util.errors import OtterError
 
 from pos.parquet2json.converter import convert
 from pos.parquet2json.utils import setup_logger
@@ -16,9 +19,10 @@ class DataPrepSpec(Spec):
     """Configuration fields for the data prep task.
 
     This task has the following custom configuration fields:
-        - source (str): The path or URL of the parquet file/directory or files.
-        - destination (str): The path, relative to `release_uri` to upload the
-            results to.
+        - parquet_parent (str): The path or URL of the parquet parent directory.
+        i.e. here /path/to/parquet/<dataset>/1.parquet it would be /path/to/parquet
+        - json_parent (str): The path or URL of the json parent directory.
+        i.e. here /path/to/json/<dataset>/1.json it would be /path/to/json
     """
 
     source: str
@@ -31,10 +35,12 @@ class DataPrep(Task):
         self.spec: DataPrepSpec
 
     @report
-    def run(self) -> None:
+    def run(self) -> Self:
+        logger.debug(f'Converting {self.spec.source} to {self.spec.destination}')
         convert(
-            parquet_path=self.spec.source,  # read from df?
+            parquet_path=self.spec.source,
             json_path=self.spec.destination,
-            log=setup_logger("ERROR"),
+            log=setup_logger('ERROR'),
             hive_partitioning=False,
         )
+        return self
