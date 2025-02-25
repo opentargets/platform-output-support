@@ -36,15 +36,17 @@ class WebappMetadata(Task):
         distributions = metadata_croissant.select('distribution').explode('distribution').unnest('distribution').filter(pl.col('@type') =="cr:FileSet").select(id=pl.col('@id').str.split('-').list.first(), format=pl.col('encodingFormat'), path=pl.col('includes'))
         # get schemas
         record_sets =metadata_croissant.select('recordSet').explode('recordSet').unnest('recordSet').select(id=pl.col('@id'), field=pl.col("field"))
+        # transform schemas
+        # schema = record_sets = record_sets.explode("field").unnest("field").select(name=pl.col("name"), type=pl.col("type"))
+        # print(f"Found {schema} distributions")
         #join distributions with schemas
         joined = distributions.join(record_sets, on=["id"], how='inner')
-        # build resource
+        # build downloads
         downloads = joined.select(
             pl.col("id"),
             resource = pl.struct(
                 format=pl.col("format").str.replace("application/","").str.split("-").list.last(),
                 path=pl.col("path").str.split("/").list.slice(0,pl.col("path").str.split("/").list.len()-1).list.join("/"),
                 generateMetadata=True))
-        print(f"Found {downloads} distributions")
-        # transform schemas
+        downloads.write_ndjson(self.spec.output)
         return self
