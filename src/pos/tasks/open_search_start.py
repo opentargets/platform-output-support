@@ -1,10 +1,9 @@
 # Data prep task
-
 from otter.task.task_reporter import report
 from otter.task.model import Spec, Task, TaskContext
 from otter.util.errors import OtterError
 
-from pos.opensearch.service import OpenSearch
+from pos.opensearch.service import OpenSearch, SnapshotRepository
 
 
 class OpenSearchStartError(OtterError):
@@ -18,7 +17,7 @@ class OpenSearchStartSpec(Spec):
     volume_data: str
     volume_logs: str
     volume_creds: str
-    snapshot_name: str
+    snapshot_repository_name: str
     snapshot_bucket: str
     snapshot_base_path: str
     opensearch_java_opts: str
@@ -33,13 +32,17 @@ class OpenSearchStart(Task):
     def run(self) -> None:
         print("opensearch start run")
         opensearch = OpenSearch(
-            self.spec.service_name,
-            self.spec.volume_data,
-            self.spec.volume_logs,
-            self.spec.volume_creds,
-            self.spec.snapshot_name,
-            self.spec.snapshot_bucket,
-            self.spec.snapshot_base_path,
-            self.spec.opensearch_java_opts
+            self.spec.service_name
         )
-        opensearch.start()
+        snapshot_repo = SnapshotRepository(
+            name=self.spec.snapshot_repository_name,
+            type='gcs',
+            bucket=self.spec.snapshot_bucket,
+            base_path=self.spec.snapshot_base_path
+        )
+        opensearch.start(self.spec.volume_data,
+                         self.spec.volume_logs,
+                         self.spec.volume_creds,
+                         self.spec.opensearch_java_opts,
+                         snapshot_repo
+                         )

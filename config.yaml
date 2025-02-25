@@ -13,7 +13,7 @@ steps:
       source: gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet/mechanismOfAction/
       destination: mechanismOfAction.json
   open_search_start:
-    - name: open_search_start os-pos
+    - name: open_search_start opensearch start
       service_name: "os-pos"
       volume_data: "es/data"
       volume_logs: "es/logs"
@@ -22,7 +22,12 @@ steps:
       snapshot_bucket: "open-targets-pre-data-releases"
       snapshot_base_path: "snapshots"
       opensearch_java_opts: "-Xms2g -Xmx4g"
+  open_search_snapshot:
+    - name: open_search_snapshot opensearch snapshot
+      service_name: "os-pos"
+      snapshot_repository_name: "platform-opensearch-snapshots"
+      snapshot_name: "1"
   open_search_stop:
-    - name: open_search_stop open search stop
+    - name: open_search_stop opensearch stop
       service_name: "os-pos"
   
