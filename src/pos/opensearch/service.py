@@ -45,7 +45,6 @@ class OpenSearch:
     ) -> None:
         logger.info("Starting OpenSearch")
         image = self._build()
-        logger.debug("Starting OpenSearch container")
         self.container = self._client.containers.run(
             image,
             auto_remove=True,
@@ -92,10 +91,14 @@ class OpenSearch:
             self.container = self._client.containers.get(self.name)
             self.container.stop()
         except NotFound:
-            logger.debug("Container not found")
+            logger.error("Container not found")
             return
 
-    def snapshot(self, snapshot_repo: SnapshotRepository, snapshot_name: str) -> None:
+    def snapshot(
+        self,
+        snapshot_repo: SnapshotRepository,
+        snapshot_name: str
+    ) -> None:
         logger.debug("Creating snapshot")
         url = f'http://localhost:9200/_snapshot/{snapshot_repo.name}/{snapshot_name}'
         payload = {
@@ -122,7 +125,7 @@ class OpenSearch:
                     return False
                 return True
             except requests.exceptions.ConnectionError:
-                logger.debug("Connection error, retrying")
+                logger.warning("Connection error, retrying")
                 retries -= 1
                 time.sleep(delay)
                 continue
@@ -152,11 +155,6 @@ class OpenSearch:
         snap_repo: SnapshotRepository
     ) -> HTTPError | None:
         url = f'http://localhost:9200/_snapshot/{snap_repo.name}'
-        repo_check = requests.get(url)
-        logger.debug(f"Checking if snapshot repository exists: {repo_check.json()}")
-        if repo_check.status_code == 200:
-            # Repository already exists, no need to register.
-            return
         payload = {
             "type": snap_repo.type,
             "settings": {
