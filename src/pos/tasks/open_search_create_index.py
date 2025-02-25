@@ -1,10 +1,11 @@
 # Data prep task
 
+from typing import Self
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.opensearch.service import OpenSearch
+from pos.opensearch.service import OpenSearchInstanceManager
 
 
 class OpenSearchCreateIndexError(OtterError):
@@ -25,9 +26,14 @@ class OpenSearchCreateIndex(Task):
         self.spec: OpenSearchCreateIndexSpec
 
     @report
-    def run(self) -> None:
+    def run(self) -> Self:
         print("opensearch create index run")
-        opensearch = OpenSearch(
+        opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
         )
-        opensearch.create_index(self.spec.index, self.spec.mappings)
+        with open(self.spec.mappings, "r") as f:
+            opensearch.client.indices.create(
+                index=self.spec.index,
+                body=f.read(),
+            )
+        return self

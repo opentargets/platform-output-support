@@ -1,9 +1,10 @@
 # Data prep task
-from otter.task.task_reporter import report
+from typing import Self
 from otter.task.model import Spec, Task, TaskContext
+from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.opensearch.service import OpenSearch, SnapshotRepository
+from pos.opensearch.service import OpenSearchInstanceManager, SnapshotRepository
 
 
 class OpenSearchStartError(OtterError):
@@ -11,8 +12,8 @@ class OpenSearchStartError(OtterError):
 
 
 class OpenSearchStartSpec(Spec):
-    """Configuration fields for the start OpenSearch task.
-    """
+    """Configuration fields for the start OpenSearch task."""
+
     service_name: str
     volume_data: str
     volume_logs: str
@@ -29,20 +30,22 @@ class OpenSearchStart(Task):
         self.spec: OpenSearchStartSpec
 
     @report
-    def run(self) -> None:
+    def run(self) -> Self:
         print("opensearch start run")
-        opensearch = OpenSearch(
-            self.spec.service_name
+        opensearch = OpenSearchInstanceManager(self.spec.service_name)
+        opensearch.start(
+            self.spec.volume_data,
+            self.spec.volume_logs,
+            self.spec.volume_creds,
+            self.spec.opensearch_java_opts,
         )
         snapshot_repo = SnapshotRepository(
             name=self.spec.snapshot_repository_name,
-            type='gcs',
+            type="gcs",
             bucket=self.spec.snapshot_bucket,
-            base_path=self.spec.snapshot_base_path
+            base_path=self.spec.snapshot_base_path,
         )
-        opensearch.start(self.spec.volume_data,
-                         self.spec.volume_logs,
-                         self.spec.volume_creds,
-                         self.spec.opensearch_java_opts,
-                         snapshot_repo
-                         )
+        opensearch.client.snapshot.create_repository(
+            snapshot_repo.name, snapshot_repo.body()
+        )
+        return self

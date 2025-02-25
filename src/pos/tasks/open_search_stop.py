@@ -1,10 +1,11 @@
 # Data prep task
 
+from typing import Self
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.opensearch.service import OpenSearch
+from pos.opensearch.service import OpenSearchInstanceManager
 
 
 class OpenSearchStopError(OtterError):
@@ -12,8 +13,8 @@ class OpenSearchStopError(OtterError):
 
 
 class OpenSearchStopSpec(Spec):
-    """Configuration fields for the Stop OpenSearch task.
-    """
+    """Configuration fields for the Stop OpenSearch task."""
+
     service_name: str
 
 
@@ -23,9 +24,10 @@ class OpenSearchStop(Task):
         self.spec: OpenSearchStopSpec
 
     @report
-    def run(self) -> None:
+    def run(self) -> Self:
         print("opensearch stop run")
-        opensearch = OpenSearch(
+        opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
         )
         opensearch.stop()
+        return self

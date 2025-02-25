@@ -5,8 +5,10 @@ import os
 from pathlib import Path
 import time
 from dataclasses import dataclass
+from typing import Dict
 
 import docker
+from opensearchpy import OpenSearch
 import requests
 from docker.client import DockerClient
 from docker.errors import NotFound
@@ -14,8 +16,6 @@ from docker.models.containers import Container
 from docker.models.images import Image
 from docker.types import Ulimit
 from loguru import logger
-from polars import Boolean
-from requests.exceptions import HTTPError
 
 
 @dataclass
@@ -38,25 +38,48 @@ class SnapshotRepository:
     base_path: str = None
     client: str = "default"
 
+    def body(self) -> Dict:
+        """Return the snapshot repository body."""
+        return {
+            "type": self.type,
+            "settings": {
+                "bucket": self.bucket,
+                "base_path": self.base_path,
+                "client": self.client,
+            },
+        }
 
-class OpenSearchError(Exception):
+
+class OpenSearchInstanceManagerError(Exception):
     """Base class for exceptions in this module."""
 
 
-class OpenSearch:
-    """OpenSearch service class.
+class OpenSearchInstanceManager:
+    """OpenSearch instance manager.
 
     Arguments:
         name -- Container name
+
+    Keyword Arguments:
+        host -- Host (default: {"localhost"})
+        port -- Port (default: {9200})
+
+    Attributes:
+        name -- service/container name
+        client -- OpenSearch client
     """
 
-    def __init__(
-        self,
-        name: str,
-    ) -> None:
-        self._client: DockerClient = docker.from_env()
+    def __init__(self, name: str, host: str = "localhost", port: int = 9200) -> None:
         self.name = name
-        self.container: Container = None
+        self._host = host
+        self._port = port
+        self.client = OpenSearch(
+            [{"host": self._host, "port": self._port}],
+            http_compress=True,
+            use_ssl=False,
+        )
+        self._docker_client: DockerClient = docker.from_env()
+        self._container: Container = None
 
     def start(
         self,
@@ -64,7 +87,7 @@ class OpenSearch:
         volume_logs: str | Path,
         volume_creds: str | Path,
         opensearch_java_opts: str,
-        snapshot_repository: SnapshotRepository = None,
+        # snapshot_repository: SnapshotRepository = None,
     ) -> None:
         """Start OpenSearch container.
 
@@ -78,16 +101,16 @@ class OpenSearch:
             snapshot_repository -- SnapshotRespository (default: {None})
 
         Raises:
-            OpenSearchError: If OpenSearch fails to start
+            OpenSearchInstanceManagerError: If OpenSearch fails to start
         """
         logger.info("Starting OpenSearch")
         image = self._build()
-        self.container = self._client.containers.run(
+        self._container = self._docker_client.containers.run(
             image,
             auto_remove=True,
             detach=True,
             name=self.name,
-            ports={"9200": 9200, "9300": 9300},
+            ports={"9200": self._port, "9300": 9300},
             environment={
                 "path.data": "/usr/share/opensearch/data",
                 "path.logs": "/usr/share/opensearch/logs",
@@ -114,55 +137,23 @@ class OpenSearch:
             ],
         )
         self._update_keystore()
-        if snapshot_repository:
-            if self.is_healthy():
-                self._register_snapshot_repository(snapshot_repository)
-            else:
-                raise OpenSearchError("Could not start OpenSearch. Failed health check")
+        if self.is_healthy():
+            return
+        else:
+            raise OpenSearchInstanceManagerError(
+                "Could not start OpenSearch. Failed health check"
+            )
 
     def stop(self) -> None:
         """Stop OpenSearch container."""
         try:
-            self.container = self._client.containers.get(self.name)
-            self.container.stop()
+            self._container = self._docker_client.containers.get(self.name)
+            self._container.stop()
         except NotFound:
             logger.error("Container not found")
             return
 
-    def snapshot(self, snapshot_repo: SnapshotRepository, snapshot_name: str) -> None:
-        """Create a snapshot of the OpenSearch data.
-
-        Arguments:
-            snapshot_repo -- Snapshot repository configuration
-            snapshot_name -- Snapshot name
-        """
-        logger.debug("Creating snapshot")
-        url = f"http://localhost:9200/_snapshot/{snapshot_repo.name}/{snapshot_name}"
-        payload = {
-            "indices": "-.*",
-            "ignore_unavailable": True,
-            "include_global_state": False,
-        }
-        response = requests.put(url, json=payload)
-        response.raise_for_status()
-
-    def create_index(self, index: str, mappings: str | Path) -> None:
-        """Create an index in OpenSearch.
-
-        Arguments:
-            index -- Index name
-            mappings -- Path to index mappings
-        """
-        logger.debug("Creating index")
-        url = f"http://localhost:9200/{index}"
-        with open(mappings, "r") as f:
-            json_mappings = json.load(f)
-            response = requests.put(url, json=json_mappings)
-            response.raise_for_status()
-
-    def is_healthy(
-        self, timeout: int = 6, retries: int = 3, delay: int = 10
-    ) -> Boolean:
+    def is_healthy(self, timeout: int = 6, retries: int = 3, delay: int = 10) -> bool:
         """Health check for OpenSearch.
 
         Keyword Arguments:
@@ -191,8 +182,8 @@ class OpenSearch:
 
     def _update_keystore(self):
         logger.debug("Updating keystore")
-        self.container.exec_run(["bin/opensearch-keystore", "create"])
-        self.container.exec_run(
+        self._container.exec_run(["bin/opensearch-keystore", "create"])
+        self._container.exec_run(
             [
                 "bin/opensearch-keystore",
                 "add-file",
@@ -200,26 +191,11 @@ class OpenSearch:
                 "/usr/share/opensearch/config/gac.json",
             ]
         )
-        self.container.restart()
+        self._container.restart()
 
     def _build(self) -> Image:
         logger.debug("Building OpenSearch image")
-        image, _ = self._client.images.build(
+        image, _ = self._docker_client.images.build(
             path=os.path.join(os.path.dirname(__file__), "."), tag="opensearch-pos"
         )
         return image
-
-    def _register_snapshot_repository(
-        self, snap_repo: SnapshotRepository
-    ) -> HTTPError | None:
-        url = f"http://localhost:9200/_snapshot/{snap_repo.name}"
-        payload = {
-            "type": snap_repo.type,
-            "settings": {
-                "bucket": snap_repo.bucket,
-                "base_path": snap_repo.base_path,
-                "client": snap_repo.client,
-            },
-        }
-        response = requests.put(url, json=payload)
-        response.raise_for_status()

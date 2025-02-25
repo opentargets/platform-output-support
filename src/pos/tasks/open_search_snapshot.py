@@ -1,10 +1,11 @@
 # Data prep task
 
+from typing import Self
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.opensearch.service import OpenSearch, SnapshotRepository
+from pos.opensearch.service import OpenSearchInstanceManager
 
 
 class OpenSearchSnapshotError(OtterError):
@@ -12,8 +13,8 @@ class OpenSearchSnapshotError(OtterError):
 
 
 class OpenSearchSnapshotSpec(Spec):
-    """Configuration fields for the Snapshot OpenSearch task.
-    """
+    """Configuration fields for the Snapshot OpenSearch task."""
+
     service_name: str
     snapshot_repository_name: str
     snapshot_name: str
@@ -25,12 +26,18 @@ class OpenSearchSnapshot(Task):
         self.spec: OpenSearchSnapshotSpec
 
     @report
-    def run(self) -> None:
+    def run(self) -> Self:
         print("opensearch snapshot run")
-        opensearch = OpenSearch(
+        opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
         )
-        opensearch.snapshot(
-            SnapshotRepository(self.spec.snapshot_repository_name),
-            self.spec.snapshot_name
+        opensearch.client.snapshot.create(
+            self.spec.snapshot_repository_name,
+            self.spec.snapshot_name,
+            body={
+                "indices": "-.*",
+                "ignore_unavailable": True,
+                "include_global_state": False,
+            },
         )
+        return self
