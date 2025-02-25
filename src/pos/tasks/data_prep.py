@@ -1,8 +1,8 @@
 # Data prep task
 
 from otter.task.model import Spec, Task, TaskContext
-from otter.util.errors import OtterError
 from otter.task.task_reporter import report
+from otter.util.errors import OtterError
 
 from pos.parquet2json.converter import convert
 from pos.parquet2json.utils import setup_logger

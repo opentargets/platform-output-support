@@ -1,12 +1,12 @@
 """CLI entry point for the application."""
 
-from pathlib import Path
 import time
+from pathlib import Path
+
 import typer
 
 from .converter import convert
-from .utils import setup_logger, LogLevels
-
+from .utils import LogLevels, setup_logger
 
 CLI_CONTEXT_OPTIONS = {
     "help_option_names": ["-h", "--help"],

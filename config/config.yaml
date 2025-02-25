@@ -18,10 +18,20 @@ steps:
       volume_data: "es/data"
       volume_logs: "es/logs"
       volume_creds: "pos-gac.json"
-      snapshot_name: "platform-opensearch-snapshots"
+      snapshot_repository_name: "platform-opensearch-snapshots"
       snapshot_bucket: "open-targets-pre-data-releases"
-      snapshot_base_path: "snapshots"
+      snapshot_base_path: "jamesh/snapshots"
       opensearch_java_opts: "-Xms2g -Xmx4g"
+  open_search_create_index:
+    - name: open_search_create_index opensearch create index l2g
+      service_name: "os-pos"
+      index: "l2g_predictions"
+      mappings: "config/opensearch/l2g.json"
+  open_search_load:
+    - name: open_search_load opensearch load l2g
+      service_name: "os-pos"
+      index_name: "locus_to_gene_predictions"
+      data_file: "locusToGenePredictions.json"
   open_search_snapshot:
     - name: open_search_snapshot opensearch snapshot
       service_name: "os-pos"
