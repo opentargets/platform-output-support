@@ -1,6 +1,5 @@
 """OpenSearch service module."""
 
-import json
 import os
 from pathlib import Path
 import time
@@ -10,6 +9,7 @@ from typing import Dict
 import docker
 from opensearchpy import OpenSearch
 import requests
+from requests.adapters import HTTPAdapter, Retry
 from docker.client import DockerClient
 from docker.errors import NotFound
 from docker.models.containers import Container
@@ -74,9 +74,7 @@ class OpenSearchInstanceManager:
         self._host = host
         self._port = port
         self.client = OpenSearch(
-            [{"host": self._host, "port": self._port}],
-            http_compress=True,
-            use_ssl=False,
+            [{"host": self._host, "port": self._port}], use_ssl=False, timeout=3600
         )
         self._docker_client: DockerClient = docker.from_env()
         self._container: Container = None
@@ -153,32 +151,23 @@ class OpenSearchInstanceManager:
             logger.error("Container not found")
             return
 
-    def is_healthy(self, timeout: int = 6, retries: int = 3, delay: int = 10) -> bool:
+    def is_healthy(self, timeout: int = 120, retries: int = 10) -> bool:
         """Health check for OpenSearch.
 
         Keyword Arguments:
-            timeout -- timeout for the wait_for_status call (sec) (default: {6})
-            retries -- number of retries (default: {3})
-            delay -- delay between retries (sec) (default: {10})
+            timeout -- timeout for the wait_for_status call (sec) (default: {120})
+            retries -- number of retries (default: {10})
 
         Returns:
             Boolean -- True if healthy, False otherwise
         """
         logger.debug("Waiting for OpenSearch health")
         url = f"http://localhost:9200/_cluster/health?wait_for_status=green&timeout={timeout}s"
-        while retries > 0:
-            try:
-                response = requests.get(url)
-                logger.debug(f"Health check response: {response.json()}")
-                if response.status_code != 200:
-                    return False
-                return True
-            except requests.exceptions.ConnectionError:
-                logger.warning("Connection error, retrying")
-                retries -= 1
-                time.sleep(delay)
-                continue
-        return False
+        session = requests.Session()
+        retries = Retry(total=retries, backoff_factor=1, status_forcelist=[56])
+        session.mount("http://", HTTPAdapter(max_retries=retries))
+        response = session.get(url)
+        return response.status_code == 200
 
     def _update_keystore(self):
         logger.debug("Updating keystore")
