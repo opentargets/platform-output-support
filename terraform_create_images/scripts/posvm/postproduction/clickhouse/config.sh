@@ -38,7 +38,7 @@ declare -A pos_ch_data_release_sources=(
     ["ot.associations_otf_log"]="view/association_otf/" \
     ["ot.literature_log"]="output/literature/" \
     ["ot.ml_w2v_log"]="output/literature_vectors/" \
-    ["ot.sentences_log"]="literature/output/literature_sentence/" \
+    ["ot.sentences_log"]="output/literature_sentence/" \
 )
 
 # Print summary of the environment by looping through all those variables that start with "pos_ch_"
