@@ -22,10 +22,6 @@ steps:
       snapshot_bucket: "open-targets-pre-data-releases"
       snapshot_base_path: "snapshots"
       opensearch_java_opts: "-Xms2g -Xmx4g"
-  webapp_metadata:
-    - name: webapp_metadata downloads
-      metadata_path: /home/ricardo/Documents/work-files/temp/test.jsonl
-      output: webappMetadata.jsonl
   ot_croissant:
     - name: ot_croissant metadata
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/24.09/output/etl/parquet/
