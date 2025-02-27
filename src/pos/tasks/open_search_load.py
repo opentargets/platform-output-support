@@ -9,6 +9,7 @@ from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
 from pos.opensearch.service import OpenSearchInstanceManager
+from pos.utils import get_config
 
 
 class OpenSearchLoadError(OtterError):
@@ -21,14 +22,18 @@ class OpenSearchLoadSpec(Spec):
     service_name: str = "os-pos"
     host: str = "localhost"
     port: str = "9200"
-    index: str
-    data: str
+    dataset: str
+    json_parent: str
+    # data: str
 
 
 class OpenSearchLoad(Task):
     def __init__(self, spec: OpenSearchLoadSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
         self.spec: OpenSearchLoadSpec
+        self._config = get_config("config/datasets.yaml").opensearch
+        self._index_name = self._config[self.spec.dataset]["index"]
+        self._output_dir = self._config[self.spec.dataset]["output_dir"]
 
     @report
     def run(self) -> Self:
@@ -43,10 +48,13 @@ class OpenSearchLoad(Task):
         ):
             if not success:
                 logger.error(f"Failed to index document: {info}")
-        opensearch.client.indices.refresh(index=self.spec.index)
+        opensearch.client.indices.refresh(index=self._index_name)
         return self
 
     def _generate_data(self) -> Generator[Dict[str, str]]:
-        with open(self.spec.data, "r") as f:
+        with open(self._get_json(self.spec.json_parent), "r") as f:
             for doc in f:
-                yield {"_index": self.spec.index, "_source": doc}
+                yield {"_index": self._index_name, "_source": doc}
+
+    def _get_json(self, json_parent: str) -> str:
+        return f"{json_parent}/{self._output_dir}/{self.spec.dataset}.json"

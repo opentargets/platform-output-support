@@ -83,6 +83,7 @@ class Converter:
         if path is None:
             self._json_lines_to_stdout(rows)
         else:
+            Path(path).parent.mkdir(exist_ok=True, parents=True)
             self._json_lines_to_file(rows, path)
 
     def _drop_nulls_recursively(

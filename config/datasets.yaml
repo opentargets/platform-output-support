@@ -1,0 +1,13 @@
+---
+opensearch:
+  diseases:
+    index: disease
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: diseases
+    output_dir: diseases
+  pharmacogenomics:
+    index: pharmacogenomics
+    mappings: config/opensearch/default.json
+    input_dir: pharmacogenomics
+    output_dir: pharmacogenomics
