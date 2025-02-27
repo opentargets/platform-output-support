@@ -248,7 +248,7 @@ function load_etl_data_into_es() {
   done < "${pos_es_path_etl_ingestion_config}"
 
   # Add the jobs for loading Evidence data into Elastic Search
-  for evidence_path in $( gsutil ls ${pos_data_release_path_etl_parquet}/evidence | grep sourceId ); do
+  for evidence_path in $( gsutil ls ${pos_data_release_path_etl_parquet}/output/evidence | grep sourceId ); do
     # Extract the sourceId from the path
     export full_path="${evidence_path%/}"
     export source_id="${full_path##*/}"

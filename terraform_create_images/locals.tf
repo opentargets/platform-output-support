@@ -15,15 +15,15 @@ locals {
   // --- Open Targets Data Release Skeleton --- //
   data_release_skeleton_path_output_root      = "output"
   data_release_skeleton_path_input_root       = "input"
-  data_release_skeleton_path_etl_root         = "${local.data_release_skeleton_path_output_root}/etl"
-  data_release_skeleton_path_etl_json_root    = "${local.data_release_skeleton_path_etl_root}/json"
-  data_release_skeleton_path_etl_parquet_root = "${local.data_release_skeleton_path_etl_root}/parquet"
+  data_release_skeleton_path_etl_root         = local.data_release_skeleton_path_output_root
+  data_release_skeleton_path_etl_json_root    = local.data_release_skeleton_path_etl_root
+  data_release_skeleton_path_etl_parquet_root = local.data_release_skeleton_path_etl_root
   data_release_skeleton_path_metadata_root    = "${local.data_release_skeleton_path_output_root}/metadata"
 
   // --- Open Targets Data Release --- //
   data_release_path_source_root = "gs://${var.data_location_source}"
   data_release_path_etl_json    = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_etl_json_root}"
-  data_release_path_etl_parquet = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_etl_parquet_root}"
+  data_release_path_etl_parquet = local.data_release_path_source_root
   data_release_path_input_root  = "${local.data_release_path_source_root}/${local.data_release_skeleton_path_input_root}"
 
   // --- POS VM data load process configuration --- //
