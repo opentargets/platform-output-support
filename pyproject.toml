@@ -9,6 +9,7 @@ dependencies = [
     "opentargets-otter>=25.0.0a11",
     "orjson>=3.10.15",
     "ot-croissant",
+    "ot-croissant",
     "polars>=1.22.0",
     "pyarrow>=19.0.0",
     "rich>=13.9.4",
@@ -29,7 +30,6 @@ pos = "pos.core:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
 [tool.uv.sources]
 ot-croissant = { git = "https://github.com/opentargets/ot_croissant.git", branch = "master" }
 
@@ -172,3 +172,6 @@ parametrize-values-row-type = 'tuple'
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 ignore-decorators = ["pos.tasks.report", "pos.manifest.task_reporter.report"]
+
+[tool.uv.sources]
+ot-croissant = { git = "https://github.com/opentargets/ot_croissant.git", branch = "master" }
