@@ -1,6 +1,5 @@
 ---
 work_path: ./work
-release_uri: gs://open-targets-pre-data-releases/ricardo
 log_level: SUCCESS
 scratchpad:
 steps:
