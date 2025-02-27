@@ -48,6 +48,7 @@ class OtCroissant(Task):
         super().__init__(spec, context)
         self.spec: OtCroissantSpec
         self.local_path: Path = self.context.config.work_path / self.spec.output
+        self.remote_uri: str | None = None
         if context.config.release_uri:
             self.remote_uri = f'{context.config.release_uri}/{spec.output}'
 
