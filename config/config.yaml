@@ -15,9 +15,6 @@ steps:
       volume_data: "es/data"
       volume_logs: "es/logs"
       volume_creds: "pos-gac.json"
-      snapshot_repository_name: "platform-opensearch-snapshots"
-      snapshot_bucket: "open-targets-pre-data-releases"
-      snapshot_base_path: "jamesh/snapshots"
       opensearch_java_opts: "-Xms2g -Xmx4g"
   open_search_create_index:
     - name: open_search_create_index opensearch create index l2g
@@ -33,11 +30,15 @@ steps:
     - name: open_search_snapshot opensearch snapshot
       snapshot_repository_name: "platform-opensearch-snapshots"
       snapshot_name: "2"
+      snapshot_bucket: "open-targets-pre-data-releases"
+      snapshot_base_path: "jamesh/snapshots"
       indices: "*,-.*"
   open_search_restore:
     - name: open_search_restore opensearch restore
       snapshot_repository_name: "platform-opensearch-snapshots"
       snapshot_name: "2"
+      snapshot_bucket: "open-targets-pre-data-releases"
+      snapshot_base_path: "jamesh/snapshots"
   open_search_stop:
     - name: open_search_stop opensearch stop
       service_name: "os-pos"
@@ -46,9 +47,6 @@ steps:
       volume_data: "es/data"
       volume_logs: "es/logs"
       volume_creds: "pos-gac.json"
-      snapshot_repository_name: "platform-opensearch-snapshots"
-      snapshot_bucket: "open-targets-pre-data-releases"
-      snapshot_base_path: "jamesh/snapshots"
       opensearch_java_opts: "-Xms2g -Xmx4g"
     - name: explode load all datasets
       foreach:

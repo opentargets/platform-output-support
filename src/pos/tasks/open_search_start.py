@@ -16,13 +16,10 @@ class OpenSearchStartSpec(Spec):
 
     service_name: str = "os-pos"
     host: str = "localhost"
-    port: int = 9200
+    port: str = "9200"
     volume_data: str
     volume_logs: str
     volume_creds: str
-    snapshot_repository_name: str
-    snapshot_bucket: str
-    snapshot_base_path: str
     opensearch_java_opts: str
 
 
@@ -42,14 +39,5 @@ class OpenSearchStart(Task):
             self.spec.volume_logs,
             self.spec.volume_creds,
             self.spec.opensearch_java_opts,
-        )
-        snapshot_repo = SnapshotRepository(
-            name=self.spec.snapshot_repository_name,
-            type="gcs",
-            bucket=self.spec.snapshot_bucket,
-            base_path=self.spec.snapshot_base_path,
-        )
-        opensearch.client.snapshot.create_repository(
-            snapshot_repo.name, snapshot_repo.body()
         )
         return self

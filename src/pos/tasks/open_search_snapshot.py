@@ -7,7 +7,7 @@ from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 from otter.validators import v
 
-from pos.opensearch.service import OpenSearchInstanceManager
+from pos.opensearch.service import OpenSearchInstanceManager, SnapshotRepository
 
 
 class OpenSearchSnapshotError(OtterError):
@@ -19,9 +19,11 @@ class OpenSearchSnapshotSpec(Spec):
 
     service_name: str = "os-pos"
     host: str = "localhost"
-    port: int = 9200
+    port: str = "9200"
     snapshot_repository_name: str
     snapshot_name: str
+    snapshot_bucket: str
+    snapshot_base_path: str
     indices: str = "*,-.*"
 
 
@@ -37,6 +39,15 @@ class OpenSearchSnapshot(Task):
             self.spec.service_name,
             self.spec.host,
             self.spec.port,
+        )
+        snapshot_repo = SnapshotRepository(
+            name=self.spec.snapshot_repository_name,
+            type="gcs",
+            bucket=self.spec.snapshot_bucket,
+            base_path=self.spec.snapshot_base_path,
+        )
+        opensearch.client.snapshot.create_repository(
+            snapshot_repo.name, snapshot_repo.body()
         )
         opensearch.client.snapshot.create(
             self.spec.snapshot_repository_name,

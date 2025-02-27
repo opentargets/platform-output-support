@@ -17,7 +17,7 @@ class OpenSearchCreateIndexSpec(Spec):
 
     service_name: str = "os-pos"
     host: str = "localhost"
-    port: int = 9200
+    port: str = "9200"
     index: str
     mappings: str
 
