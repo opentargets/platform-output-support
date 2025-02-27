@@ -64,7 +64,7 @@ class OtCroissant(Task):
         )
         logger.debug(f"Metadata generated: {metadata}")
 
-        with open(self.local_path, "w") as f:
+        with open(self.local_path, "w+") as f:
                 content = metadata.to_json()
                 content = json.dumps(content, indent=2, default=datetime_serializer)
                 f.write(content)
