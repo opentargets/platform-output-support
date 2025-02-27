@@ -37,7 +37,7 @@ export pos_ch_docker_image="${pos_clickhouse_docker_image}:${pos_clickhouse_dock
 declare -A pos_ch_data_release_sources=(
     ["ot.associations_otf_log"]="view/association_otf/" \
     ["ot.literature_log"]="output/literature/" \
-    ["ot.ml_w2v_log"]="output/literature_vectors/" \
+    ["ot.ml_w2v_log"]="output/literature_vector/" \
     ["ot.sentences_log"]="output/literature_sentence/" \
 )
 
