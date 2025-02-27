@@ -17,7 +17,9 @@ class OpenSearchSnapshotError(OtterError):
 class OpenSearchSnapshotSpec(Spec):
     """Configuration fields for the Snapshot OpenSearch task."""
 
-    service_name: str
+    service_name: str = "os-pos"
+    host: str = "localhost"
+    port: int = 9200
     snapshot_repository_name: str
     snapshot_name: str
     indices: str = "*,-.*"
@@ -33,6 +35,8 @@ class OpenSearchSnapshot(Task):
         logger.info("opensearch snapshot run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
+            self.spec.host,
+            self.spec.port,
         )
         opensearch.client.snapshot.create(
             self.spec.snapshot_repository_name,

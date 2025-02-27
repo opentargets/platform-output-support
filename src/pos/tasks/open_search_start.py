@@ -14,7 +14,9 @@ class OpenSearchStartError(OtterError):
 class OpenSearchStartSpec(Spec):
     """Configuration fields for the start OpenSearch task."""
 
-    service_name: str
+    service_name: str = "os-pos"
+    host: str = "localhost"
+    port: int = 9200
     volume_data: str
     volume_logs: str
     volume_creds: str
@@ -32,7 +34,9 @@ class OpenSearchStart(Task):
     @report
     def run(self) -> Self:
         print("opensearch start run")
-        opensearch = OpenSearchInstanceManager(self.spec.service_name)
+        opensearch = OpenSearchInstanceManager(
+            self.spec.service_name, self.spec.host, self.spec.port
+        )
         opensearch.start(
             self.spec.volume_data,
             self.spec.volume_logs,

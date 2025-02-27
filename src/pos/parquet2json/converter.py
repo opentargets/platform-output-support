@@ -54,7 +54,8 @@ class Converter:
         """Read a parquet file and return a DataFrame."""
         try:
             # pyarrow does not automatically detect the filesystem
-            filesystem, path = FileSystem.from_uri(parquet_path)
+            path_no_wildcards = parquet_path.split("*")[0]
+            filesystem, path = FileSystem.from_uri(path_no_wildcards)
             schema = self.get_pyarrow_schema(filesystem, path, parquet_path)
             df = pl.read_parquet(
                 path,

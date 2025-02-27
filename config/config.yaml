@@ -1,10 +1,7 @@
 ---
 work_path: ./work
 log_level: TRACE
-scratchpad:
 steps:
-  hello:
-    - name: hello_world bla bla
   data_prep:
     - name: data_prep l2g
       source: gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet/locusToGenePredictions/part-00001-3563e8c9-205f-4478-affc-7b17ede97027-c000.snappy.parquet
@@ -30,20 +27,44 @@ steps:
   open_search_load:
     - name: open_search_load opensearch load l2g
       service_name: "os-pos"
-      index_name: "locus_to_gene_predictions"
-      data_file: "locusToGenePredictions.json"
+      index: "l2g_predictions"
+      data: "locusToGenePredictions.json"
   open_search_snapshot:
     - name: open_search_snapshot opensearch snapshot
-      service_name: "os-pos"
       snapshot_repository_name: "platform-opensearch-snapshots"
-      snapshot_name: "1"
-      indices: "target,pharmacogenomics,interaction"
+      snapshot_name: "2"
+      indices: "*,-.*"
   open_search_restore:
     - name: open_search_restore opensearch restore
-      service_name: "os-pos"
       snapshot_repository_name: "platform-opensearch-snapshots"
-      snapshot_name: "1"
+      snapshot_name: "2"
   open_search_stop:
     - name: open_search_stop opensearch stop
       service_name: "os-pos"
-  
+  open_search_load_all:
+    - name: open_search_start opensearch start
+      volume_data: "es/data"
+      volume_logs: "es/logs"
+      volume_creds: "pos-gac.json"
+      snapshot_repository_name: "platform-opensearch-snapshots"
+      snapshot_bucket: "open-targets-pre-data-releases"
+      snapshot_base_path: "jamesh/snapshots"
+      opensearch_java_opts: "-Xms2g -Xmx4g"
+    - name: explode load all datasets
+      foreach:
+        - pharmacogenomics
+        - diseases
+      do: 
+        - name: data_prep ${each} data prep
+          source: "gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet/${each}/*.parquet"
+          destination: ${each}.jsonl
+        - name: open_search_create_index opensearch create index ${each}
+          index: ${each} # need to inject value here
+          mappings: "config/opensearch/${each}.json" # one for each 
+          requires:
+            - open_search_start opensearch start
+        - name: open_search_load opensearch load ${each}
+          index: ${each}
+          data: ${each}.jsonl
+          requires:
+            - open_search_create_index opensearch create index ${each}

@@ -15,7 +15,9 @@ class OpenSearchCreateIndexError(OtterError):
 class OpenSearchCreateIndexSpec(Spec):
     """Configuration fields for the create index OpenSearch task."""
 
-    service_name: str
+    service_name: str = "os-pos"
+    host: str = "localhost"
+    port: int = 9200
     index: str
     mappings: str
 
@@ -30,6 +32,8 @@ class OpenSearchCreateIndex(Task):
         print("opensearch create index run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
+            self.spec.host,
+            self.spec.port,
         )
         with open(self.spec.mappings, "r") as f:
             opensearch.client.indices.create(

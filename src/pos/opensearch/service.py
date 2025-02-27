@@ -162,10 +162,11 @@ class OpenSearchInstanceManager:
             Boolean -- True if healthy, False otherwise
         """
         logger.debug("Waiting for OpenSearch health")
-        url = f"http://localhost:9200/_cluster/health?wait_for_status=green&timeout={timeout}s"
+        prefix = "http://"
+        url = f"{prefix}{self._host}:{self._port}/_cluster/health?wait_for_status=green&timeout={timeout}s"
         session = requests.Session()
         retries = Retry(total=retries, backoff_factor=1, status_forcelist=[56])
-        session.mount("http://", HTTPAdapter(max_retries=retries))
+        session.mount(prefix, HTTPAdapter(max_retries=retries))
         response = session.get(url)
         return response.status_code == 200
 

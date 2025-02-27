@@ -15,7 +15,9 @@ class OpenSearchRestoreError(OtterError):
 class OpenSearchRestoreSpec(Spec):
     """Configuration fields for the restore OpenSearch task."""
 
-    service_name: str
+    service_name: str = "os-pos"
+    host: str = "localhost"
+    port: int = 9200
     snapshot_repository_name: str
     snapshot_name: str
     indices: str = "-.*"
@@ -31,6 +33,8 @@ class OpenSearchRestore(Task):
         print("opensearch restore run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
+            self.spec.host,
+            self.spec.port,
         )
         opensearch.client.snapshot.restore(
             self.spec.snapshot_repository_name,

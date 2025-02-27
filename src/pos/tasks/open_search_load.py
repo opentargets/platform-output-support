@@ -18,7 +18,9 @@ class OpenSearchLoadError(OtterError):
 class OpenSearchLoadSpec(Spec):
     """Configuration fields for the create index OpenSearch task."""
 
-    service_name: str
+    service_name: str = "os-pos"
+    host: str = "localhost"
+    port: int = 9200
     index: str
     data: str
 
@@ -33,6 +35,8 @@ class OpenSearchLoad(Task):
         print("opensearch create index run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
+            self.spec.host,
+            self.spec.port,
         )
         for success, info in helpers.parallel_bulk(
             opensearch.client, actions=self._generate_data()
