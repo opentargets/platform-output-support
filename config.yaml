@@ -2,6 +2,7 @@
 work_path: ./work
 log_level: SUCCESS
 scratchpad:
+  release: "24.09"
 steps:
   hello:
     - name: hello_world bla bla
@@ -23,10 +24,9 @@ steps:
       snapshot_base_path: "snapshots"
       opensearch_java_opts: "-Xms2g -Xmx4g"
   ot_croissant:
-    - name: ot_croissant metadata
+    - name: ot_croissant generate release metadata
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/24.09/output/etl/parquet/
       gcp_address: gs://open-targets-data-releases/24.09/output/etl/parquet/
-      version: "24.09"
       date_published: "2025-02-12"
       d: /home/ricardo/Documents/work-files/etl/testfiles/outputs/parquet/targets
       output: ot_croissant_metadata.json
