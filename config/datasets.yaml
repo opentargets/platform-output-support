@@ -1,13 +1,183 @@
 ---
 opensearch:
-  diseases:
+  expression:
+    index: expression
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: baselineExpression
+    output_dir: baselineExpression
+  disease_hpo:
+    index: disease_hpo
+    mappings: config/opensearch/default.json
+    input_dir: diseaseToPhenotype # will change
+    output_dir: disease_phenotype
+  disease:
     index: disease
     mappings: config/opensearch/default.json
     id_field: id
-    input_dir: diseases
-    output_dir: diseases
+    input_dir: diseases # will change
+    output_dir: disease
+  drug_warnings:
+    index: drug_warnings
+    mappings: config/opensearch/default.json
+    input_dir: drugWarnings # will change
+    output_dir: drug_warning
+  go:
+    index: go
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: go # will change
+    output_dir: go
+  hpo:
+    index: hpo
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: disease_hpo # will change
+    output_dir: hpo
+  indication:
+    index: indication
+    mappings: config/opensearch/default.json
+    input_dir: indication # will change
+    output_dir: drug_indication
+  interaction:
+    index: interaction
+    mappings: config/opensearch/default.json
+    input_dir: interaction # will change
+    output_dir: interaction
+  interaction_evidence:
+    index: interaction_evidence
+    mappings: config/opensearch/default.json
+    input_dir: interactionEvidence # will change
+    output_dir: interaction_evidence
+  known_drugs:
+    index: known_drugs
+    mappings: config/opensearch/search_known_drugs.json
+    input_dir: knownDrugsAggregated # will change
+    output_dir: known_drug
+  mechanism_of_action:
+    index: mechanism_of_action
+    mappings: config/opensearch/default.json
+    input_dir: mechanismOfAction # will change
+    output_dir: drug_mechanism_of_action
+  drug:
+    index: drug
+    mappings: config/opensearch/default.json
+    input_dir: molecule # will change
+    output_dir: drug_molecule
+  otar_projects:
+    index: otar_projects
+    mappings: config/opensearch/default.json
+    id_field: efo_id
+    input_dir: otar_projects 
+    output_dir: otar_projects
+  reactome:
+    index: reactome
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: reactome 
+    output_dir: reactome
+  search_drug:
+    index: search_drug
+    mappings: config/opensearch/search.json
+    input_dir: searchDrug
+    output_dir: search_drug
+  search_target:
+    index: search_target
+    mappings: config/opensearch/search.json
+    input_dir: searchTarget
+    output_dir: search_target
+  search_disease:
+    index: search_disease
+    mappings: config/opensearch/search.json
+    input_dir: searchDisease
+    output_dir: search_disease
+  search_variant:
+    index: search_variant
+    mappings: config/opensearch/search.json
+    input_dir: searchVariant
+    output_dir: search_variant
+  search_study:
+    index: search_study
+    mappings: config/opensearch/search.json
+    input_dir: searchStudy
+    output_dir: search_study
+  so:
+    index: so
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: so-inputs # will change
+    output_dir: so
+  target:
+    index: target
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: targets # will change
+    output_dir: target
+  target_prioritisation:
+    index: target_prioritisation
+    mappings: config/opensearch/default.json
+    id_field: targetId
+    input_dir: targetPrioritisation # will change
+    output_dir: target_prioritisation
+  target_essentiality:
+    index: target_essentiality
+    mappings: config/opensearch/default.json
+    id_field: id
+    input_dir: targetEssentiality # will change
+    output_dir: target_essentiality
+  mouse_phenotypes:
+    index: mouse_phenotypes
+    mappings: config/opensearch/default.json
+    input_dir: mousePhenotypes # will change
+    output_dir: target_validation
+  openfda_faers:
+    index: openfda_faers
+    mappings: config/opensearch/default.json
+    input_dir: fda/significantAdverseDrugReactions # will change
+    output_dir: openfda_significant_adverse_target_reactions
   pharmacogenomics:
     index: pharmacogenomics
     mappings: config/opensearch/default.json
     input_dir: pharmacogenomics
     output_dir: pharmacogenomics
+  facet_search_target:
+    index: facet_search_target
+    mappings: config/opensearch/facet_search.json
+    input_dir: facetSearchTarget # will change
+    output_dir: search_facet_target
+  facet_search_disease:
+    index: facet_search_disease
+    mappings: config/opensearch/facet_search.json
+    input_dir: facetSearchDisease # will change
+    output_dir: search_facet_disease
+  variant_index:
+    index: variant_index
+    mappings: config/opensearch/default.json
+    input_dir: variantIndex # will change
+    output_dir: variant
+  gwas_index:
+    index: gwas_index
+    mappings: config/opensearch/study.json
+    input_dir: gwasIndex # will change
+    output_dir: study
+  credible_set:
+    index: credible_set
+    mappings: config/opensearch/credible_set.json
+    input_dir: credibleSet # will change
+    output_dir: credible_set
+  colocalisation:
+    index: colocalisation
+    mappings: config/opensearch/colocalisation.json
+    input_dir: colocalisation # will change
+    output_dir: colocalisation
+  biosample:
+    index: biosample
+    mappings: config/opensearch/default.json
+    input_dir: biosample # will change
+    output_dir: biosample
+  l2g_predictions:
+    index: l2g_predictions
+    mappings: config/opensearch/l2g_predictions.json
+    input_dir: locusToGenePredictions # will change
+    output_dir: l2g_prediction
+  

@@ -32,9 +32,12 @@ class DataPrep(Task):
     def __init__(self, spec: DataPrepSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
         self.spec: DataPrepSpec
-        self._config = get_config("config/datasets.yaml").opensearch
-        self._input_dir = self._config[self.spec.dataset].input_dir
-        self._output_dir = self._config[self.spec.dataset].output_dir
+        try:
+            self._config = get_config("config/datasets.yaml").opensearch
+            self._input_dir = self._config[self.spec.dataset].input_dir
+            self._output_dir = self._config[self.spec.dataset].output_dir
+        except AttributeError:
+            raise DataPrepError(f"Unable to load config for {self.spec.dataset}")
 
     @report
     def run(self) -> None:

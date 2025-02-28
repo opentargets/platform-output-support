@@ -1,5 +1,6 @@
 # Data prep task
 
+import json
 from typing import Dict, Generator, Self
 
 from loguru import logger
@@ -24,16 +25,19 @@ class OpenSearchLoadSpec(Spec):
     port: str = "9200"
     dataset: str
     json_parent: str
-    # data: str
 
 
 class OpenSearchLoad(Task):
     def __init__(self, spec: OpenSearchLoadSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
         self.spec: OpenSearchLoadSpec
-        self._config = get_config("config/datasets.yaml").opensearch
-        self._index_name = self._config[self.spec.dataset]["index"]
-        self._output_dir = self._config[self.spec.dataset]["output_dir"]
+        try:
+            self._config = get_config("config/datasets.yaml").opensearch
+            self._index_name = self._config[self.spec.dataset]["index"]
+            self._id_field = self._config[self.spec.dataset].get("id_field")
+            self._output_dir = self._config[self.spec.dataset]["output_dir"]
+        except AttributeError:
+            raise OpenSearchLoadError(f"Unable to load config for {self.spec.dataset}")
 
     @report
     def run(self) -> Self:
@@ -53,8 +57,13 @@ class OpenSearchLoad(Task):
 
     def _generate_data(self) -> Generator[Dict[str, str]]:
         with open(self._get_json(self.spec.json_parent), "r") as f:
-            for doc in f:
-                yield {"_index": self._index_name, "_source": doc}
+            for record in f:
+                doc = {"_index": self._index_name, "_source": record}
+                if self._id_field:
+                    doc["_id"] = json.loads(record).get(
+                        self._id_field
+                    )  # TODO: consider using ingest pipeline for this
+                yield doc
 
     def _get_json(self, json_parent: str) -> str:
         return f"{json_parent}/{self._output_dir}/{self.spec.dataset}.json"

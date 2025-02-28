@@ -26,8 +26,8 @@ class OpenSearchCreateIndex(Task):
     def __init__(self, spec: OpenSearchCreateIndexSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
         self.spec: OpenSearchCreateIndexSpec
-        self._config = get_config("config/datasets.yaml").opensearch
         try:
+            self._config = get_config("config/datasets.yaml").opensearch
             self._index_name = self._config[self.spec.dataset]["index"]
             self._mappings = self._config[self.spec.dataset]["mappings"]
         except AttributeError:

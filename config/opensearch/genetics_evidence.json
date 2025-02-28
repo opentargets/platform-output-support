@@ -10,7 +10,18 @@
                     }
                 }
             }
-        ]
+        ],
+        "properties": {
+            "oddsRatio": {
+                "type": "double"
+            },
+            "oddsRatioConfidenceIntervalUpper": {
+                "type": "double"
+            },
+            "oddsRatioConfidenceIntervalLower": {
+                "type": "double"
+            }
+        }
     },
     "settings": {
         "index": {
