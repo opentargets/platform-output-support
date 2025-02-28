@@ -32,8 +32,8 @@ opensearch:
     index: hpo
     mappings: config/opensearch/default.json
     id_field: id
-    input_dir: disease_hpo # will change
-    output_dir: hpo
+    input_dir: hpo # will change
+    output_dir: disease_hpo
   indication:
     index: indication
     mappings: config/opensearch/default.json
@@ -165,11 +165,16 @@ opensearch:
     mappings: config/opensearch/credible_set.json
     input_dir: credibleSet # will change
     output_dir: credible_set
-  colocalisation:
+  colocalisation_coloc:
     index: colocalisation
     mappings: config/opensearch/colocalisation.json
-    input_dir: colocalisation # will change
-    output_dir: colocalisation
+    input_dir: colocalisation/coloc # will change
+    output_dir: colocalisation/coloc
+  colocalisation_ecaviar:
+    index: colocalisation
+    mappings: config/opensearch/colocalisation.json
+    input_dir: colocalisation/ecaviar # will change
+    output_dir: colocalisation/ecaviar
   biosample:
     index: biosample
     mappings: config/opensearch/default.json

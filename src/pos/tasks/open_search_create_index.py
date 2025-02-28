@@ -1,6 +1,7 @@
 # Data prep task
 
 from typing import Self
+from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -43,9 +44,12 @@ class OpenSearchCreateIndex(Task):
             self.spec.host,
             self.spec.port,
         )
-        with open(self._mappings, "r") as f:
-            opensearch.client.indices.create(
-                index=self._index_name,
-                body=f.read(),
-            )
+        if not opensearch.client.indices.exists(index=self._index_name):
+            with open(self._mappings, "r") as f:
+                opensearch.client.indices.create(
+                    index=self._index_name,
+                    body=f.read(),
+                )
+            logger.debug(f"Created index {self._index_name}")
+        logger.debug(f"Index {self._index_name} already exists")
         return self

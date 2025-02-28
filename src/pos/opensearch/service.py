@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-import time
 from dataclasses import dataclass
 from typing import Dict
 
@@ -101,6 +100,7 @@ class OpenSearchInstanceManager:
         Raises:
             OpenSearchInstanceManagerError: If OpenSearch fails to start
         """
+        # TODO: run as correct user
         logger.info("Starting OpenSearch")
         image = self._build()
         self._container = self._docker_client.containers.run(

@@ -2,7 +2,7 @@
 work_path: ./work
 log_level: TRACE
 scratchpad:
-  parquet_input_path: gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet
+  parquet_input_path: gs://open-targets-pre-data-releases/24.12-uo_test-3/output/etl/parquet
   opensearch_java_opts: -Xms2g -Xmx4g
   json_output_path: output
   opensearch_data: es/data
@@ -30,8 +30,7 @@ steps:
   open_search_create_index:
     - name: open_search_create_index opensearch create index l2g
       service_name: os-pos
-      index: l2g_predictions
-      mappings: config/opensearch/l2g.json
+      dataset: disease
   open_search_load:
     - name: open_search_load opensearch load l2g
       service_name: os-pos
@@ -83,6 +82,19 @@ steps:
         - so
         - target
         - target_prioritisation
+        - target_essentiality
+        - mouse_phenotypes
+        - openfda_faers
+        - pharmacogenomics
+        - facet_search_target
+        - facet_search_disease
+        - variant_index
+        - gwas_index
+        - credible_set
+        - colocalisation_coloc
+        - colocalisation_ecaviar
+        - biosample
+        - l2g_predictions
       do: 
         - name: data_prep ${each} data prep
           parquet_parent: ${parquet_input_path}
