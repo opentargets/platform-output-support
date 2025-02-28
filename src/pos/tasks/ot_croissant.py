@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Self
 
 from otter.task.model import Spec, Task, TaskContext
-from otter.util.errors import OtterError
+from otter.util.errors import OtterError, ScratchpadError
 from otter.task.task_reporter import report
 from otter.storage import get_remote_storage
 
@@ -25,16 +25,14 @@ class OtCroissantSpec(Spec):
     This task has the following custom configuration fields:
         - ftp_address (str): The URL of the ftp where the data is going to be published.
         - gcp_address (str): The URL of the google bucket where the data is going to be published.
-        - d (str): The path where the parquet outputs are stored. These outputs are going to be used to extract the schema.
-        - version (str): The version of the data.
+        - dataset_path (Path): The path where the parquet outputs are stored. These outputs are going to be used to extract the schema.
         - date_published (str): The date when the data was published. The date format is YYYY-MM-DD.
-        - output (str): Name of the file where the metadata is going to be stored.
+        - output (str): Path (relative to `work_path` or `release_uri`) to store the metadata at.
     """
 
     ftp_address: str
     gcp_address: str
-    d: str
-    version: str
+    dataset_path: Path
     date_published: str
     output: str
 
@@ -54,22 +52,24 @@ class OtCroissant(Task):
 
     @report
     def run(self) -> Self:
+        release = self.context.scratchpad.sentinel_dict.get('release')
+        if not release:
+            raise ScratchpadError('"release" not found in the scratchpad')
         metadata = PlatformOutputMetadata(
-            datasets=[self.spec.d],
+            datasets=[str(self.spec.dataset_path)],
             ftp_location= self.spec.ftp_address,
             gcp_location=self.spec.gcp_address,
-            version=self.spec.version,
+            version=release,
             date_published=self.spec.date_published,
             data_integrity_hash='sha256'
         )
         logger.debug(f"Metadata generated: {metadata}")
 
         with open(self.local_path, "w+") as f:
-                content = metadata.to_json()
-                content = json.dumps(content, indent=2, default=datetime_serializer)
+                metadata_json = metadata.to_json()
+                metadata_str = json.dumps(metadata_json, indent=2, default=datetime_serializer)
+                content = f'{metadata_str}\n'
                 f.write(content)
-                f.write("\n")
-                logger.debug(f"Metadata written to {self.local_path}")
 
          # upload the result to remote storage
         if self.remote_uri:
