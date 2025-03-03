@@ -72,8 +72,6 @@ class OtCroissant(Task):
             content = f'{metadata_str}\n'
             f.write(content)
             logger.debug(f"Metadata written to {self.local_path}")
-            # set the artifact with the local output. TODO: set all the inputs for artifact
-            self.artifacts = [Artifact(source=f'{self.spec.dataset_path}', destination=str(self.local_path))]
 
          # upload the result to remote storage
         if self.remote_uri:
@@ -81,7 +79,7 @@ class OtCroissant(Task):
             remote_storage = get_remote_storage(self.remote_uri)
             remote_storage.upload(self.local_path, self.remote_uri)
             logger.debug('upload successful')
-            # set the artifact with the remote output. TODO: set all the inputs for artifact
-            self.artifacts = [Artifact(source=f'{self.spec.dataset_path}', destination=str(self.remote_uri))]
 
+        #TODO: set all the inputs for artifact
+        self.artifacts = [Artifact(source=f'{self.spec.dataset_path}', destination=self.remote_uri or str(self.local_path))]
         return self
