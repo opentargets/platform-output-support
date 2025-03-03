@@ -28,5 +28,5 @@ steps:
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/24.09/output/etl/parquet/
       gcp_address: gs://open-targets-data-releases/24.09/output/etl/parquet/
       date_published: "2025-02-12"
-      d: /home/ricardo/Documents/work-files/etl/testfiles/outputs/parquet/targets
+      dataset_path: /home/ricardo/Documents/work-files/etl/testfiles/outputs/parquet/targets
       output: ot_croissant_metadata.json
