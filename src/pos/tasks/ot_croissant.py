@@ -33,7 +33,7 @@ class OtCroissantSpec(Spec):
 
     ftp_address: str
     gcp_address: str
-    dataset_path: Path
+    dataset_paths: list[Path]
     date_published: str
     output: str
 
@@ -57,7 +57,7 @@ class OtCroissant(Task):
         if not release:
             raise ScratchpadError('"release" not found in the scratchpad')
         metadata = PlatformOutputMetadata(
-            datasets=[str(self.spec.dataset_path)],
+            datasets=list(map(str, self.spec.dataset_paths)),
             ftp_location= self.spec.ftp_address,
             gcp_location=self.spec.gcp_address,
             version=release,
@@ -81,5 +81,5 @@ class OtCroissant(Task):
             logger.debug('upload successful')
 
         #TODO: set all the inputs for artifact
-        self.artifacts = [Artifact(source=f'{self.spec.dataset_path}', destination=self.remote_uri or str(self.local_path))]
+        self.artifacts = [Artifact(source=f'{self.spec.gcp_address}', destination=self.remote_uri or str(self.local_path))]
         return self
