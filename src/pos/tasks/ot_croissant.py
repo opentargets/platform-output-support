@@ -7,6 +7,7 @@ from otter.task.model import Spec, Task, TaskContext
 from otter.util.errors import OtterError, ScratchpadError
 from otter.task.task_reporter import report
 from otter.storage import get_remote_storage
+from otter.manifest.model import Artifact
 
 import json
 from datetime import datetime
@@ -66,10 +67,11 @@ class OtCroissant(Task):
         logger.debug(f"Metadata generated: {metadata}")
 
         with open(self.local_path, "w+") as f:
-                metadata_json = metadata.to_json()
-                metadata_str = json.dumps(metadata_json, indent=2, default=datetime_serializer)
-                content = f'{metadata_str}\n'
-                f.write(content)
+            metadata_json = metadata.to_json()
+            metadata_str = json.dumps(metadata_json, indent=2, default=datetime_serializer)
+            content = f'{metadata_str}\n'
+            f.write(content)
+            logger.debug(f"Metadata written to {self.local_path}")
 
          # upload the result to remote storage
         if self.remote_uri:
@@ -77,5 +79,9 @@ class OtCroissant(Task):
             remote_storage = get_remote_storage(self.remote_uri)
             remote_storage.upload(self.local_path, self.remote_uri)
             logger.debug('upload successful')
+            # set the artifact with the remote output. TODO: set all the inputs for artifact
+            self.artifacts = [Artifact(source=f'{self.spec.dataset_path}', destination=str(self.remote_uri))]
 
+        # set the artifact with the local output. TODO: set all the inputs for artifact
+        self.artifacts = [Artifact(source=f'{self.spec.dataset_path}', destination=str(self.local_path))]
         return self
