@@ -14,7 +14,7 @@ function install_packages() {
   log "Updating system"
   apt-get update
   log "Installing required packages"
-  apt-get install -y wget vim tmux python3-pip docker.io docker-compose curl git tree htop
+  apt-get install -y wget vim tmux python3-pip docker.io docker-compose curl git tree htop pigz
   log "Adding POS user '${POS_USER_NAME}' to docker group"
   usermod -aG docker ${POS_USER_NAME}
   log "Installing esbulk loader"
