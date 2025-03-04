@@ -79,8 +79,12 @@ function run_data_ingestion_pipeline() {
 function create_tarball() {
     local path_source=$1
     local path_destination=$2
+    intermediate="/home/root/$(date +%Y%m%d_%H%M%S).tgz"
+
     log "[START] Creating tarball from '${path_source}' to '${path_destination}'"
-    tar czf - -C ${path_source} . | gsutil cp - ${path_destination}
+    tar --use-compress-program=pigz -cf "$intermediate" -C "${path_source}" .
+    gsutil cp "$intermediate" "${path_destination}"
+
     log "[DONE] Creating tarball from '${path_source}' to '${path_destination}'"
 }
 
