@@ -55,15 +55,32 @@ class OpenSearchLoad(Task):
         opensearch.client.indices.refresh(index=self._index_name)
         return self
 
+    # TODO: add a Counter to track the number of records read in
+    # then use to validate against the number of records indexed
     def _generate_data(self) -> Generator[Dict[str, str]]:
         with open(self._get_json(self.spec.json_parent), "r") as f:
-            for record in f:
-                doc = {"_index": self._index_name, "_source": record}
-                if self._id_field:
-                    doc["_id"] = json.loads(record).get(
-                        self._id_field
-                    )  # TODO: consider using ingest pipeline for this
-                yield doc
+            if self._id_field:
+                logger.info(f"Using {self._id_field} as the document id")
+                for record in f:
+                    doc = self._build_doc(
+                        record,
+                        json.loads(record).get(self._id_field),
+                    )
+                    yield doc
+            else:
+                logger.info("No document id field specified")
+                for record in f:
+                    doc = self._build_doc(record)
+                    yield doc
 
     def _get_json(self, json_parent: str) -> str:
         return f"{json_parent}/{self._output_dir}/{self.spec.dataset}.json"
+
+    def _build_doc(self, record: str, id: str = None) -> Dict[str, str]:
+        doc = {
+            "_index": self._index_name,
+            "_source": record,
+        }
+        if id:
+            doc["_id"] = id
+        return doc
