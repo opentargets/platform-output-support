@@ -53,11 +53,18 @@ class OtCroissant(Task):
 
     @report
     def run(self) -> Self:
+
         release = self.context.scratchpad.sentinel_dict.get('release')
         if not release:
             raise ScratchpadError('"release" not found in the scratchpad')
+
+        # Converting the list of paths to a list of strings and prepending the work_path
+        logger.debug("Converting the list of paths to a list of strings and prepending the work_path")
+        datasets = list(map(lambda path : str(self.context.config.work_path.joinpath(path)), self.spec.dataset_paths))
+
+        logger.debug(f"Generating metadata for release {release}")
         metadata = PlatformOutputMetadata(
-            datasets=list(map(str, self.spec.dataset_paths)),
+            datasets=datasets,
             ftp_location= self.spec.ftp_address,
             gcp_location=self.spec.gcp_address,
             version=release,
@@ -67,19 +74,20 @@ class OtCroissant(Task):
         logger.debug(f"Metadata generated: {metadata}")
 
         with open(self.local_path, "w+") as f:
+            logger.debug(f"Writting metadata to {self.local_path}")
             metadata_json = metadata.to_json()
             metadata_str = json.dumps(metadata_json, indent=2, default=datetime_serializer)
             content = f'{metadata_str}\n'
             f.write(content)
-            logger.debug(f"Metadata written to {self.local_path}")
+            logger.debug("Metadata written")
 
          # upload the result to remote storage
         if self.remote_uri:
             logger.info(f'Uploading {self.local_path} to {self.remote_uri}')
             remote_storage = get_remote_storage(self.remote_uri)
             remote_storage.upload(self.local_path, self.remote_uri)
-            logger.debug('upload successful')
+            logger.debug('Metadata upload successful')
 
-        #TODO: set all the inputs for artifact
+        #TODO: set all the inputs for artifact. This has to be done after the functionality is implemented in otter
         self.artifacts = [Artifact(source=f'{self.spec.gcp_address}', destination=self.remote_uri or str(self.local_path))]
         return self

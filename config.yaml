@@ -1,11 +1,16 @@
 ---
 work_path: ./work
 log_level: SUCCESS
+
 scratchpad:
   release: "24.09"
 steps:
   hello:
     - name: hello_world bla bla
+  download_data:
+    - name: sync_bucket etl output files
+      source: gs://open-targets-pre-data-releases/${release}/output/etl/parquet
+      destination: output/etl/parquet
   data_prep:
     - name: data_prep l2g
       source: gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet/locusToGenePredictions/part-00001-3563e8c9-205f-4478-affc-7b17ede97027-c000.snappy.parquet
@@ -29,6 +34,6 @@ steps:
       gcp_address: gs://open-targets-data-releases/${release}/output/etl/parquet/
       date_published: "2025-02-12"
       dataset_paths:
-        - /home/ricardo/Documents/work-files/etl/local/output/etl/parquet/targets
-        - /home/ricardo/Documents/work-files/etl/local/output/etl/parquet/diseases
+        - output/etl/parquet/targets
+        - output/etl/parquet/diseases
       output: ot_croissant_metadata.json
