@@ -3,7 +3,7 @@ work_path: ./work
 log_level: SUCCESS
 
 scratchpad:
-  release: "24.09"
+  release: "24.12-uo_test-3"
 steps:
   hello:
     - name: hello_world bla bla
