@@ -36,4 +36,50 @@ steps:
       dataset_paths:
         - output/etl/parquet/targets
         - output/etl/parquet/diseases
+        - output/etl/parquet/AOTFClickhouse
+        - output/etl/parquet/associationByDatasourceDirect
+        - output/etl/parquet/associationByDatasourceIndirect
+        - output/etl/parquet/associationByDatatypeDirect
+        - output/etl/parquet/associationByDatatypeIndirect
+        - output/etl/parquet/associationByOverallDirect
+        - output/etl/parquet/associationByOverallIndirect
+        - output/etl/parquet/baselineExpression
+        - output/etl/parquet/biosample
+        - output/etl/parquet/colocalisation
+        - output/etl/parquet/credibleSet
+        - output/etl/parquet/diseaseToPhenotype
+        - output/etl/parquet/diseases
+        - output/etl/parquet/drugWarnings
+        - output/etl/parquet/ebisearchAssociations
+        - output/etl/parquet/ebisearchEvidence
+        - output/etl/parquet/errors
+        - output/etl/parquet/evidence
+        - output/etl/parquet/facetSearchDisease
+        - output/etl/parquet/facetSearchTarget
+        - output/etl/parquet/fda
+        - output/etl/parquet/go
+        - output/etl/parquet/gwasIndex
+        - output/etl/parquet/hpo
+        - output/etl/parquet/indication
+        - output/etl/parquet/interaction
+        - output/etl/parquet/interactionEvidence
+        - output/etl/parquet/knownDrugsAggregated
+        - output/etl/parquet/literature
+        - output/etl/parquet/locusToGeneModel
+        - output/etl/parquet/locusToGenePredictions
+        - output/etl/parquet/mechanismOfAction
+        - output/etl/parquet/molecule
+        - output/etl/parquet/mousePhenotypes
+        - output/etl/parquet/otar_projects
+        - output/etl/parquet/pharmacogenomics
+        - output/etl/parquet/reactome
+        - output/etl/parquet/searchDisease
+        - output/etl/parquet/searchDrug
+        - output/etl/parquet/searchTarget
+        - output/etl/parquet/searchVariant
+        - output/etl/parquet/so-inputs
+        - output/etl/parquet/targetEssentiality
+        - output/etl/parquet/targetPrioritisation
+        - output/etl/parquet/targets
+        - output/etl/parquet/variantIndex
       output: ot_croissant_metadata.json
