@@ -68,7 +68,8 @@ steps:
         - output/etl/parquet/interaction
         - output/etl/parquet/interactionEvidence
         - output/etl/parquet/knownDrugsAggregated
-        - output/etl/parquet/literature/W2VModel/
+        - output/etl/parquet/literature/W2VModel/data
+        - output/etl/parquet/literature/W2VModel/metadata
         - output/etl/parquet/literature/cooccurrences
         - output/etl/parquet/literature/epmcCooccurrences
         - output/etl/parquet/literature/failedCooccurrences
