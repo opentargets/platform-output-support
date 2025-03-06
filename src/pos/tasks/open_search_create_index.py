@@ -2,6 +2,7 @@
 
 from typing import Self
 from loguru import logger
+from opensearchpy import RequestError
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -46,10 +47,13 @@ class OpenSearchCreateIndex(Task):
         )
         if not opensearch.client.indices.exists(index=self._index_name):
             with open(self._mappings, "r") as f:
-                opensearch.client.indices.create(
-                    index=self._index_name,
-                    body=f.read(),
-                )
+                try:
+                    opensearch.client.indices.create(
+                        index=self._index_name,
+                        body=f.read(),
+                    )
+                except RequestError as e:
+                    logger.debug(f"Index: {e} already exists")
             logger.debug(f"Created index {self._index_name}")
         logger.debug(f"Index {self._index_name} already exists")
         return self
