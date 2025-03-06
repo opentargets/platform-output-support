@@ -1,12 +1,13 @@
 # Data prep task
 
+from typing import Self
+from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
 from pos.parquet2json.converter import convert
 from pos.parquet2json.utils import setup_logger
-from pos.utils import get_config
 
 
 class DataPrepError(OtterError):
@@ -23,33 +24,22 @@ class DataPrepSpec(Spec):
         i.e. here /path/to/json/<dataset>/1.json it would be /path/to/json
     """
 
-    parquet_parent: str
-    json_parent: str
-    dataset: str
+    source: str
+    destination: str
 
 
 class DataPrep(Task):
     def __init__(self, spec: DataPrepSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
         self.spec: DataPrepSpec
-        try:
-            self._config = get_config("config/datasets.yaml").opensearch
-            self._input_dir = self._config[self.spec.dataset].input_dir
-            self._output_dir = self._config[self.spec.dataset].output_dir
-        except AttributeError:
-            raise DataPrepError(f"Unable to load config for {self.spec.dataset}")
 
     @report
-    def run(self) -> None:
+    def run(self) -> Self:
+        logger.debug(f"Converting {self.spec.source} to {self.spec.destination}")
         convert(
-            parquet_path=self._get_parquet_source(self.spec.parquet_parent),
-            json_path=self._get_json_destination(self.spec.json_parent),
+            parquet_path=self.spec.source,
+            json_path=self.spec.destination,
             log=setup_logger("ERROR"),
             hive_partitioning=False,
         )
-
-    def _get_parquet_source(self, parquet_parent: str) -> str:
-        return f"{parquet_parent}/{self._input_dir}/*.parquet"
-
-    def _get_json_destination(self, json_parent: str) -> str:
-        return f"{json_parent}/{self._output_dir}/{self.spec.dataset}.json"
+        return self

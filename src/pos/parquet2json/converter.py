@@ -116,7 +116,7 @@ class Converter:
 
     def _json_lines_to_file(self, rows: Iterator[dict[str, Any]], path: Path) -> None:
         """Write a list of rows to a file as JSON lines."""
-        with open(path, "w", encoding="UTF-8") as f:
+        with open(path, "a", encoding="UTF-8") as f:
             f.writelines(self._serialize_rows(rows))
 
 
