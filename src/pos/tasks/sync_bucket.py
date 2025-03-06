@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from typing import Self
+from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.fs import check_dir
@@ -16,8 +17,8 @@ class SyncBucketSpec(Spec):
 
     This task has the following custom configuration fields:
         - source (str): The path or URL of the parquet file/directory or files.
-        - destination (Path): The path, relative to `release_uri` to upload the
-            results to.
+        - destination (Path): The path, relative to `work_path` to download the
+            outputs to.
     """
 
     source: str
@@ -33,14 +34,13 @@ class SyncBucket(Task):
     @report
     def run(self) -> Self:
         destination_folder = self.context.config.work_path.joinpath(self.spec.destination)
-        print(destination_folder)
-        print(self.context.config.work_path)
-        print(f"add {self.context.config.work_path} with {self.spec.destination}.")
-        print(f"Syncing {self.spec.source} with {self.spec.destination}.")
+
+        logger.debug(f"checking if {destination_folder} exists. If not, create it.")
         # Checking if the destination folder exists. If not, create it.
         check_dir(destination_folder)
+
+        logger.debug(f"Syncing {self.spec.source} with {self.spec.destination}.")
         rsync_command = ["gsutil", "-m", "rsync", "-r", self.spec.source, destination_folder]
         subprocess.run(rsync_command, check=True)
-        print(f"Synced {self.spec.source} with {self.spec.destination}.")
 
         return self
