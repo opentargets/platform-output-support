@@ -16,7 +16,7 @@ class SyncBucketSpec(Spec):
     """Configuration fields for the sync bucket task.
 
     This task has the following custom configuration fields:
-        - source (str): The path or URL of the parquet file/directory or files.
+        - source (str): The gcloud URL of the parquet file/directory or files.
         - destination (Path): The path, relative to `work_path` to download the
             outputs to.
     """
