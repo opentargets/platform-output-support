@@ -48,7 +48,10 @@ class OpenSearchLoad(Task):
             self.spec.port,
         )
         for success, info in helpers.parallel_bulk(
-            opensearch.client, actions=self._generate_data()
+            opensearch.client,
+            actions=self._generate_data(),
+            thread_count=8,
+            chunk_size=1000,
         ):
             if not success:
                 logger.error(f"Failed to index document: {info}")
