@@ -41,7 +41,8 @@ steps:
         - output/etl/parquet/association_by_overall_indirect
         - output/etl/parquet/association_overall_direct
         - output/etl/parquet/biosample
-        - output/etl/parquet/colocalisation
+        - output/etl/parquet/colocalisation/coloc
+        - output/etl/parquet/colocalisation/ecaviar
         - output/etl/parquet/credible_set
         - output/etl/parquet/disease
         - output/etl/parquet/disease_hpo
