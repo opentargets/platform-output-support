@@ -51,9 +51,6 @@ steps:
         - output/etl/parquet/drugWarnings
         - output/etl/parquet/ebisearchAssociations
         - output/etl/parquet/ebisearchEvidence
-        - output/etl/parquet/errors/evidence
-        - output/etl/parquet/errors/interaction
-        - output/etl/parquet/errors/mousePhenotypes
         - output/etl/parquet/evidence
         - output/etl/parquet/facetSearchDisease
         - output/etl/parquet/facetSearchTarget
@@ -69,7 +66,6 @@ steps:
         - output/etl/parquet/interactionEvidence
         - output/etl/parquet/knownDrugsAggregated
         - output/etl/parquet/literature/W2VModel/data
-        - output/etl/parquet/literature/W2VModel/metadata
         - output/etl/parquet/literature/cooccurrences
         - output/etl/parquet/literature/epmcCooccurrences
         - output/etl/parquet/literature/failedCooccurrences
@@ -79,7 +75,6 @@ steps:
         - output/etl/parquet/literature/matches
         - output/etl/parquet/literature/trainingSet
         - output/etl/parquet/literature/vectors
-        - output/etl/parquet/locusToGeneModel
         - output/etl/parquet/locusToGenePredictions
         - output/etl/parquet/mechanismOfAction
         - output/etl/parquet/molecule
