@@ -34,8 +34,6 @@ steps:
       gcp_address: gs://open-targets-data-releases/${release}/output/etl/parquet/
       date_published: "2025-02-12"
       dataset_paths:
-        - output/etl/parquet/targets
-        - output/etl/parquet/diseases
         - output/etl/parquet/AOTFClickhouse
         - output/etl/parquet/associationByDatasourceDirect
         - output/etl/parquet/associationByDatasourceIndirect
@@ -45,18 +43,24 @@ steps:
         - output/etl/parquet/associationByOverallIndirect
         - output/etl/parquet/baselineExpression
         - output/etl/parquet/biosample
-        - output/etl/parquet/colocalisation
+        - output/etl/parquet/colocalisation/coloc
+        - output/etl/parquet/colocalisation/ecaviar
         - output/etl/parquet/credibleSet
         - output/etl/parquet/diseaseToPhenotype
         - output/etl/parquet/diseases
         - output/etl/parquet/drugWarnings
         - output/etl/parquet/ebisearchAssociations
         - output/etl/parquet/ebisearchEvidence
-        - output/etl/parquet/errors
+        - output/etl/parquet/errors/evidence
+        - output/etl/parquet/errors/interaction
+        - output/etl/parquet/errors/mousePhenotypes
         - output/etl/parquet/evidence
         - output/etl/parquet/facetSearchDisease
         - output/etl/parquet/facetSearchTarget
-        - output/etl/parquet/fda
+        - output/etl/parquet/fda/adverseDrugReactions
+        - output/etl/parquet/fda/adverseTargetReactions
+        - output/etl/parquet/fda/significantAdverseDrugReactions
+        - output/etl/parquet/fda/significantAdverseTargetReactions
         - output/etl/parquet/go
         - output/etl/parquet/gwasIndex
         - output/etl/parquet/hpo
@@ -64,7 +68,16 @@ steps:
         - output/etl/parquet/interaction
         - output/etl/parquet/interactionEvidence
         - output/etl/parquet/knownDrugsAggregated
-        - output/etl/parquet/literature
+        - output/etl/parquet/literature/W2VModel/
+        - output/etl/parquet/literature/cooccurrences
+        - output/etl/parquet/literature/epmcCooccurrences
+        - output/etl/parquet/literature/failedCooccurrences
+        - output/etl/parquet/literature/failedMatches
+        - output/etl/parquet/literature/literatureIndex
+        - output/etl/parquet/literature/literatureSentences
+        - output/etl/parquet/literature/matches
+        - output/etl/parquet/literature/trainingSet
+        - output/etl/parquet/literature/vectors
         - output/etl/parquet/locusToGeneModel
         - output/etl/parquet/locusToGenePredictions
         - output/etl/parquet/mechanismOfAction
