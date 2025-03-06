@@ -52,6 +52,49 @@ steps:
   open_search_stop:
     - name: open_search_stop opensearch stop
       service_name: os-pos
+  open_search_prep_all:
+    - name: explode prep all datasets
+      foreach:
+        - variant_index
+        - gwas_index
+        - credible_set
+        - colocalisation_coloc
+        - colocalisation_ecaviar
+        - biosample
+        - l2g_predictions
+        - expression
+        - disease_hpo
+        - drug_warnings
+        - disease
+        - go
+        - hpo
+        - indication
+        - interaction
+        - interaction_evidence
+        - known_drugs
+        - mechanism_of_action
+        - drug
+        - otar_projects
+        - reactome
+        - search_drug
+        - search_target
+        - search_disease
+        - search_target
+        # search_study
+        - so
+        - target
+        - target_prioritisation
+        - target_essentiality
+        - mouse_phenotypes
+        - openfda_faers
+        - pharmacogenomics
+        - facet_search_target
+        - facet_search_disease
+      do: 
+        - name: explode_datasets ${each}
+          parquet_parent: ${parquet_input_path}
+          json_parent: ${json_output_path}
+          dataset: ${each}
   open_search_load_all:
     - name: open_search_start opensearch start
       volume_data: ${opensearch_data}
@@ -95,17 +138,13 @@ steps:
         - pharmacogenomics
         - facet_search_target
         - facet_search_disease
-      do: 
-        - name: explode_datasets ${each}
-          parquet_parent: ${parquet_input_path}
-          json_parent: ${json_output_path}
-          dataset: ${each}
+      do:
         - name: open_search_create_index opensearch create index ${each}
-          dataset: ${each}
           requires:
             - open_search_start opensearch start
-        - name: open_search_load opensearch load ${each}
           dataset: ${each}
-          json_parent: ${json_output_path}
+        - name: open_search_load opensearch load ${each}
           requires:
             - open_search_create_index opensearch create index ${each}
+          dataset: ${each}
+          json_parent: ${json_output_path}
