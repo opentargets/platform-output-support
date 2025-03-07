@@ -1,24 +1,22 @@
 # OT Croissant Task
 
+import json
+from datetime import datetime
 from pathlib import Path
 from typing import Self
 
-from otter.task.model import Spec, Task, TaskContext
-from otter.util.errors import OtterError, ScratchpadError
-from otter.task.task_reporter import report
-from otter.storage import get_remote_storage
-from otter.manifest.model import Artifact
-
-import json
-from datetime import datetime
-
 from loguru import logger
-
 from ot_croissant.crumbs.metadata import PlatformOutputMetadata
+from otter.manifest.model import Artifact
+from otter.storage import get_remote_storage
+from otter.task.model import Spec, Task, TaskContext
+from otter.task.task_reporter import report
+from otter.util.errors import OtterError, ScratchpadError
 
 
 class OtCroissantError(OtterError):
     """Base class for exceptions in this module."""
+
 
 class OtCroissantSpec(Spec):
     """Configuration fields for the OT Croissant task.
@@ -37,10 +35,12 @@ class OtCroissantSpec(Spec):
     date_published: str
     output: str
 
+
 def datetime_serializer(obj):
     if isinstance(obj, datetime):
         return obj.isoformat()
     raise TypeError(f"Type {type(obj)} not serializable")
+
 
 class OtCroissant(Task):
     def __init__(self, spec: OtCroissantSpec, context: TaskContext) -> None:
@@ -49,45 +49,58 @@ class OtCroissant(Task):
         self.local_path: Path = self.context.config.work_path / self.spec.output
         self.remote_uri: str | None = None
         if context.config.release_uri:
-            self.remote_uri = f'{context.config.release_uri}/{spec.output}'
+            self.remote_uri = f"{context.config.release_uri}/{spec.output}"
 
     @report
     def run(self) -> Self:
-
-        release = self.context.scratchpad.sentinel_dict.get('release')
+        release = self.context.scratchpad.sentinel_dict.get("release")
         if not release:
             raise ScratchpadError('"release" not found in the scratchpad')
 
         # Converting the list of paths to a list of strings and prepending the work_path
-        logger.debug("Converting the list of paths to a list of strings and prepending the work_path")
-        datasets = list(map(lambda path : str(self.context.config.work_path.joinpath(path)), self.spec.dataset_paths))
+        logger.debug(
+            "Converting the list of paths to a list of strings and prepending the work_path"
+        )
+        datasets = list(
+            map(
+                lambda path: str(self.context.config.work_path.joinpath(path)),
+                self.spec.dataset_paths,
+            )
+        )
 
         logger.debug(f"Generating metadata for release {release}")
         metadata = PlatformOutputMetadata(
             datasets=datasets,
-            ftp_location= self.spec.ftp_address,
+            ftp_location=self.spec.ftp_address,
             gcp_location=self.spec.gcp_address,
             version=release,
             date_published=self.spec.date_published,
-            data_integrity_hash='sha256'
+            data_integrity_hash="sha256",
         )
         logger.debug(f"Metadata generated: {metadata}")
 
         with open(self.local_path, "w+") as f:
             logger.debug(f"Writting metadata to {self.local_path}")
             metadata_json = metadata.to_json()
-            metadata_str = json.dumps(metadata_json, indent=2, default=datetime_serializer)
-            content = f'{metadata_str}\n'
+            metadata_str = json.dumps(
+                metadata_json, indent=2, default=datetime_serializer
+            )
+            content = f"{metadata_str}\n"
             f.write(content)
             logger.debug("Metadata written")
 
-         # upload the result to remote storage
+        # upload the result to remote storage
         if self.remote_uri:
-            logger.info(f'Uploading {self.local_path} to {self.remote_uri}')
+            logger.info(f"Uploading {self.local_path} to {self.remote_uri}")
             remote_storage = get_remote_storage(self.remote_uri)
             remote_storage.upload(self.local_path, self.remote_uri)
-            logger.debug('Metadata upload successful')
+            logger.debug("Metadata upload successful")
 
-        #TODO: set all the inputs for artifact. This has to be done after the functionality is implemented in otter
-        self.artifacts = [Artifact(source=f'{self.spec.gcp_address}', destination=self.remote_uri or str(self.local_path))]
+        # TODO: set all the inputs for artifact. This has to be done after the functionality is implemented in otter
+        self.artifacts = [
+            Artifact(
+                source=f"{self.spec.gcp_address}",
+                destination=self.remote_uri or str(self.local_path),
+            )
+        ]
         return self
