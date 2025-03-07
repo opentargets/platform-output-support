@@ -4,7 +4,7 @@ from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.opensearch.service import OpenSearchInstanceManager, SnapshotRepository
+from pos.opensearch.service import OpenSearchInstanceManager
 
 
 class OpenSearchStartError(OtterError):
@@ -30,7 +30,6 @@ class OpenSearchStart(Task):
 
     @report
     def run(self) -> Self:
-        print("opensearch start run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name, self.spec.host, self.spec.port
         )

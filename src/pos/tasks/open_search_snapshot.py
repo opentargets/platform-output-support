@@ -1,6 +1,5 @@
 # Data prep task
 
-from loguru import logger
 from typing import Self
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
@@ -34,7 +33,6 @@ class OpenSearchSnapshot(Task):
 
     @report
     def run(self) -> Self:
-        logger.info("opensearch snapshot run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
             self.spec.host,

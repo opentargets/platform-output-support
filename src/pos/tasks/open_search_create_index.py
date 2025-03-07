@@ -39,7 +39,6 @@ class OpenSearchCreateIndex(Task):
 
     @report
     def run(self) -> Self:
-        print("opensearch create index run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
             self.spec.host,

@@ -32,7 +32,6 @@ class OpenSearchRestore(Task):
 
     @report
     def run(self) -> Self:
-        print("opensearch restore run")
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
             self.spec.host,

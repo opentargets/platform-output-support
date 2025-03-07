@@ -2,15 +2,12 @@
 
 from typing import Self
 
-from loguru import logger
 from otter.scratchpad import Scratchpad
 from otter.storage import get_remote_storage
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.parquet2json.converter import convert
-from pos.parquet2json.utils import setup_logger
 from pos.tasks.data_prep import DataPrepSpec
 from pos.utils import get_config
 
