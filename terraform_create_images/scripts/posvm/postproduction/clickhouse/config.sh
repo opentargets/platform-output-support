@@ -35,10 +35,10 @@ export pos_ch_docker_image="${pos_clickhouse_docker_image}:${pos_clickhouse_dock
 
 # Data loading configuration, data sources and destination tables
 declare -A pos_ch_data_release_sources=(
-    ["ot.associations_otf_log"]="AOTFClickhouse/" \
-    ["ot.literature_log"]="literature/literatureIndex/" \
-    ["ot.ml_w2v_log"]="literature/vectors/" \
-    ["ot.sentences_log"]="literature/literatureSentences/" \
+    ["ot.associations_otf_log"]="view/association_otf/" \
+    ["ot.literature_log"]="output/literature/" \
+    ["ot.ml_w2v_log"]="output/literature_vector/" \
+    ["ot.sentences_log"]="intermediate/literature_sentence/" \
 )
 
 # Print summary of the environment by looping through all those variables that start with "pos_ch_"

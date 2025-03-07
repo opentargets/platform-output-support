@@ -23,7 +23,7 @@ function prepare_clickhouse_storage_volume() {
   log "[DONE] Preparing Clickhouse Storage Volume"
 }
 
-# Run clickhouse via Docker 
+# Run clickhouse via Docker
 function run_clickhouse() {
   log "[START] Running clickhouse via Docker, using image ${pos_ch_docker_image}, container with name '${pos_ch_docker_container_name}'"
   docker run --rm -d \
@@ -72,7 +72,7 @@ function load_release_data() {
         else
           log "[ERROR] Failed to load '${pq}' into Clickhouse table '${table}'"
           pq_failed=1
-          docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="TRUNCATE TABLE ${table}" 
+          docker exec -i ${pos_ch_docker_container_name} clickhouse-client --query="TRUNCATE TABLE ${table}"
         fi
         rm -f $pq
       done
