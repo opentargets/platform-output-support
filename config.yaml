@@ -10,7 +10,7 @@ steps:
   download_data:
     - name: sync_bucket etl output files
       source: gs://open-targets-pre-data-releases/${release}/output
-      destination: output/etl/parquet
+      destination: output/etl
   data_prep:
     - name: data_prep l2g
       source: gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet/locusToGenePredictions/part-00001-3563e8c9-205f-4478-affc-7b17ede97027-c000.snappy.parquet
@@ -34,41 +34,41 @@ steps:
       gcp_address: gs://open-targets-data-releases/${release}/output/etl/parquet/
       date_published: "2025-02-12"
       dataset_paths:
-        - output/etl/parquet/association_by_datasource_direct
-        - output/etl/parquet/association_by_datasource_indirect
-        - output/etl/parquet/association_by_datatype_direct
-        - output/etl/parquet/association_by_datatype_indirect
-        - output/etl/parquet/association_by_overall_indirect
-        - output/etl/parquet/association_overall_direct
-        - output/etl/parquet/biosample
-        - output/etl/parquet/colocalisation/coloc
-        - output/etl/parquet/colocalisation/ecaviar
-        - output/etl/parquet/credible_set
-        - output/etl/parquet/disease
-        - output/etl/parquet/disease_hpo
-        - output/etl/parquet/disease_phenotype
-        - output/etl/parquet/drug_indication
-        - output/etl/parquet/drug_mechanism_of_action
-        - output/etl/parquet/drug_molecule
-        - output/etl/parquet/drug_warning
-        - output/etl/parquet/evidence
-        - output/etl/parquet/expression
-        - output/etl/parquet/go
-        - output/etl/parquet/interaction
-        - output/etl/parquet/interaction_evidence
-        - output/etl/parquet/known_drug
-        - output/etl/parquet/l2g_prediction
-        - output/etl/parquet/literature
-        - output/etl/parquet/literature_vector
-        - output/etl/parquet/openfda_significant_adverse_drug_reactions
-        - output/etl/parquet/openfda_significant_adverse_target_reactions
-        - output/etl/parquet/pharmacogenomics
-        - output/etl/parquet/reactome
-        - output/etl/parquet/so
-        - output/etl/parquet/study
-        - output/etl/parquet/target
-        - output/etl/parquet/target_essentiality
-        - output/etl/parquet/target_prioritisation
-        - output/etl/parquet/target_validation/mouse_phenotypes
-        - output/etl/parquet/variant
+        - output/etl/association_by_datasource_direct
+        - output/etl/association_by_datasource_indirect
+        - output/etl/association_by_datatype_direct
+        - output/etl/association_by_datatype_indirect
+        - output/etl/association_by_overall_indirect
+        - output/etl/association_overall_direct
+        - output/etl/biosample
+        - output/etl/colocalisation/coloc
+        - output/etl/colocalisation/ecaviar
+        - output/etl/credible_set
+        - output/etl/disease
+        - output/etl/disease_hpo
+        - output/etl/disease_phenotype
+        - output/etl/drug_indication
+        - output/etl/drug_mechanism_of_action
+        - output/etl/drug_molecule
+        - output/etl/drug_warning
+        - output/etl/evidence
+        - output/etl/expression
+        - output/etl/go
+        - output/etl/interaction
+        - output/etl/interaction_evidence
+        - output/etl/known_drug
+        - output/etl/l2g_prediction
+        - output/etl/literature
+        - output/etl/literature_vector
+        - output/etl/openfda_significant_adverse_drug_reactions
+        - output/etl/openfda_significant_adverse_target_reactions
+        - output/etl/pharmacogenomics
+        - output/etl/reactome
+        - output/etl/so
+        - output/etl/study
+        - output/etl/target
+        - output/etl/target_essentiality
+        - output/etl/target_prioritisation
+        - output/etl/target_validation/mouse_phenotypes
+        - output/etl/variant
       output: ot_croissant_metadata.json
