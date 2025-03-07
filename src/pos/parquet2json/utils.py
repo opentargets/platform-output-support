@@ -1,4 +1,4 @@
-"""Utils"""
+"""Utils."""
 
 import logging
 from enum import StrEnum
@@ -8,7 +8,7 @@ from rich.logging import RichHandler
 
 
 def setup_logger(loglevel: str) -> Logger:
-    """Setup a logger
+    """Setup a logger.
 
     Arguments:
         loglevel -- Log level
@@ -18,15 +18,15 @@ def setup_logger(loglevel: str) -> Logger:
     """
     logging.basicConfig(
         level=loglevel,
-        format="%(module)s:%(lineno)d: %(message)s",
-        datefmt="[%X]",
+        format='%(module)s:%(lineno)d: %(message)s',
+        datefmt='[%X]',
         handlers=[RichHandler()],
     )
-    return logging.getLogger("rich")
+    return logging.getLogger('rich')
 
 
 def log_levels() -> list[str]:
     return list(logging.getLevelNamesMapping())
 
 
-LogLevels = StrEnum("LogLevels", log_levels())
+LogLevels = StrEnum('LogLevels', log_levels())

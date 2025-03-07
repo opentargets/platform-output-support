@@ -37,11 +37,11 @@ class ExplodeDatasets(Task):
         self.spec: ExplodeDatasetsSpec
         self.scratchpad = Scratchpad({})
         try:
-            self._config = get_config("config/datasets.yaml").opensearch
+            self._config = get_config('config/datasets.yaml').opensearch
             self._input_dir = self._config[self.spec.dataset].input_dir
             self._output_dir = self._config[self.spec.dataset].output_dir
         except AttributeError:
-            raise ExplodeDatasetsError(f"Unable to load config for {self.spec.dataset}")
+            raise ExplodeDatasetsError(f'Unable to load config for {self.spec.dataset}')
 
     @report
     def run(self) -> Self:
@@ -50,18 +50,16 @@ class ExplodeDatasets(Task):
         files = remote_storage.glob(glob)
         for file in files:
             spec = DataPrepSpec(
-                name=f"data_prep {file}",
+                name=f'data_prep {file}',
                 source=file,
                 destination=self._get_json_destination(self.spec.json_parent),
             )
-            self.scratchpad.store("each", file)
-            self.context.specs.append(
-                Spec.model_validate(self.scratchpad.replace_dict(spec.model_dump()))
-            )
+            self.scratchpad.store('each', file)
+            self.context.specs.append(Spec.model_validate(self.scratchpad.replace_dict(spec.model_dump())))
         return self
 
     def _get_parquet_source(self, parquet_parent: str) -> str:
-        return f"{parquet_parent}/{self._input_dir}/*.parquet"
+        return f'{parquet_parent}/{self._input_dir}/*.parquet'
 
     def _get_json_destination(self, json_parent: str) -> str:
-        return f"{json_parent}/{self._output_dir}/{self.spec.dataset}.json"
+        return f'{json_parent}/{self._output_dir}/{self.spec.dataset}.json'

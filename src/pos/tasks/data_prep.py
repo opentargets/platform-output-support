@@ -1,6 +1,7 @@
 # Data prep task
 
 from typing import Self
+
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
@@ -35,11 +36,11 @@ class DataPrep(Task):
 
     @report
     def run(self) -> Self:
-        logger.debug(f"Converting {self.spec.source} to {self.spec.destination}")
+        logger.debug(f'Converting {self.spec.source} to {self.spec.destination}')
         convert(
             parquet_path=self.spec.source,
             json_path=self.spec.destination,
-            log=setup_logger("ERROR"),
+            log=setup_logger('ERROR'),
             hive_partitioning=False,
         )
         return self

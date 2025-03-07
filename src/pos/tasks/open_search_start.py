@@ -1,5 +1,6 @@
 # Data prep task
 from typing import Self
+
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -14,9 +15,9 @@ class OpenSearchStartError(OtterError):
 class OpenSearchStartSpec(Spec):
     """Configuration fields for the start OpenSearch task."""
 
-    service_name: str = "os-pos"
-    host: str = "localhost"
-    port: str = "9200"
+    service_name: str = 'os-pos'
+    host: str = 'localhost'
+    port: str = '9200'
     volume_data: str
     volume_logs: str
     volume_creds: str
@@ -30,9 +31,7 @@ class OpenSearchStart(Task):
 
     @report
     def run(self) -> Self:
-        opensearch = OpenSearchInstanceManager(
-            self.spec.service_name, self.spec.host, self.spec.port
-        )
+        opensearch = OpenSearchInstanceManager(self.spec.service_name, self.spec.host, self.spec.port)
         opensearch.start(
             self.spec.volume_data,
             self.spec.volume_logs,

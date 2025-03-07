@@ -1,7 +1,9 @@
 # Data prep task
 
 import json
-from typing import Dict, Generator, Self
+from collections.abc import Generator
+from typing import Any, Self
+
 from loguru import logger
 from opensearchpy import helpers
 from otter.task.model import Spec, Task, TaskContext
@@ -19,9 +21,9 @@ class OpenSearchLoadError(OtterError):
 class OpenSearchLoadSpec(Spec):
     """Configuration fields for the create index OpenSearch task."""
 
-    service_name: str = "os-pos"
-    host: str = "localhost"
-    port: str = "9200"
+    service_name: str = 'os-pos'
+    host: str = 'localhost'
+    port: str = '9200'
     dataset: str
     json_parent: str
 
@@ -31,12 +33,12 @@ class OpenSearchLoad(Task):
         super().__init__(spec, context)
         self.spec: OpenSearchLoadSpec
         try:
-            self._config = get_config("config/datasets.yaml").opensearch
-            self._index_name = self._config[self.spec.dataset]["index"]
-            self._id_field = self._config[self.spec.dataset].get("id_field")
-            self._output_dir = self._config[self.spec.dataset]["output_dir"]
+            self._config = get_config('config/datasets.yaml').opensearch
+            self._index_name = self._config[self.spec.dataset]['index']
+            self._id_field = self._config[self.spec.dataset].get('id_field')
+            self._output_dir = self._config[self.spec.dataset]['output_dir']
         except AttributeError:
-            raise OpenSearchLoadError(f"Unable to load config for {self.spec.dataset}")
+            raise OpenSearchLoadError(f'Unable to load config for {self.spec.dataset}')
 
     @report
     def run(self) -> Self:
@@ -54,23 +56,23 @@ class OpenSearchLoad(Task):
             queue_size=-1,
         ):
             if not success:
-                logger.error(f"Failed to index document: {info}")
+                logger.error(f'Failed to index document: {info}')
         opensearch.client.indices.refresh(index=self._index_name)
         return self
 
     # TODO: add a counter to track the number of records read in
     # then use to validate against the number of records indexed
-    def _generate_data(self) -> Generator[Dict[str, str]]:
-        with open(self._get_json(self.spec.json_parent), "r") as rows:
+    def _generate_data(self) -> Generator[dict[str, Any]] | Generator[str]:
+        with open(self._get_json(self.spec.json_parent)) as rows:
             if self._id_field:
-                logger.info(f"Using {self._id_field} as the document id")
+                logger.info(f'Using {self._id_field} as the document id')
                 for row in rows:
-                    doc = {"_source": row, "_id": json.loads(row)[self._id_field]}
+                    doc = {'_source': row, '_id': json.loads(row)[self._id_field]}
                     yield doc
             else:
-                logger.info("No document id field specified")
+                logger.info('No document id field specified')
                 for doc in rows:
                     yield doc
 
     def _get_json(self, json_parent: str) -> str:
-        return f"{json_parent}/{self._output_dir}/{self.spec.dataset}.json"
+        return f'{json_parent}/{self._output_dir}/{self.spec.dataset}.json'
