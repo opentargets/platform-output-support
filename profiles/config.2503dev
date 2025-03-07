@@ -5,7 +5,7 @@ resources_prefix   = "posgenpf"
 data_images_prefix = "posgenpf"
 
 # Data release configuration
-data_location_source     = "open-targets-pre-data-releases/2503-testrun-2"
+data_location_source     = "open-targets-pre-data-releases/2503-testrun-3"
 data_location_production = "open-targets-data-releases/XXXXX"
 
 # GCP config to use
