@@ -40,14 +40,12 @@ class SyncBucket(Task):
         )
 
         logger.debug(
-            f"checking if {destination_folder} exists. If not, create it."
+            f"checking if {destination_folder} exists. If not, create it"
         )
         # Checking if the destination folder exists. If not, create it.
         check_dir(destination_folder)
 
-        logger.debug(
-            f"Syncing {self.spec.source} with {self.spec.destination}."
-        )
+        logger.debug(f"syncing {self.spec.source} with {self.spec.destination}")
         rsync_command = [
             "gsutil",
             "-m",
