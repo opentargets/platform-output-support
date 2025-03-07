@@ -2,7 +2,6 @@
 
 import json
 from typing import Dict, Generator, Self
-
 from loguru import logger
 from opensearchpy import helpers
 from otter.task.model import Spec, Task, TaskContext
@@ -48,41 +47,30 @@ class OpenSearchLoad(Task):
         )
         for success, info in helpers.parallel_bulk(
             opensearch.client,
+            index=self._index_name,
             actions=self._generate_data(),
-            thread_count=8,
-            chunk_size=1000,
+            thread_count=4,
+            chunk_size=2000,
+            queue_size=-1,
         ):
             if not success:
                 logger.error(f"Failed to index document: {info}")
         opensearch.client.indices.refresh(index=self._index_name)
         return self
 
-    # TODO: add a Counter to track the number of records read in
+    # TODO: add a counter to track the number of records read in
     # then use to validate against the number of records indexed
     def _generate_data(self) -> Generator[Dict[str, str]]:
-        with open(self._get_json(self.spec.json_parent), "r") as f:
+        with open(self._get_json(self.spec.json_parent), "r") as rows:
             if self._id_field:
                 logger.info(f"Using {self._id_field} as the document id")
-                for record in f:
-                    doc = self._build_doc(
-                        record,
-                        json.loads(record).get(self._id_field),
-                    )
+                for row in rows:
+                    doc = {"_source": row, "_id": json.loads(row)[self._id_field]}
                     yield doc
             else:
                 logger.info("No document id field specified")
-                for record in f:
-                    doc = self._build_doc(record)
+                for doc in rows:
                     yield doc
 
     def _get_json(self, json_parent: str) -> str:
         return f"{json_parent}/{self._output_dir}/{self.spec.dataset}.json"
-
-    def _build_doc(self, record: str, id: str = None) -> Dict[str, str]:
-        doc = {
-            "_index": self._index_name,
-            "_source": record,
-        }
-        if id:
-            doc["_id"] = id
-        return doc

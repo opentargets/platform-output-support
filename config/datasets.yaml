@@ -1,5 +1,140 @@
 ---
 opensearch:
+  evidence_cancer_biomarkers:
+    index: evidence_cancer_biomarkers
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=cancer_biomarkers
+    output_dir: evidence/cancer_biomarkers
+  evidence_cancer_gene_census:
+    index: evidence_cancer_gene_census
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=cancer_gene_census
+    output_dir: evidence/cancer_gene_census
+  evidence_chembl:
+    index: evidence_chembl
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=chembl
+    output_dir: evidence/chembl
+  evidence_clingen:
+    index: evidence_clingen
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=clingen
+    output_dir: evidence/clingen
+  evidence_crispr:
+    index: evidence_crispr
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=crispr
+    output_dir: evidence/crispr
+  evidence_crispr_screen:
+    index: evidence_crispr_screen
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=crispr_screen
+    output_dir: evidence/crispr_screen
+  evidence_encore:
+    index: evidence_encore
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=encore
+    output_dir: evidence/encore
+  evidence_europepmc:
+    index: evidence_europepmc
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=europepmc
+    output_dir: evidence/europepmc
+  evidence_eva:
+    index: evidence_eva
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=eva
+    output_dir: evidence/eva
+  evidence_eva_somatic:
+    index: evidence_eva_somatic
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=eva_somatic
+    output_dir: evidence/eva_somatic
+  evidence_expression_atlas:
+    index: evidence_expression_atlas
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=expression_atlas
+    output_dir: evidence/expression_atlas
+  evidence_gene2phenotype:
+    index: evidence_gene2phenotype
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=gene2phenotype
+    output_dir: evidence/gene2phenotype
+  evidence_gene_burden:
+    index: evidence_gene_burden
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=gene_burden
+    output_dir: evidence/gene_burden
+  evidence_genomics_england:
+    index: evidence_genomics_england
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=genomics_england
+    output_dir: evidence/genomics_england
+  evidence_gwas_credible_sets:
+    index: evidence_gwas_credible_sets
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=gwas_credible_sets
+    output_dir: evidence/gwas_credible_sets
+  evidence_impc:
+    index: evidence_impc
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=impc
+    output_dir: evidence/impc
+  evidence_intogen:
+    index: evidence_intogen
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=intogen
+    output_dir: evidence/intogen
+  evidence_orphanet:
+    index: evidence_orphanet
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=orphanet
+    output_dir: evidence/orphanet
+  evidence_ot_crispr:
+    index: evidence_ot_crispr
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=ot_crispr
+    output_dir: evidence/ot_crispr
+  evidence_ot_crispr_validation:
+    index: evidence_ot_crispr_validation
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=ot_crispr_validation
+    output_dir: evidence/ot_crispr_validation
+  evidence_ot_genetics_portal:
+    index: evidence_ot_genetics_portal
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=ot_genetics_portal
+    output_dir: evidence/ot_genetics_portal
+  evidence_progeny:
+    index: evidence_progeny
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=progeny
+    output_dir: evidence/progeny
+  evidence_reactome:
+    index: evidence_reactome
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=reactome
+    output_dir: evidence/reactome
+  evidence_slapenrich:
+    index: evidence_slapenrich
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=slapenrich
+    output_dir: evidence/slapenrich
+  evidence_sysbio:
+    index: evidence_sysbio
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=sysbio
+    output_dir: evidence/sysbio
+  evidence_uniprot_literature:
+    index: evidence_uniprot_literature
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=uniprot_literature
+    output_dir: evidence/uniprot_literature
+  evidence_uniprot_variants:
+    index: evidence_uniprot_variants
+    mappings: config/opensearch/default.json
+    input_dir: evidence/sourceId=uniprot_variants
+    output_dir: evidence/uniprot_variants
   expression:
     index: expression
     mappings: config/opensearch/default.json
