@@ -82,7 +82,7 @@ function create_tarball() {
     intermediate="/home/root/$(date +%Y%m%d_%H%M%S).tgz"
 
     log "[START] Creating tarball from '${path_source}' to '${path_destination}'"
-    tar --use-compress-program=pigz -czf "$intermediate" -C "${path_source}" .
+    tar --use-compress-program=pigz -cf "$intermediate" -C "${path_source}" .
     gsutil cp "$intermediate" "${path_destination}"
 
     log "[DONE] Creating tarball from '${path_source}' to '${path_destination}'"
