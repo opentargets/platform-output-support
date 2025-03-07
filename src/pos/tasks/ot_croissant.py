@@ -61,12 +61,10 @@ class OtCroissant(Task):
         logger.debug(
             "Converting the list of paths to a list of strings and prepending the work_path"
         )
-        datasets = list(
-            map(
-                lambda path: str(self.context.config.work_path.joinpath(path)),
-                self.spec.dataset_paths,
-            )
-        )
+        datasets = [
+            str(self.context.config.work_path / p)
+            for p in self.spec.dataset_paths
+        ]
 
         logger.debug(f"Generating metadata for release {release}")
         metadata = PlatformOutputMetadata(
@@ -82,12 +80,9 @@ class OtCroissant(Task):
         with open(self.local_path, "w+") as f:
             logger.debug(f"Writting metadata to {self.local_path}")
             metadata_json = metadata.to_json()
-            metadata_str = json.dumps(
-                metadata_json, indent=2, default=datetime_serializer
-            )
-            content = f"{metadata_str}\n"
-            f.write(content)
-            logger.debug("Metadata written")
+            json.dump(metadata_json, f, indent=2)
+            f.write("\n")
+            logger.debug(f"metadata written successfully to {self.local_path}")
 
         # upload the result to remote storage
         if self.remote_uri:
