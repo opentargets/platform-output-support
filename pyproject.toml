@@ -8,6 +8,7 @@ dependencies = [
     "docker>=7.1.0",
     "opentargets-otter>=25.0.0a11",
     "orjson>=3.10.15",
+    "ot-croissant",
     "polars>=1.22.0",
     "pyarrow>=19.0.0",
     "rich>=13.9.4",
@@ -22,4 +23,7 @@ pos = "pos.core:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+ot-croissant = { git = "https://github.com/opentargets/ot_croissant.git", branch = "master" }
 
