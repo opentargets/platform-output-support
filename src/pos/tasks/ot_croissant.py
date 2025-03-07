@@ -59,14 +59,14 @@ class OtCroissant(Task):
 
         # Converting the list of paths to a list of strings and prepending the work_path
         logger.debug(
-            "Converting the list of paths to a list of strings and prepending the work_path"
+            "converting the list of paths to a list of strings and prepending the work_path"
         )
         datasets = [
             str(self.context.config.work_path / p)
             for p in self.spec.dataset_paths
         ]
 
-        logger.debug(f"Generating metadata for release {release}")
+        logger.debug(f"generating metadata for release {release}")
         metadata = PlatformOutputMetadata(
             datasets=datasets,
             ftp_location=self.spec.ftp_address,
@@ -78,7 +78,7 @@ class OtCroissant(Task):
         logger.debug(f"Metadata generated: {metadata}")
 
         with open(self.local_path, "w+") as f:
-            logger.debug(f"Writting metadata to {self.local_path}")
+            logger.debug("writting metadata to localpath")
             metadata_json = metadata.to_json()
             json.dump(metadata_json, f, indent=2)
             f.write("\n")
@@ -86,10 +86,10 @@ class OtCroissant(Task):
 
         # upload the result to remote storage
         if self.remote_uri:
-            logger.info(f"Uploading {self.local_path} to {self.remote_uri}")
+            logger.info(f"uploading {self.local_path} to {self.remote_uri}")
             remote_storage = get_remote_storage(self.remote_uri)
             remote_storage.upload(self.local_path, self.remote_uri)
-            logger.debug("Metadata upload successful")
+            logger.debug("metadata upload successful")
 
         # TODO: set all the inputs for artifact. This has to be done after the functionality is implemented in otter
         self.artifacts = [
