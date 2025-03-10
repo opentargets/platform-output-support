@@ -39,7 +39,7 @@ class OtCroissantSpec(Spec):
 def datetime_serializer(obj):
     if isinstance(obj, datetime):
         return obj.isoformat()
-    raise TypeError(f"Type {type(obj)} not serializable")
+    raise TypeError(f'Type {type(obj)} not serializable')
 
 
 class OtCroissant(Task):
@@ -49,52 +49,52 @@ class OtCroissant(Task):
         self.local_path: Path = self.context.config.work_path / self.spec.output
         self.remote_uri: str | None = None
         if context.config.release_uri:
-            self.remote_uri = f"{context.config.release_uri}/{spec.output}"
+            self.remote_uri = f'{context.config.release_uri}/{spec.output}'
 
     @report
     def run(self) -> Self:
-        release = self.context.scratchpad.sentinel_dict.get("release")
+        release = self.context.scratchpad.sentinel_dict.get('release')
         if not release:
             raise ScratchpadError('"release" not found in the scratchpad')
 
         # Converting the list of paths to a list of strings and prepending the work_path
         logger.debug(
-            "converting the list of paths to a list of strings and prepending the work_path"
+            'converting the list of paths to a list of strings and prepending the work_path'
         )
         datasets = [
             str(self.context.config.work_path / p)
             for p in self.spec.dataset_paths
         ]
 
-        logger.debug(f"generating metadata for release {release}")
+        logger.debug(f'generating metadata for release {release}')
         metadata = PlatformOutputMetadata(
             datasets=datasets,
             ftp_location=self.spec.ftp_address,
             gcp_location=self.spec.gcp_address,
             version=release,
             date_published=self.spec.date_published,
-            data_integrity_hash="sha256",
+            data_integrity_hash='sha256',
         )
-        logger.debug(f"Metadata generated: {metadata}")
+        logger.debug(f'Metadata generated: {metadata}')
 
-        with open(self.local_path, "w+") as f:
-            logger.debug("writting metadata to localpath")
+        with open(self.local_path, 'w+') as f:
+            logger.debug('writting metadata to localpath')
             metadata_json = metadata.to_json()
             json.dump(metadata_json, f, indent=2)
-            f.write("\n")
-            logger.debug(f"metadata written successfully to {self.local_path}")
+            f.write('\n')
+            logger.debug(f'metadata written successfully to {self.local_path}')
 
         # upload the result to remote storage
         if self.remote_uri:
-            logger.info(f"uploading {self.local_path} to {self.remote_uri}")
+            logger.info(f'uploading {self.local_path} to {self.remote_uri}')
             remote_storage = get_remote_storage(self.remote_uri)
             remote_storage.upload(self.local_path, self.remote_uri)
-            logger.debug("metadata upload successful")
+            logger.debug('metadata upload successful')
 
         # TODO: set all the inputs for artifact. This has to be done after the functionality is implemented in otter
         self.artifacts = [
             Artifact(
-                source=f"{self.spec.gcp_address}",
+                source=f'{self.spec.gcp_address}',
                 destination=self.remote_uri or str(self.local_path),
             )
         ]

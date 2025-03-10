@@ -172,6 +172,3 @@ parametrize-values-row-type = 'tuple'
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 ignore-decorators = ["pos.tasks.report", "pos.manifest.task_reporter.report"]
-
-[tool.uv.sources]
-ot-croissant = { git = "https://github.com/opentargets/ot_croissant.git", branch = "master" }
