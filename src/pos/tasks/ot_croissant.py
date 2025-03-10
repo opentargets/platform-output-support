@@ -22,11 +22,17 @@ class OtCroissantSpec(Spec):
     """Configuration fields for the OT Croissant task.
 
     This task has the following custom configuration fields:
-        - ftp_address (str): The URL of the ftp where the data is going to be published.
-        - gcp_address (str): The URL of the google bucket where the data is going to be published.
-        - dataset_path (Path): The path where the parquet outputs are stored. These outputs are going to be used to extract the schema.
-        - date_published (str): The date when the data was published. The date format is YYYY-MM-DD.
-        - output (str): Path (relative to `work_path` or `release_uri`) to store the metadata at.
+        - ftp_address (str): The URL of the ftp where the data \
+          is going to be published.
+        - gcp_address (str): The URL of the google bucket where \
+          the data is going to be published.
+        - dataset_path (Path): The path where the parquet outputs \
+          are stored. These outputs are going to be used to extract \
+          the schema.
+        - date_published (str): The date when the data was published. \
+          The date format is YYYY-MM-DD.
+        - output (str): Path (relative to `work_path` or `release_uri`) \
+          to store the metadata at.
     """
 
     ftp_address: str
