@@ -91,7 +91,7 @@ variable "vm_pos_boot_image" {
 variable "vm_pos_boot_disk_size" {
   description = "POS VM boot disk size, default '64GB'"
   type        = string
-  default     = 64
+  default     = 512
 }
 
 variable "vm_pos_machine_type" {
@@ -137,5 +137,3 @@ variable "elastic_search_data_disk_size" {
   type        = string
   default     = "256"
 }
-
-

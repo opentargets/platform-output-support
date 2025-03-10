@@ -24,7 +24,7 @@ export pos_es_default_index_settings="default.json"
 export pos_es_index_settings_genetics_evidence="genetics_evidence.json"
 export pos_es_default_id="id"
 # SO Dataset Configuration
-export pos_es_path_so_file="${pos_data_release_path_etl_parquet}/so-inputs/so.json"
+export pos_es_path_so_file="${pos_data_release_path_etl_parquet}/output/so/so.json"
 export pos_es_so_index_name="so"
 # Path to ETL ingestion configuration file
 export pos_es_path_etl_ingestion_config="${pos_es_path_metadata}/etl_ingest_configuration.csv"
