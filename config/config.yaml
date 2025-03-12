@@ -49,11 +49,11 @@ steps:
       snapshot_name: ${snapshot_name}
       snapshot_bucket: ${snapshot_bucket}
       snapshot_base_path: ${snapshot_base_path}
-  open_search_disk_image:
-    - name: create_gcp_disk_image opensearch
+  open_search_disk_snapshot:
+    - name: create_gcp_disk_snapshot opensearch
       gcp_project_id: open-targets-eu-dev
       gcp_disk_name: pos-os-250311a
-      gcp_image_name: pos-250311-os  # 'dev-250310-os or dev-250310-ch'
+      gcp_snapshot_name: pos-250311-os  # 'dev-250310-os or dev-250310-ch'
       gcp_disk_zone: europe-west1-d 
   open_search_stop:
     - name: open_search_stop opensearch stop
