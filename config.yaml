@@ -3,7 +3,7 @@ work_path: ./work
 log_level: SUCCESS
 
 scratchpad:
-  release: "2503-testrun-2"
+  release: "2503-testrun-3"
 steps:
   hello:
     - name: hello_world bla bla
@@ -41,8 +41,8 @@ steps:
         - release_data/association_by_overall_indirect
         - release_data/association_overall_direct
         - release_data/biosample
-        - release_data/colocalisation/coloc
-        - release_data/colocalisation/ecaviar
+        - release_data/colocalisation_coloc
+        - release_data/colocalisation_ecaviar
         - release_data/credible_set
         - release_data/disease
         - release_data/disease_hpo
@@ -69,6 +69,6 @@ steps:
         - release_data/target
         - release_data/target_essentiality
         - release_data/target_prioritisation
-        - release_data/target_validation/mouse_phenotypes
+        - release_data/mouse_phenotype
         - release_data/variant
       output: ot_croissant_metadata.json
