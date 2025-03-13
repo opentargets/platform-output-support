@@ -86,7 +86,7 @@ class OtCroissant(Task):
         with open(self.local_path, 'w+') as f:
             logger.debug('writting metadata to localpath')
             metadata_json = metadata.to_json()
-            json.dump(metadata_json, f, indent=2)
+            json.dump(metadata_json, f, indent=2, default=datetime_serializer)
             f.write('\n')
             logger.debug(f'metadata written successfully to {self.local_path}')
 
