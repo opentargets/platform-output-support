@@ -5,6 +5,7 @@ description = "Open Targets Pipeline Output Stage"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "clickhouse-connect>=0.8.15",
     "docker>=7.1.0",
     "google-cloud-compute>=1.26.0",
     "opensearch-py>=2.8.0",
