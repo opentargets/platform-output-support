@@ -320,3 +320,16 @@ opensearch:
     input_dir: output/variant
     mappings: config/opensearch/default.json
     output_dir: variant
+clickhouse:
+  aotf:
+    table: associations_otf_log
+    input_dir: view/association_otf
+  literature:
+    table: literature_log
+    input_dir: output/literature
+  w2v:
+    table: ml_w2v_log
+    input_dir: output/literature_vector
+  sentences:
+    table: sentences_log
+    input_dir: intermediate/literature_sentence
