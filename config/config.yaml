@@ -1,6 +1,7 @@
 ---
 work_path: ./work
 log_level: TRACE
+release_uri: gs://open-targets-pre-data-releases/jamesh/pos
 scratchpad:
   parquet_input_path: gs://open-targets-pre-data-releases/2503-testrun-3
   opensearch_java_opts: -Xms2g -Xmx4g
@@ -58,6 +59,10 @@ steps:
   open_search_stop:
     - name: open_search_stop opensearch stop
       service_name: os-pos
+  open_search_tarball:
+    - name: tarball opensearch
+      source: ${opensearch_data}
+      destination: opensearch.tar.gz
   open_search_prep_all:
     - name: explode prep all datasets
       foreach:
