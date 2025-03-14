@@ -13,6 +13,8 @@ scratchpad:
   snapshot_name: 2
   snapshot_bucket: open-targets-pre-data-releases
   snapshot_base_path: jamesh/snapshots
+  clickhouse_data: ch/data
+  clickhouse_logs: ch/logs
 steps:
   data_prep:
     - name: data_prep l2g
@@ -215,3 +217,27 @@ steps:
             - open_search_create_index opensearch create index ${each}
           dataset: ${each}
           json_parent: ${json_output_path}
+  # CLICKHOUSE
+  clickhouse_start:
+    - name: clickhouse_start clickhouse start
+      volume_data: ${clickhouse_data}
+      volume_logs: ${clickhouse_logs}
+  clickhouse_stop:
+    - name: clickhouse_stop clickhouse stop
+  clickhouse_load_all:
+    - name: clickhouse_start clickhouse start
+      volume_data: ${clickhouse_data}
+      volume_logs: ${clickhouse_logs}
+    - name: explode load all datasets
+      foreach:
+        - aotf
+        - literature
+        - w2v
+        - sentences
+      do:
+        - name: clickhouse_create_table clickhouse create table ${each}
+          requires:
+            - clickhouse_start clickhouse start
+          dataset: ${each}
+        - name: clickhouse_load clickhouse load ${each}
+    

@@ -2,7 +2,6 @@
 
 import os
 from dataclasses import dataclass
-from pathlib import Path
 
 import docker
 import requests
@@ -31,9 +30,9 @@ class SnapshotRepository:
     """
 
     name: str
-    type: str = None
-    bucket: str = None
-    base_path: str = None
+    type: str | None = None
+    bucket: str | None = None
+    base_path: str | None = None
     client: str = 'default'
 
     def body(self) -> dict:
@@ -73,13 +72,13 @@ class OpenSearchInstanceManager:
         self._port = port
         self.client = OpenSearch([{'host': self._host, 'port': self._port}], use_ssl=False, timeout=3600)
         self._docker_client: DockerClient = docker.from_env()
-        self._container: Container = None
+        self._container: Container = Container()
 
     def start(
         self,
-        volume_data: str | Path,
-        volume_logs: str | Path,
-        volume_creds: str | Path,
+        volume_data: str,
+        volume_logs: str,
+        volume_creds: str,
         opensearch_java_opts: str,
         # snapshot_repository: SnapshotRepository = None,
     ) -> None:
@@ -98,6 +97,8 @@ class OpenSearchInstanceManager:
             OpenSearchInstanceManagerError: If OpenSearch fails to start
         """
         # TODO: run as correct user
+        # TODO: refactor env vars and volumes
+        # TODO: remove dockerfile
         logger.info('Starting OpenSearch')
         image = self._build()
         self._container = self._docker_client.containers.run(
@@ -144,7 +145,7 @@ class OpenSearchInstanceManager:
             self._container.stop()
         except NotFound:
             logger.error('Container not found')
-            return
+            raise OpenSearchInstanceManagerError(f'Container {self.name} not found')
 
     def is_healthy(self, timeout: int = 120, retries: int = 10) -> bool:
         """Health check for OpenSearch.
@@ -160,8 +161,8 @@ class OpenSearchInstanceManager:
         prefix = 'http://'
         url = f'{prefix}{self._host}:{self._port}/_cluster/health?wait_for_status=green&timeout={timeout}s'
         session = requests.Session()
-        retries = Retry(total=retries, backoff_factor=1, status_forcelist=[56])
-        session.mount(prefix, HTTPAdapter(max_retries=retries))
+        max_retries = Retry(total=retries, backoff_factor=1, status_forcelist=[56])
+        session.mount(prefix, HTTPAdapter(max_retries=max_retries))
         response = session.get(url)
         return response.status_code == 200
 
