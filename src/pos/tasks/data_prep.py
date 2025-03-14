@@ -19,10 +19,8 @@ class DataPrepSpec(Spec):
     """Configuration fields for the data prep task.
 
     This task has the following custom configuration fields:
-        - parquet_parent (str): The path or URL of the parquet parent directory.
-        i.e. here /path/to/parquet/<dataset>/1.parquet it would be /path/to/parquet
-        - json_parent (str): The path or URL of the json parent directory.
-        i.e. here /path/to/json/<dataset>/1.json it would be /path/to/json
+        - source (str): The path or URL of the parquet file.
+        - destination (str): The path or URL of the json file.
     """
 
     source: str
