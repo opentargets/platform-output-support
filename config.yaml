@@ -30,8 +30,8 @@ steps:
       opensearch_java_opts: "-Xms2g -Xmx4g"
   ot_croissant:
     - name: ot_croissant generate release metadata
-      ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/etl/parquet/
-      gcp_address: gs://open-targets-data-releases/${release}/output/etl/parquet/
+      ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
+      gcp_address: gs://open-targets-data-releases/${release}/output/
       date_published: "2025-02-12"
       dataset_paths:
         - release_data/association_by_datasource_direct
