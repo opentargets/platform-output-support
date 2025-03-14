@@ -1,6 +1,7 @@
 ---
 work_path: ./work
 log_level: SUCCESS
+release_uri: gs://open-targets-data-releases/2503-testrun-3/
 
 scratchpad:
   release: "2503-testrun-3"
@@ -71,4 +72,4 @@ steps:
         - release_data/target_prioritisation
         - release_data/mouse_phenotype
         - release_data/variant
-      output: ot_croissant_metadata.json
+      output: webapp/downloads.json
