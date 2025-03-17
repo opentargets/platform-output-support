@@ -12,6 +12,7 @@ from otter.storage import get_remote_storage
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError, ScratchpadError
+from otter.util.fs import check_dir
 
 
 class OtCroissantError(OtterError):
@@ -55,7 +56,7 @@ class OtCroissant(Task):
         self.local_path: Path = self.context.config.work_path / self.spec.output
         self.remote_uri: str | None = None
         if context.config.release_uri:
-            self.remote_uri = f'{context.config.release_uri}/{spec.output}'
+            self.remote_uri = f'{context.config.release_uri}/{self.spec.output}'
 
     @report
     def run(self) -> Self:
@@ -64,13 +65,8 @@ class OtCroissant(Task):
             raise ScratchpadError('"release" not found in the scratchpad')
 
         # Converting the list of paths to a list of strings and prepending the work_path
-        logger.debug(
-            'converting the list of paths to a list of strings and prepending the work_path'
-        )
-        datasets = [
-            str(self.context.config.work_path / p)
-            for p in self.spec.dataset_paths
-        ]
+        logger.debug('converting the list of paths to a list of strings and prepending the work_path')
+        datasets = [str(self.context.config.work_path / p) for p in self.spec.dataset_paths]
 
         logger.debug(f'generating metadata for release {release}')
         metadata = PlatformOutputMetadata(
@@ -83,10 +79,13 @@ class OtCroissant(Task):
         )
         logger.debug(f'Metadata generated: {metadata}')
 
+        output_folder = self.local_path.parents[0]
+        check_dir(output_folder)
+
         with open(self.local_path, 'w+') as f:
             logger.debug('writting metadata to localpath')
             metadata_json = metadata.to_json()
-            json.dump(metadata_json, f, indent=2)
+            json.dump(metadata_json, f, indent=2, default=datetime_serializer)
             f.write('\n')
             logger.debug(f'metadata written successfully to {self.local_path}')
 
