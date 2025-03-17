@@ -15,7 +15,11 @@ scratchpad:
   snapshot_base_path: jamesh/snapshots
   clickhouse_data: ch/data
   clickhouse_logs: ch/logs
+  release_id: 25.03
+  bq_prod_project_id: open-targets-prod
+  bq_parquet_path: gs://open-targets-data-releases/25.03
 steps:
+  # OpenSearch steps
   data_prep:
     - name: data_prep l2g
       source: ${parquet_input_path}/locusToGenePredictions/part-00001-3563e8c9-205f-4478-affc-7b17ede97027-c000.snappy.parquet
@@ -131,7 +135,7 @@ steps:
         - target_essentiality
         - target_prioritisation
         - variant_index
-      do: 
+      do:
         - name: explode_datasets ${each}
           parquet_parent: ${parquet_input_path}
           json_parent: ${json_output_path}
@@ -240,4 +244,157 @@ steps:
             - clickhouse_start clickhouse start
           dataset: ${each}
         - name: clickhouse_load clickhouse load ${each}
-    
+  bigquery_dev_load_all:
+    - name: bigquery_reset dev
+      project_id: open-targets-eu-dev
+      dataset_id: platform_dev
+      location: eu
+      release_id: ${release_id}
+    - name: explode load bigquery tables
+      foreach:
+        - association_by_datasource_direct
+        - association_by_datasource_indirect
+        - association_by_datatype_direct
+        - association_by_datatype_indirect
+        - association_by_overall_indirect
+        - association_overall_direct
+        - biosample
+        - colocalisation_coloc
+        - colocalisation_ecaviar
+        - credible_set
+        - disease
+        - disease_hpo
+        - disease_phenotype
+        - drug_indication
+        - drug_mechanism_of_action
+        - drug_molecule
+        - drug_warning
+        - evidence_cancer_biomarkers
+        - evidence_cancer_gene_census
+        - evidence_chembl
+        - evidence_clingen
+        - evidence_crispr
+        - evidence_crispr_screen
+        - evidence_encore
+        - evidence_europepmc
+        - evidence_eva
+        - evidence_eva_somatic
+        - evidence_expression_atlas
+        - evidence_gene2phenotype
+        - evidence_gene_burden
+        - evidence_genomics_england
+        - evidence_gwas_credible_sets
+        - evidence_impc
+        - evidence_intogen
+        - evidence_orphanet
+        - evidence_progeny
+        - evidence_reactome
+        - evidence_slapenrich
+        - evidence_sysbio
+        - evidence_uniprot_literature
+        - evidence_uniprot_variants
+        - expression
+        - go
+        - interaction
+        - interaction_evidence
+        - known_drug
+        - l2g_prediction
+        - literature
+        - literature_vector
+        - mouse_phenotype
+        - openfda_significant_adverse_drug_reactions
+        - openfda_significant_adverse_target_reactions
+        - pharmacogenomics
+        - reactome
+        - so
+        - study
+        - target
+        - target_essentiality
+        - target_prioritisation
+        - variant
+      do:
+        - name: bigquery_load dev ${each}
+          requires:
+            - bigquery_reset dev
+          dataset_id: platform_dev
+          project_id: open-targets-eu-dev
+          location: eu
+          table: ${each}
+          base_uri: ${bq_parquet_path}
+  bigquery_prod_load_all:
+    - name: bigquery_reset prod
+      project_id: open-targets-prod
+      dataset_id: platform
+      location: eu
+      release_id: ${release_id}
+    - name: explode load bigquery tables
+      foreach:
+        - association_by_datasource_direct
+        - association_by_datasource_indirect
+        - association_by_datatype_direct
+        - association_by_datatype_indirect
+        - association_by_overall_indirect
+        - association_overall_direct
+        - biosample
+        - colocalisation_coloc
+        - colocalisation_ecaviar
+        - credible_set
+        - disease
+        - disease_hpo
+        - disease_phenotype
+        - drug_indication
+        - drug_mechanism_of_action
+        - drug_molecule
+        - drug_warning
+        - evidence_cancer_biomarkers
+        - evidence_cancer_gene_census
+        - evidence_chembl
+        - evidence_clingen
+        - evidence_crispr
+        - evidence_crispr_screen
+        - evidence_encore
+        - evidence_europepmc
+        - evidence_eva
+        - evidence_eva_somatic
+        - evidence_expression_atlas
+        - evidence_gene2phenotype
+        - evidence_gene_burden
+        - evidence_genomics_england
+        - evidence_gwas_credible_sets
+        - evidence_impc
+        - evidence_intogen
+        - evidence_orphanet
+        - evidence_progeny
+        - evidence_reactome
+        - evidence_slapenrich
+        - evidence_sysbio
+        - evidence_uniprot_literature
+        - evidence_uniprot_variants
+        - expression
+        - go
+        - interaction
+        - interaction_evidence
+        - known_drug
+        - l2g_prediction
+        - literature
+        - literature_vector
+        - mouse_phenotype
+        - openfda_significant_adverse_drug_reactions
+        - openfda_significant_adverse_target_reactions
+        - pharmacogenomics
+        - reactome
+        - so
+        - study
+        - target
+        - target_essentiality
+        - target_prioritisation
+        - variant
+      do:
+        - name: bigquery_load prod ${each}
+          requires:
+            - bigquery_reset prod
+          dataset_id: platform
+          project_id: open-targets-prod
+          location: eu
+          table: ${each}
+          base_uri: ${bq_parquet_path}

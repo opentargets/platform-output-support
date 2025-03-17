@@ -333,3 +333,208 @@ clickhouse:
   sentences:
     table: sentences_log
     input_dir: intermediate/literature_sentence
+bigquery:
+  association_by_datasource_direct:
+    index: association_by_datasource_direct
+    input_dir: output/association_by_datasource_direct
+  association_by_datasource_indirect:
+    index: association_by_datasource_indirect
+    input_dir: output/association_by_datasource_indirect
+  association_by_datatype_direct:
+    index: association_by_datatype_direct
+    input_dir: output/association_by_datatype_direct
+  association_by_datatype_indirect:
+    index: association_by_datatype_indirect
+    input_dir: output/association_by_datatype_indirect
+  association_by_overall_indirect:
+    index: association_by_overall_indirect
+    input_dir: output/association_by_overall_indirect
+  association_overall_direct:
+    index: association_overall_direct
+    input_dir: output/association_overall_direct
+  biosample:
+    index: biosample
+    input_dir: output/biosample
+  colocalisation_coloc:
+    index: colocalisation_coloc
+    input_dir: output/colocalisation_coloc
+  colocalisation_ecaviar:
+    index: colocalisation_ecaviar
+    input_dir: output/colocalisation_ecaviar
+  credible_set:
+    index: credible_set
+    input_dir: output/credible_set
+  disease:
+    index: disease
+    input_dir: output/disease
+  disease_hpo:
+    index: disease_hpo
+    input_dir: output/disease_hpo
+  disease_phenotype:
+    index: disease_phenotype
+    input_dir: output/disease_phenotype
+  drug_indication:
+    index: drug_indication
+    input_dir: output/drug_indication
+  drug_mechanism_of_action:
+    index: drug_mechanism_of_action
+    input_dir: output/drug_mechanism_of_action
+  drug_molecule:
+    index: drug_molecule
+    input_dir: output/drug_molecule
+  drug_warning:
+    index: drug_warning
+    input_dir: output/drug_warning
+  evidence_cancer_biomarkers:
+    index: evidence
+    input_dir: output/evidence/sourceId=cancer_biomarkers
+    hive_partition: true
+  evidence_cancer_gene_census:
+    index: evidence
+    input_dir: output/evidence/sourceId=cancer_gene_census
+    hive_partition: true
+  evidence_chembl:
+    index: evidence
+    input_dir: output/evidence/sourceId=chembl
+    hive_partition: true
+  evidence_clingen:
+    index: evidence
+    input_dir: output/evidence/sourceId=clingen
+    hive_partition: true
+  evidence_crispr:
+    index: evidence
+    input_dir: output/evidence/sourceId=crispr
+    hive_partition: true
+  evidence_crispr_screen:
+    index: evidence
+    input_dir: output/evidence/sourceId=crispr_screen
+    hive_partition: true
+  evidence_encore:
+    index: evidence
+    input_dir: output/evidence/sourceId=encore
+    hive_partition: true
+  evidence_europepmc:
+    index: evidence
+    input_dir: output/evidence/sourceId=europepmc
+    hive_partition: true
+  evidence_eva:
+    index: evidence
+    input_dir: output/evidence/sourceId=eva
+    hive_partition: true
+  evidence_eva_somatic:
+    index: evidence
+    input_dir: output/evidence/sourceId=eva_somatic
+    hive_partition: true
+  evidence_expression_atlas:
+    index: evidence
+    input_dir: output/evidence/sourceId=expression_atlas
+    hive_partition: true
+  evidence_gene2phenotype:
+    index: evidence
+    input_dir: output/evidence/sourceId=gene2phenotype
+    hive_partition: true
+  evidence_gene_burden:
+    index: evidence
+    input_dir: output/evidence/sourceId=gene_burden
+    hive_partition: true
+  evidence_genomics_england:
+    index: evidence
+    input_dir: output/evidence/sourceId=genomics_england
+    hive_partition: true
+  evidence_gwas_credible_sets:
+    index: evidence
+    input_dir: output/evidence/sourceId=gwas_credible_sets
+    hive_partition: true
+  evidence_impc:
+    index: evidence
+    input_dir: output/evidence/sourceId=impc
+    hive_partition: true
+  evidence_intogen:
+    index: evidence
+    input_dir: output/evidence/sourceId=intogen
+    hive_partition: true
+  evidence_orphanet:
+    index: evidence
+    input_dir: output/evidence/sourceId=orphanet
+    hive_partition: true
+  evidence_progeny:
+    index: evidence
+    input_dir: output/evidence/sourceId=progeny
+    hive_partition: true
+  evidence_reactome:
+    index: evidence
+    input_dir: output/evidence/sourceId=reactome
+    hive_partition: true
+  evidence_slapenrich:
+    index: evidence
+    input_dir: output/evidence/sourceId=slapenrich
+    hive_partition: true
+  evidence_sysbio:
+    index: evidence
+    input_dir: output/evidence/sourceId=sysbio
+    hive_partition: true
+  evidence_uniprot_literature:
+    index: evidence
+    input_dir: output/evidence/sourceId=uniprot_literature
+    hive_partition: true
+  evidence_uniprot_variants:
+    index: evidence
+    input_dir: output/evidence/sourceId=uniprot_variants
+    hive_partition: true
+  expression:
+    index: expression
+    input_dir: output/expression
+  go:
+    index: go
+    input_dir: output/go
+  interaction:
+    index: interaction
+    input_dir: output/interaction
+  interaction_evidence:
+    index: interaction_evidence
+    input_dir: output/interaction_evidence
+  known_drug:
+    index: known_drug
+    input_dir: output/known_drug
+  l2g_prediction:
+    index: l2g_prediction
+    input_dir: output/l2g_prediction
+  literature:
+    index: literature
+    input_dir: output/literature
+  literature_vector:
+    index: literature_vector
+    input_dir: output/literature_vector
+  mouse_phenotype:
+    index: mouse_phenotype
+    input_dir: output/mouse_phenotype
+  openfda_significant_adverse_drug_reactions:
+    index: openfda_significant_adverse_drug_reactions
+    input_dir: output/openfda_significant_adverse_drug_reactions
+  openfda_significant_adverse_target_reactions:
+    index: openfda_significant_adverse_target_reactions
+    input_dir: output/openfda_significant_adverse_target_reactions
+  pharmacogenomics:
+    index: pharmacogenomics
+    input_dir: output/pharmacogenomics
+  reactome:
+    index: reactome
+    input_dir: output/reactome
+  so:
+    index: so
+    input_dir: output/so
+  study:
+    index: study
+    input_dir: output/study
+  target:
+    index: target
+    input_dir: output/target
+  target_essentiality:
+    index: target_essentiality
+    input_dir: output/target_essentiality
+  target_prioritisation:
+    index: target_prioritisation
+    input_dir: output/target_prioritisation
+  variant:
+    index: variant
+    input_dir: output/variant
