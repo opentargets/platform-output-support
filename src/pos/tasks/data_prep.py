@@ -1,5 +1,6 @@
 # Data prep task
 
+from pathlib import Path
 from typing import Self
 
 from loguru import logger
@@ -23,8 +24,8 @@ class DataPrepSpec(Spec):
         - destination (str): The path or URL of the json file.
     """
 
-    source: str
-    destination: str
+    source: Path
+    destination: Path
 
 
 class DataPrep(Task):
