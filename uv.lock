@@ -308,6 +308,24 @@ wheels = [
 ]
 
 [[package]]
+name = "google-cloud-bigquery"
+version = "3.30.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-api-core", extra = ["grpc"] },
+    { name = "google-auth" },
+    { name = "google-cloud-core" },
+    { name = "google-resumable-media" },
+    { name = "packaging" },
+    { name = "python-dateutil" },
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f1/2f/3dda76b3ec029578838b1fe6396e6b86eb574200352240e23dea49265bb7/google_cloud_bigquery-3.30.0.tar.gz", hash = "sha256:7e27fbafc8ed33cc200fe05af12ecd74d279fe3da6692585a3cef7aee90575b6", size = 474389 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0c/6d/856a6ca55c1d9d99129786c929a27dd9d31992628ebbff7f5d333352981f/google_cloud_bigquery-3.30.0-py2.py3-none-any.whl", hash = "sha256:f4d28d846a727f20569c9b2d2f4fa703242daadcb2ec4240905aa485ba461877", size = 247885 },
+]
+
+[[package]]
 name = "google-cloud-compute"
 version = "1.26.0"
 source = { registry = "https://pypi.org/simple" }
@@ -860,6 +878,7 @@ source = { editable = "." }
 dependencies = [
     { name = "clickhouse-connect" },
     { name = "docker" },
+    { name = "google-cloud-bigquery" },
     { name = "google-cloud-compute" },
     { name = "opensearch-py" },
     { name = "opentargets-otter" },
@@ -891,6 +910,7 @@ requires-dist = [
     { name = "clickhouse-connect", specifier = ">=0.8.15" },
     { name = "coverage", marker = "extra == 'test'", specifier = "==7.6.10" },
     { name = "docker", specifier = ">=7.1.0" },
+    { name = "google-cloud-bigquery", specifier = ">=3.30.0" },
     { name = "google-cloud-compute", specifier = ">=1.26.0" },
     { name = "opensearch-py", specifier = ">=2.8.0" },
     { name = "opentargets-otter", specifier = ">=25.0.0a11" },
