@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Self
+import os
 
 from loguru import logger
 from ot_croissant.crumbs.metadata import PlatformOutputMetadata
@@ -38,7 +39,7 @@ class OtCroissantSpec(Spec):
 
     ftp_address: str
     gcp_address: str
-    dataset_paths: list[Path]
+    dataset_path: Path
     date_published: str
     output: str
 
@@ -66,7 +67,14 @@ class OtCroissant(Task):
 
         # Converting the list of paths to a list of strings and prepending the work_path
         logger.debug('converting the list of paths to a list of strings and prepending the work_path')
-        datasets = [str(self.context.config.work_path / p) for p in self.spec.dataset_paths]
+        # Get the directory path from self.spec.dataset_paths
+        directory_path = str(self.context.config.work_path / self.spec.dataset_path)
+
+        # List all sub-folders in the directory
+        datasets = [
+            str(self.context.config.work_path / self.spec.dataset_path / dataset)
+            for dataset in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, dataset))
+        ]
 
         logger.debug(f'generating metadata for release {release}')
         metadata = PlatformOutputMetadata(
