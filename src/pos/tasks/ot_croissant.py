@@ -4,7 +4,6 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Self
-import os
 
 from loguru import logger
 from ot_croissant.crumbs.metadata import PlatformOutputMetadata
