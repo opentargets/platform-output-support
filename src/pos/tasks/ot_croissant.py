@@ -71,10 +71,7 @@ class OtCroissant(Task):
         directory_path = str(self.context.config.work_path / self.spec.dataset_path)
 
         # List all sub-folders in the directory
-        datasets = [
-            str(self.context.config.work_path / self.spec.dataset_path / dataset)
-            for dataset in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, dataset))
-        ]
+        datasets = [str(path) for path in Path(directory_path).iterdir() if path.is_dir()]
 
         logger.debug(f'generating metadata for release {release}')
         metadata = PlatformOutputMetadata(
