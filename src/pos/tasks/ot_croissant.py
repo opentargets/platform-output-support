@@ -36,7 +36,7 @@ class OtCroissantSpec(Spec):
           to store the metadata at.
     """
 
-    ftp_address: str
+    ftp_address: str | None = None
     gcp_address: str
     dataset_path: Path
     date_published: str
@@ -65,12 +65,20 @@ class OtCroissant(Task):
             raise ScratchpadError('"release" not found in the scratchpad')
 
         # Converting the list of paths to a list of strings and prepending the work_path
-        logger.debug('converting the list of paths to a list of strings and prepending the work_path')
+        logger.debug(
+            'converting the list of paths to a list of strings and prepending the work_path'
+        )
         # Get the directory path from self.spec.dataset_paths
-        directory_path = str(self.context.config.work_path / self.spec.dataset_path)
+        directory_path = str(
+            self.context.config.work_path / self.spec.dataset_path
+        )
 
         # List all sub-folders in the directory
-        datasets = [str(path) for path in Path(directory_path).iterdir() if path.is_dir()]
+        datasets = [
+            str(path)
+            for path in sorted(Path(directory_path).iterdir())
+            if path.is_dir()
+        ]
 
         logger.debug(f'generating metadata for release {release}')
         metadata = PlatformOutputMetadata(
