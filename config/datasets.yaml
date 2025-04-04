@@ -324,16 +324,19 @@ clickhouse:
   aotf:
     table: associations_otf_log
     input_dir: view/association_otf
+    postload_script: config/clickhouse/scripts/aotf.sql
   literature:
     table: literature_log
     input_dir: output/literature
+    postload_script: config/clickhouse/scripts/literature.sql
   w2v:
     table: ml_w2v_log
     input_dir: output/literature_vector
+    postload_script: config/clickhouse/scripts/w2v.sql
   sentences:
     table: sentences_log
     input_dir: intermediate/literature_sentence
-bigquery:
+    postload_script: config/clickhouse/scripts/sentences.sql
   association_by_datasource_direct:
     index: association_by_datasource_direct
     input_dir: output/association_by_datasource_direct
