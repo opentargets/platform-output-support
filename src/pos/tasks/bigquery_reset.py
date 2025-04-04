@@ -21,7 +21,7 @@ class BigqueryResetSpec(Spec):
     dataset_id: str = 'platform_dev'
     project_id: str = 'open-targets-eu-dev'
     location: str = 'eu'
-    release_id: str
+    release: str
 
 
 class BigqueryReset(Task):
@@ -31,7 +31,7 @@ class BigqueryReset(Task):
     def __init__(self, spec: BigqueryResetSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
         self.spec: BigqueryResetSpec
-        self._release_metadata = [{'release': self.spec.release_id}]
+        self._release_metadata = [{'release': self.spec.release}]
 
     @report
     def run(self) -> Self:
