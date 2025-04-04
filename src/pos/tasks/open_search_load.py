@@ -43,12 +43,13 @@ class OpenSearchLoad(Task):
 
     @report
     def run(self) -> Self:
+        logger.debug(f'Loading data into index {self._index_name}')
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
             self.spec.host,
             self.spec.port,
         )
-        json_file = self._get_json_path(self.spec.json_parent)
+        json_file = self._get_json_path()
         if not json_file.exists():
             logger.warning(f'No data for {self.spec.dataset} loaded. File {json_file} does not exist')
             return self
@@ -79,5 +80,7 @@ class OpenSearchLoad(Task):
                 for doc in rows:
                     yield doc
 
-    def _get_json_path(self, json_parent: str) -> Path:
-        return Path(f'{json_parent}/{self._output_dir}/{self.spec.dataset}.json')
+    def _get_json_path(self) -> Path:
+        return Path(
+            f'{self.context.config.work_path}/{self.spec.json_parent}/{self._output_dir}/{self.spec.dataset}.json'
+        )

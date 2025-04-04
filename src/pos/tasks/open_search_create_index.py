@@ -39,6 +39,7 @@ class OpenSearchCreateIndex(Task):
 
     @report
     def run(self) -> Self:
+        logger.debug(f'Creating index {self._index_name}')
         opensearch = OpenSearchInstanceManager(
             self.spec.service_name,
             self.spec.host,

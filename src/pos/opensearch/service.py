@@ -2,9 +2,9 @@
 
 import os
 from dataclasses import dataclass
+from time import sleep
 
 import docker
-import requests
 from docker.client import DockerClient
 from docker.errors import NotFound
 from docker.models.containers import Container
@@ -12,7 +12,6 @@ from docker.models.images import Image
 from docker.types import Ulimit
 from loguru import logger
 from opensearchpy import OpenSearch
-from requests.adapters import HTTPAdapter, Retry
 
 
 @dataclass
@@ -99,7 +98,7 @@ class OpenSearchInstanceManager:
         # TODO: run as correct user
         # TODO: refactor env vars and volumes
         # TODO: remove dockerfile
-        logger.info('Starting OpenSearch')
+        logger.debug('Starting OpenSearch')
         image = self._build()
         self._container = self._docker_client.containers.run(
             image,
@@ -132,7 +131,7 @@ class OpenSearchInstanceManager:
                 Ulimit(name='nofile', soft=65536, hard=65536),
             ],
         )
-        self._update_keystore()
+        # self._update_keystore()
         if self.is_healthy():
             return
         else:
@@ -140,6 +139,7 @@ class OpenSearchInstanceManager:
 
     def stop(self) -> None:
         """Stop OpenSearch container."""
+        logger.debug('Stopping OpenSearch')
         try:
             self._container = self._docker_client.containers.get(self.name)
             self._container.stop()
@@ -147,7 +147,7 @@ class OpenSearchInstanceManager:
             logger.error('Container not found')
             raise OpenSearchInstanceManagerError(f'Container {self.name} not found')
 
-    def is_healthy(self, timeout: int = 120, retries: int = 10) -> bool:
+    def is_healthy(self, timeout: int = 10, retries: int = 3) -> bool:
         """Health check for OpenSearch.
 
         Keyword Arguments:
@@ -158,13 +158,16 @@ class OpenSearchInstanceManager:
             Boolean -- True if healthy, False otherwise
         """
         logger.debug('Waiting for OpenSearch health')
-        prefix = 'http://'
-        url = f'{prefix}{self._host}:{self._port}/_cluster/health?wait_for_status=green&timeout={timeout}s'
-        session = requests.Session()
-        max_retries = Retry(total=retries, backoff_factor=1, status_forcelist=[56])
-        session.mount(prefix, HTTPAdapter(max_retries=max_retries))
-        response = session.get(url)
-        return response.status_code == 200
+        healthy = False
+        while timeout > 0:
+            logger.debug(f'{timeout} seconds remaining')
+            if self.client.ping():
+                self.client.cluster.health(wait_for_status='green', cluster_manager_timeout=f'{timeout}s')
+                healthy = True
+                break
+            timeout -= 1
+            sleep(1)
+        return healthy
 
     def _update_keystore(self):
         logger.debug('Updating keystore')

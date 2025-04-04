@@ -1,6 +1,7 @@
 # Data prep task
 from typing import Self
 
+from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -31,6 +32,7 @@ class OpenSearchStart(Task):
 
     @report
     def run(self) -> Self:
+        logger.debug(f'Starting OpenSearch instance {self.spec.service_name}')
         opensearch = OpenSearchInstanceManager(self.spec.service_name, self.spec.host, self.spec.port)
         opensearch.start(
             self.spec.volume_data,

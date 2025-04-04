@@ -24,7 +24,7 @@ class ClickhouseInstanceManager:
     CONFIG_PATH = absolute_path('config/clickhouse/config.d')
     USERS_PATH = absolute_path('config/clickhouse/users.d')
     SCHEMA_PATH = absolute_path('config/clickhouse/schema')
-    SCRIPTS_PATH = absolute_path('config/clickhouse/scripts')
+    # SCRIPTS_PATH = absolute_path('config/clickhouse/scripts')
 
     def __init__(
         self, name: str, image: str = 'clickhouse/clickhouse-server', version: str = '23.3.1.2823', database: str = 'ot'
