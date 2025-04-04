@@ -1,7 +1,9 @@
 # Data prep task
 
+from pathlib import Path
 from typing import Self
 
+from loguru import logger
 from otter.scratchpad import Scratchpad
 from otter.storage import get_remote_storage
 from otter.task.model import Spec, Task, TaskContext
@@ -38,28 +40,34 @@ class ExplodeDatasets(Task):
         self.scratchpad = Scratchpad({})
         try:
             self._config = get_config('config/datasets.yaml').opensearch
-            self._input_dir = self._config[self.spec.dataset].input_dir
-            self._output_dir = self._config[self.spec.dataset].output_dir
+            self._input_dir = Path(self._config[self.spec.dataset].input_dir)
+            self._output_dir = Path(self._config[self.spec.dataset].output_dir)
         except AttributeError:
             raise ExplodeDatasetsError(f'Unable to load config for {self.spec.dataset}')
+        self.abs_input_dir = self.context.config.work_path.joinpath(self.spec.parquet_parent) / self._input_dir
+        self.abs_output_dir = self.context.config.work_path.joinpath(self.spec.json_parent) / self._output_dir
+        logger.debug(f'Input dir: {self.abs_input_dir}')
+        logger.debug(f'Output dir: {self.abs_output_dir}')
 
     @report
     def run(self) -> Self:
-        glob = self._get_parquet_source(self.spec.parquet_parent)
-        remote_storage = get_remote_storage(glob)
-        files = remote_storage.glob(glob)
+        logger.debug(f'Exploding {self.spec.dataset}')
+        # glob = str(self._get_parquet_source())
+        # remote_storage = get_remote_storage(glob)
+        # files = remote_storage.glob(glob)
+        files = self.abs_input_dir.glob('*.parquet')
         for file in files:
             spec = DataPrepSpec(
                 name=f'data_prep {file}',
-                source=file,
-                destination=self._get_json_destination(self.spec.json_parent),
+                source=str(file),
+                destination=str(self._get_json_destination()),
             )
             self.scratchpad.store('each', file)
             self.context.specs.append(Spec.model_validate(self.scratchpad.replace_dict(spec.model_dump())))
         return self
 
-    def _get_parquet_source(self, parquet_parent: str) -> str:
-        return f'{parquet_parent}/{self._input_dir}/*.parquet'
+    def _get_parquet_source(self) -> Path:
+        return self.abs_input_dir.joinpath('*.parquet')
 
-    def _get_json_destination(self, json_parent: str) -> str:
-        return f'{json_parent}/{self._output_dir}/{self.spec.dataset}.json'
+    def _get_json_destination(self) -> Path:
+        return self.abs_output_dir.joinpath(f'{self.spec.dataset}.json')

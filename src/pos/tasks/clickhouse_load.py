@@ -1,4 +1,5 @@
 # Clickhouse load task
+from pathlib import Path
 from typing import Self
 
 from otter.task.model import Spec, Task, TaskContext
@@ -27,6 +28,9 @@ class ClickhouseLoad(Task):
         self.spec: ClickhouseLoadSpec
         try:
             self._config = get_config('config/datasets.yaml').clickhouse
+            self._table_name = self._config[self.spec.dataset]['table']
+            self._output_dir = self._config[self.spec.dataset]['output_dir']
+            self._post_load_sql = self._config[self.spec.dataset].get('postload_sql')
         except AttributeError:
             raise ClickhouseLoadError(f'Unable to load config for {self.spec.dataset}')
 
@@ -36,4 +40,8 @@ class ClickhouseLoad(Task):
         # glob files
         # for file in glob_files:
         # insert_file(clickhouse.client, <table>, <file_path>)
+        # run sql
         return self
+
+    def _get_parquet_path(self) -> Path:
+        return Path(f'{self.context.config.work_path}/{self.spec.data_dir_parent}/{self._output_dir}')

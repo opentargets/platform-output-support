@@ -24,8 +24,8 @@ class DataPrepSpec(Spec):
         - destination (str): The path or URL of the json file.
     """
 
-    source: Path
-    destination: Path
+    source: str
+    destination: str
 
 
 class DataPrep(Task):
