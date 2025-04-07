@@ -4,6 +4,9 @@ from pathlib import Path
 
 import clickhouse_connect
 import docker
+import docker.errors
+from clickhouse_connect.driver import Client
+from clickhouse_connect.driver.exceptions import DatabaseError
 from docker.client import DockerClient
 from docker.errors import APIError, ImageNotFound, NotFound
 from docker.models.containers import Container
@@ -24,15 +27,16 @@ class ClickhouseInstanceManager:
     CONFIG_PATH = absolute_path('config/clickhouse/config.d')
     USERS_PATH = absolute_path('config/clickhouse/users.d')
     SCHEMA_PATH = absolute_path('config/clickhouse/schema')
-    # SCRIPTS_PATH = absolute_path('config/clickhouse/scripts')
+    SCRIPTS_PATH = absolute_path('config/clickhouse/scripts')
 
     def __init__(
         self, name: str, image: str = 'clickhouse/clickhouse-server', version: str = '23.3.1.2823', database: str = 'ot'
     ) -> None:
         self.name = name
+        self._database = database
         self._docker_client: DockerClient = docker.from_env()
         self._image: Image = self._get_image(f'{image}:{version}')
-        self.client = clickhouse_connect.get_client(database=database)
+        self.client = self._get_clickhouse_client()
         self._container: Container = Container()
 
     def start(self, volume_data: str, volume_logs: str) -> None:
@@ -42,6 +46,9 @@ class ClickhouseInstanceManager:
             volume_data -- Data volume
             volume_logs -- Logs volume
         """
+        if self.is_running():
+            logger.warning('Clickhouse container is already running')
+            return
         Path(volume_data).mkdir(parents=True, exist_ok=True)
         Path(volume_logs).mkdir(parents=True, exist_ok=True)
         self._container = self._docker_client.containers.run(
@@ -63,15 +70,33 @@ class ClickhouseInstanceManager:
 
     def stop(self) -> None:
         """Stop Clickhouse instance."""
-        try:
-            self._container = self._docker_client.containers.get(self.name)
-            self._container.stop()
-        except NotFound:
-            logger.error('Container not found')
-            raise ClickhouseInstanceManagerError(f'Container {self.name} not found')
+        if not self.is_running():
+            logger.warning('Clickhouse container is not running')
+            return
+        logger.debug('Stopping Clickhouse container')
+        self._container = self._docker_client.containers.get(self.name)
+        self._container.stop()
 
     def _get_image(self, name: str) -> Image:
         try:
             return self._docker_client.images.get(name)
         except (ImageNotFound, APIError):
             raise ClickhouseInstanceManagerError(f'Image {name} not found')
+
+    def _get_clickhouse_client(self) -> Client | None:
+        """Get Clickhouse client."""
+        client = None
+        if self.is_running():
+            try:
+                client = clickhouse_connect.get_client(database=self._database)
+            except DatabaseError:
+                raise ClickhouseInstanceManagerError(f'Failed to connect to Clickhouse database {self._database}')
+        return client
+
+    def is_running(self) -> bool:
+        """Check if Clickhouse instance is running."""
+        try:
+            self._docker_client.containers.get(self.name)
+            return True
+        except NotFound:
+            return False

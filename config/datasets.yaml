@@ -337,6 +337,7 @@ clickhouse:
     table: sentences_log
     input_dir: intermediate/literature_sentence
     postload_script: config/clickhouse/scripts/sentences.sql
+bigquery:
   association_by_datasource_direct:
     index: association_by_datasource_direct
     input_dir: output/association_by_datasource_direct
