@@ -16,3 +16,5 @@ from
         from
             ot.ml_w2v_log
     );
+
+drop table ot.ml_w2v_log;
