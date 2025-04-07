@@ -1,6 +1,7 @@
 # Clickhouse start task
 from typing import Self
 
+from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -27,6 +28,7 @@ class ClickhouseStart(Task):
 
     @report
     def run(self) -> Self:
+        logger.debug('Starting Clickhouse service')
         clickhouse = ClickhouseInstanceManager(name=self.spec.service_name)
         clickhouse.start(self.spec.volume_data, self.spec.volume_logs)
         return self

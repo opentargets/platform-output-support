@@ -1,7 +1,7 @@
 ---
 work_path: ./work
 log_level: TRACE
-release_uri: gs://open-targets-pre-data-releases/jamesh/pos
+#release_uri: gs://open-targets-pre-data-releases/jamesh/pos
 scratchpad:
   release: 25.03-testrun-3
   local_data: release_data
@@ -16,8 +16,8 @@ scratchpad:
   snapshot_name: 2
   snapshot_bucket: open-targets-pre-data-releases
   snapshot_base_path: jamesh/snapshots
-  clickhouse_data: ch/data
-  clickhouse_logs: ch/logs
+  clickhouse_data: /Users/jhayhurst/Documents/scratch/ch/data
+  clickhouse_logs: /Users/jhayhurst/Documents/scratch/ch/logs
   release_id: 25.03
   bq_prod_project_id: open-targets-prod
   bq_parquet_path: gs://open-targets-data-releases/25.03
@@ -309,6 +309,7 @@ steps:
     # - name: sync_bucket etl intermediate files
     #   source: gs://open-targets-pre-data-releases/${release}/intermediate/literature_sentence
     #   destination: ${local_data}/intermediate/literature_sentence
+    
     - name: clickhouse_start clickhouse start
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
@@ -323,8 +324,8 @@ steps:
           requires:
             - clickhouse_start clickhouse start
             - sync_bucket etl output files
-            - sync_bucket etl view files
-            - sync_bucket etl intermediate files
+            # - sync_bucket etl view files
+            # - sync_bucket etl intermediate files
           dataset: ${each}
           data_dir_parent: ${local_data}
           
