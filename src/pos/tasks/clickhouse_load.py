@@ -8,7 +8,7 @@ from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.clickhouse.service import ClickhouseInstanceManager
+from pos.services.clickhouse import ClickhouseInstanceManager
 from pos.utils import get_config
 
 
@@ -39,12 +39,14 @@ class ClickhouseLoad(Task):
     @report
     def run(self) -> Self:
         logger.debug('Loading Clickhouse service')
-        clickhouse = ClickhouseInstanceManager(name=self.spec.service_name)
+        clickhouse_client = ClickhouseInstanceManager(name=self.spec.service_name).client()
         files = self._get_parquet_path().glob('*.parquet')
         for file in files:
-            insert_file(clickhouse.client, self._table_name, str(file), fmt='Parquet')
-        sql = Path(self._post_load_sql).read_text()
-        clickhouse.client.query(sql)
+            insert_file(clickhouse_client, self._table_name, str(file), fmt='Parquet')
+        sql_statements = Path(self._post_load_sql).read_text().split(';')
+        for sql in sql_statements:
+            if sql.strip():
+                clickhouse_client.query(sql)
         return self
 
     def _get_parquet_path(self) -> Path:

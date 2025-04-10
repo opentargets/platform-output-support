@@ -1,7 +1,6 @@
 """OpenSearch service module."""
 
-import os
-from dataclasses import dataclass
+from pathlib import Path
 from time import sleep
 
 import docker
@@ -13,44 +12,14 @@ from docker.types import Ulimit
 from loguru import logger
 from opensearchpy import OpenSearch
 
-
-@dataclass
-class SnapshotRepository:
-    """Snapshot repository configuration fields.
-
-    Arguments:
-        name -- Repository name
-
-    Keyword Arguments:
-        type -- Repository type (default: {None})
-        bucket -- GCS bucket (default: {None})
-        base_path -- Base path in GCS bucket (default: {None})
-        client -- GCS client (default: {None})
-    """
-
-    name: str
-    type: str | None = None
-    bucket: str | None = None
-    base_path: str | None = None
-    client: str = 'default'
-
-    def body(self) -> dict:
-        """Return the snapshot repository body."""
-        return {
-            'type': self.type,
-            'settings': {
-                'bucket': self.bucket,
-                'base_path': self.base_path,
-                'client': self.client,
-            },
-        }
+from pos.services.containerized_service import ContainerizedService
 
 
 class OpenSearchInstanceManagerError(Exception):
     """Base class for exceptions in this module."""
 
 
-class OpenSearchInstanceManager:
+class OpenSearchInstanceManager(ContainerizedService):
     """OpenSearch instance manager.
 
     Arguments:
@@ -65,47 +34,54 @@ class OpenSearchInstanceManager:
         client -- OpenSearch client
     """
 
-    def __init__(self, name: str, host: str = 'localhost', port: int = 9200) -> None:
+    def __init__(
+        self,
+        name: str,
+        image: str = 'opensearchproject/opensearch',
+        version: str = '2.19.0',
+        # host: str = 'localhost',
+        # port: int = 9200,
+        init_timeout: int = 10,
+    ) -> None:
+        super().__init__(name, image, version, init_timeout)
         self.name = name
-        self._host = host
-        self._port = port
-        self.client = OpenSearch([{'host': self._host, 'port': self._port}], use_ssl=False, timeout=3600)
-        self._docker_client: DockerClient = docker.from_env()
-        self._container: Container = Container()
+        # self._host = host
+        # self._port = port
+        # self._image: Image = self._get_image(f'{image}:{version}')
+        # self.client = OpenSearch([{'host': self._host, 'port': self._port}], use_ssl=False, timeout=3600)
+        # self._docker_client: DockerClient = docker.from_env()
+        # self._container: Container = Container()
 
     def start(
         self,
         volume_data: str,
         volume_logs: str,
-        volume_creds: str,
         opensearch_java_opts: str,
-        # snapshot_repository: SnapshotRepository = None,
     ) -> None:
-        """Start OpenSearch container.
+        """Start OpenSearch instance.
 
         Arguments:
-            volume_data -- Path to data
-            volume_logs -- Path to logs
-            volume_creds -- Path to GCP credentials
+            volume_data -- Data volume
+            volume_logs -- Logs volume
             opensearch_java_opts -- JVM options
 
-        Keyword Arguments:
-            snapshot_repository -- SnapshotRespository (default: {None})
-
         Raises:
-            OpenSearchInstanceManagerError: If OpenSearch fails to start
+            OpenSearchInstanceManagerError -- OpenSearch fails to start
         """
         # TODO: run as correct user
         # TODO: refactor env vars and volumes
         # TODO: remove dockerfile
-        logger.debug('Starting OpenSearch')
-        image = self._build()
-        self._container = self._docker_client.containers.run(
-            image,
+        if self.is_running():
+            logger.warning('OpenSearch container is already running')
+            return
+        Path(volume_data).mkdir(parents=True, exist_ok=True)
+        Path(volume_logs).mkdir(parents=True, exist_ok=True)
+        self.container = self.docker_client.containers.run(
+            self.image,
+            name=self.name,
             auto_remove=True,
             detach=True,
-            name=self.name,
-            ports={'9200': self._port, '9300': 9300},
+            ports={'9200': 9200, '9300': 9300},
             environment={
                 'path.data': '/usr/share/opensearch/data',
                 'path.logs': '/usr/share/opensearch/logs',
@@ -121,17 +97,12 @@ class OpenSearchInstanceManager:
             volumes={
                 volume_data: {'bind': '/usr/share/opensearch/data', 'mode': 'rw'},
                 volume_logs: {'bind': '/usr/share/opensearch/logs', 'mode': 'rw'},
-                volume_creds: {
-                    'bind': '/usr/share/opensearch/config/gac.json',
-                    'mode': 'ro',
-                },
             },
             ulimits=[
                 Ulimit(name='memlock', soft=-1, hard=-1),
                 Ulimit(name='nofile', soft=65536, hard=65536),
             ],
         )
-        # self._update_keystore()
         if self.is_healthy():
             return
         else:
@@ -147,7 +118,7 @@ class OpenSearchInstanceManager:
             logger.error('Container not found')
             raise OpenSearchInstanceManagerError(f'Container {self.name} not found')
 
-    def is_healthy(self, timeout: int = 10, retries: int = 3) -> bool:
+    def is_healthy(self, timeout: int = 10) -> bool:
         """Health check for OpenSearch.
 
         Keyword Arguments:
@@ -168,21 +139,3 @@ class OpenSearchInstanceManager:
             timeout -= 1
             sleep(1)
         return healthy
-
-    def _update_keystore(self):
-        logger.debug('Updating keystore')
-        self._container.exec_run(['bin/opensearch-keystore', 'create'])
-        self._container.exec_run([
-            'bin/opensearch-keystore',
-            'add-file',
-            'gcs.client.default.credentials_file',
-            '/usr/share/opensearch/config/gac.json',
-        ])
-        self._container.restart()
-
-    def _build(self) -> Image:
-        logger.debug('Building OpenSearch image')
-        image, _ = self._docker_client.images.build(
-            path=os.path.join(os.path.dirname(__file__), '.'), tag='opensearch-pos'
-        )
-        return image

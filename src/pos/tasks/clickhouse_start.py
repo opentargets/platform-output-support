@@ -6,7 +6,7 @@ from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.clickhouse.service import ClickhouseInstanceManager
+from pos.services.clickhouse import ClickhouseInstanceManager
 
 
 class ClickhouseStartError(OtterError):
@@ -19,6 +19,8 @@ class ClickhouseStartSpec(Spec):
     service_name: str = 'ch-pos'
     volume_data: str
     volume_logs: str
+    image: str = 'clickhouse/clickhouse-server'
+    version: str = '23.3.1.2823'
 
 
 class ClickhouseStart(Task):
@@ -29,6 +31,8 @@ class ClickhouseStart(Task):
     @report
     def run(self) -> Self:
         logger.debug('Starting Clickhouse service')
-        clickhouse = ClickhouseInstanceManager(name=self.spec.service_name)
+        clickhouse = ClickhouseInstanceManager(
+            name=self.spec.service_name, image=self.spec.image, version=self.spec.version
+        )
         clickhouse.start(self.spec.volume_data, self.spec.volume_logs)
         return self
