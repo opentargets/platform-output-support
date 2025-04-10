@@ -5,7 +5,7 @@ from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.clickhouse.service import ClickhouseInstanceManager
+from pos.services.clickhouse import ClickhouseInstanceManager
 
 
 class ClickhouseStopError(OtterError):
