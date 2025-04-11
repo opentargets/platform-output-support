@@ -8,11 +8,21 @@ Create Platform backend (OpenSearch and Clickhouse) and release data.
 This application uses the [Otter](http://github.com/opentargets/otter) library to
 define the steps of the pipeline that consume the output from the data generation pipeline 
 and create the backend for the Open Targets Platform. There are also steps for releasing 
-data via GCS, FTP and BigQuery.
+data to BigQuery.
 
 Check out the [config.yaml](config/config.yaml) file to see the steps and the tasks that
 make them up.
 
+TODO:
+- [X] croissant
+- [X] prep data for loading
+- [X] load Clickhouse
+- [X] load OpenSearch
+- [X] create google disk snapshots for ch and os
+- [X] create data tarballs
+- [X] load BigQuery 
+- [ ] GCS release
+- [ ] FTP release
 
 ## Installation and running
 
@@ -24,18 +34,34 @@ with PIP, so you can also fall back to it if you feel more comfortable.
 uv run pos -h
 ```
 
+### Configuration
 
-## Development
+A folder for all the configuration is [here](config), which has the following:
 
-> [!TIP]
-> Take a look at the [Otter docs](https://opentargets.github.io/otter), it is a
-> very helpful guide when developing new tasks.
+- Main config for otter: [config.yaml](config/config.yaml)
+- Config for datasets, data sources/table names/settings etc. for Clickhouse, OpenSearch, BigQuery: [datasets.yaml](config/datasets.yaml)
+- Clickhouse configs/schema/sql: [clickhouse](config/clickhouse/)
+- OpenSearch Dockerfile/index settings: [opensearch](config/opensearch/)
 
-You can test the changes by running a small step, like `so`:
+It's configured by default to load all the necessary datasets, but it can be modified. Make sure that the dataset names in the config.yaml have a corresponding entry in the datasets.yaml and so on.
 
-```bash
-uv run pos -c config/config.yaml --step data_prep
-```
+### Create the OT Platform backend
+1. start a google vm and clone this repo, see installation.
+   1. ideally something like n2-highmem-96 - reserve half the mem for the JVM
+   2. external disk for opensearch
+   3. external disk for clickhouse
+2. opensearch (each step needs to be completed before starting the next)
+   1. `uv run pos -p 300 -c config/config.yaml -s open_search_prep_all`
+   2. `uv run pos -p 100 -c config/config.yaml -s open_search_load_all`
+   3. `uv run pos -c config/config.yaml -s open_search_stop`
+   4. `uv run pos -c config/config.yaml -s open_search_disk_snapshot`
+   5. `uv run pos -c config/config.yaml -s open_search_tarball`
+3. clickhouse (each step needs to be completed before starting the next)
+   1. `uv run pos -c config/config.yaml -s clickhouse_load_all`
+   2. `uv run pos -c config/config.yaml -s clickhouse_stop`
+   3. `uv run pos -c config/config.yaml -s clickhouse_disk_snapshot`
+   4. `uv run pos -c config/config.yaml -s clickhouse_tarball`
+
 
 
 ## Copyright
