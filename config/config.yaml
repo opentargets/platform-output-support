@@ -172,7 +172,7 @@ steps:
         - target_prioritisation
         - variant_index
       do:
-        - name: explode_datasets ${each}
+        - name: explode_data_prep ${each}
           dataset: ${each}
           parquet_parent: ${local_data}
           json_parent: ${prepared_data}

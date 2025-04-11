@@ -17,8 +17,6 @@ class OpenSearchStartSpec(Spec):
     """Configuration fields for the start OpenSearch task."""
 
     service_name: str = 'os-pos'
-    # host: str = 'localhost'
-    # port: str = '9200'
     volume_data: str
     volume_logs: str
     opensearch_java_opts: str

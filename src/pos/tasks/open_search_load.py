@@ -60,8 +60,6 @@ class OpenSearchLoad(Task):
         opensearch.indices.refresh(index=self._index_name)
         return self
 
-    # TODO: add a counter to track the number of records read in
-    # then use to validate against the number of records indexed
     def _generate_data(self, json_file: str | Path) -> Generator[dict[str, Any]] | Generator[str]:
         with open(json_file) as rows:
             if self._id_field:

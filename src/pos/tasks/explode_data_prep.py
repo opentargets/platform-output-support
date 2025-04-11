@@ -5,7 +5,6 @@ from typing import Self
 
 from loguru import logger
 from otter.scratchpad import Scratchpad
-from otter.storage import get_remote_storage
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -14,11 +13,11 @@ from pos.tasks.data_prep import DataPrepSpec
 from pos.utils import get_config
 
 
-class ExplodeDatasetsError(OtterError):
+class ExplodeDataPrepError(OtterError):
     """Base class for exceptions in this module."""
 
 
-class ExplodeDatasetsSpec(Spec):
+class ExplodeDataPrepSpec(Spec):
     """Configuration fields for the data prep task.
 
     This task has the following custom configuration fields:
@@ -33,17 +32,17 @@ class ExplodeDatasetsSpec(Spec):
     dataset: str
 
 
-class ExplodeDatasets(Task):
-    def __init__(self, spec: ExplodeDatasetsSpec, context: TaskContext) -> None:
+class ExplodeDataPrep(Task):
+    def __init__(self, spec: ExplodeDataPrepSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
-        self.spec: ExplodeDatasetsSpec
+        self.spec: ExplodeDataPrepSpec
         self.scratchpad = Scratchpad({})
         try:
             self._config = get_config('config/datasets.yaml').opensearch
             self._input_dir = Path(self._config[self.spec.dataset].input_dir)
             self._output_dir = Path(self._config[self.spec.dataset].output_dir)
         except AttributeError:
-            raise ExplodeDatasetsError(f'Unable to load config for {self.spec.dataset}')
+            raise ExplodeDataPrepError(f'Unable to load config for {self.spec.dataset}')
         self.abs_input_dir = self.context.config.work_path.joinpath(self.spec.parquet_parent) / self._input_dir
         self.abs_output_dir = self.context.config.work_path.joinpath(self.spec.json_parent) / self._output_dir
         logger.debug(f'Input dir: {self.abs_input_dir}')
@@ -52,9 +51,6 @@ class ExplodeDatasets(Task):
     @report
     def run(self) -> Self:
         logger.debug(f'Exploding {self.spec.dataset}')
-        # glob = str(self._get_parquet_source())
-        # remote_storage = get_remote_storage(glob)
-        # files = remote_storage.glob(glob)
         files = self.abs_input_dir.glob('*.parquet')
         for file in files:
             spec = DataPrepSpec(
