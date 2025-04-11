@@ -1,18 +1,12 @@
 """OpenSearch service module."""
 
 from pathlib import Path
-from time import sleep
 
-import docker
-from docker.client import DockerClient
-from docker.errors import NotFound
-from docker.models.containers import Container
-from docker.models.images import Image
 from docker.types import Ulimit
 from loguru import logger
 from opensearchpy import OpenSearch
 
-from pos.services.containerized_service import ContainerizedService
+from pos.services.containerized_service import ContainerizedService, ContainerizedServiceError, reset_timeout
 
 
 class OpenSearchInstanceManagerError(Exception):
@@ -37,105 +31,80 @@ class OpenSearchInstanceManager(ContainerizedService):
     def __init__(
         self,
         name: str,
-        image: str = 'opensearchproject/opensearch',
-        version: str = '2.19.0',
-        # host: str = 'localhost',
-        # port: int = 9200,
-        init_timeout: int = 10,
+        image: Path = Path('config/opensearch/Dockerfile'),
+        init_timeout: int = 20,
     ) -> None:
-        super().__init__(name, image, version, init_timeout)
+        super().__init__(name, image, init_timeout)
         self.name = name
-        # self._host = host
-        # self._port = port
-        # self._image: Image = self._get_image(f'{image}:{version}')
-        # self.client = OpenSearch([{'host': self._host, 'port': self._port}], use_ssl=False, timeout=3600)
-        # self._docker_client: DockerClient = docker.from_env()
-        # self._container: Container = Container()
 
     def start(
         self,
         volume_data: str,
         volume_logs: str,
-        opensearch_java_opts: str,
+        opensearch_java_opts: str = '-Xms2g -Xmx4g',
     ) -> None:
         """Start OpenSearch instance.
 
-        Arguments:
-            volume_data -- Data volume
-            volume_logs -- Logs volume
-            opensearch_java_opts -- JVM options
+        Args:
+            volume_data: Data volume
+            volume_logs: Logs volume
+            opensearch_java_opts: Java options (default: '-Xms2g -Xmx4g')
 
         Raises:
-            OpenSearchInstanceManagerError -- OpenSearch fails to start
+            OpenSearchInstanceManagerError: If OpenSearch failed to start
         """
-        # TODO: run as correct user
-        # TODO: refactor env vars and volumes
-        # TODO: remove dockerfile
-        if self.is_running():
-            logger.warning('OpenSearch container is already running')
-            return
-        Path(volume_data).mkdir(parents=True, exist_ok=True)
-        Path(volume_logs).mkdir(parents=True, exist_ok=True)
-        self.container = self.docker_client.containers.run(
-            self.image,
-            name=self.name,
-            auto_remove=True,
-            detach=True,
-            ports={'9200': 9200, '9300': 9300},
-            environment={
-                'path.data': '/usr/share/opensearch/data',
-                'path.logs': '/usr/share/opensearch/logs',
-                'network.host': '0.0.0.0',
-                'discovery.type': 'single-node',
-                'discovery.seed_hosts': [],
-                'bootstrap.memory_lock': 'true',
-                'search.max_open_scroll_context': 5000,
-                'DISABLE_SECURITY_PLUGIN': 'true',
-                'OPENSEARCH_JAVA_OPTS': opensearch_java_opts,
-                'thread_pool.write.queue_size': -1,
-            },
-            volumes={
-                volume_data: {'bind': '/usr/share/opensearch/data', 'mode': 'rw'},
-                volume_logs: {'bind': '/usr/share/opensearch/logs', 'mode': 'rw'},
-            },
-            ulimits=[
-                Ulimit(name='memlock', soft=-1, hard=-1),
-                Ulimit(name='nofile', soft=65536, hard=65536),
-            ],
-        )
-        if self.is_healthy():
-            return
-        else:
-            raise OpenSearchInstanceManagerError('Could not start OpenSearch. Failed health check')
-
-    def stop(self) -> None:
-        """Stop OpenSearch container."""
-        logger.debug('Stopping OpenSearch')
+        ports = {'9200': 9200, '9300': 9300}
+        environment = {
+            'path.data': '/usr/share/opensearch/data',
+            'path.logs': '/usr/share/opensearch/logs',
+            'network.host': '0.0.0.0',
+            'discovery.type': 'single-node',
+            'discovery.seed_hosts': [],
+            'bootstrap.memory_lock': 'true',
+            'search.max_open_scroll_context': 5000,
+            'DISABLE_SECURITY_PLUGIN': 'true',
+            'OPENSEARCH_JAVA_OPTS': opensearch_java_opts,
+            'thread_pool.write.queue_size': -1,
+        }
+        volumes = {
+            volume_data: {'bind': '/usr/share/opensearch/data', 'mode': 'rw'},
+            volume_logs: {'bind': '/usr/share/opensearch/logs', 'mode': 'rw'},
+        }
+        ulimits = [
+            Ulimit(name='memlock', soft=-1, hard=-1),
+            Ulimit(name='nofile', soft=65536, hard=65536),
+        ]
         try:
-            self._container = self._docker_client.containers.get(self.name)
-            self._container.stop()
-        except NotFound:
-            logger.error('Container not found')
-            raise OpenSearchInstanceManagerError(f'Container {self.name} not found')
+            self._run_container(
+                ports=ports,
+                env=environment,
+                volumes=volumes,
+                ulimits=ulimits,
+            )
+        except ContainerizedServiceError:
+            logger.error('OpenSearch container failed to start')
+            raise OpenSearchInstanceManagerError('OpenSearch instance failed to start')
 
-    def is_healthy(self, timeout: int = 10) -> bool:
+    def client(self) -> OpenSearch:
+        return OpenSearch([{'host': 'localhost', 'port': 9200}], use_ssl=False, timeout=3600)
+
+    @reset_timeout
+    def is_healthy(self) -> bool:
         """Health check for OpenSearch.
 
-        Keyword Arguments:
-            timeout -- timeout for the wait_for_status call (sec) (default: {120})
-            retries -- number of retries (default: {10})
+        Args:
+            timeout: Timeout in seconds (default: {10})
 
         Returns:
-            Boolean -- True if healthy, False otherwise
+            bool: True if OpenSearch is healthy, False otherwise
         """
         logger.debug('Waiting for OpenSearch health')
         healthy = False
-        while timeout > 0:
-            logger.debug(f'{timeout} seconds remaining')
-            if self.client.ping():
-                self.client.cluster.health(wait_for_status='green', cluster_manager_timeout=f'{timeout}s')
+        while self._init_timeout > 0:
+            if self.client().ping():
+                self.client().cluster.health(wait_for_status='green', cluster_manager_timeout=f'{self._init_timeout}s')
                 healthy = True
+                logger.debug('OpenSearch is healthy')
                 break
-            timeout -= 1
-            sleep(1)
+            self._wait(1)
         return healthy

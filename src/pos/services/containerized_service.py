@@ -25,16 +25,26 @@ class ContainerizedServiceError(Exception):
 
 
 class ContainerizedService(ABC):
-    """Interface for containerized services."""
+    """Interface for containerized services.
 
-    def __init__(self, name: str, image: str, version: str, init_timeout: int = 10) -> None:
+    Args:
+        name: Container name
+        image: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile
+        init_timeout: Initialization timeout in seconds (default: 10)
+    """
+
+    DEFAULT_IMAGE_NAME = 'opensearch-pos'
+
+    def __init__(self, name: str, image: str | Path | None = None, init_timeout: int = 10) -> None:
         self.name = name
         self.docker_client = docker.from_env()
-        self._image_name = f'{image}:{version}'
+        self._image_name = image if isinstance(image, str) else self.DEFAULT_IMAGE_NAME
         self._image = Image()
         self._container = None
         self._init_timeout = init_timeout
         self._init_timeout_reset_value = init_timeout
+        if isinstance(image, Path):
+            self._build_image(image)
 
     @property
     def image(self) -> Image:
@@ -93,7 +103,7 @@ class ContainerizedService(ABC):
         self.init_timeout -= duration
         sleep(duration)
 
-    def run_container(
+    def _run_container(
         self,
         ports: dict[str, int | list[int] | tuple[str, int] | None] | None = None,
         env: dict[str, str] | list[str] | None = None,
@@ -129,6 +139,18 @@ class ContainerizedService(ABC):
         )
         if not self.is_healthy():
             raise ContainerizedServiceError('Container failed to start')
+
+    def _build_image(self, dockerfile: Path) -> None:
+        """Build the image from a Dockerfile.
+
+        Args:
+            dockerfile: Path to the Dockerfile
+
+        Raises:
+            ContainerizedServiceError: If the image fails to build
+        """
+        logger.debug('Building image from dockerfile')
+        self.docker_client.images.build(path=str(dockerfile.parent), tag=self.DEFAULT_IMAGE_NAME)
 
     @abstractmethod
     def start(self) -> None:

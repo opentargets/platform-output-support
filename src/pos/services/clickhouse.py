@@ -20,12 +20,11 @@ class ClickhouseInstanceManager(ContainerizedService):
     def __init__(
         self,
         name: str,
-        image: str = 'clickhouse/clickhouse-server',
-        version: str = '23.3.1.2823',
+        image: str = 'clickhouse/clickhouse-server:23.3.1.2823',
         database: str = 'ot',
         init_timeout: int = 10,
     ) -> None:
-        super().__init__(name, image, version, init_timeout)
+        super().__init__(name, image, init_timeout)
         self.name = name
         self.database = database
 
@@ -50,7 +49,7 @@ class ClickhouseInstanceManager(ContainerizedService):
         logger.debug(f'volumes: {volumes}')
         ulimits = [Ulimit(name='nofile', soft=262144, hard=262144)]
         try:
-            self.run_container(ports=ports, volumes=volumes, ulimits=ulimits)
+            self._run_container(ports=ports, volumes=volumes, ulimits=ulimits)
         except ContainerizedServiceError:
             raise ClickhouseInstanceManagerError(f'Clickhouse instance {self.name} failed to start.')
 
