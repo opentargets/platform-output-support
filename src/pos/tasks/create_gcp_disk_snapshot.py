@@ -19,7 +19,7 @@ class CreateGcpDiskSnapshotError(OtterError):
 class CreateGcpDiskSnapshotSpec(Spec):
     """Configuration fields for the GCP Disk Image task."""
 
-    mount_point: Path = '/mnt/opensearch'  # '/mnt/opensearch or /mnt/clickhouse'
+    mount_point: Path
     gcp_project_id: str
     gcp_disk_name: str
     gcp_snapshot_name: str  # 'dev-250310-os or dev-250310-ch'
