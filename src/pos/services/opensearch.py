@@ -16,16 +16,20 @@ class OpenSearchInstanceManagerError(Exception):
 class OpenSearchInstanceManager(ContainerizedService):
     """OpenSearch instance manager.
 
-    Arguments:
-        name -- Container name
-
-    Keyword Arguments:
-        host -- Host (default: {"localhost"})
-        port -- Port (default: {9200})
+    Args:
+        name: Container name
+        image: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile
+        init_timeout: Initialization timeout in seconds (default: 20)
 
     Attributes:
-        name -- service/container name
-        client -- OpenSearch client
+        name: Container name
+        image: Image name
+        init_timeout: Initialization timeout in seconds
+        container: Container object
+        image: Image object
+
+    Raises:
+        OpenSearchInstanceManagerError: If OpenSearch instance manager fails to start
     """
 
     def __init__(

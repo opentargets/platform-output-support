@@ -10,8 +10,8 @@ from rich.logging import RichHandler
 def setup_logger(loglevel: str) -> Logger:
     """Setup a logger.
 
-    Arguments:
-        loglevel -- Log level
+    Args:
+        loglevel: Log level
 
     Returns:
         Logger

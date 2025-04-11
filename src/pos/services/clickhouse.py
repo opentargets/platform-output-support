@@ -15,7 +15,23 @@ class ClickhouseInstanceManagerError(Exception):
 
 
 class ClickhouseInstanceManager(ContainerizedService):
-    """Clickhouse instance manager."""
+    """Clickhouse instance manager.
+
+    Args:
+        name: Container name
+        image: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile
+        database: Database name (default: 'ot')
+        init_timeout: Initialization timeout in seconds (default: 10)
+
+    Attributes:
+        name: Container name
+        image: Image name
+        database: Database name
+        init_timeout: Initialization timeout in seconds
+        container: Container object
+        image: Image object
+
+    """
 
     def __init__(
         self,
