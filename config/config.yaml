@@ -11,9 +11,13 @@ scratchpad:
   opensearch_java_opts: -Xms2g -Xmx4g
   opensearch_data: os/data
   opensearch_logs: os/logs
+  opensearch_disk_name: pos-os-250311a
+  opensearch_disk_snapshot_name: pos-250311-os
   # clickhouse
   clickhouse_data: ch/data
   clickhouse_logs: ch/logs
+  clickhouse_disk_name: pos-ch-250311a
+  clickhouse_disk_snapshot_name: pos-250311-ch
   # bigquery
   bq_prod_project_id: open-targets-prod
   bq_parquet_path: gs://open-targets-data-releases/25.03
@@ -49,8 +53,8 @@ steps:
     - name: create_gcp_disk_snapshot opensearch
       mount_point: /mnt/opensearch
       gcp_project_id: open-targets-eu-dev
-      gcp_disk_name: pos-os-250311a
-      gcp_snapshot_name: pos-250311-os  # 'dev-250310-os or dev-250310-ch'
+      gcp_disk_name: ${opensearch_disk_name}
+      gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d 
   open_search_stop:
     - name: open_search_stop opensearch stop
@@ -233,8 +237,8 @@ steps:
     - name: create_gcp_disk_snapshot clickhouse
       mount_point: /mnt/clickhouse
       gcp_project_id: open-targets-eu-dev
-      gcp_disk_name: pos-ch-250311a
-      gcp_snapshot_name: pos-250311-ch  # 'dev-250310-os or dev-250310-ch'
+      gcp_disk_name: ${clickhouse_disk_name}
+      gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d 
   clickhouse_stop:
     - name: clickhouse_stop clickhouse stop
