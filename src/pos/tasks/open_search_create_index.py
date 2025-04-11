@@ -21,8 +21,6 @@ class OpenSearchCreateIndexSpec(Spec):
     """Configuration fields for the create index OpenSearch task."""
 
     service_name: str = 'os-pos'
-    host: str = 'localhost'
-    port: str = '9200'
     dataset: str
 
 
@@ -40,14 +38,10 @@ class OpenSearchCreateIndex(Task):
     @report
     def run(self) -> Self:
         logger.debug(f'Creating index {self._index_name}')
-        opensearch = OpenSearchInstanceManager(
-            self.spec.service_name,
-            self.spec.host,
-            self.spec.port,
-        )
-        if not opensearch.client.indices.exists(index=self._index_name):
+        opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
+        if not opensearch.indices.exists(index=self._index_name):
             try:
-                opensearch.client.indices.create(
+                opensearch.indices.create(
                     index=self._index_name,
                     body=self._mappings.read_text(),
                 )
