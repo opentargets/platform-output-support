@@ -23,8 +23,6 @@ class OpenSearchLoadSpec(Spec):
     """Configuration fields for the create index OpenSearch task."""
 
     service_name: str = 'os-pos'
-    host: str = 'localhost'
-    port: str = '9200'
     dataset: str
     json_parent: str
 
@@ -44,17 +42,13 @@ class OpenSearchLoad(Task):
     @report
     def run(self) -> Self:
         logger.debug(f'Loading data into index {self._index_name}')
-        opensearch = OpenSearchInstanceManager(
-            self.spec.service_name,
-            self.spec.host,
-            self.spec.port,
-        )
+        opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
         json_file = self._get_json_path()
         if not json_file.exists():
             logger.warning(f'No data for {self.spec.dataset} loaded. File {json_file} does not exist')
             return self
         for success, info in helpers.parallel_bulk(
-            opensearch.client,
+            opensearch,
             index=self._index_name,
             actions=self._generate_data(json_file),
             thread_count=4,
@@ -63,7 +57,7 @@ class OpenSearchLoad(Task):
         ):
             if not success:
                 logger.error(f'Failed to index document: {info}')
-        opensearch.client.indices.refresh(index=self._index_name)
+        opensearch.indices.refresh(index=self._index_name)
         return self
 
     # TODO: add a counter to track the number of records read in
