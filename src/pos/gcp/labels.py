@@ -4,11 +4,11 @@ from pydantic import BaseModel
 class GCPLabels(BaseModel):
     """GCP labels.
 
-    Arguments:
-        team -- Team
-        subteam -- Subteam
-        product -- Product
-        tool -- Tool
+    Args:
+        team: Team
+        subteam: Subteam
+        product: Product
+        tool: Tool
     """
 
     team: str = 'open-targets'
