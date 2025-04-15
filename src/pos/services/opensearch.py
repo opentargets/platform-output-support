@@ -18,12 +18,12 @@ class OpenSearchInstanceManager(ContainerizedService):
 
     Args:
         name: Container name
-        image: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile
-        init_timeout: Initialization timeout in seconds (default: 20)
+        dockerfile: Path to Dockerfile (default: 'config/opensearch/Dockerfile')
+        opensearch_version: OpenSearch version (default: '2.19.0')
+        init_timeout: Initialization timeout in seconds (default: 30)
 
     Attributes:
         name: Container name
-        image: Image name
         init_timeout: Initialization timeout in seconds
         container: Container object
         image: Image object
@@ -35,10 +35,11 @@ class OpenSearchInstanceManager(ContainerizedService):
     def __init__(
         self,
         name: str,
-        image: Path = Path('config/opensearch/Dockerfile'),
-        init_timeout: int = 20,
+        dockerfile: Path = Path('config/opensearch/Dockerfile'),
+        opensearch_version: str = '2.19.0',
+        init_timeout: int = 30,
     ) -> None:
-        super().__init__(name, image, init_timeout)
+        super().__init__(name, dockerfile, opensearch_version, init_timeout)
         self.name = name
 
     def start(

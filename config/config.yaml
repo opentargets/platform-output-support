@@ -3,19 +3,21 @@ work_path: ./work
 log_level: TRACE
 release_uri: gs://open-targets-pre-data-releases/jamesh/pos
 scratchpad:
-  release: 25.03-testrun-3
+  release: 25.03
   # temp file locations
   local_data: release_data
   prepared_data: prepared_data
   # opensearch
+  opensearch_version: 2.19.0
   opensearch_java_opts: -Xms2g -Xmx4g
-  opensearch_data: os/data
-  opensearch_logs: os/logs
+  opensearch_data: /mnt/opensearch/data
+  opensearch_logs: logs/opensearch
   opensearch_disk_name: pos-os-250311a
   opensearch_disk_snapshot_name: pos-250311-os
   # clickhouse
-  clickhouse_data: ch/data
-  clickhouse_logs: ch/logs
+  clickhouse_version: 23.3.1.2823
+  clickhouse_data: /mnt/clickhouse/data
+  clickhouse_logs: logs/clickhouse
   clickhouse_disk_name: pos-ch-250311a
   clickhouse_disk_snapshot_name: pos-250311-ch
   # bigquery
@@ -48,6 +50,7 @@ steps:
       service_name: os-pos
       volume_data: ${opensearch_data}
       volume_logs: ${opensearch_logs}
+      opensearch_version: ${opensearch_version}
       opensearch_java_opts: ${opensearch_java_opts}
   open_search_disk_snapshot:
     - name: create_gcp_disk_snapshot opensearch
@@ -147,6 +150,7 @@ steps:
     - name: open_search_start opensearch start
       volume_data: ${opensearch_data}
       volume_logs: ${opensearch_logs}
+      opensearch_version: ${opensearch_version}
       opensearch_java_opts: ${opensearch_java_opts}
     - name: explode load all datasets
       foreach:
@@ -229,6 +233,7 @@ steps:
     - name: clickhouse_start clickhouse start
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
+      clickhouse_version: ${clickhouse_version}
   clickhouse_tarball:
     - name: tarball clickhouse
       source: ${clickhouse_data}
@@ -250,11 +255,12 @@ steps:
       source: gs://open-targets-pre-data-releases/${release}/view 
       destination: ${local_data}/view
     - name: sync_bucket etl intermediate files
-      source: gs://open-targets-pre-data-releases/${release}/intermediate
-      destination: ${local_data}/intermediate
+      source: gs://open-targets-pre-data-releases/${release}/intermediate/literature_sentence
+      destination: ${local_data}/intermediate/literature_sentence
     - name: clickhouse_start clickhouse start
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
+      clickhouse_version: ${clickhouse_version}
     - name: explode load all datasets
       foreach:
         - aotf

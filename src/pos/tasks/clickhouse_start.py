@@ -19,7 +19,7 @@ class ClickhouseStartSpec(Spec):
     service_name: str = 'ch-pos'
     volume_data: str
     volume_logs: str
-    image: str = 'clickhouse/clickhouse-server:23.3.1.2823'
+    clickhouse_version: str = '23.3.1.2823'
 
 
 class ClickhouseStart(Task):
@@ -30,6 +30,8 @@ class ClickhouseStart(Task):
     @report
     def run(self) -> Self:
         logger.debug('Starting Clickhouse service')
-        clickhouse = ClickhouseInstanceManager(name=self.spec.service_name, image=self.spec.image)
+        clickhouse = ClickhouseInstanceManager(
+            name=self.spec.service_name, clickhouse_version=self.spec.clickhouse_version
+        )
         clickhouse.start(self.spec.volume_data, self.spec.volume_logs)
         return self
