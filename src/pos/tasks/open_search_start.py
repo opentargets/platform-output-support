@@ -19,6 +19,7 @@ class OpenSearchStartSpec(Spec):
     service_name: str = 'os-pos'
     volume_data: str
     volume_logs: str
+    opensearch_version: str = '2.19.0'
     opensearch_java_opts: str
 
 
@@ -30,7 +31,8 @@ class OpenSearchStart(Task):
     @report
     def run(self) -> Self:
         logger.debug(f'Starting OpenSearch instance {self.spec.service_name}')
-        opensearch = OpenSearchInstanceManager(self.spec.service_name)
+        opensearch = OpenSearchInstanceManager(self.spec.service_name, opensearch_version=self.spec.opensearch_version)
+
         opensearch.start(
             self.spec.volume_data,
             self.spec.volume_logs,

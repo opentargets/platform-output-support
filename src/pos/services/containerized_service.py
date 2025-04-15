@@ -1,11 +1,11 @@
+import os
 from abc import ABC, abstractmethod
 from functools import wraps
 from pathlib import Path
 from time import sleep
 
 import docker
-import docker.errors
-from docker.errors import APIError, ImageNotFound, NotFound
+from docker.errors import APIError, BuildError, ImageNotFound, NotFound
 from docker.models.containers import Container
 from docker.models.images import Image
 from loguru import logger
@@ -29,30 +29,47 @@ class ContainerizedService(ABC):
 
     Args:
         name: Container name
-        image: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile
+        dockerfile: Path to Dockerfile (default: None)
+        version: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile (default: None)
         init_timeout: Initialization timeout in seconds (default: 10)
+
+    Attributes:
+        name: Container name
+        init_timeout: Initialization timeout in seconds
+        container: Container object
+        image: Image object
+
+    Raises:
+        ContainerizedServiceError: If the container fails to start
     """
 
-    DEFAULT_IMAGE_NAME = 'opensearch-pos'
-
-    def __init__(self, name: str, image: str | Path | None = None, init_timeout: int = 10) -> None:
+    def __init__(
+        self, name: str, dockerfile: str | Path | None = None, version: str | None = None, init_timeout: int = 10
+    ) -> None:
         self.name = name
         self.docker_client = docker.from_env()
-        self._image_name = image if isinstance(image, str) else self.DEFAULT_IMAGE_NAME
+        self._dockerfile = dockerfile
+        self._version = version
         self._image = Image()
         self._container = None
         self._init_timeout = init_timeout
         self._init_timeout_reset_value = init_timeout
-        if isinstance(image, Path):
-            self._build_image(image)
 
     @property
     def image(self) -> Image:
         try:
-            self._image = self.docker_client.images.get(self._image_name)
+            self._image = self.docker_client.images.get(self.name)
             return self._image
-        except (ImageNotFound, APIError):
-            raise ContainerizedServiceError(f'Image {self._image_name} not found')
+        except ImageNotFound:
+            logger.debug(f'Image {self.name} not found, building it')
+            try:
+                self._image = self._build_image(self._dockerfile)
+                return self._image
+            except ContainerizedServiceError:
+                logger.error(f'Failed to build image from {self._dockerfile}')
+                raise ContainerizedServiceError(f'Failed to build image from {self._dockerfile}')
+        except APIError:
+            raise ContainerizedServiceError(f'Error getting the docker image: {self.name}')
 
     @property
     def container(self) -> Container | None:
@@ -140,7 +157,7 @@ class ContainerizedService(ABC):
         if not self.is_healthy():
             raise ContainerizedServiceError('Container failed to start')
 
-    def _build_image(self, dockerfile: Path) -> None:
+    def _build_image(self, dockerfile: Path) -> Image:
         """Build the image from a Dockerfile.
 
         Args:
@@ -150,7 +167,17 @@ class ContainerizedService(ABC):
             ContainerizedServiceError: If the image fails to build
         """
         logger.debug('Building image from dockerfile')
-        self.docker_client.images.build(path=str(dockerfile.parent), tag=self.DEFAULT_IMAGE_NAME)
+        try:
+            with open(dockerfile, 'rb') as f:
+                image, _ = self.docker_client.images.build(
+                    fileobj=f,
+                    tag=self.name,
+                    rm=True,
+                    buildargs={'TAG': self._version, 'UID': str(os.getuid()), 'GID': str(os.getgid())},
+                )
+                return image
+        except BuildError:
+            raise ContainerizedServiceError(f'Failed to build image from {dockerfile}')
 
     @abstractmethod
     def start(self) -> None:
