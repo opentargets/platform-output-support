@@ -1,5 +1,7 @@
 """Clickhouse service module."""
 
+from pathlib import Path
+
 import clickhouse_connect
 from clickhouse_connect.driver import Client
 from clickhouse_connect.driver.exceptions import DatabaseError
@@ -19,28 +21,30 @@ class ClickhouseInstanceManager(ContainerizedService):
 
     Args:
         name: Container name
-        image: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile
+        dockerfile: Path to Dockerfile (default: 'config/clickhouse/Dockerfile')
+        clickhouse_version: Clickhouse version (default: '23.3.1.2823')
         database: Database name (default: 'ot')
         init_timeout: Initialization timeout in seconds (default: 10)
 
     Attributes:
         name: Container name
-        image: Image name
-        database: Database name
         init_timeout: Initialization timeout in seconds
         container: Container object
         image: Image object
 
+    Raises:
+        ClickhouseInstanceManagerError: If Clickhouse instance manager fails to start
     """
 
     def __init__(
         self,
         name: str,
-        image: str = 'clickhouse/clickhouse-server:23.3.1.2823',
+        dockerfile: Path = Path('config/clickhouse/Dockerfile'),
+        clickhouse_version: str = '23.3.1.2823',
         database: str = 'ot',
         init_timeout: int = 10,
     ) -> None:
-        super().__init__(name, image, init_timeout)
+        super().__init__(name, dockerfile, clickhouse_version, init_timeout)
         self.name = name
         self.database = database
 
