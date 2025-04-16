@@ -5,12 +5,17 @@ description = "Open Targets Pipeline Output Stage"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "clickhouse-connect>=0.8.15",
     "docker>=7.1.0",
-    "opentargets-otter>=25.0.0a11",
+    "google-cloud-bigquery>=3.30.0",
+    "google-cloud-compute>=1.26.0",
+    "opensearch-py>=2.8.0",
+    "opentargets-otter>=25.0.1",
     "orjson>=3.10.15",
     "ot-croissant",
-    "polars>=1.22.0",
+    "polars>=1.26.0",
     "pyarrow>=19.0.0",
+    "python-box>=7.3.2",
     "rich>=13.9.4",
     "smart-open>=7.1.0",
     "typer>=0.15.1",
@@ -172,3 +177,8 @@ parametrize-values-row-type = 'tuple'
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 ignore-decorators = ["pos.tasks.report", "pos.manifest.task_reporter.report"]
+
+[tool.uv]
+dev-dependencies = [
+    "ipykernel>=6.29.5",
+]
