@@ -1,9 +1,8 @@
 #!/bin/bash
 
 set -x
+set -e
 
-# Environment variables
-flag_startup_completed="/tmp/posvm_startup_complete"
 
 function log() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
@@ -26,29 +25,17 @@ function install_packages() {
     usermod -aG docker ${POS_USER_NAME}
 
     export HOME=/home/${POS_USER_NAME}
-    UV_UNMANAGED_INSTALL=$${HOME}/.local/bin
-    su ${POS_USER_NAME} -c 'curl -LsSf https://astral.sh/uv/install.sh | sh'
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    source "$HOME/.local/bin/env"
     git clone https://github.com/opentargets/platform-output-support.git /opt/platform-output-support
     cd /opt/platform-output-support
     git checkout ${BRANCH}
     chgrp -R google-sudoers /opt/platform-output-support
     chmod -R g+rw /opt/platform-output-support
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pos_config" -H "Metadata-Flavor: Google" > /etc/opt/pos_config.yaml
+    chgrp -R google-sudoers /var/log
+    chmod -R g+rw /var/log
 }
-
-# Script completion hook to flag that 'startup script' has already been run
-function startup_complete() {
-  log "Startup script completed"
-  touch $${flag_startup_completed}
-}
-
-# Set trap to run 'startup_complete' function on exit
-trap startup_complete EXIT
-
-# Check if startup script has already been run
-if [[ -f $${flag_startup_completed} ]]; then
-  log "Startup script already completed, skipping"
-  exit 0
-fi
 
 
 function mount_disk() {
@@ -67,14 +54,41 @@ function mount_disk() {
   log "Mounting disk $${device_name} to $${mount_point}"
   mkdir -p $${mount_point}
   mount -o defaults $${device_name} $${mount_point}
-  chown -R ${POS_USER_NAME} $${mount_point}
+  chgrp -R google-sudoers $${mount_point}
+}
+
+function uv_run() {
+    step=$1
+    processes=$2
+    if [ -z "$processes" ]; then
+        processes=10
+    fi
+    uv --directory /opt/platform-output-support run pos -c /etc/opt/pos_config.yaml -p $processes -s $step
+}
+
+function opensearch_steps() {
+     uv_run open_search_prep_all 300 \
+  && uv_run open_search_load_all 100 \
+  && uv_run open_search_stop \
+  && uv_run open_search_disk_snapshot
+}
+
+function clickhouse_steps() {
+     uv_run clickhouse_load_all \
+  && uv_run clickhouse_stop \
+  && uv_run clickhouse_disk_snapshot
 }
 
 # Main script
 
 install_packages
 mount_disk ${OPENSEARCH_DISK_NAME} /mnt/opensearch 
-mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse 
-
-# run the steps
-#poweroff
+mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse
+opensearch_steps & clickhouse_steps
+if [[ ${OPENSEARCH_TARBALL} == true ]]; then
+    uv_run open_search_tarball
+fi
+if [[ ${CLICKHOUSE_TARBALL} == true ]]; then
+    uv_run clickhouse_tarball
+fi
+poweroff
