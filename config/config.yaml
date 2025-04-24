@@ -1,7 +1,7 @@
 ---
 work_path: ./work
-log_level: TRACE
-#release_uri: ${RELEASE_URI}
+log_level: ${LOG_LEVEL}
+release_uri: ${RELEASE_URI}
 scratchpad:
   release: ${RELEASE}
   # temp file locations
@@ -25,6 +25,20 @@ scratchpad:
   bq_parquet_path: gs://open-targets-data-releases/${RELEASE}
 
 steps:
+  ################################################################################################
+  # Sync data
+  ################################################################################################
+  sync_data:
+    - name: sync_bucket etl output files
+      source: gs://open-targets-pre-data-releases/${release}/output
+      destination: ${local_data}/output
+    - name: sync_bucket etl view files
+      source: gs://open-targets-pre-data-releases/${release}/view
+      destination: ${local_data}/view
+    - name: sync_bucket etl intermediate files
+      source: gs://open-targets-pre-data-releases/${release}/intermediate/literature_sentence
+      destination: ${local_data}/intermediate/literature_sentence
+
   ################################################################################################
   # OT Croissant
   ################################################################################################

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -x
-set -e
 
 
 function log() {
@@ -26,6 +25,8 @@ function install_packages() {
 
     export HOME=/home/${POS_USER_NAME}
     curl -LsSf https://astral.sh/uv/install.sh | sh
+    chgrp -R google-sudoers /home/${POS_USER_NAME}
+    chmod -R g+rwx /home/${POS_USER_NAME}
     source "$HOME/.local/bin/env"
     git clone https://github.com/opentargets/platform-output-support.git /opt/platform-output-support
     cd /opt/platform-output-support
@@ -35,6 +36,7 @@ function install_packages() {
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pos_config" -H "Metadata-Flavor: Google" > /etc/opt/pos_config.yaml
     chgrp -R google-sudoers /var/log
     chmod -R g+rw /var/log
+    uv --directory /opt/platform-output-support sync
 }
 
 
@@ -66,17 +68,39 @@ function uv_run() {
     uv --directory /opt/platform-output-support run pos -c /etc/opt/pos_config.yaml -p $processes -s $step
 }
 
+function opensearch_summary() {
+  log "[INFO] Printing  OpenSearch summary"
+  curl -X GET "localhost:9200/_cat/indices?pretty&s=i"
+}
+
+function sync_data() {
+  log "[INFO] Syncing data"
+  uv_run sync_data
+}
+
+
 function opensearch_steps() {
-     uv_run open_search_prep_all 300 \
-  && uv_run open_search_load_all 100 \
-  && uv_run open_search_stop \
-  && uv_run open_search_disk_snapshot
+  log "[INFO] Starting OpenSearch steps"
+  uv_run open_search_prep_all 300 && \
+  uv_run open_search_load_all 100 && \
+  opensearch_summary && \
+  uv_run open_search_stop && \
+  uv_run open_search_disk_snapshot && \
+  if [[ ${OPENSEARCH_TARBALL} == true ]]; then
+    uv_run open_search_tarball
+  fi
+  log "[INFO] OpenSearch steps completed"
 }
 
 function clickhouse_steps() {
-     uv_run clickhouse_load_all \
-  && uv_run clickhouse_stop \
-  && uv_run clickhouse_disk_snapshot
+  log "[INFO] Starting ClickHouse steps"
+  uv_run clickhouse_load_all && \
+  uv_run clickhouse_stop && \
+  uv_run clickhouse_disk_snapshot && \
+  if [[ ${CLICKHOUSE_TARBALL} == true ]]; then
+    uv_run clickhouse_tarball
+  fi
+  log "[INFO] ClickHouse steps completed"
 }
 
 # Main script
@@ -84,11 +108,9 @@ function clickhouse_steps() {
 install_packages
 mount_disk ${OPENSEARCH_DISK_NAME} /mnt/opensearch 
 mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse
-opensearch_steps & clickhouse_steps
-if [[ ${OPENSEARCH_TARBALL} == true ]]; then
-    uv_run open_search_tarball
-fi
-if [[ ${CLICKHOUSE_TARBALL} == true ]]; then
-    uv_run clickhouse_tarball
-fi
+sync_data
+clickhouse_steps & opensearch_steps
+wait
+journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
+gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log
 poweroff
