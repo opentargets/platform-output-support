@@ -22,10 +22,16 @@ variable "clickhouse_data_disk_size" {
   default     = "128"
 }
 
-variable "clickhouse_snapshot" {
-  description = "Snapshot to use for Clickhouse data disk"
+variable "clickhouse_snapshot_source" {
+  description = "Snapshot to use for Clickhouse data disk source"
   type        = string
   default     = null
+}
+
+variable "clickhouse_tarball" {
+  description = "Whether to make the clickhouse tarball, default 'false'"
+  type        = bool
+  default     = false
 }
 
 variable "open_search_data_disk_size" {
@@ -34,14 +40,46 @@ variable "open_search_data_disk_size" {
   default     = "256"
 }
 
-variable "open_search_snapshot" {
-  description = "Snapshot to use for OpenSearch data disk"
+variable "open_search_snapshot_source" {
+  description = "Snapshot to use for OpenSearch data disk source"
   type        = string
   default     = null
 }
 
+variable "open_search_tarball" {
+  description = "Whether to make the opensearch tarball, default 'false'"
+  type        = bool
+  default     = false
+}
+
 variable "pos_git_branch" {
-    description = "Git branch to use for POS deployment"
-    type        = string
-    default     = "main"
+  description = "Git branch to use for POS deployment"
+  type        = string
+  default     = "main"
+}
+
+# ---- POS scratchpad config ---- #
+
+variable "platform_release_version" {
+  description = "Platform release version"
+  type        = string
+  default     = "dev"
+}
+
+variable "open_search_image_tag" {
+  description = "OpenSearch image tag"
+  type        = string
+  default     = "2.19.0"
+}
+
+variable "open_search_jvm_options" {
+  description = "OpenSearch JVM options"
+  type        = string
+  default     = "-Xms302g -Xmx304g"
+}
+
+variable "clickhouse_image_tag" {
+  description = "Clickhouse image tag"
+  type        = string
+  default     = "23.3.1.2823"
 }
