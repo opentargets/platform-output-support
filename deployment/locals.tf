@@ -3,6 +3,7 @@ locals {
   timestamp              = formatdate("YYYYMMDD-hhmm", timestamp())
   open_search_disk_name  = "pos-${local.timestamp}-os"
   clickhouse_disk_name   = "pos-${local.timestamp}-ch"
+  platform_release_uri   = "gs://open-targets-pre-data-releases/${var.platform_release_version}"
 
   // --- Labels Configuration --- //
   base_labels = {
