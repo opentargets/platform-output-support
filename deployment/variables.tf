@@ -1,7 +1,7 @@
 variable "vm_pos_boot_disk_size" {
-  description = "POS VM boot disk size, default '600GB'"
+  description = "POS VM boot disk size, default '500GB'"
   type        = string
-  default     = 600
+  default     = 500
 }
 
 variable "vm_pos_machine_type" {
@@ -19,7 +19,7 @@ variable "pos_logs_path_root" {
 variable "clickhouse_data_disk_size" {
   description = "Clickhouse data disk size to deploy"
   type        = string
-  default     = "128"
+  default     = "50"
 }
 
 variable "clickhouse_snapshot_source" {
@@ -37,7 +37,7 @@ variable "clickhouse_tarball" {
 variable "open_search_data_disk_size" {
   description = "Opensearch data disk size to deploy"
   type        = string
-  default     = "256"
+  default     = "200"
 }
 
 variable "open_search_snapshot_source" {
@@ -59,6 +59,12 @@ variable "pos_git_branch" {
 }
 
 # ---- POS scratchpad config ---- #
+
+variable "pos_log_level" {
+  description = "Log level for POS"
+  type        = string
+  default     = "INFO"
+}
 
 variable "platform_release_version" {
   description = "Platform release version"

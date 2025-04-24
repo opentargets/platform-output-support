@@ -1,22 +1,3 @@
-terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 6.28.0"
-    }
-  }
-  backend "gcs" {
-    bucket = "open-targets-ops"
-    prefix = "terraform/platform-pos-v2"
-  }
-}
-
-provider "google" {
-  region  = "europe-west1"
-  project = "open-targets-eu-dev"
-  zone    = "europe-west1-d"
-}
-
 resource "random_string" "posvm" {
   length  = 8
   lower   = true
@@ -61,7 +42,7 @@ resource "google_compute_instance" "posvm" {
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-11"
-      type  = "pd-ssd"
+      type  = "pd-extreme"
       size  = var.vm_pos_boot_disk_size
     }
   }
@@ -96,6 +77,7 @@ resource "google_compute_instance" "posvm" {
         CLICKHOUSE_DISK_NAME = google_compute_disk.clickhouse_data_disk.name
         CLICKHOUSE_TARBALL   = var.clickhouse_tarball == true ? "true" : "false"
         FORMAT_DISK          = var.open_search_snapshot_source == null ? "true" : "false"
+        INSTANCE_LABEL       = random_string.posvm.result
       }
     )
     ssh-keys               = "${local.posvm_remote_user_name}:${tls_private_key.posvm.public_key_openssh}"
@@ -103,6 +85,7 @@ resource "google_compute_instance" "posvm" {
     pos_config = templatefile(
       "pos_config.tftpl",
       {
+        LOG_LEVEL                     = var.pos_log_level
         RELEASE_URI                   = local.platform_release_uri
         RELEASE                       = var.platform_release_version
         OPENSEARCH_VERSION            = var.open_search_image_tag
