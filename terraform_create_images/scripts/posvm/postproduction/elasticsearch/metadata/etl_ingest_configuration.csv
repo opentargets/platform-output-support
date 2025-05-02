@@ -27,7 +27,7 @@ view/search_study,search_study,,search.json
 output/target,target,id,default.json
 output/target_prioritisation,target_prioritisation,targetId,default.json
 output/target_essentiality,target_essentiality,id,default.json
-output/target_validation/mouse_phenotypes,mouse_phenotypes,,default.json
+output/mouse_phenotype,mouse_phenotypes,,default.json
 output/openfda_significant_adverse_drug_reactions,openfda_faers,,default.json
 output/pharmacogenomics,pharmacogenomics,,default.json
 view/search_facet_target,facet_search_target,,facet_search.json
