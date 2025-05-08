@@ -167,7 +167,7 @@ class ContainerizedService(ABC):
                     fileobj=f,
                     tag=self.name,
                     rm=True,
-                    buildargs={'TAG': self._version, 'UID': str(os.getuid()), 'GID': str(os.getgid())},
+                    buildargs={'TAG': self._version},  #'UID': str(os.getuid()), 'GID': str(os.getgid())},
                 )
                 return image
         except BuildError:
