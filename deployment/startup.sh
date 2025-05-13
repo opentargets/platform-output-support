@@ -2,15 +2,39 @@
 
 set -x
 
+flag_startup_completed="/tmp/posvm_startup_complete"
+
+function startup_complete() {
+  log "Startup script completed"
+  touch $${flag_startup_completed}
+}
+
+# Set trap to run 'startup_complete' function on exit
+trap startup_complete EXIT
+
+# Check if startup script has already been run
+if [[ -f $${flag_startup_completed} ]]; then
+  log "Startup script already completed, skipping"
+  exit 0
+fi
 
 function log() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
 }
 
+function create_dir_for_group() {
+  local dir=$1
+  local group=$2
+  local mode=$3
+  mkdir -p $${dir}
+  chgrp -R $${group} $${dir}
+  chmod -R g+$${mode} $${dir}
+}
+
 function install_packages() {
     apt-get remove -y --purge man-db
     apt-get update -y
-    apt-get install -y wget vim curl git htop pigz ca-certificates gnupg lsb-release 
+    apt-get install -y wget vim curl git htop pigz ca-certificates gnupg lsb-release
 
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
@@ -25,18 +49,18 @@ function install_packages() {
 
     export HOME=/home/${POS_USER_NAME}
     curl -LsSf https://astral.sh/uv/install.sh | sh
-    chgrp -R google-sudoers /home/${POS_USER_NAME}
-    chmod -R g+rwx /home/${POS_USER_NAME}
+    create_dir_for_group /home/${POS_USER_NAME} google-sudoers rwx
     source "$HOME/.local/bin/env"
     git clone https://github.com/opentargets/platform-output-support.git /opt/platform-output-support
     cd /opt/platform-output-support
     git checkout ${BRANCH}
-    chgrp -R google-sudoers /opt/platform-output-support
-    chmod -R g+rw /opt/platform-output-support
+    create_dir_for_group /opt/platform-output-support google-sudoers rwx
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pos_config" -H "Metadata-Flavor: Google" > /etc/opt/pos_config.yaml
-    chgrp -R google-sudoers /var/log
-    chmod -R g+rw /var/log
     uv --directory /opt/platform-output-support sync
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pos_run_script" -H "Metadata-Flavor: Google" > /opt/pos_run.sh
+    chgrp -R google-sudoers /opt/pos_run.sh && chmod g+x /opt/pos_run.sh
+    create_dir_for_group /var/log/pos/opensearch google-sudoers rwx
+    create_dir_for_group /var/log/pos/clickhouse google-sudoers rwx
 }
 
 
@@ -56,7 +80,7 @@ function mount_disk() {
   log "Mounting disk $${device_name} to $${mount_point}"
   mkdir -p $${mount_point}
   mount -o defaults $${device_name} $${mount_point}
-  chgrp -R google-sudoers $${mount_point}
+  create_dir_for_group $${mount_point} google-sudoers rw
 }
 
 function uv_run() {
@@ -75,7 +99,7 @@ function opensearch_summary() {
 
 function sync_data() {
   log "[INFO] Syncing data"
-  uv_run sync_data
+  uv_run sync_data 1
 }
 
 
@@ -84,32 +108,48 @@ function opensearch_steps() {
   uv_run open_search_prep_all 300 && \
   uv_run open_search_load_all 100 && \
   opensearch_summary && \
-  uv_run open_search_stop && \
-  uv_run open_search_disk_snapshot && \
+  uv_run open_search_stop 1 && \
+  uv_run open_search_disk_snapshot 1 && \
   if [[ ${OPENSEARCH_TARBALL} == true ]]; then
-    uv_run open_search_tarball
+    uv_run open_search_tarball 1
   fi
+  wait
   log "[INFO] OpenSearch steps completed"
 }
 
 function clickhouse_steps() {
   log "[INFO] Starting ClickHouse steps"
   uv_run clickhouse_load_all && \
-  uv_run clickhouse_stop && \
-  uv_run clickhouse_disk_snapshot && \
+  uv_run clickhouse_stop 1 && \
+  copy_clickhouse_configs && \
+  uv_run clickhouse_disk_snapshot 1 && \
   if [[ ${CLICKHOUSE_TARBALL} == true ]]; then
-    uv_run clickhouse_tarball
+    uv_run clickhouse_tarball 1
   fi
+  wait
   log "[INFO] ClickHouse steps completed"
 }
+
+function copy_clickhouse_configs() {
+  log "[INFO] Syncing ClickHouse configs"
+  cp -R /opt/platform-output-support/config/clickhouse/config.d /mnt/clickhouse/
+  cp -R /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
+}
+
 
 # Main script
 
 install_packages
-mount_disk ${OPENSEARCH_DISK_NAME} /mnt/opensearch 
+mount_disk ${OPENSEARCH_DISK_NAME} /mnt/opensearch
 mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse
+create_dir_for_group /mnt/opensearch/data google-sudoers rw
+create_dir_for_group /mnt/clickhouse/data google-sudoers rw
+
 sync_data
-clickhouse_steps & opensearch_steps
+# uv_run ot_croissant
+opensearch_steps & 
+sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
+clickhouse_steps
 wait
 journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
 gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log

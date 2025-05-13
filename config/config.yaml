@@ -78,7 +78,7 @@ steps:
       service_name: os-pos
   open_search_tarball:
     - name: tarball opensearch
-      source: ${opensearch_data}
+      source: /mnt/opensearch
       destination: opensearch.tar.gz
   open_search_prep_all:
     - name: sync_bucket etl output files
@@ -250,7 +250,7 @@ steps:
       clickhouse_version: ${clickhouse_version}
   clickhouse_tarball:
     - name: tarball clickhouse
-      source: ${clickhouse_data}
+      source: /mnt/clickhouse
       destination: clickhouse.tar.gz
   clickhouse_disk_snapshot:
     - name: create_gcp_disk_snapshot clickhouse
