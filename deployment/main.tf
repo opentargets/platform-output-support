@@ -81,7 +81,7 @@ resource "google_compute_instance" "posvm" {
       }
     )
     ssh-keys               = "${local.posvm_remote_user_name}:${tls_private_key.posvm.public_key_openssh}"
-    google-logging-enabled = true
+    #google-logging-enabled = true
     pos_config = templatefile(
       "pos_config.tftpl",
       {
@@ -115,6 +115,7 @@ resource "google_compute_instance" "posvm" {
         each                          = "$${each}"
       }
     )
+    pos_run_script = file("run.sh")
   }
   service_account {
     email  = "pos-service-account@open-targets-eu-dev.iam.gserviceaccount.com"
@@ -126,4 +127,20 @@ resource "google_compute_instance" "posvm" {
   lifecycle {
     create_before_destroy = true
   }
+  # connection {
+  #   type        = "ssh"
+  #   host        = self.network_interface[0].access_config[0].nat_ip
+  #   user        = local.posvm_remote_user_name
+  #   private_key = tls_private_key.posvm.private_key_pem
+  # }
+  # provisioner "file" {
+  #   source      = "run.sh"
+  #   destination = "/opt/platform-output-support/run_pos.sh"
+  # }
+  # // Adjust scripts permissions
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "chmod 777 /opt/platform-output-support/run_pos.sh",
+  #   ]
+  # }
 }
