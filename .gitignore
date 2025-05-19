@@ -18,3 +18,6 @@ htmlcov
 
 # output working directory
 work/
+
+# credentials
+.credentials/
