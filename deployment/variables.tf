@@ -89,3 +89,15 @@ variable "clickhouse_image_tag" {
   type        = string
   default     = "23.3.1.2823"
 }
+
+variable "data_location_source" {
+  description = "GCS data source"
+  type        = string
+  default     = "gs://open-targets-pre-data-releases/dev"
+}
+
+variable "data_location_production" {
+  description = "GCS data production"
+  type        = string
+  default     = "gs://open-targets-data-releases/prod"
+}
