@@ -22,7 +22,7 @@ scratchpad:
   clickhouse_disk_snapshot_name: ${CLICKHOUSE_DISK_SNAPSHOT_NAME}
   # bigquery
   bq_prod_project_id: open-targets-prod
-  bq_parquet_path: gs://open-targets-data-releases/${RELEASE}
+  bq_parquet_path: ${BQ_DATA_SOURCE}
 steps:
 
   ################################################################################################
