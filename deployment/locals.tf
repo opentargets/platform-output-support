@@ -3,7 +3,6 @@ locals {
   timestamp              = formatdate("YYYYMMDD-hhmm", timestamp())
   open_search_disk_name  = "pos-${local.timestamp}-os"
   clickhouse_disk_name   = "pos-${local.timestamp}-ch"
-  platform_release_uri   = "${var.gcs_release_bucket}/${var.platform_release_version}"
   base_labels = {
     "team"    = "open-targets"
     "subteam" = "backend"
@@ -12,7 +11,7 @@ locals {
   }
   yaml_config_variables = {
         LOG_LEVEL                     = var.pos_log_level
-        RELEASE_URI                   = local.platform_release_uri
+        RELEASE_URI                   = var.data_location_source
         RELEASE                       = var.platform_release_version
         OPENSEARCH_VERSION            = var.open_search_image_tag
         OPENSEARCH_JAVA_OPTS          = var.open_search_jvm_options

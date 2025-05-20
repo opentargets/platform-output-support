@@ -52,7 +52,7 @@ steps:
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
       gcp_address: gs://open-targets-data-releases/${release}/output/
       date_published: '2025-02-12'
-      dataset_path: ${local_data}
+      dataset_path: ${local_data}/output
       output: webapp/downloads.json
 
   ################################################################################################
