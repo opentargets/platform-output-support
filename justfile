@@ -85,6 +85,7 @@ _write_data_release_config:
 
   with open("{{PATH_POS_YAML_CONFIG}}") as f:
       data = yaml.safe_load(f)
+
   data['log_level'] = profile_tfvars['pos_log_level']
   data['release_uri'] = profile_tfvars['data_location_source']
   data['scratchpad']['release'] = profile_tfvars['platform_release_version']
@@ -97,11 +98,13 @@ _write_data_release_config:
 # Big Query Dev
 bigquerydev: _uv_sync _write_data_release_config
   @echo "BigQuery Dev"
-  @uv run --directory {{justfile_directory()}} -c {{PATH_DATA_RELEASE_CONFIG}} -s bigquery_dev_load_all
+  @uv run --directory {{justfile_directory()}} run pos -c {{PATH_DATA_RELEASE_CONFIG}} -s bigquery_dev_load_all
   @rm {{PATH_DATA_RELEASE_CONFIG}}
 
 # Big Query Prod
 bigqueryprod: _uv_sync _write_data_release_config
   @echo "BigQuery Prod"
-  @uv run --directory {{justfile_directory()}} -c {{PATH_DATA_RELEASE_CONFIG}} -s bigquery_prod_load_all
+  @uv run --directory {{justfile_directory()}} run pos -c {{PATH_DATA_RELEASE_CONFIG}} -s bigquery_prod_load_all
   @rm {{PATH_DATA_RELEASE_CONFIG}}	
+
+
