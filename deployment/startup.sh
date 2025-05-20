@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 flag_startup_completed="/tmp/posvm_startup_complete"
 
 function startup_complete() {
@@ -32,25 +30,42 @@ function create_dir_for_group() {
 }
 
 function install_packages() {
+    # Install packages
     apt-get remove -y --purge man-db
     apt-get update -y
-    apt-get install -y wget vim curl git htop pigz ca-certificates gnupg lsb-release
+    apt-get install -y wget vim curl git htop pigz ca-certificates gnupg lsb-release zip unzip
+    
+    # Install Java and Scala with SDKMAN (required for croissant)
+    curl -s "https://get.sdkman.io?ci=true" | bash
+    source "/.sdkman/bin/sdkman-init.sh"
+    yes | sdk install java 17.0.15-amzn
+    export JAVA_HOME=$(sdk home java current)
+    # yes | sdk install scala 2.13.10
 
+    # # Install Spark for croissant (cannot be done with sdkman due to buffio error)
+    # wget https://dlcdn.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz
+    # tar xvzf spark-3.5.5-bin-hadoop3.tgz
+    # mv spark-3.5.5-bin-hadoop3 /opt/spark
+    # export SPARK_HOME=/opt/spark
+    # export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+
+
+    # Install Docker
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
     echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
       $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-    
     apt-get update -y 
     apt-get install -y docker-ce docker-ce-cli containerd.io
-    
     usermod -aG docker ${POS_USER_NAME}
 
+    # Install UV
     export HOME=/home/${POS_USER_NAME}
     curl -LsSf https://astral.sh/uv/install.sh | sh
     create_dir_for_group /home/${POS_USER_NAME} google-sudoers rwx
     source "$HOME/.local/bin/env"
+
+    # Install POS repo, get the config and setup the log locations.
     git clone https://github.com/opentargets/platform-output-support.git /opt/platform-output-support
     cd /opt/platform-output-support
     git checkout ${BRANCH}
@@ -145,12 +160,12 @@ mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse
 create_dir_for_group /mnt/opensearch/data google-sudoers rw
 create_dir_for_group /mnt/clickhouse/data google-sudoers rw
 
-sync_data
-# uv_run ot_croissant
-opensearch_steps & 
-sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
-clickhouse_steps
-wait
-journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
-gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log
-poweroff
+# sync_data
+uv_run ot_croissant
+# opensearch_steps & 
+# sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
+# clickhouse_steps
+# wait
+# journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
+# gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log
+# poweroff
