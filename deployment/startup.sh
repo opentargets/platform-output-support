@@ -35,20 +35,11 @@ function install_packages() {
     apt-get update -y
     apt-get install -y wget vim curl git htop pigz ca-certificates gnupg lsb-release zip unzip
     
-    # Install Java and Scala with SDKMAN (required for croissant)
+    # Install Java with SDKMAN (required for croissant)
     curl -s "https://get.sdkman.io?ci=true" | bash
     source "/.sdkman/bin/sdkman-init.sh"
     yes | sdk install java 17.0.15-amzn
     export JAVA_HOME=$(sdk home java current)
-    # yes | sdk install scala 2.13.10
-
-    # # Install Spark for croissant (cannot be done with sdkman due to buffio error)
-    # wget https://dlcdn.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz
-    # tar xvzf spark-3.5.5-bin-hadoop3.tgz
-    # mv spark-3.5.5-bin-hadoop3 /opt/spark
-    # export SPARK_HOME=/opt/spark
-    # export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
-
 
     # Install Docker
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -160,12 +151,12 @@ mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse
 create_dir_for_group /mnt/opensearch/data google-sudoers rw
 create_dir_for_group /mnt/clickhouse/data google-sudoers rw
 
-# sync_data
+sync_data
 uv_run ot_croissant
-# opensearch_steps & 
-# sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
-# clickhouse_steps
-# wait
-# journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
-# gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log
-# poweroff
+opensearch_steps & 
+sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
+clickhouse_steps
+wait
+journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
+gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log
+poweroff
