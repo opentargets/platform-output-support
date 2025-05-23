@@ -11,6 +11,8 @@ pos_log_level = "ERROR"
 
 # Data release config
 
+is_ppp = false
+
 # Source data
 data_location_source = "gs://open-targets-pipeline-runs/szsz/25.06-testrun-1"
 # Production data - used by bigQuery as the source data

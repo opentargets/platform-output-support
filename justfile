@@ -5,7 +5,7 @@ profile_tfvars := if path_exists(join("profiles", profile + ".tfvars")) == "true
   error('Profile does not exist')
  }
 
-
+PATH_SCRIPTS := justfile_directory() / "bin"
 PATH_CREDENTIALS := justfile_directory() / ".credentials"
 PATH_GCS_CREDENTIALS_FILE := PATH_CREDENTIALS / "gcs_credentials.json"
 PATH_GCS_CREDENTIALS_GCP_FILE := "gs://open-targets-ops/credentials/pis-service_account.json"
@@ -88,7 +88,6 @@ _write_data_release_config: _uv_sync
   --scratchpad.bq_parquet_path=data_location_production
   
 
-
 # Big Query Dev
 bigquerydev: _uv_sync _write_data_release_config
   @echo "BigQuery Dev"
@@ -102,5 +101,11 @@ bigqueryprod: _uv_sync _write_data_release_config
   @rm {{PATH_DATA_RELEASE_CONFIG}}	
 
 
-gssync:
+gcssync: 
   @echo "Syncing data to GCS"
+  @DATA_LOCATION_SOURCE=$(hcl2tojson {{TF_DIRECTORY}}/terraform.tfvars | jq -r .data_location_source) && \
+  DATA_LOCATION_TARGET=$(hcl2tojson {{TF_DIRECTORY}}/terraform.tfvars | jq -r .data_location_production) && \
+  IS_PARTNER_INSTANCE=$(hcl2tojson {{TF_DIRECTORY}}/terraform.tfvars | jq -r .is_ppp) && \
+  {{PATH_SCRIPTS}}/gcs_sync.sh $DATA_LOCATION_SOURCE $DATA_LOCATION_TARGET $IS_PARTNER_INSTANCE
+
+
