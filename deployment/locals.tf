@@ -23,6 +23,7 @@ locals {
         BQ_DATA_SOURCE                = var.data_location_production
         # For templating reasons, we need to substitute the following variables with $${var_name}
         release                       = "$${release}"
+        data_source                   = "$${data_source}"
         local_data                    = "$${local_data}"
         prepared_data                 = "$${prepared_data}"
         opensearch_version            = "$${opensearch_version}"

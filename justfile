@@ -9,7 +9,7 @@ profile_tfvars := if path_exists(join("profiles", profile + ".tfvars")) == "true
 PATH_CREDENTIALS := justfile_directory() / ".credentials"
 PATH_GCS_CREDENTIALS_FILE := PATH_CREDENTIALS / "gcs_credentials.json"
 PATH_GCS_CREDENTIALS_GCP_FILE := "gs://open-targets-ops/credentials/pis-service_account.json"
-PATH_POS_YAML_CONFIG := justfile_directory() / "config" / "config.yaml"
+PATH_POS_YAML_CONFIG := justfile_directory() / "deployment" / "pos_config.tftpl"
 PATH_DATA_RELEASE_CONFIG := justfile_directory() / ".data_release_config.yaml"
 TF_DIRECTORY := "deployment"
 TF_WORKSPACE_ID := replace_regex(lowercase(uuid()), "[[:alnum:]]+-", "")
@@ -69,31 +69,25 @@ _clean_credentials:
 
 # Clean the credentials and the infrastructure used for creating the Google cloud disk snapshots
 clean: _clean_credentials _clean_snapshot_infrastructure
+	@rm -f {{PATH_DATA_RELEASE_CONFIG}}
 
 clean_all: _clean_credentials _clean_all_snapshot_infrastructure
 
 _uv_sync:
   @uv --directory {{justfile_directory()}} sync
 
-_write_data_release_config:
-  #!/usr/bin/env python3
-  import yaml
-  import hcl2
-
-  with open("{{TF_DIRECTORY}}/terraform.tfvars") as f:
-      profile_tfvars = hcl2.load(f)
-
-  with open("{{PATH_POS_YAML_CONFIG}}") as f:
-      data = yaml.safe_load(f)
-
-  data['log_level'] = profile_tfvars['pos_log_level']
-  data['release_uri'] = profile_tfvars['data_location_source']
-  data['scratchpad']['release'] = profile_tfvars['platform_release_version']
-  data['scratchpad']['bq_parquet_path'] = profile_tfvars['data_location_production']
+# Template the data release config file with the terraform variables
+_write_data_release_config: _uv_sync
+  @uv --directory {{justfile_directory()}} run src/pos/data_release/config.py \
+  {{PATH_POS_YAML_CONFIG}} \
+  --output {{PATH_DATA_RELEASE_CONFIG}} \
+  --hcl {{TF_DIRECTORY}}/terraform.tfvars \
+  --log_level=pos_log_level \
+  --release_uri=data_location_source \
+  --scratchpad.release=platform_release_version \
+  --scratchpad.bq_parquet_path=data_location_production
   
-  with open("{{PATH_DATA_RELEASE_CONFIG}}", "w") as f:
-      yaml.dump(data, f, default_flow_style=False)
-  
+
 
 # Big Query Dev
 bigquerydev: _uv_sync _write_data_release_config
@@ -108,3 +102,5 @@ bigqueryprod: _uv_sync _write_data_release_config
   @rm {{PATH_DATA_RELEASE_CONFIG}}	
 
 
+gssync:
+  @echo "Syncing data to GCS"
