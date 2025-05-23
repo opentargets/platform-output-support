@@ -4,6 +4,7 @@ log_level: ${LOG_LEVEL}
 release_uri: ${RELEASE_URI}
 scratchpad:
   release: ${RELEASE}
+  data_source: ${RELEASE_URI}
   # temp file locations
   local_data: release_data
   prepared_data: prepared_data
@@ -30,21 +31,21 @@ steps:
   ################################################################################################
   sync_data:
     - name: sync_bucket etl output files
-      source: gs://open-targets-pre-data-releases/${release}/output
+      source: ${data_source}/output
       destination: ${local_data}/output
     - name: sync_bucket etl view files
-      source: gs://open-targets-pre-data-releases/${release}/view
+      source: ${data_source}/view
       destination: ${local_data}/view
     - name: sync_bucket etl intermediate files
-      source: gs://open-targets-pre-data-releases/${release}/intermediate/literature_sentence
+      source: ${data_source}/intermediate/literature_sentence
       destination: ${local_data}/intermediate/literature_sentence
 
   ################################################################################################
   # OT Croissant
   ################################################################################################
   ot_croissant:
-    - name: sync_bucket pipeline output files
-      source: gs://open-targets-pre-data-releases/${release}/output
+    - name: sync_bucket etl output files
+      source: ${data_source}/output
       destination: ${local_data}/output
     - name: ot_croissant generate release metadata
       requires:
@@ -79,12 +80,12 @@ steps:
     - name: tarball opensearch
       source: /mnt/opensearch
       destination: opensearch.tar.gz
-  opensearch_prep_all:
-    - name: sync_bucket pipeline output files
-      source: gs://open-targets-pre-data-releases/${release}/output
+  open_search_prep_all:
+    - name: sync_bucket etl output files
+      source: ${data_source}/output
       destination: ${local_data}/output
-    - name: sync_bucket pipeline view files
-      source: gs://open-targets-pre-data-releases/${release}/view/
+    - name: sync_bucket etl view files
+      source: ${data_source}/view/
       destination: ${local_data}/view
     - name: explode prep all datasets
       requires:
@@ -200,14 +201,14 @@ steps:
   clickhouse_stop:
     - name: clickhouse_stop data loading instance
   clickhouse_load_all:
-    - name: sync_bucket pipeline output files
-      source: gs://open-targets-pre-data-releases/${release}/output
+    - name: sync_bucket etl output files
+      source: ${data_source}/output
       destination: ${local_data}/output
-    - name: sync_bucket pipeline view files
-      source: gs://open-targets-pre-data-releases/${release}/view
+    - name: sync_bucket etl view files
+      source: ${data_source}/view
       destination: ${local_data}/view
-    - name: sync_bucket pipeline intermediate files
-      source: gs://open-targets-pre-data-releases/${release}/intermediate/literature_sentence
+    - name: sync_bucket etl intermediate files
+      source: ${data_source}/intermediate/literature_sentence
       destination: ${local_data}/intermediate/literature_sentence
     - name: clickhouse_start data loading instance
       volume_data: ${clickhouse_data}
