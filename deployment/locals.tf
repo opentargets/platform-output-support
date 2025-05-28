@@ -12,7 +12,7 @@ locals {
   yaml_config_variables = {
         LOG_LEVEL                     = var.pos_log_level
         RELEASE_URI                   = var.data_location_source
-        RELEASE                       = var.platform_release_version
+        RELEASE                       = var.release_id
         OPENSEARCH_VERSION            = var.open_search_image_tag
         OPENSEARCH_JAVA_OPTS          = var.open_search_jvm_options
         OPENSEARCH_DISK_NAME          = google_compute_disk.open_search_data_disk.name

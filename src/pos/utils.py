@@ -15,7 +15,7 @@ def relative_path(path: str | Path, relative_to: str) -> str:
 
 
 def absolute_path(path: str | Path) -> str:
-    return os.path.abspath(path)
+    return os.path.abspath(str(path))
 
 
 def parse_hcl(hcl_file: Path) -> dict:
