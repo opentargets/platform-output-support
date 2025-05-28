@@ -33,16 +33,14 @@ def hcl(
         None,
         help='Path to the output YAML file. If not provided, the output goes to stdout.',
     ),
-    variables: typer.Context = (
-        Option(
-            None,
-            help=(
-                'Key value pairs to update the YAML file with values from the HCL file using the `--<FIELD>=<VALUE>` format'
-            ),
+    variables: typer.Context = Option(
+        None,
+        help=(
+            'Key value pairs to update the YAML file with values from the HCL file using the `--<FIELD>=<VALUE>` format'
         ),
     ),
 ) -> None:
-    yaml_config = get_config(yaml_file)
+    yaml_config = get_config(str(yaml_file))
     variable_dict = dict_from_args(variables.args) if variables else {}
     if hcl:
         hcl_config = parse_hcl(hcl)

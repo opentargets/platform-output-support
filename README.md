@@ -11,28 +11,84 @@ define the steps of the pipeline that create and push all the output artifacts f
 Check out the [config.yaml](config/config.yaml) file to see the steps and the tasks that
 make them up.
 
-TODO:
-- [X] croissant
-- [X] prep data for loading
-- [X] load Clickhouse
-- [X] load OpenSearch
-- [X] create google disk snapshots for ch and os
-- [X] create data tarballs
-- [X] load BigQuery 
-- [ ] GCS release
-- [ ] FTP release
 
 ## Installation and running
 
-POS uses [UV](https://docs.astral.sh/uv/) as its package manager. It is compatible
-with PIP, so you can also fall back to it if you feel more comfortable.
+### Dependencies
 
+- [uv](https://docs.astral.sh/uv/) is the package manager POS. It is compatible
+with PIP, so you can also fall back to it if you feel more comfortable.
+- [just](https://just.systems/) is the POS interface which is a similar but more suitable alternative to GNU make for this purpose.
+- [terraform](https://developer.hashicorp.com/terraform) is the IaC tool by which the necessary infrastructure is assembled and destroyed.
+
+
+### Recipes
 
 ```bash
-uv run pos -h
+$ just
+Platform Output Support
+Set the profile with `just profile=foo <RECIPE>` to use `profiles/foo.tfvars`. Defaults to `profiles/default.tfvars` if no profile is set.
+    help
+    snapshots    # Create Google cloud disk snapshots (Clickhouse and OpenSearch).
+    clean        # Clean the credentials and the infrastructure used for creating the Google cloud disk snapshots
+    clean_all
+    bigquerydev  # Big Query Dev
+    bigqueryprod # Big Query Prod
+    gcssync      # Sync data to production Google Cloud Storage
+    ftpsync      # Sync data to FTP
 ```
 
+Private recipes are prefixed with '_' in the [justfile](justfile).
+
+#### Configuring the profile for any of the recipes
+All the configuration you need should be possible by modifying a profile such as the [default one](profiles/default.tfvars).
+This file is symlinked to the [terraform.tfvars](deployment/terraform.tfvars) when the recipes are executed.
+If you want to use a different profile, copy/paste the default to foo.tfvars and whenever you run `just` do it like so (the profile param must come _before_ the recipe):
+```bash
+just profile=foo <RECIPE>` to use `profiles/foo.tfvars`
+```
+
+#### Create the data backend for the platform
+```bash
+just snapshots
+```
+- starts a Google compute engine with external drives (one for clickhouse, one for opensearch)
+- runs the otter steps for croissant, clickhouse and opensearch - see [startup script](deployment/startup.sh)
+  - _optional: create tarballs (see [Configuration](#configuration))
+
+#### Release data to BigQuery
+```bash
+# dev
+just bigquerydev
+
+# prod
+just bigqueryprod
+```
+- creates a local otter config based on the terraform.tfvars profile.
+- runs the otter step for releasing to Google BigQuery.
+
+#### Release data to FTP
+```bash
+just ftpsync
+```
+- uses the terraform.tfvars profile as configuration.
+- runs a shell script that runs a gcloud container on the EBI HPC.
+- from the container it syncs the data from GCS to the EBI FTP.
+
+#### Release data to GCS
+```bash
+just gcssync
+```
+- uses the terraform.tfvars profile as configuration.
+- runs a gcloud command to sync one GCS with another.
+
+
 ### Configuration
+
+You should only ever need to configure the terraform profile. This is used as the point of configuration even where terraform is not actually used.
+See [here](#configuring-the-profile-for-any-of-the-recipes) for details.
+
+Terraform will apply this configuration, or in the cases where terraform is not used, an HCL library will read and apply the configuration as needed.
 
 A folder for all the configuration is [here](config), which has the following:
 
@@ -42,24 +98,6 @@ A folder for all the configuration is [here](config), which has the following:
 - OpenSearch Dockerfile/index settings: [opensearch](config/opensearch/)
 
 It's configured by default to load all the necessary datasets, but it can be modified. Make sure that the dataset names in the config.yaml have a corresponding entry in the datasets.yaml and so on.
-
-### Create the OT Platform backend
-1. start a google vm and clone this repo, see installation.
-   1. ideally something like n2-highmem-96 - reserve half the mem for the JVM
-   2. external disk for opensearch
-   3. external disk for clickhouse
-2. opensearch (each step needs to be completed before starting the next)
-   1. `uv run pos -p 300 -c config/config.yaml -s opensearch_prep_all`
-   2. `uv run pos -p 100 -c config/config.yaml -s opensearch_load_all`
-   3. `uv run pos -c config/config.yaml -s opensearch_stop`
-   4. `uv run pos -c config/config.yaml -s opensearch_disk_snapshot`
-   5. `uv run pos -c config/config.yaml -s opensearch_tarball`
-3. clickhouse (each step needs to be completed before starting the next)
-   1. `uv run pos -c config/config.yaml -s clickhouse_load_all`
-   2. `uv run pos -c config/config.yaml -s clickhouse_stop`
-   3. `uv run pos -c config/config.yaml -s clickhouse_disk_snapshot`
-   4. `uv run pos -c config/config.yaml -s clickhouse_tarball`
-
 
 
 ## Copyright
