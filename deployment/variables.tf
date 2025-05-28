@@ -66,7 +66,7 @@ variable "pos_log_level" {
   default     = "INFO"
 }
 
-variable "platform_release_version" {
+variable "release_id" {
   description = "Platform release version"
   type        = string
   default     = "dev"

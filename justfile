@@ -80,7 +80,7 @@ _write_data_release_config: _uv_sync
     --hcl {{ TF_DIRECTORY }}/terraform.tfvars \
     --log_level=pos_log_level \
     --release_uri=data_location_source \
-    --scratchpad.release=platform_release_version \
+    --scratchpad.release=release_id \
     --scratchpad.bq_parquet_path=data_location_production
 
 # Big Query Dev
@@ -107,6 +107,6 @@ gcssync: _uv_sync _set_profile
 ftpsync: _uv_sync _set_profile _credentials
     @echo "Syncing data to FTP"
     @DATA_LOCATION_SOURCE=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .data_location_source) && \
-    RELEASE_ID_PROD=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .release_id_prod) && \
+    RELEASE_ID_PROD=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .release_id) && \
     IS_PARTNER_INSTANCE=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .is_ppp) && \
     {{ PATH_SCRIPTS }}/launch_ebi_ftp_sync.sh {{ PATH_FTP_SYNC_SCRIPT }} $DATA_LOCATION_SOURCE $RELEASE_ID_PROD $IS_PARTNER_INSTANCE {{ PATH_GCS_CREDENTIALS_FILE }}
