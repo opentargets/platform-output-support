@@ -35,25 +35,21 @@ class SyncBucket(Task):
 
     @report
     def run(self) -> Self:
-        destination_folder = self.context.config.work_path.joinpath(
-            self.spec.destination
-        )
+        destination_folder = self.context.config.work_path.joinpath(self.spec.destination)
 
-        logger.debug(
-            f'checking if {destination_folder} exists. If not, create it'
-        )
+        logger.debug(f'checking if {destination_folder} exists. If not, create it')
         # Checking if the destination folder exists. If not, create it.
         check_dir(destination_folder)
 
         logger.debug(f'syncing {self.spec.source} with {self.spec.destination}')
         rsync_command = [
-            'gsutil',
-            '-m',
+            'gcloud',
+            'storage',
             'rsync',
             '-r',
             self.spec.source,
             destination_folder,
         ]
-        subprocess.run(rsync_command, check=True)
+        subprocess.run(rsync_command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
         return self
