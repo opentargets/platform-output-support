@@ -150,7 +150,7 @@ create_dir_for_group /mnt/opensearch/data google-sudoers rw
 create_dir_for_group /mnt/clickhouse/data google-sudoers rw
 
 sync_data
-#uv_run ot_croissant
+uv_run ot_croissant
 opensearch_steps & 
 sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
 clickhouse_steps
