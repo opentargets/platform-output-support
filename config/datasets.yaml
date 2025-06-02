@@ -320,6 +320,11 @@ opensearch:
     input_dir: output/variant
     mappings: config/opensearch/default.json
     output_dir: variant
+  protein_coding_coords:
+    index: protein_coding_coords
+    input_dir: view/coding_variant_table
+    mappings: config/opensearch/default.json
+    output_dir: protein_coding_coords
 clickhouse:
   aotf:
     table: associations_otf_log
@@ -542,3 +547,6 @@ bigquery:
   variant:
     index: variant
     input_dir: output/variant
+  protein_coding_coords:
+    index: protein_coding_coords
+    input_dir: view/coding_variant_table
