@@ -86,7 +86,7 @@ resource "google_compute_instance" "posvm" {
       "pos_config.tftpl",
       local.yaml_config_variables
     )
-    pos_run_script = file("run.sh")
+    # pos_run_script = file("run.sh")
   }
   service_account {
     email  = "pos-service-account@open-targets-eu-dev.iam.gserviceaccount.com"
