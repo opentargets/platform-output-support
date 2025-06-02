@@ -52,7 +52,7 @@ class ClickhouseInstanceManager(ContainerizedService):
         Raises:
             ClickhouseInstanceManagerError: If Clickhouse failed to start
         """
-        ports = {'9000': 9000, '8123': 8123}
+        ports = {'9000': 9000, '8123': 8123, '9363': 9363}
         volumes = {
             volume_data: {'bind': '/var/lib/clickhouse', 'mode': 'rw'},
             volume_logs: {'bind': '/var/log/clickhouse-server', 'mode': 'rw'},
