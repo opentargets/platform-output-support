@@ -20,7 +20,7 @@ release_id = "25.06"
 
 # Source data
 
-data_location_source = "gs://open-targets-pipeline-runs/szsz/25.06-testrun-1"
+data_location_source = "gs://open-targets-pipeline-runs/szsz/25.06-testrun-4"
 
 # Production data
 data_location_production = "gs://open-targets-data-releases/25.06"
