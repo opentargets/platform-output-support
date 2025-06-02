@@ -38,7 +38,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv.sources]
-ot-croissant = { git = "https://github.com/opentargets/ot_croissant", rev = "8987726e7bbb14173b4e61eab658fee1904276b2" }
+ot-croissant = { git = "https://github.com/opentargets/ot_croissant", tag = "v0.1.0" }
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]
