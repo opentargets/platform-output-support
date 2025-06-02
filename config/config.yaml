@@ -221,6 +221,7 @@ steps:
         - openfda_faers
         - otar_projects
         - pharmacogenomics
+        - protein_coding_coords
         - reactome
         - search_disease
         - search_drug
@@ -355,6 +356,7 @@ steps:
         - openfda_significant_adverse_drug_reactions
         - openfda_significant_adverse_target_reactions
         - pharmacogenomics
+        - protein_coding_coords
         - reactome
         - so
         - study
@@ -432,6 +434,7 @@ steps:
         - openfda_significant_adverse_drug_reactions
         - openfda_significant_adverse_target_reactions
         - pharmacogenomics
+        - protein_coding_coords
         - reactome
         - so
         - study
