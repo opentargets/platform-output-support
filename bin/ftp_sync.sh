@@ -102,7 +102,7 @@ function deactivate_service_account {
 
 function pull_data_from_gcp {
     log_heading "GCP" "Pulling data from GCP, '${path_data_source}' ---> to ---> '${path_ebi_ftp_destination}"
-    singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gsutil -m rsync -r -x ^input/fda-inputs/* -x ^output/etl/parquet/failedMatches/* -x ^output/etl/json/failedMatches/* ${path_data_source} ${path_ebi_ftp_destination}/
+    singularity exec --bind /nfs/ftp:/nfs/ftp docker://google/cloud-sdk:latest gcloud storage rsync -r -x ^input/fda-inputs/* -x ^output/etl/parquet/failedMatches/* -x ^output/etl/json/failedMatches/* ${path_data_source} ${path_ebi_ftp_destination}/
     log_heading "PERMISSIONS" "Adjusting file tree permissions at '${path_ebi_ftp_destination}'"
     # We don't really need to do this for the production folder, but it's nice to have the permissions set correctly (although you'd need to be 'otftpuser' to do it)
     find ${path_ebi_ftp_destination} -type d -exec chmod 775 {} \;

@@ -33,7 +33,7 @@ snapshots: _set_profile
     echo ${tf_id} > {{ TF_WORKSPACE_ID_FILE }} && \
     terraform -chdir={{ TF_DIRECTORY }} init && \
     terraform -chdir={{ TF_DIRECTORY }} workspace new ${tf_id} && \
-    terraform -chdir={{ TF_DIRECTORY }} apply 
+    terraform -chdir={{ TF_DIRECTORY }} apply --auto-approve
 
 # Clean the infrastructure used for creating the Google cloud disk snapshots
 _clean_snapshot_infrastructure:
