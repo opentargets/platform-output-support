@@ -798,7 +798,7 @@ wheels = [
 [[package]]
 name = "ot-croissant"
 version = "0.1.0"
-source = { git = "https://github.com/opentargets/ot_croissant?tag=v0.1.0#047f1cc8aaa67691ee7e7a1301ef4bfc0121918e" }
+source = { git = "https://github.com/opentargets/ot_croissant?tag=v0.1.1#1b3ed5628ae408d8da4fec0acedde8a9a3498c0f" }
 dependencies = [
     { name = "mlcroissant" },
     { name = "pyspark" },
@@ -962,7 +962,7 @@ requires-dist = [
     { name = "opensearch-py", specifier = ">=2.8.0" },
     { name = "opentargets-otter", specifier = ">=25.0.1" },
     { name = "orjson", specifier = ">=3.10.15" },
-    { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v0.1.0" },
+    { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v0.1.1" },
     { name = "polars", specifier = ">=1.26.0" },
     { name = "pyarrow", specifier = ">=19.0.0" },
     { name = "pytest", marker = "extra == 'test'", specifier = "==8.3.4" },
