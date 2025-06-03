@@ -6,7 +6,7 @@
 # Is partner preview pipeline?
 is_ppp = false
 # POS git branch to use
-pos_git_branch = "rm-ch-prom-config"
+pos_git_branch = "main"
 # Make a tarball of ClickHouse and OpenSearch data.
 clickhouse_tarball = false
 opensearch_tarball = false
