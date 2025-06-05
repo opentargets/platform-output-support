@@ -76,7 +76,8 @@ resource "google_compute_instance" "posvm" {
         OPENSEARCH_TARBALL   = var.open_search_tarball == true ? "true" : "false"
         CLICKHOUSE_DISK_NAME = google_compute_disk.clickhouse_data_disk.name
         CLICKHOUSE_TARBALL   = var.clickhouse_tarball == true ? "true" : "false"
-        FORMAT_DISK          = var.open_search_snapshot_source == null ? "true" : "false"
+        FORMAT_OS_DISK       = var.open_search_snapshot_source == null ? "true" : "false"
+        FORMAT_CH_DISK       = var.clickhouse_snapshot_source == null ? "true" : "false"
         INSTANCE_LABEL       = random_string.posvm.result
       }
     )

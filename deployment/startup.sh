@@ -73,10 +73,11 @@ function install_packages() {
 function mount_disk() {
   local disk_name=$1
   local mount_point=$2
+  local format_disk=$3  # Default to true if not provided
   # Format the disk using ext4 with no reserved blocks
   prefix="/dev/disk/by-id/google-"
   device_name="$${prefix}$${disk_name}"
-  if [[ ${FORMAT_DISK} == true ]]; then 
+  if [[ $${format_disk} == true ]]; then 
     log "Formatting disk $${device_name} with ext4"
     mkfs.ext4 -m 0 $${device_name}
   else
@@ -105,9 +106,9 @@ function opensearch_summary() {
 
 function clickhouse_summary() {
   log "[INFO] Printing ClickHouse summary"
-  for table in $(echo 'show tables in ot' | curl 'http://localhost:8123/?' -d @-)
-    do table=ot.$table
-    echo "Count for '$fqdn' ---> $(echo "select count() from $table" | curl 'http://localhost:8123/?' -d @-)"
+  for table in $(echo 'show tables in ot' | curl -s 'http://localhost:8123/?' --data-binary @-); do
+    export fqdn=ot.$table
+    echo "Count for '$fqdn' ---> $(echo "select count() from $fqdn" | curl -s 'http://localhost:8123/?' --data-binary @-)"
   done
 }
 
@@ -123,6 +124,7 @@ function opensearch_steps() {
   uv_run open_search_load_all 100 && \
   opensearch_summary && \
   uv_run open_search_stop 1 && \
+  sync && \
   uv_run open_search_disk_snapshot 1 && \
   if [[ ${OPENSEARCH_TARBALL} == true ]]; then
     uv_run open_search_tarball 1
@@ -136,6 +138,7 @@ function clickhouse_steps() {
   clickhouse_summary && \
   uv_run clickhouse_stop 1 && \
   copy_clickhouse_configs && \
+  sync && \
   uv_run clickhouse_disk_snapshot 1 && \
   if [[ ${CLICKHOUSE_TARBALL} == true ]]; then
     uv_run clickhouse_tarball 1
@@ -145,7 +148,11 @@ function clickhouse_steps() {
 
 function copy_clickhouse_configs() {
   log "[INFO] Syncing ClickHouse configs"
+  log "[INFO] Contents of /opt/platform-output-support/config/clickhouse/config.xml:"
+  cat /opt/platform-output-support/config/clickhouse/config.d/config.xml
   cp -vR /opt/platform-output-support/config/clickhouse/config.d /mnt/clickhouse/
+  log "[INFO] Contents of /mnt/clickhouse/config.d/config.xml:"
+  cat /mnt/clickhouse/config.d/config.xml
   cp -vR /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
 }
 
@@ -153,8 +160,8 @@ function copy_clickhouse_configs() {
 # Main script
 
 install_packages
-mount_disk ${OPENSEARCH_DISK_NAME} /mnt/opensearch
-mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse
+mount_disk ${OPENSEARCH_DISK_NAME} /mnt/opensearch ${FORMAT_OS_DISK}
+mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse ${FORMAT_CH_DISK}
 create_dir_for_group /mnt/opensearch/data google-sudoers rw
 create_dir_for_group /mnt/clickhouse/data google-sudoers rw
 

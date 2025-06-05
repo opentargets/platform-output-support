@@ -40,6 +40,8 @@ class ClickhouseLoad(Task):
     def run(self) -> Self:
         logger.debug('loading clickhouse service')
         clickhouse_client = ClickhouseInstanceManager(name=self.spec.service_name).client()
+        if not clickhouse_client:
+            raise ClickhouseLoadError(f'Clickhouse service {self.spec.service_name} failed to start')
         files = self._get_parquet_path().glob('*.parquet')
         for file in files:
             insert_file(clickhouse_client, self._table_name, str(file), fmt='Parquet')
