@@ -103,6 +103,14 @@ function opensearch_summary() {
   curl -X GET "localhost:9200/_cat/indices?pretty&s=i"
 }
 
+function clickhouse_summary() {
+  log "[INFO] Printing ClickHouse summary"
+  for table in $(echo 'show tables in ot' | curl 'http://localhost:8123/?' -d @-)
+    do table=ot.$table
+    echo "Count for '$fqdn' ---> $(echo "select count() from $table" | curl 'http://localhost:8123/?' -d @-)"
+  done
+}
+
 function sync_data() {
   log "[INFO] Syncing data"
   uv_run sync_data 1
@@ -125,6 +133,7 @@ function opensearch_steps() {
 function clickhouse_steps() {
   log "[INFO] Starting ClickHouse steps"
   uv_run clickhouse_load_all && \
+  clickhouse_summary && \
   uv_run clickhouse_stop 1 && \
   copy_clickhouse_configs && \
   uv_run clickhouse_disk_snapshot 1 && \
@@ -136,8 +145,8 @@ function clickhouse_steps() {
 
 function copy_clickhouse_configs() {
   log "[INFO] Syncing ClickHouse configs"
-  cp -R /opt/platform-output-support/config/clickhouse/config.d /mnt/clickhouse/
-  cp -R /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
+  cp -vR /opt/platform-output-support/config/clickhouse/config.d /mnt/clickhouse/
+  cp -vR /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
 }
 
 
