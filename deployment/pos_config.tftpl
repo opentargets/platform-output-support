@@ -69,7 +69,6 @@ steps:
       opensearch_java_opts: ${opensearch_java_opts}
   open_search_disk_snapshot:
     - name: create_gcp_disk_snapshot opensearch
-      mount_point: /mnt/opensearch
       gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
@@ -145,6 +144,7 @@ steps:
         - openfda_faers
         - otar_projects
         - pharmacogenomics
+        - protein_coding_coords
         - reactome
         - search_disease
         - search_drug
@@ -221,6 +221,7 @@ steps:
         - openfda_faers
         - otar_projects
         - pharmacogenomics
+        - protein_coding_coords
         - reactome
         - search_disease
         - search_drug
@@ -255,7 +256,6 @@ steps:
       destination: clickhouse.tar.gz
   clickhouse_disk_snapshot:
     - name: create_gcp_disk_snapshot clickhouse
-      mount_point: /mnt/clickhouse
       gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
@@ -355,6 +355,7 @@ steps:
         - openfda_significant_adverse_drug_reactions
         - openfda_significant_adverse_target_reactions
         - pharmacogenomics
+        - protein_coding_coords
         - reactome
         - so
         - study
@@ -432,6 +433,7 @@ steps:
         - openfda_significant_adverse_drug_reactions
         - openfda_significant_adverse_target_reactions
         - pharmacogenomics
+        - protein_coding_coords
         - reactome
         - so
         - study
