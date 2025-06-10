@@ -6,9 +6,7 @@ Create Platform backend (OpenSearch and Clickhouse) and release data.
 ## Summary
 
 This application uses the [Otter](http://github.com/opentargets/otter) library to
-define the steps of the pipeline that consume the output from the data generation pipeline 
-and create the backend for the Open Targets Platform. There are also steps for releasing 
-data to BigQuery.
+define the steps of the pipeline that create and push all the output artifacts for a run of the Open Targets pipeline.
 
 Check out the [config.yaml](config/config.yaml) file to see the steps and the tasks that
 make them up.
