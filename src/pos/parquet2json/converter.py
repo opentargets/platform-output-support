@@ -30,7 +30,7 @@ class Converter:
         self,
         filesystem: FileSystem,
         path: str,
-        parquet_path: Path,
+        parquet_path: str,
     ) -> pa.Schema:
         """Get the schema of a parquet file using pyarrow.
 
@@ -49,14 +49,14 @@ class Converter:
                 .to_arrow()
                 .schema
             )
-        self.log.debug('Schema:\n%s', schema)
+        self.log.debug(f'schema:\n{schema}')
         return schema
 
-    def read_parquet(self, parquet_path: Path) -> pl.DataFrame:
+    def read_parquet(self, parquet_path: str) -> pl.DataFrame:
         """Read a parquet file and return a DataFrame."""
         try:
             # pyarrow does not automatically detect the filesystem
-            path_no_wildcards = parquet_path.split('*')[0]
+            path_no_wildcards = parquet_path.split('*', 1)[0]
             filesystem, path = FileSystem.from_uri(path_no_wildcards)
             schema = self.get_pyarrow_schema(filesystem, path, parquet_path)
             return pl.read_parquet(
@@ -68,15 +68,8 @@ class Converter:
                     'schema': schema,
                 },
             )
-        except FileNotFoundError as e:
-            self.log.error(f"Couldn't find {parquet_path}")
-            raise Parquet2JSONError(f"Couldn't find {parquet_path}") from e
-        except pa.ArrowInvalid as e:
-            self.log.error(f"Couldn't read {parquet_path}")
-            raise Parquet2JSONError(f"Couldn't read {parquet_path}") from e
-        except PolarsError as e:
-            self.log.error(f'Polar error reading {parquet_path}')
-            raise Parquet2JSONError(e) from e
+        except (FileNotFoundError, pa.ArrowInvalid, PolarsError) as e:
+            raise Parquet2JSONError(f'failed to read {parquet_path}: {e}') from e
 
     def write_json(self, df: pl.DataFrame, path: Path) -> None:
         """Write the DataFrame as line-delimited JSON."""

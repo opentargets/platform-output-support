@@ -1,7 +1,6 @@
 """CLI entry point for the application."""
 
 import time
-from pathlib import Path
 
 import typer
 
@@ -24,7 +23,7 @@ app = typer.Typer(
 @app.command('parquet2json', no_args_is_help=True, context_settings=CLI_CONTEXT_OPTIONS)
 def parquet2json(
     parquet: str = typer.Argument(help='Input path/URI to parquet.'),
-    json: Path = typer.Argument(help='Output NDJSON path, or leave empty for STDOUT', default=None),
+    json: str = typer.Argument(help='Output NDJSON path, or leave empty for STDOUT', default=None),
     hive_partitioning: bool = typer.Option(help='Use hive partitioning', default=False, show_default=True),
     log_level: LogLevels = typer.Option(help='Log level', default='INFO', case_sensitive=False),
 ) -> None:
@@ -40,7 +39,7 @@ def parquet2json(
         )
         end = time.time()
         elapsed_time = end - start
-        log.debug('Converted %s to %s in %.2f seconds.', parquet, json, elapsed_time)
+        log.debug(f'converted {parquet} to {json} in {elapsed_time:.2f} seconds')
     except Exception as e:
         log.error(e)
         raise typer.Exit(1)
