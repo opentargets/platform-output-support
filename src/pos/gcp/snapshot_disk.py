@@ -33,9 +33,6 @@ class GCPSnapshotDisk:
         Creates a snapshot of the source disk.
         Then creates an image from the snapshot.
         Then deletes the snapshot.
-
-        Returns:
-            None
         """
         logger.debug(f'Creating snapshot {self._snapshot.name} from disk {self._source_disk_name}')
         self._snapshot_disk()
@@ -92,8 +89,8 @@ def wait_for_extended_operation(
         raise operation.exception() or RuntimeError(operation.error_message)
 
     if operation.warnings:
-        logger.warning(f'Warnings during {verbose_name}:\n', file=sys.stderr, flush=True)
+        logger.warning(f'warnings during {verbose_name}', file=sys.stderr, flush=True)
         for warning in operation.warnings:
-            logger.warning(f' - {warning.code}: {warning.message}', file=sys.stderr, flush=True)
+            logger.warning(f'{warning.code}: {warning.message}', file=sys.stderr, flush=True)
 
     return result

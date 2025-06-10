@@ -50,7 +50,7 @@ class CreateGcpDiskSnapshot(Task):
         try:
             snapshot.create()
         except (RuntimeError, TimeoutError) as e:
-            raise CreateGcpDiskSnapshotError(f'Failed to create GCP disk image: {e}')
+            raise CreateGcpDiskSnapshotError(f'failed to create GCP disk image: {e}')
         return self
 
     def _set_labels(self) -> GCPLabels:

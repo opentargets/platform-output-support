@@ -22,12 +22,6 @@ class OpenSearchInstanceManager(ContainerizedService):
         opensearch_version: OpenSearch version (default: '2.19.0')
         init_timeout: Initialization timeout in seconds (default: 30)
 
-    Attributes:
-        name: Container name
-        init_timeout: Initialization timeout in seconds
-        container: Container object
-        image: Image object
-
     Raises:
         OpenSearchInstanceManagerError: If OpenSearch instance manager fails to start
     """
@@ -87,8 +81,7 @@ class OpenSearchInstanceManager(ContainerizedService):
                 ulimits=ulimits,
             )
         except ContainerizedServiceError:
-            logger.error('OpenSearch container failed to start')
-            raise OpenSearchInstanceManagerError('OpenSearch instance failed to start')
+            raise OpenSearchInstanceManagerError('opensearch instance failed to start')
 
     def client(self) -> OpenSearch:
         return OpenSearch([{'host': 'localhost', 'port': 9200}], use_ssl=False, timeout=3600)
@@ -103,13 +96,13 @@ class OpenSearchInstanceManager(ContainerizedService):
         Returns:
             bool: True if OpenSearch is healthy, False otherwise
         """
-        logger.debug('Waiting for OpenSearch health')
+        logger.debug('waiting for opensearch container to become healthy')
         healthy = False
         while self._init_timeout > 0:
             if self.client().ping():
                 self.client().cluster.health(wait_for_status='green', cluster_manager_timeout=f'{self._init_timeout}s')
                 healthy = True
-                logger.debug('OpenSearch is healthy')
+                logger.debug('opensearch is healthy')
                 break
             self._wait(1)
         return healthy

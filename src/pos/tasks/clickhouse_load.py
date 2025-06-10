@@ -34,11 +34,11 @@ class ClickhouseLoad(Task):
             self._input_dir = self._config[self.spec.dataset]['input_dir']
             self._post_load_sql = self._config[self.spec.dataset].get('postload_script')
         except AttributeError:
-            raise ClickhouseLoadError(f'Unable to load config for {self.spec.dataset}')
+            raise ClickhouseLoadError(f'unable to load config for {self.spec.dataset}')
 
     @report
     def run(self) -> Self:
-        logger.debug('Loading Clickhouse service')
+        logger.debug('loading clickhouse service')
         clickhouse_client = ClickhouseInstanceManager(name=self.spec.service_name).client()
         files = self._get_parquet_path().glob('*.parquet')
         for file in files:

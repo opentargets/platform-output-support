@@ -33,18 +33,12 @@ class ContainerizedService(ABC):
         version: Image name/Dockerfile, can be a string, '<image>:<tag>' or a Path to a Dockerfile (default: None)
         init_timeout: Initialization timeout in seconds (default: 10)
 
-    Attributes:
-        name: Container name
-        init_timeout: Initialization timeout in seconds
-        container: Container object
-        image: Image object
-
     Raises:
         ContainerizedServiceError: If the container fails to start
     """
 
     def __init__(
-        self, name: str, dockerfile: str | Path | None = None, version: str | None = None, init_timeout: int = 10
+        self, name: str, dockerfile: Path, version: str | None = None, init_timeout: int = 10
     ) -> None:
         self.name = name
         self.docker_client = docker.from_env()
@@ -108,10 +102,10 @@ class ContainerizedService(ABC):
 
     def stop(self) -> None:
         """Stop the containerized service."""
-        if not self.is_running():
+        if not self.container or not self.is_running():
             logger.warning(f'{self.name} container is not running')
             return
-        logger.debug(f'Stopping {self.name} container')
+        logger.debug(f'stopping {self.name} container')
         self.container.stop()
 
     def _wait(self, duration: int) -> None:
@@ -139,7 +133,7 @@ class ContainerizedService(ABC):
             ContainerizedServiceError: If the container fails to start
         """
         if self.is_running():
-            logger.warning(f'Container {self.name} is already running')
+            logger.warning(f'container {self.name} is already running')
             return
         if volumes:
             for volume in volumes:
@@ -155,7 +149,7 @@ class ContainerizedService(ABC):
             **kwargs,
         )
         if not self.is_healthy():
-            raise ContainerizedServiceError('Container failed to start')
+            raise ContainerizedServiceError('container failed to start')
 
     def _build_image(self, dockerfile: Path) -> Image:
         """Build the image from a Dockerfile.
@@ -166,7 +160,7 @@ class ContainerizedService(ABC):
         Raises:
             ContainerizedServiceError: If the image fails to build
         """
-        logger.debug('Building image from dockerfile')
+        logger.debug('building image from dockerfile')
         try:
             with open(dockerfile, 'rb') as f:
                 image, _ = self.docker_client.images.build(
@@ -177,7 +171,7 @@ class ContainerizedService(ABC):
                 )
                 return image
         except BuildError:
-            raise ContainerizedServiceError(f'Failed to build image from {dockerfile}')
+            raise ContainerizedServiceError(f'failed to build image from {dockerfile}')
 
     @abstractmethod
     def start(self) -> None:

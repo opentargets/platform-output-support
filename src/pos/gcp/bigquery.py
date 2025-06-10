@@ -33,11 +33,8 @@ class BigQuery:
             path: URI of the data
             table: Table name
             format: Data format
-
-        Returns:
-            None
         """
-        logger.debug(f'Loading {path} into {self.table_name(table)}')
+        logger.debug(f'loading {path} into {self.table_name(table)}')
         if hive_partition_source:
             hive_partioning_options = external_config.HivePartitioningOptions()
             hive_partioning_options.mode = 'STRINGS'
@@ -62,9 +59,6 @@ class BigQuery:
             data: JSON object
             table: Table name
             schema: Table schema
-
-        Returns:
-            None
         """
         self._client.load_table_from_json(
             data, self.table_name(table), job_config=bigquery.LoadJobConfig(schema=schema)
@@ -72,9 +66,6 @@ class BigQuery:
 
     def delete_dataset(self) -> None:
         """Delete the dataset and its contents.
-
-        Returns:
-            None
         """
         self._client.delete_dataset(self._dataset, delete_contents=True, not_found_ok=True)
 
@@ -82,9 +73,6 @@ class BigQuery:
         """Create the dataset (container for tables).
 
         If the dataset exists already, it will delete it and then recreate it.
-
-        Returns:
-            None
         """
         self.delete_dataset()
         self._client.create_dataset(self._dataset, exists_ok=True)
@@ -94,9 +82,6 @@ class BigQuery:
 
         Args:
             table: Table name
-
-        Returns:
-            None
         """
         self._client.create_table(self.table_name(table))
 
@@ -115,9 +100,6 @@ class BigQuery:
         """Make the dataset public.
 
         Sets the dataset access to allAuthenticatedUsers with READ and metadataViewer roles.
-
-        Returns:
-            None
         """
         dataset = self._client.get_dataset(self._dataset)
         access_entries = dataset.access_entries

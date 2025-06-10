@@ -39,13 +39,13 @@ class BigqueryLoad(Task):
             self._path = f'{self.spec.base_uri}/{self._input_dir}/{self.spec.file_pattern}'
             self._hive_partition = bool(self._config[self.spec.table].get('hive_partition'))
         except AttributeError:
-            raise BigqueryLoadError(f'Unable to load config for {self.spec.table}')
+            raise BigqueryLoadError(f'unable to load config for {self.spec.table}')
 
     @report
     def run(self) -> Self:
         bigquery = BigQuery(project=self.spec.project_id, location=self.spec.location, dataset=self.spec.dataset_id)
         if self._hive_partition:
-            logger.debug(f'Loading {self._path} into {self._table_name} with hive partition')
+            logger.debug(f'loading {self._path} into {self._table_name} with hive partition')
             hive_partition_source = Path(f'{self.spec.base_uri}/{self._input_dir}').parent
             bigquery.load_from_uri(
                 self._path,

@@ -41,11 +41,11 @@ class OpenSearchLoad(Task):
 
     @report
     def run(self) -> Self:
-        logger.debug(f'Loading data into index {self._index_name}')
+        logger.debug(f'loading data into index {self._index_name}')
         opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
         json_file = self._get_json_path()
         if not json_file.exists():
-            logger.warning(f'No data for {self.spec.dataset} loaded. File {json_file} does not exist')
+            logger.warning(f'file {json_file} does not exist, no data loaded in dataset {self.spec.dataset}')
             return self
         for success, info in helpers.parallel_bulk(
             opensearch,
@@ -63,12 +63,12 @@ class OpenSearchLoad(Task):
     def _generate_data(self, json_file: str | Path) -> Generator[dict[str, Any]] | Generator[str]:
         with open(json_file) as rows:
             if self._id_field:
-                logger.info(f'Using {self._id_field} as the document id')
+                logger.info(f'using {self._id_field} as the document id')
                 for row in rows:
                     doc = {'_source': row, '_id': json.loads(row)[self._id_field]}
                     yield doc
             else:
-                logger.info('No document id field specified')
+                logger.info('no document id field specified')
                 for doc in rows:
                     yield doc
 

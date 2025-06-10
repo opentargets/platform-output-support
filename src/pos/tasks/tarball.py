@@ -47,11 +47,11 @@ class Tarball(Task):
         try:
             tar(self.source, self.local_path)
         except subprocess.CalledProcessError as e:
-            raise TarballError(f'Failed to create tarball: {e.stderr.decode()}')
+            raise TarballError(f'failed to create tarball: {e.stderr.decode()}')
 
         # upload the result to remote storage
         if self.remote_uri:
-            logger.debug(f'Uploading tarball to {self.remote_uri}')
+            logger.debug(f'uploading tarball to {self.remote_uri}')
             remote_storage = get_remote_storage(self.remote_uri)
             remote_storage.upload(self.local_path, self.remote_uri)
             logger.debug('upload successful')
@@ -68,5 +68,5 @@ def tar(source: Path | str, destination: Path | str) -> None:
         source: The path of the folder to archive
         destination: The path of the tarball to create
     """
-    logger.debug(f'Archiving {source} to {destination}')
+    logger.debug(f'archiving {source} to {destination}')
     subprocess.run(['tar', '--use-compress-program=pigz', '-cf', str(destination), '-C', str(source), '.'], check=True)

@@ -30,7 +30,7 @@ class OpenSearchStart(Task):
 
     @report
     def run(self) -> Self:
-        logger.debug(f'Starting OpenSearch instance {self.spec.service_name}')
+        logger.debug(f'starting opensearch instance {self.spec.service_name}')
         opensearch = OpenSearchInstanceManager(self.spec.service_name, opensearch_version=self.spec.opensearch_version)
 
         opensearch.start(

@@ -45,8 +45,8 @@ class ExplodeDataPrep(Task):
             raise ExplodeDataPrepError(f'Unable to load config for {self.spec.dataset}')
         self.abs_input_dir = self.context.config.work_path.joinpath(self.spec.parquet_parent) / self._input_dir
         self.abs_output_dir = self.context.config.work_path.joinpath(self.spec.json_parent) / self._output_dir
-        logger.debug(f'Input dir: {self.abs_input_dir}')
-        logger.debug(f'Output dir: {self.abs_output_dir}')
+        logger.debug(f'input dir: {self.abs_input_dir}')
+        logger.debug(f'output dir: {self.abs_output_dir}')
 
     @report
     def run(self) -> Self:
