@@ -49,11 +49,11 @@ It's configured by default to load all the necessary datasets, but it can be mod
    2. external disk for opensearch
    3. external disk for clickhouse
 2. opensearch (each step needs to be completed before starting the next)
-   1. `uv run pos -p 300 -c config/config.yaml -s open_search_prep_all`
-   2. `uv run pos -p 100 -c config/config.yaml -s open_search_load_all`
-   3. `uv run pos -c config/config.yaml -s open_search_stop`
-   4. `uv run pos -c config/config.yaml -s open_search_disk_snapshot`
-   5. `uv run pos -c config/config.yaml -s open_search_tarball`
+   1. `uv run pos -p 300 -c config/config.yaml -s opensearch_prep_all`
+   2. `uv run pos -p 100 -c config/config.yaml -s opensearch_load_all`
+   3. `uv run pos -c config/config.yaml -s opensearch_stop`
+   4. `uv run pos -c config/config.yaml -s opensearch_disk_snapshot`
+   5. `uv run pos -c config/config.yaml -s opensearch_tarball`
 3. clickhouse (each step needs to be completed before starting the next)
    1. `uv run pos -c config/config.yaml -s clickhouse_load_all`
    2. `uv run pos -c config/config.yaml -s clickhouse_stop`
