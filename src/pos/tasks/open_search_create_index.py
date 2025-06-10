@@ -33,11 +33,11 @@ class OpenSearchCreateIndex(Task):
             self._index_name = self._config[self.spec.dataset]['index']
             self._mappings = Path(self._config[self.spec.dataset]['mappings'])
         except AttributeError:
-            raise OpenSearchCreateIndexError(f'Unable to load config for {self.spec.dataset}')
+            raise OpenSearchCreateIndexError(f'unable to load config for {self.spec.dataset}')
 
     @report
     def run(self) -> Self:
-        logger.debug(f'Creating index {self._index_name}')
+        logger.debug(f'creating index {self._index_name}')
         opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
         if not opensearch.indices.exists(index=self._index_name):
             try:
@@ -46,7 +46,7 @@ class OpenSearchCreateIndex(Task):
                     body=self._mappings.read_text(),
                 )
             except RequestError as e:
-                logger.debug(f'Index: {e} already exists')
-            logger.debug(f'Created index {self._index_name}')
-        logger.debug(f'Index {self._index_name} already exists')
+                logger.debug(f'index: {e} already exists')
+            logger.debug(f'created index {self._index_name}')
+        logger.debug(f'index {self._index_name} already exists')
         return self

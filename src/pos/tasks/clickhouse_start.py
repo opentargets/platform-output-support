@@ -29,7 +29,7 @@ class ClickhouseStart(Task):
 
     @report
     def run(self) -> Self:
-        logger.debug('Starting Clickhouse service')
+        logger.debug('starting Clickhouse service')
         clickhouse = ClickhouseInstanceManager(
             name=self.spec.service_name, clickhouse_version=self.spec.clickhouse_version
         )

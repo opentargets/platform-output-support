@@ -35,7 +35,7 @@ class DataPrep(Task):
 
     @report
     def run(self) -> Self:
-        logger.debug(f'Converting {self.spec.source} to {self.spec.destination}')
+        logger.debug(f'converting {self.spec.source} to {self.spec.destination}')
         convert(
             parquet_path=self.spec.source,
             json_path=self.spec.destination,

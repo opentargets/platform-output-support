@@ -39,7 +39,7 @@ class BigqueryReset(Task):
         bigquery.create_dataset()
         self._load_release_metadata(bigquery)
         if self._is_prod():
-            logger.debug('Prod, so making dataset public')
+            logger.debug('production run, making dataset public')
             bigquery.make_dataset_access_public()
         return self
 

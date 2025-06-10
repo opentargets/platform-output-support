@@ -3,13 +3,12 @@
 from pathlib import Path
 
 import clickhouse_connect
-from clickhouse_connect.driver import Client
+from clickhouse_connect.driver.client import Client
 from clickhouse_connect.driver.exceptions import DatabaseError
 from docker.types.containers import Ulimit
 from loguru import logger
 
 from pos.services.containerized_service import ContainerizedService, ContainerizedServiceError, reset_timeout
-from pos.utils import absolute_path
 
 
 class ClickhouseInstanceManagerError(Exception):
@@ -26,11 +25,6 @@ class ClickhouseInstanceManager(ContainerizedService):
         database: Database name (default: 'ot')
         init_timeout: Initialization timeout in seconds (default: 10)
 
-    Attributes:
-        name: Container name
-        init_timeout: Initialization timeout in seconds
-        container: Container object
-        image: Image object
 
     Raises:
         ClickhouseInstanceManagerError: If Clickhouse instance manager fails to start
@@ -62,16 +56,16 @@ class ClickhouseInstanceManager(ContainerizedService):
         volumes = {
             volume_data: {'bind': '/var/lib/clickhouse', 'mode': 'rw'},
             volume_logs: {'bind': '/var/log/clickhouse-server', 'mode': 'rw'},
-            absolute_path('config/clickhouse/config.d'): {'bind': '/etc/clickhouse-server/config.d', 'mode': 'rw'},
-            absolute_path('config/clickhouse/users.d'): {'bind': '/etc/clickhouse-server/users.d', 'mode': 'rw'},
-            absolute_path('config/clickhouse/schema'): {'bind': '/docker-entrypoint-initdb.d', 'mode': 'rw'},
+            Path('config/clickhouse/config.d').absolute(): {'bind': '/etc/clickhouse-server/config.d', 'mode': 'rw'},
+            Path('config/clickhouse/users.d').absolute(): {'bind': '/etc/clickhouse-server/users.d', 'mode': 'rw'},
+            Path('config/clickhouse/schema').absolute(): {'bind': '/docker-entrypoint-initdb.d', 'mode': 'rw'},
         }
         logger.debug(f'volumes: {volumes}')
         ulimits = [Ulimit(name='nofile', soft=262144, hard=262144)]
         try:
             self._run_container(ports=ports, volumes=volumes, ulimits=ulimits)
         except ContainerizedServiceError:
-            raise ClickhouseInstanceManagerError(f'Clickhouse instance {self.name} failed to start.')
+            raise ClickhouseInstanceManagerError(f'clickhouse instance {self.name} failed to start')
 
     def client(self, reset_timeout: bool = True) -> Client | None:
         """Get Clickhouse client.
@@ -94,7 +88,6 @@ class ClickhouseInstanceManager(ContainerizedService):
             except DatabaseError:
                 self._wait(1)
                 if self._init_timeout == 0:
-                    logger.error(f'Clickhouse client connection to {self.database} failed')
                     raise ClickhouseInstanceManagerError(f'Failed to connect to Clickhouse database {self.database}')
                 continue
         return client
@@ -106,21 +99,21 @@ class ClickhouseInstanceManager(ContainerizedService):
         Returns:
             True if Clickhouse is healthy, False otherwise
         """
-        logger.debug('Waiting for Clickhouse health')
+        logger.debug('waiting for clickhouse health')
         healthy = False
         while self._init_timeout > 0:
             if not self.client(False):
                 self._wait(1)
                 continue
-            logger.debug('Clickhouse client is available')
+            logger.debug('clickhouse client is available')
             if not self.client(False).ping():
                 self._wait(1)
                 continue
-            logger.debug('Clickhouse client ping is successful')
+            logger.debug('clickhouse client ping is successful')
             response = self.client(False).query('SELECT 1')
             if response.result_set[0][0] == 1:
                 healthy = True
-                logger.debug('Clickhouse is healthy')
+                logger.debug('clickhouse is healthy')
                 break
             self._wait(1)
         return healthy
