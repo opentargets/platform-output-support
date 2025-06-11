@@ -55,6 +55,7 @@ steps:
       date_published: "2025-02-12"
       dataset_path: ${local_data}/output
       output: croissant/croissant.json
+      prepared_data_parent: ${prepared_data}
 
   ################################################################################################
   # OpenSearch
