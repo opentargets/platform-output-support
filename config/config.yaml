@@ -54,7 +54,7 @@ steps:
       gcp_address: gs://open-targets-data-releases/${release}/output/
       date_published: "2025-02-12"
       dataset_path: ${local_data}/output
-      output: webapp/downloads.json
+      output: croissant/croissant.json
 
   ################################################################################################
   # OpenSearch
@@ -173,6 +173,7 @@ steps:
         - colocalisation_coloc
         - colocalisation_ecaviar
         - credible_set
+        - croissant
         - disease
         - disease_hpo
         - drug

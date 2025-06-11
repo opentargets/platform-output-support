@@ -34,6 +34,8 @@ class OtCroissantSpec(Spec):
           The date format is YYYY-MM-DD.
         - output (str): Path (relative to `work_path` or `release_uri`) \
           to store the metadata at.
+        - prepared_data_parent (Path): The parent path where the prepared data \
+          is stored. This is the path where OpenSearch will load from.
     """
 
     ftp_address: str | None = None
@@ -41,6 +43,7 @@ class OtCroissantSpec(Spec):
     dataset_path: Path
     date_published: str
     output: str
+    prepared_data_parent: Path
 
 
 def datetime_serializer(obj):
@@ -54,6 +57,7 @@ class OtCroissant(Task):
         super().__init__(spec, context)
         self.spec: OtCroissantSpec
         self.local_path: Path = self.context.config.work_path / self.spec.output
+        self.prepared_data_path: Path = self.context.config.work_path / self.spec.prepared_data / self.spec.output
         self.remote_uri: str | None = None
         if context.config.release_uri:
             self.remote_uri = f'{context.config.release_uri}/{self.spec.output}'
@@ -65,20 +69,12 @@ class OtCroissant(Task):
             raise ScratchpadError('"release" not found in the scratchpad')
 
         # Converting the list of paths to a list of strings and prepending the work_path
-        logger.debug(
-            'converting the list of paths to a list of strings and prepending the work_path'
-        )
+        logger.debug('converting the list of paths to a list of strings and prepending the work_path')
         # Get the directory path from self.spec.dataset_paths
-        directory_path = str(
-            self.context.config.work_path / self.spec.dataset_path
-        )
+        directory_path = str(self.context.config.work_path / self.spec.dataset_path)
 
         # List all sub-folders in the directory
-        datasets = [
-            str(path)
-            for path in sorted(Path(directory_path).iterdir())
-            if path.is_dir()
-        ]
+        datasets = [str(path) for path in sorted(Path(directory_path).iterdir()) if path.is_dir()]
 
         logger.debug(f'generating metadata for release {release}')
         metadata = PlatformOutputMetadata(
@@ -94,19 +90,7 @@ class OtCroissant(Task):
         output_folder = self.local_path.parents[0]
         check_dir(output_folder)
 
-        with open(self.local_path, 'w+') as f:
-            logger.debug('writting metadata to localpath')
-            metadata_json = metadata.to_json()
-            json.dump(metadata_json, f, indent=2, default=datetime_serializer)
-            f.write('\n')
-            logger.debug(f'metadata written successfully to {self.local_path}')
-
-        # upload the result to remote storage
-        if self.remote_uri:
-            logger.info(f'uploading {self.local_path} to {self.remote_uri}')
-            remote_storage = get_remote_storage(self.remote_uri)
-            remote_storage.upload(self.local_path, self.remote_uri)
-            logger.debug('metadata upload successful')
+        self._write_formatted_json(metadata)
 
         # TODO: set all the inputs for artifact. This has to be done after the functionality is implemented in otter
         self.artifacts = [
@@ -116,3 +100,27 @@ class OtCroissant(Task):
             )
         ]
         return self
+
+    def _write_formatted_json(self, metadata: PlatformOutputMetadata) -> None:
+        """Write the metadata to a local and remote file in JSON format."""
+        self._write_json(metadata=metadata, path=self.local_path, indent=2, default=datetime_serializer)
+        # upload the result to remote storage
+        if self.remote_uri:
+            logger.info(f'uploading {self.local_path} to {self.remote_uri}')
+            remote_storage = get_remote_storage(self.remote_uri)
+            remote_storage.upload(self.local_path, self.remote_uri)
+            logger.debug('metadata upload successful')
+
+    def _write_ndjson(self, metadata: PlatformOutputMetadata) -> None:
+        """Write the metadata to a local file in NDJSON format as required to upload to OpenSearch."""
+        Path(self.prepared_data_path).parent.mkdir(exist_ok=True, parents=True)
+        self._write_json(metadata=metadata, path=self.prepared_data_path, indent=None, default=datetime_serializer)
+
+    def _write_json(self, metadata: PlatformOutputMetadata, path: Path, **kwargs) -> None:
+        """Write the metadata to a local file in JSON format."""
+        with open(path, 'w+') as f:
+            logger.debug(f'writting metadata to {path}')
+            metadata_json = metadata.to_json()
+            json.dump(metadata_json, f, **kwargs)
+            f.write('\n')
+            logger.debug(f'metadata written successfully to {path}')

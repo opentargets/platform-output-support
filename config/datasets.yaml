@@ -20,6 +20,12 @@ opensearch:
     input_dir: output/credible_set
     mappings: config/opensearch/credible_set.json
     output_dir: credible_set
+  croissant:
+    index: downloads
+    id_value: croissant
+    input_dir: output/croissant
+    mappings: config/opensearch/default.json
+    output_dir: croissant
   disease:
     id_field: id
     index: disease
