@@ -93,6 +93,7 @@ class OtCroissant(Task):
         check_dir(output_folder)
 
         self._write_formatted_json(metadata)
+        self._write_ndjson(metadata)
 
         # TODO: set all the inputs for artifact. This has to be done after the functionality is implemented in otter
         self.artifacts = [
