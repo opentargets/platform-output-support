@@ -35,6 +35,7 @@ class OpenSearchLoad(Task):
             self._config = get_config('config/datasets.yaml').opensearch
             self._index_name = self._config[self.spec.dataset]['index']
             self._id_field = self._config[self.spec.dataset].get('id_field')
+            self._id_value = self._config[self.spec.dataset].get('id_value')
             self._output_dir = self._config[self.spec.dataset]['output_dir']
         except AttributeError:
             raise OpenSearchLoadError(f'Unable to load config for {self.spec.dataset}')
@@ -62,8 +63,13 @@ class OpenSearchLoad(Task):
 
     def _generate_data(self, json_file: str | Path) -> Generator[dict[str, Any]] | Generator[str]:
         with open(json_file) as rows:
-            if self._id_field:
-                logger.info(f'using {self._id_field} as the document id')
+            if self._id_value:
+                logger.info(f'Using {self._id_value} as the document id')
+                for row in rows:
+                    doc = {'_source': row, '_id': self._id_value}
+                    yield doc
+            elif self._id_field:
+                logger.info(f'Using {self._id_field} as the document id')
                 for row in rows:
                     doc = {'_source': row, '_id': json.loads(row)[self._id_field]}
                     yield doc
