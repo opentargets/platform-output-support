@@ -1,0 +1,25 @@
+[project]
+name = "pos"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "docker>=7.1.0",
+    "opentargets-otter==25.0.0a5",
+    "orjson>=3.10.15",
+    "polars>=1.22.0",
+    "pyarrow>=19.0.0",
+    "rich>=13.9.4",
+    "smart-open>=7.1.0",
+    "typer>=0.15.1",
+]
+
+[project.scripts]
+p2j = "pos.parquet2json.cli:app"
+pos = "pos.core:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
