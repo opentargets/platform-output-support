@@ -1,0 +1,25 @@
+---
+work_path: ./work
+log_level: SUCCESS
+scratchpad:
+steps:
+  hello:
+    - name: hello_world bla bla
+  data_prep:
+    - name: data_prep l2g
+      source: gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet/locusToGenePredictions/part-00001-3563e8c9-205f-4478-affc-7b17ede97027-c000.snappy.parquet
+      destination: locusToGenePredictions.json
+    - name: data_prep moa
+      source: gs://open-targets-pre-data-releases/jamesh/24.12p/output/etl/parquet/mechanismOfAction/
+      destination: mechanismOfAction.json
+  open_search_start:
+    - name: open_search_start os-pos
+      service_name: "os-pos"
+      volume_data: "es/data"
+      volume_logs: "es/logs"
+      volume_creds: "pos-gac.json"
+      snapshot_name: "platform-opensearch-snapshots"
+      snapshot_bucket: "open-targets-pre-data-releases"
+      snapshot_base_path: "snapshots"
+      opensearch_java_opts: "-Xms2g -Xmx4g"
+  

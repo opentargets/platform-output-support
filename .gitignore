@@ -1,10 +1,20 @@
-.idea
-.vscode
-config.tfvars
-tmp
-terraform_create_images/.terraform*
-terraform_create_images/terraform_workspace_id
+# Various python files
+__pycache__/
+dist/
+build/
+coverage.xml
+htmlcov
+*.egg-info/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.cache
+.coverage
 
-.env
-**/.DS_Store
-terraform_create_images/terraform.tfvars
+# PyCharm files
+.idea
+.DS_Store
+
+# output working directory
+work/
