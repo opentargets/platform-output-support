@@ -71,7 +71,7 @@ class ClickhouseInstanceManager(ContainerizedService):
         """Get Clickhouse client.
 
         Args:
-            reset_timeout: Reset the timeout (default: {True})
+            reset_timeout: Reset the timeout (default: True)
 
         Returns:
             Clickhouse client
@@ -102,16 +102,15 @@ class ClickhouseInstanceManager(ContainerizedService):
         logger.debug('waiting for clickhouse health')
         healthy = False
         while self._init_timeout > 0:
-            if not self.client(False):
+            if not (c := self.client(False)):
                 self._wait(1)
                 continue
             logger.debug('clickhouse client is available')
-            if not self.client(False).ping():
+            if not c.ping():
                 self._wait(1)
                 continue
             logger.debug('clickhouse client ping is successful')
-            response = self.client(False).query('SELECT 1')
-            if response.result_set[0][0] == 1:
+            if c.query('SELECT 1').result_set[0][0] == 1:
                 healthy = True
                 logger.debug('clickhouse is healthy')
                 break

@@ -30,9 +30,10 @@ class BigQuery:
         """Load data from a URI into a table.
 
         Args:
-            path: URI of the data
-            table: Table name
-            format: Data format
+            path (str): URI of the data
+            table (str): Table name
+            format (str): Data format
+            hive_partition_source (Path|None): Optional source URI for Hive partitioning
         """
         logger.debug(f'loading {path} into {self.table_name(table)}')
         if hive_partition_source:
@@ -56,17 +57,16 @@ class BigQuery:
         """Load data from a JSON object into a table.
 
         Args:
-            data: JSON object
-            table: Table name
-            schema: Table schema
+            data (Iterable[dict[str, Any]]): JSON object
+            table (str): Table name
+            schema (Sequence[SchemaField]): Table schema
         """
         self._client.load_table_from_json(
             data, self.table_name(table), job_config=bigquery.LoadJobConfig(schema=schema)
         )
 
     def delete_dataset(self) -> None:
-        """Delete the dataset and its contents.
-        """
+        """Delete the dataset and its contents."""
         self._client.delete_dataset(self._dataset, delete_contents=True, not_found_ok=True)
 
     def create_dataset(self) -> None:

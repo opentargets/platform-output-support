@@ -20,6 +20,8 @@ class GCPSnapshotDisk:
         storage_locations: list[str] | None = None,
         labels: GCPLabels | None = None,
     ) -> None:
+        if not labels:
+            labels = GCPLabels()
         self._project_id = project_id
         self._zone = zone
         self._source_disk_name = source_disk_name

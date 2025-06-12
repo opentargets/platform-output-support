@@ -156,11 +156,8 @@ extend-safe-fixes = [
     'PERF102', # ^ likewise
 ]
 
-[tool.ruff.lint.flake8-quotes]
-inline-quotes = 'single'
-multiline-quotes = 'double'
-docstring-quotes = 'double'
-avoid-escape = true
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Option"]
 
 [tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = false
@@ -168,6 +165,12 @@ mark-parentheses = false
 parametrize-names-type = 'tuple'
 parametrize-values-type = 'list'
 parametrize-values-row-type = 'tuple'
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = 'single'
+multiline-quotes = 'double'
+docstring-quotes = 'double'
+avoid-escape = true
 
 [tool.ruff.lint.per-file-ignores]
 '**/*_test.py' = ['S108', 'S602', 'D']
@@ -177,8 +180,3 @@ parametrize-values-row-type = 'tuple'
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 ignore-decorators = ["pos.tasks.report", "pos.manifest.task_reporter.report"]
-
-[tool.uv]
-dev-dependencies = [
-    "ipykernel>=6.29.5",
-]
