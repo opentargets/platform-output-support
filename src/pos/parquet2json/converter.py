@@ -71,7 +71,7 @@ class Converter:
         except (FileNotFoundError, pa.ArrowInvalid, PolarsError) as e:
             raise Parquet2JSONError(f'failed to read {parquet_path}: {e}') from e
 
-    def write_json(self, df: pl.DataFrame, path: Path) -> None:
+    def write_json(self, df: pl.DataFrame, path: str) -> None:
         """Write the DataFrame as line-delimited JSON."""
         rows = df.iter_rows(named=True)
         if path is None:
@@ -80,7 +80,10 @@ class Converter:
             Path(path).parent.mkdir(exist_ok=True, parents=True)
             self._json_lines_to_file(rows, path)
 
-    def _drop_nulls_recursively(self, collection: dict[str, Any] | list[Any]) -> dict[str, Any]:
+    def _drop_nulls_recursively(
+        self,
+        collection: dict[str, Any] | list[Any],
+    ) -> dict[str, Any] | list[Any]:
         """Recursively drop null values from a Dict or List."""
         if isinstance(collection, list):
             return [self._drop_nulls_recursively(x) for x in collection if x is not None]
@@ -100,13 +103,13 @@ class Converter:
         """Write a list of rows to stdout as JSON lines."""
         sys.stdout.writelines(self._serialize_rows(rows))
 
-    def _json_lines_to_file(self, rows: Iterator[dict[str, Any]], path: Path) -> None:
+    def _json_lines_to_file(self, rows: Iterator[dict[str, Any]], path: str) -> None:
         """Write a list of rows to a file as JSON lines."""
         with open(path, 'a', encoding='UTF-8') as f:
             f.writelines(self._serialize_rows(rows))
 
 
-def convert(parquet_path: Path, json_path: Path, log: Logger, hive_partitioning: bool = False) -> None:
+def convert(parquet_path: str, json_path: str, log: Logger, hive_partitioning: bool = False) -> None:
     """Convert a parquet file to a JSON file."""
     try:
         converter = Converter(log, hive_partitioning=hive_partitioning)

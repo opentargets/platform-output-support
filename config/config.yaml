@@ -2,6 +2,7 @@
 work_path: ./work
 log_level: TRACE
 release_uri: gs://open-targets-pre-data-releases/jamesh/pos
+
 scratchpad:
   release: 25.03
   # temp file locations
@@ -23,21 +24,21 @@ scratchpad:
   # bigquery
   bq_prod_project_id: open-targets-prod
   bq_parquet_path: gs://open-targets-data-releases/25.03
-steps:
 
+steps:
   ################################################################################################
   # OT Croissant
   ################################################################################################
   ot_croissant:
-    - name: sync_bucket etl output files
+    - name: sync_bucket pipeline output files
       source: gs://open-targets-pre-data-releases/${release}/output
       destination: ${local_data}/output
     - name: ot_croissant generate release metadata
       requires:
-        - sync_bucket etl output files
+        - sync_bucket pipeline output files
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
       gcp_address: gs://open-targets-data-releases/${release}/output/
-      date_published: "2025-02-12"
+      date_published: '2025-02-12'
       dataset_path: ${local_data}
       output: webapp/downloads.json
 
@@ -57,7 +58,7 @@ steps:
       gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
-      gcp_disk_zone: europe-west1-d 
+      gcp_disk_zone: europe-west1-d
   opensearch_stop:
     - name: opensearch_stop data loading instance
       service_name: os-pos
@@ -67,7 +68,7 @@ steps:
       destination: opensearch.tar.gz
   opensearch_prep_all:
     - name: sync_bucket pipeline output files
-      source: gs://open-targets-pre-data-releases/${release}/output 
+      source: gs://open-targets-pre-data-releases/${release}/output
       destination: ${local_data}/output
     - name: sync_bucket pipeline view files
       source: gs://open-targets-pre-data-releases/${release}/view/
@@ -182,7 +183,7 @@ steps:
       gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
-      gcp_disk_zone: europe-west1-d 
+      gcp_disk_zone: europe-west1-d
   clickhouse_stop:
     - name: clickhouse_stop data loading instance
   clickhouse_load_all:
@@ -190,7 +191,7 @@ steps:
       source: gs://open-targets-pre-data-releases/${release}/output
       destination: ${local_data}/output
     - name: sync_bucket pipeline view files
-      source: gs://open-targets-pre-data-releases/${release}/view 
+      source: gs://open-targets-pre-data-releases/${release}/view
       destination: ${local_data}/view
     - name: sync_bucket pipeline intermediate files
       source: gs://open-targets-pre-data-releases/${release}/intermediate/literature_sentence
@@ -214,7 +215,7 @@ steps:
             - sync_bucket pipeline intermediate files
           dataset: ${each}
           data_dir_parent: ${local_data}
-  
+
   ########################################################################################
   # BigQuery
   bigquery_dev_load_all:

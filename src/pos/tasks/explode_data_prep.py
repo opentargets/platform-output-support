@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Self
 
 from loguru import logger
-from otter.scratchpad import Scratchpad
+from otter.scratchpad.model import Scratchpad
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -58,7 +58,7 @@ class ExplodeDataPrep(Task):
                 source=str(file),
                 destination=str(self._get_json_destination()),
             )
-            self.scratchpad.store('each', file)
+            self.scratchpad.store('each', str(file))
             self.context.specs.append(Spec.model_validate(self.scratchpad.replace_dict(spec.model_dump())))
         return self
 

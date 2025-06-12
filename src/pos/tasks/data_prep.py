@@ -1,6 +1,5 @@
 # Data prep task
 
-from pathlib import Path
 from typing import Self
 
 from loguru import logger
