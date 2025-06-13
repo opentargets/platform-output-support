@@ -43,8 +43,8 @@ class SyncBucket(Task):
 
         logger.debug(f'syncing {self.spec.source} with {self.spec.destination}')
         rsync_command = [
-            'gcloud',
-            'storage',
+            'gsutil',
+            '-m',
             'rsync',
             '-r',
             self.spec.source,
