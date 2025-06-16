@@ -81,18 +81,18 @@ _write_data_release_config: _uv_sync
     --log_level=pos_log_level \
     --release_uri=data_location_source \
     --scratchpad.release=release_id \
-    --scratchpad.bq_parquet_path=data_location_production
+    --scratchpad.bq_parquet_path=data_location_source
 
 # Big Query Dev
 bigquerydev: _uv_sync _set_profile _write_data_release_config
     @echo "BigQuery Dev"
-    @uv run --directory {{ justfile_directory() }} run pos -c {{ PATH_DATA_RELEASE_CONFIG }} -s bigquery_dev_load_all
+    @uv --directory {{ justfile_directory() }} run pos -c {{ PATH_DATA_RELEASE_CONFIG }} -s bigquery_dev_load_all
     @rm {{ PATH_DATA_RELEASE_CONFIG }}
 
 # Big Query Prod
 bigqueryprod: _uv_sync _set_profile _write_data_release_config
     @echo "BigQuery Prod"
-    @uv run --directory {{ justfile_directory() }} run pos -c {{ PATH_DATA_RELEASE_CONFIG }} -s bigquery_prod_load_all
+    @uv --directory {{ justfile_directory() }} run pos -c {{ PATH_DATA_RELEASE_CONFIG }} -s bigquery_prod_load_all
     @rm {{ PATH_DATA_RELEASE_CONFIG }}	
 
 # Sync data to production Google Cloud Storage
