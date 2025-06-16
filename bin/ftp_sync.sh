@@ -32,7 +32,7 @@ export path_slurm_job_stderr="${path_slurm_job_logs}/output.err"
 export path_slurm_job_stdout="${path_slurm_job_logs}/output.out"
 export path_slurm_job_sbatch_stderr="${path_slurm_logs}/${job_name}.err"
 export path_slurm_job_sbatch_stdout="${path_slurm_logs}/${job_name}.out"
-export path_data_source="gs://${DATA_LOCATION_SOURCE}/"
+export path_data_source="${DATA_LOCATION_SOURCE}/"
 export filename_release_checksum="release_data_integrity"
 
 # Logging functions
