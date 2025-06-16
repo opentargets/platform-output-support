@@ -73,7 +73,7 @@ function install_packages() {
 function mount_disk() {
   local disk_name=$1
   local mount_point=$2
-  local format_disk=$3  # Default to true if not provided
+  local format_disk=$3 
   # Format the disk using ext4 with no reserved blocks
   prefix="/dev/disk/by-id/google-"
   device_name="$${prefix}$${disk_name}"
@@ -148,11 +148,7 @@ function clickhouse_steps() {
 
 function copy_clickhouse_configs() {
   log "[INFO] Syncing ClickHouse configs"
-  log "[INFO] Contents of /opt/platform-output-support/config/clickhouse/config.xml:"
-  cat /opt/platform-output-support/config/clickhouse/config.d/config.xml
   cp -vR /opt/platform-output-support/config/clickhouse/config.d /mnt/clickhouse/
-  log "[INFO] Contents of /mnt/clickhouse/config.d/config.xml:"
-  cat /mnt/clickhouse/config.d/config.xml
   cp -vR /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
 }
 
