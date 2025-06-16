@@ -6,10 +6,10 @@
 # Is partner preview pipeline?
 is_ppp = false
 # POS git branch to use
-pos_git_branch = "main"
+pos_git_branch = "3867-terraform"
 # Make a tarball of ClickHouse and OpenSearch data.
-clickhouse_tarball = false
-opensearch_tarball = false
+clickhouse_tarball = true
+opensearch_tarball = true
 # Log level for POS
 # Be warned, too many logs will slow things down a lot.
 pos_log_level = "ERROR"
@@ -34,6 +34,6 @@ data_location_production = "gs://open-targets-data-releases/25.06"
 
 # ==== Snapshots ====
 
-# Uncomment the following lines to use existing napshots for ClickHouse and OpenSearch.
-# clickhouse_snapshot_source = "pos-20250513-1250-ch-snapshot"
-# open_search_snapshot_source = "pos-20250513-1250-os-snapshot"
+# Uncomment the following lines to use existing snapshots for ClickHouse and OpenSearch.
+# clickhouse_snapshot_source = "pos-20250605-1308-ch-snapshot"
+# open_search_snapshot_source = "pos-20250609-1039-os-snapshot"
