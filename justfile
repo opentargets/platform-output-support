@@ -98,15 +98,15 @@ bigqueryprod: _uv_sync _set_profile _write_data_release_config
 # Sync data to production Google Cloud Storage
 gcssync: _uv_sync _set_profile
     @echo "Syncing data to GCS"
-    @DATA_LOCATION_SOURCE=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .data_location_source) && \
-    DATA_LOCATION_TARGET=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .data_location_production) && \
-    IS_PARTNER_INSTANCE=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .is_ppp) && \
+    @DATA_LOCATION_SOURCE=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .data_location_source) && \
+    DATA_LOCATION_TARGET=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .data_location_production) && \
+    IS_PARTNER_INSTANCE=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .is_ppp) && \
     {{ PATH_SCRIPTS }}/gcs_sync.sh $DATA_LOCATION_SOURCE $DATA_LOCATION_TARGET $IS_PARTNER_INSTANCE
 
 # Sync data to FTP
 ftpsync: _uv_sync _set_profile _credentials
     @echo "Syncing data to FTP"
-    @DATA_LOCATION_SOURCE=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .data_location_source) && \
-    RELEASE_ID_PROD=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .release_id) && \
-    IS_PARTNER_INSTANCE=$(hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .is_ppp) && \
+    @DATA_LOCATION_SOURCE=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .data_location_source) && \
+    RELEASE_ID_PROD=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .release_id) && \
+    IS_PARTNER_INSTANCE=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .is_ppp) && \
     {{ PATH_SCRIPTS }}/launch_ebi_ftp_sync.sh {{ PATH_FTP_SYNC_SCRIPT }} $DATA_LOCATION_SOURCE $RELEASE_ID_PROD $IS_PARTNER_INSTANCE {{ PATH_GCS_CREDENTIALS_FILE }}
