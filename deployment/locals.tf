@@ -9,10 +9,15 @@ locals {
     "product" = "platform"
     "tool"    = "pos"
   }
+  # If this is a partner preview pipeline, do not provide an FTP location.
+  ftp_output_path = var.is_ppp == false ? "${var.ftp_location}/${var.release_id}/output/" : ""
+  gcs_output_path = "${var.data_location_production}/output/"
   yaml_config_variables = {
         LOG_LEVEL                     = var.pos_log_level
         RELEASE_URI                   = var.data_location_source
         RELEASE                       = var.release_id
+        RELEASE_FTP_OUTPUT            = local.ftp_output_path
+        RELEASE_GCS_OUTPUT            = local.gcs_output_path
         OPENSEARCH_VERSION            = var.open_search_image_tag
         OPENSEARCH_JAVA_OPTS          = var.open_search_jvm_options
         OPENSEARCH_DISK_NAME          = google_compute_disk.open_search_data_disk.name
@@ -25,6 +30,9 @@ locals {
         release                       = "$${release}"
         data_source                   = "$${data_source}"
         local_data                    = "$${local_data}"
+        release_ftp_output            = "$${release_ftp_output}"
+        release_gcs_output            = "$${release_gcs_output}"
+        posvm_remote_user_name        = "$${posvm_remote_user_name}"
         prepared_data                 = "$${prepared_data}"
         opensearch_version            = "$${opensearch_version}"
         opensearch_java_opts          = "$${opensearch_java_opts}"
