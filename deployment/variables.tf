@@ -101,3 +101,15 @@ variable "data_location_production" {
   type        = string
   default     = "gs://open-targets-data-releases/prod"
 }
+
+variable "ftp_location" {
+  description = "FTP location for the data release"
+  type        = string
+  default     = "http://ftp.ebi.ac.uk/pub/databases/opentargets/platform"
+}
+
+variable "is_ppp" {
+  description = "Is this a partner preview pipeline?"
+  type        = bool
+  default     = false
+}

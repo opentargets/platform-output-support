@@ -8,6 +8,9 @@ scratchpad:
   # temp file locations
   local_data: release_data
   prepared_data: prepared_data
+  # croissant
+  release_ftp_output: ${RELEASE_FTP_OUTPUT}
+  release_gcs_output: ${RELEASE_GCS_OUTPUT}
   # opensearch
   opensearch_version: ${OPENSEARCH_VERSION}
   opensearch_java_opts: ${OPENSEARCH_JAVA_OPTS}
@@ -49,9 +52,9 @@ steps:
       destination: ${local_data}/output
     - name: ot_croissant generate release metadata
       requires:
-        - sync_bucket pipeline output files
-      ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
-      gcp_address: gs://open-targets-data-releases/${release}/output/
+        - sync_bucket etl output files
+      ftp_address: ${release_ftp_output}
+      gcp_address: ${release_gcs_output}
       date_published: '2025-02-12'
       dataset_path: ${local_data}/output
       output: croissant.json
