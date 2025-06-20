@@ -16,7 +16,7 @@ resource "google_compute_disk" "clickhouse_data_disk" {
   name        = local.clickhouse_disk_name
   description = "Clickhouse data disk"
   type        = "pd-ssd"
-  zone        = "europe-west1-d"
+  # zone        = "europe-west1-b"
   size        = var.clickhouse_snapshot_source == null ? var.clickhouse_data_disk_size : null
   labels      = local.base_labels
   snapshot    = var.clickhouse_snapshot_source
@@ -28,7 +28,7 @@ resource "google_compute_disk" "open_search_data_disk" {
   name        = local.open_search_disk_name
   description = "OpenSearch data disk"
   type        = "pd-ssd"
-  zone        = "europe-west1-d"
+  # zone        = "europe-west1-b"
   size        = var.open_search_snapshot_source == null ? var.open_search_data_disk_size : null
   labels      = local.base_labels
   snapshot    = var.open_search_snapshot_source
