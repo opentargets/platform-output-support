@@ -57,7 +57,7 @@ class OpenSearchLoad(Task):
             queue_size=-1,
         ):
             if not success:
-                logger.error(f'Failed to index document: {info}')
+                logger.error(f'Failed to index document into {self._index_name}: {info}')
         opensearch.indices.refresh(index=self._index_name)
         return self
 

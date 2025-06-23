@@ -29,3 +29,9 @@ output "pos_log_command" {
   }
   description = "Command to tail the POS log file"
 }
+
+output "pos_logs_gcs" {
+  value = {
+    logs = "gs://open-targets-ops/logs/platform-pos/${random_string.posvm.result}/pos/"
+  }
+}
