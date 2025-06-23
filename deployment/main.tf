@@ -82,7 +82,7 @@ resource "google_compute_instance" "posvm" {
       }
     )
     ssh-keys               = "${local.posvm_remote_user_name}:${tls_private_key.posvm.public_key_openssh}"
-    #google-logging-enabled = true
+    google-logging-enabled = false
     pos_config = templatefile(
       "pos_config.tftpl",
       local.yaml_config_variables
