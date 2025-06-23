@@ -79,6 +79,8 @@ class OtCroissant(Task):
         datasets = [str(path) for path in sorted(Path(directory_path).iterdir()) if path.is_dir()]
 
         logger.debug(f'generating metadata for release {release}')
+        logger.debug(f'ftp: {self.spec.ftp_address}, gcp: {self.spec.gcp_address}')
+        logger.debug(f'type of ftp_address: {type(self.spec.ftp_address)}')
         metadata = PlatformOutputMetadata(
             datasets=datasets,
             ftp_location=self.spec.ftp_address,
