@@ -121,7 +121,7 @@ function sync_data() {
 function opensearch_steps() {
   log "[INFO] Starting OpenSearch steps"
   uv_run open_search_prep_all 300 && \
-  uv_run open_search_load_all 100 && \
+  uv_run open_search_load_all 100 > /var/log/open_search_load.log 2>&1 && \
   opensearch_summary && \
   uv_run open_search_stop 1 && \
   sync && \
@@ -169,4 +169,5 @@ clickhouse_steps
 wait
 journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
 gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log
+gsutil -m cp /var/log/open_search_load.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/open_search_load.log
 poweroff

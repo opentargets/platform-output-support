@@ -258,9 +258,9 @@ opensearch:
   otar_projects:
     id_field: efo_id
     index: otar_projects
-    input_dir: output/otar_projects
+    input_dir: output/otar
     mappings: config/opensearch/default.json
-    output_dir: otar_projects
+    output_dir: otar
   pharmacogenomics:
     index: pharmacogenomics
     input_dir: output/pharmacogenomics
