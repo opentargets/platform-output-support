@@ -25,12 +25,9 @@ DATA_LOCATION_TARGET=$(add_trailing_slash "${DATA_LOCATION_TARGET}")
 
 # Check if it's partner instance
 if [ "${IS_PARTNER_INSTANCE}" = true ]; then
-    echo "This is a PARTNER INSTANCE, SKIPPING the sync process"
-    exit 0
+    echo "This is a PPP INSTANCE."
 fi
 
-# TODO: check which patterns to exclude
-# TODO: remove dry-run flag
 echo "=== Syncing data from: ${DATA_LOCATION_SOURCE} --> ${DATA_LOCATION_TARGET}"
-gcloud storage rsync -r --dry-run -x '^input/fda-inputs/*' -x '^output/etl/parquet/failedMatches/*' -x '^output/etl/json/failedMatches/*' $DATA_LOCATION_SOURCE $DATA_LOCATION_TARGET
+gcloud storage rsync -r $DATA_LOCATION_SOURCE $DATA_LOCATION_TARGET
 echo "=== Sync complete."
