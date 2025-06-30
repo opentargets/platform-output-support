@@ -1,4 +1,3 @@
-import os
 from abc import ABC, abstractmethod
 from functools import wraps
 from pathlib import Path
@@ -38,7 +37,11 @@ class ContainerizedService(ABC):
     """
 
     def __init__(
-        self, name: str, dockerfile: Path, version: str | None = None, init_timeout: int = 10
+        self,
+        name: str,
+        dockerfile: Path,
+        version: str | None = None,
+        init_timeout: int = 10,
     ) -> None:
         self.name = name
         self.docker_client = docker.from_env()
@@ -167,14 +170,14 @@ class ContainerizedService(ABC):
                     fileobj=f,
                     tag=self.name,
                     rm=True,
-                    buildargs={'TAG': self._version},  #'UID': str(os.getuid()), 'GID': str(os.getgid())},
+                    buildargs={'TAG': self._version},  # 'UID': str(os.getuid()), 'GID': str(os.getgid())},
                 )
                 return image
         except BuildError:
             raise ContainerizedServiceError(f'failed to build image from {dockerfile}')
 
     @abstractmethod
-    def start(self) -> None:
+    def start(self, volume_data: str, volume_logs: str) -> None:
         """Start the containerized service."""
 
     @abstractmethod

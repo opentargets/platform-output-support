@@ -66,7 +66,7 @@ def dict_from_args(args: list) -> dict:
     """Generate a dict from cli args split on "=".
 
     Arguments:
-        args -- cli args list
+        args: cli args list
 
     Returns:
         Dict of key, values

@@ -53,12 +53,16 @@ class ClickhouseInstanceManager(ContainerizedService):
             ClickhouseInstanceManagerError: If Clickhouse failed to start
         """
         ports = {'9000': 9000, '8123': 8123, '9363': 9363}
+        config_path = str(Path('config/clickhouse/config.d').absolute())
+        users_path = str(Path('config/clickhouse/users.d').absolute())
+        schema_path = str(Path('config/clickhouse/schema').absolute())
+
         volumes = {
             volume_data: {'bind': '/var/lib/clickhouse', 'mode': 'rw'},
             volume_logs: {'bind': '/var/log/clickhouse-server', 'mode': 'rw'},
-            Path('config/clickhouse/config.d').absolute(): {'bind': '/etc/clickhouse-server/config.d', 'mode': 'rw'},
-            Path('config/clickhouse/users.d').absolute(): {'bind': '/etc/clickhouse-server/users.d', 'mode': 'rw'},
-            Path('config/clickhouse/schema').absolute(): {'bind': '/docker-entrypoint-initdb.d', 'mode': 'rw'},
+            config_path: {'bind': '/etc/clickhouse-server/config.d', 'mode': 'rw'},
+            users_path: {'bind': '/etc/clickhouse-server/users.d', 'mode': 'rw'},
+            schema_path: {'bind': '/docker-entrypoint-initdb.d', 'mode': 'rw'},
         }
         logger.debug(f'volumes: {volumes}')
         ulimits = [Ulimit(name='nofile', soft=262144, hard=262144)]
@@ -78,7 +82,7 @@ class ClickhouseInstanceManager(ContainerizedService):
         """
         if reset_timeout:
             self.reset_init_timeout()
-        client = None
+        client: Client | None = None
         while not client and self._init_timeout > 0:
             if not self.is_running():
                 self._wait(1)
