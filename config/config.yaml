@@ -8,9 +8,6 @@ scratchpad:
   # temp file locations
   local_data: release_data
   prepared_data: prepared_data
-  # croissant
-  release_ftp_output: ${RELEASE_FTP_OUTPUT}
-  release_gcs_output: ${RELEASE_GCS_OUTPUT}
   # opensearch
   opensearch_version: ${OPENSEARCH_VERSION}
   opensearch_java_opts: ${OPENSEARCH_JAVA_OPTS}
@@ -53,8 +50,8 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: ${release_ftp_output}
-      gcp_address: ${release_gcs_output}
+      ftp_address: ${RELEASE_FTP_OUTPUT}
+      gcp_address: ${RELEASE_GCS_OUTPUT}
       date_published: "2025-02-12"
       dataset_path: ${local_data}/output
       output: croissant.json
@@ -455,3 +452,14 @@ steps:
           location: eu
           table: ${each}
           base_uri: ${bq_parquet_path}
+  exports:
+    - name: sync_bucket etl ebi search assocs
+      source: ${data_source}/view/search_ebi_associations
+      destination: ${local_data}/view/search_ebi_associations
+    - name: data_prep ebi search assocs
+      requires:
+        - sync_bucket etl ebi search assocs
+      dataset: search_ebi_associations
+      parquet_parent: ${local_data}
+      json_parent: ${prepared_data}
+
