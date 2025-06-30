@@ -53,17 +53,17 @@ class OpenSearchInstanceManager(ContainerizedService):
             OpenSearchInstanceManagerError: If OpenSearch failed to start
         """
         ports = {'9200': 9200, '9300': 9300}
-        environment = {
+        environment: dict[str, str] | list[str] | None = {
             'path.data': '/usr/share/opensearch/data',
             'path.logs': '/usr/share/opensearch/logs',
-            'network.host': '0.0.0.0',
+            'network.host': '0.0.0.0',  # noqa: S104
             'discovery.type': 'single-node',
-            'discovery.seed_hosts': [],
+            'discovery.seed_hosts': '[]',
             'bootstrap.memory_lock': 'true',
-            'search.max_open_scroll_context': 5000,
+            'search.max_open_scroll_context': '5000',
             'DISABLE_SECURITY_PLUGIN': 'true',
             'OPENSEARCH_JAVA_OPTS': opensearch_java_opts,
-            'thread_pool.write.queue_size': -1,
+            'thread_pool.write.queue_size': '-1',
         }
         volumes = {
             volume_data: {'bind': '/usr/share/opensearch/data', 'mode': 'rw'},
@@ -75,7 +75,7 @@ class OpenSearchInstanceManager(ContainerizedService):
         ]
         try:
             self._run_container(
-                ports=ports,
+                ports=ports,  # type: ignore[reportArgumentType]
                 env=environment,
                 volumes=volumes,
                 ulimits=ulimits,
@@ -100,7 +100,7 @@ class OpenSearchInstanceManager(ContainerizedService):
         healthy = False
         while self._init_timeout > 0:
             if self.client().ping():
-                self.client().cluster.health(wait_for_status='green', cluster_manager_timeout=f'{self._init_timeout}s')
+                self.client().cluster.health(wait_for_status='green', cluster_manager_timeout=f'{self._init_timeout}s')  # type: ignore[reportCallIssue]
                 healthy = True
                 logger.debug('opensearch is healthy')
                 break
