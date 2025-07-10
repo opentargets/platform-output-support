@@ -332,6 +332,10 @@ opensearch:
     mappings: config/opensearch/default.json
     output_dir: protein_coding_coords
 clickhouse:
+  disease:
+    table: disease_log
+    input_dir: output/disease
+    postload_script: config/clickhouse/scripts/disease.sql
   aotf:
     table: associations_otf_log
     input_dir: view/association_otf
