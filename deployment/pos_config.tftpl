@@ -8,6 +8,9 @@ scratchpad:
   # temp file locations
   local_data: release_data
   prepared_data: prepared_data
+  # croissant
+  release_ftp_output: ${RELEASE_FTP_OUTPUT}
+  release_gcs_output: ${RELEASE_GCS_OUTPUT}
   # opensearch
   opensearch_version: ${OPENSEARCH_VERSION}
   opensearch_java_opts: ${OPENSEARCH_JAVA_OPTS}
@@ -24,8 +27,8 @@ scratchpad:
   # bigquery
   bq_prod_project_id: open-targets-prod
   bq_parquet_path: ${BQ_DATA_SOURCE}
-steps:
 
+steps:
   ################################################################################################
   # Sync data
   ################################################################################################
@@ -50,9 +53,9 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
-      gcp_address: gs://open-targets-data-releases/${release}/output/
-      date_published: "2025-02-12"
+      ftp_address: ${release_ftp_output}
+      gcp_address: ${release_gcs_output}
+      date_published: '2025-02-12'
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -60,116 +63,38 @@ steps:
   ################################################################################################
   # OpenSearch
   ################################################################################################
-
-  open_search_start:
-    - name: open_search_start opensearch start
+  opensearch_start:
+    - name: opensearch_start data loading instance
       service_name: os-pos
       volume_data: ${opensearch_data}
       volume_logs: ${opensearch_logs}
       opensearch_version: ${opensearch_version}
       opensearch_java_opts: ${opensearch_java_opts}
-  open_search_disk_snapshot:
+  opensearch_disk_snapshot:
     - name: create_gcp_disk_snapshot opensearch
       gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
-      gcp_disk_zone: europe-west1-d 
-  open_search_stop:
-    - name: open_search_stop opensearch stop
+      gcp_disk_zone: europe-west1-d
+  opensearch_stop:
+    - name: opensearch_stop data loading instance
       service_name: os-pos
-  open_search_tarball:
+  opensearch_tarball:
     - name: tarball opensearch
       source: /mnt/opensearch
-      destination: disk_images/opensearch.tar.gz
+      destination: disk_images/opensearch.tgz
   open_search_prep_all:
     - name: sync_bucket etl output files
-      source: ${data_source}/output 
+      source: ${data_source}/output
       destination: ${local_data}/output
     - name: sync_bucket etl view files
       source: ${data_source}/view/
       destination: ${local_data}/view
     - name: explode prep all datasets
       requires:
-        - sync_bucket etl output files
-        - sync_bucket etl view files
-      foreach:
-        - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
-        - credible_set
-        - disease
-        - disease_hpo
-        - drug
-        - drug_warnings
-        - evidence_cancer_biomarkers
-        - evidence_cancer_gene_census
-        - evidence_chembl
-        - evidence_clingen
-        - evidence_crispr
-        - evidence_crispr_screen
-        - evidence_encore
-        - evidence_europepmc
-        - evidence_eva
-        - evidence_eva
-        - evidence_eva_somatic
-        - evidence_expression_atlas
-        - evidence_gene_burden
-        - evidence_gene2phenotype
-        - evidence_genomics_england
-        - evidence_gwas_credible_sets
-        - evidence_impc
-        - evidence_intogen
-        - evidence_orphanet
-        - evidence_ot_crispr
-        - evidence_ot_crispr_validation
-        - evidence_ot_genetics_portal
-        - evidence_progeny
-        - evidence_reactome
-        - evidence_slapenrich
-        - evidence_sysbio
-        - evidence_uniprot_literature
-        - evidence_uniprot_variants
-        - expression
-        - facet_search_disease
-        - facet_search_target
-        - go
-        - gwas_index
-        - hpo
-        - indication
-        - interaction
-        - interaction_evidence
-        - known_drugs
-        - l2g_predictions
-        - mechanism_of_action
-        - mouse_phenotypes
-        - openfda_faers
-        - otar_projects
-        - pharmacogenomics
-        - protein_coding_coords
-        - reactome
-        - search_disease
-        - search_drug
-        - search_study
-        - search_target
-        - search_variant
-        - so
-        - target
-        - target_essentiality
-        - target_prioritisation
-        - variant_index
-      do:
-        - name: explode_data_prep ${each}
-          dataset: ${each}
-          parquet_parent: ${local_data}
-          json_parent: ${prepared_data}
-  open_search_load_all:
-    - name: open_search_start opensearch start
-      volume_data: ${opensearch_data}
-      volume_logs: ${opensearch_logs}
-      opensearch_version: ${opensearch_version}
-      opensearch_java_opts: ${opensearch_java_opts}
-    - name: explode load all datasets
-      foreach:
+        - sync_bucket pipeline output files
+        - sync_bucket pipeline view files
+      foreach: &opensearch_datasets
         - biosample
         - colocalisation_coloc
         - colocalisation_ecaviar
@@ -236,45 +161,60 @@ steps:
         - target_prioritisation
         - variant_index
       do:
-        - name: open_search_create_index opensearch create index ${each}
-          requires:
-            - open_search_start opensearch start
+        - name: explode_data_prep ${each}
           dataset: ${each}
-        - name: open_search_load opensearch load ${each}
+          parquet_parent: ${local_data}
+          json_parent: ${prepared_data}
+  opensearch_load_all:
+    - name: opensearch_start data loading instance
+      volume_data: ${opensearch_data}
+      volume_logs: ${opensearch_logs}
+      opensearch_version: ${opensearch_version}
+      opensearch_java_opts: ${opensearch_java_opts}
+    - name: explode load all datasets
+      foreach: *opensearch_datasets
+      do:
+        - name: opensearch_create_index ${each}
           requires:
-            - open_search_create_index opensearch create index ${each}
+            - opensearch_start data loading instance
+          dataset: ${each}
+        - name: opensearch_load dataset ${each}
+          requires:
+            - opensearch_create_index opensearch ${each}
           dataset: ${each}
           json_parent: ${prepared_data}
+
   ################################################################################################
   # ClickHouse
+  ################################################################################################
   clickhouse_start:
-    - name: clickhouse_start clickhouse start
+    - name: clickhouse_start data loading instance
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
       clickhouse_version: ${clickhouse_version}
   clickhouse_tarball:
     - name: tarball clickhouse
       source: /mnt/clickhouse
-      destination: disk_images/clickhouse.tar.gz
+      destination: disk_images/clickhouse.tgz
   clickhouse_disk_snapshot:
     - name: create_gcp_disk_snapshot clickhouse
       gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
-      gcp_disk_zone: europe-west1-d 
+      gcp_disk_zone: europe-west1-d
   clickhouse_stop:
-    - name: clickhouse_stop clickhouse stop
+    - name: clickhouse_stop data loading instance
   clickhouse_load_all:
     - name: sync_bucket etl output files
       source: ${data_source}/output
       destination: ${local_data}/output
     - name: sync_bucket etl view files
-      source: ${data_source}/view 
+      source: ${data_source}/view
       destination: ${local_data}/view
     - name: sync_bucket etl intermediate files
       source: ${data_source}/intermediate/literature_sentence
       destination: ${local_data}/intermediate/literature_sentence
-    - name: clickhouse_start clickhouse start
+    - name: clickhouse_start data loading instance
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
       clickhouse_version: ${clickhouse_version}
@@ -287,13 +227,13 @@ steps:
       do:
         - name: clickhouse_load clickhouse load ${each}
           requires:
-            - clickhouse_start clickhouse start
-            - sync_bucket etl output files
-            - sync_bucket etl view files
-            - sync_bucket etl intermediate files
+            - clickhouse_start data loading instance
+            - sync_bucket pipeline output files
+            - sync_bucket pipeline view files
+            - sync_bucket pipeline intermediate files
           dataset: ${each}
           data_dir_parent: ${local_data}
-  
+
   ########################################################################################
   # BigQuery
   bigquery_dev_load_all:
@@ -303,7 +243,7 @@ steps:
       location: eu
       release: ${release}
     - name: explode load bigquery tables
-      foreach:
+      foreach: &bigquery_datasets
         - association_by_datasource_direct
         - association_by_datasource_indirect
         - association_by_datatype_direct
@@ -381,68 +321,7 @@ steps:
       location: eu
       release: ${release}
     - name: explode load bigquery tables
-      foreach:
-        - association_by_datasource_direct
-        - association_by_datasource_indirect
-        - association_by_datatype_direct
-        - association_by_datatype_indirect
-        - association_by_overall_indirect
-        - association_overall_direct
-        - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
-        - credible_set
-        - disease
-        - disease_hpo
-        - disease_phenotype
-        - drug_indication
-        - drug_mechanism_of_action
-        - drug_molecule
-        - drug_warning
-        - evidence_cancer_biomarkers
-        - evidence_cancer_gene_census
-        - evidence_chembl
-        - evidence_clingen
-        - evidence_crispr
-        - evidence_crispr_screen
-        - evidence_encore
-        - evidence_europepmc
-        - evidence_eva
-        - evidence_eva_somatic
-        - evidence_expression_atlas
-        - evidence_gene2phenotype
-        - evidence_gene_burden
-        - evidence_genomics_england
-        - evidence_gwas_credible_sets
-        - evidence_impc
-        - evidence_intogen
-        - evidence_orphanet
-        - evidence_progeny
-        - evidence_reactome
-        - evidence_slapenrich
-        - evidence_sysbio
-        - evidence_uniprot_literature
-        - evidence_uniprot_variants
-        - expression
-        - go
-        - interaction
-        - interaction_evidence
-        - known_drug
-        - l2g_prediction
-        - literature
-        - literature_vector
-        - mouse_phenotype
-        - openfda_significant_adverse_drug_reactions
-        - openfda_significant_adverse_target_reactions
-        - pharmacogenomics
-        - protein_coding_coords
-        - reactome
-        - so
-        - study
-        - target
-        - target_essentiality
-        - target_prioritisation
-        - variant
+      foreach: *bigquery_datasets
       do:
         - name: bigquery_load prod ${each}
           requires:

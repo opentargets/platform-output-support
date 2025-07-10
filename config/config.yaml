@@ -82,7 +82,7 @@ steps:
   opensearch_tarball:
     - name: tarball opensearch
       source: /mnt/opensearch
-      destination: disk_images/opensearch.tar.gz
+      destination: disk_images/opensearch.tgz
   open_search_prep_all:
     - name: sync_bucket etl output files
       source: ${data_source}/output
@@ -195,7 +195,7 @@ steps:
   clickhouse_tarball:
     - name: tarball clickhouse
       source: /mnt/clickhouse
-      destination: disk_images/clickhouse.tar.gz
+      destination: disk_images/clickhouse.tgz
   clickhouse_disk_snapshot:
     - name: create_gcp_disk_snapshot clickhouse
       gcp_project_id: open-targets-eu-dev
