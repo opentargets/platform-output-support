@@ -336,6 +336,10 @@ clickhouse:
     table: associations_otf_log
     input_dir: view/association_otf
     postload_script: config/clickhouse/scripts/aotf.sql
+  intervals:
+    table: intervals_log
+    input_dir: output/intervals
+    postload_script: config/clickhouse/scripts/intervals.sql
   literature:
     table: literature_log
     input_dir: output/literature

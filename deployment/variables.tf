@@ -87,7 +87,7 @@ variable "open_search_jvm_options" {
 variable "clickhouse_image_tag" {
   description = "Clickhouse image tag"
   type        = string
-  default     = "23.3.1.2823"
+  default     = "25.6.3.116"
 }
 
 variable "data_location_source" {
