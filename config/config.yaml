@@ -165,6 +165,7 @@ steps:
           dataset: ${each}
           parquet_parent: ${local_data}
           json_parent: ${prepared_data}
+          step: opensearch
   opensearch_load_all:
     - name: opensearch_start data loading instance
       volume_data: ${opensearch_data}
@@ -331,3 +332,30 @@ steps:
           location: eu
           table: ${each}
           base_uri: ${bq_parquet_path}
+  exports:
+    # EBI Search
+    - name: sync_bucket search_ebi_associations
+      source: ${data_source}/view/search_ebi_associations
+      destination: ${local_data}/view/search_ebi_associations
+    - name: explode_data_prep search_ebi_associations
+      dataset: search_ebi_associations
+      parquet_parent: ${local_data}
+      json_parent: ${prepared_data}
+      step: exports
+      requires:
+        - sync_bucket search_ebi_associations
+    - name: copy search_ebi_associations
+      requires:
+        - explode_data_prep search_ebi_associations
+      source: ${prepared_data}/search_ebi_associations/search_ebi_associations.json
+      destination: etc/export/search_ebi_associations/search_ebi_associations.json
+    # EPMC Co-occurrence
+    - name: sync_bucket epmc_coocurrence
+      source: ${data_source}/intermediate/literature_epmc_cooccurrence
+      destination: ${local_data}/intermediate/epmc_cooccurrence
+    - name: copy epmc_cooccurrence
+      requires:
+        - sync_bucket epmc_coocurrence
+      source: ${local_data}/intermediate/epmc_cooccurrence
+      destination: etc/export/epmc_cooccurrence
+    
