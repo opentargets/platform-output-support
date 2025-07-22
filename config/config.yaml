@@ -351,12 +351,7 @@ steps:
       source: ${prepared_data}/search_ebi_associations/search_ebi_associations.json
       destination: etc/export/search_ebi_associations/search_ebi_associations.json
     # EPMC Co-occurrence
-    - name: sync_bucket epmc_coocurrence
-      source: ${data_source}/intermediate/literature_epmc_cooccurrence
-      destination: ${local_data}/intermediate/epmc_cooccurrence
     - name: copy epmc_cooccurrence
-      requires:
-        - sync_bucket epmc_coocurrence
-      source: ${local_data}/intermediate/epmc_cooccurrence
+      source: ${data_source}/intermediate/literature_epmc_cooccurrence
       destination: etc/export/epmc_cooccurrence
     
