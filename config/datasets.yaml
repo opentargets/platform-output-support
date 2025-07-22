@@ -572,3 +572,10 @@ bigquery:
   protein_coding_coords:
     index: protein_coding_coords
     input_dir: view/coding_variant_table
+export:
+  search_ebi_associations:
+    input_dir: view/search_ebi_associations
+    output_dir: search_ebi_associations
+  epmc_cooccurrence:
+    input_dir: intermediate/epmc_cooccurrence
+    output_dir: epmc_cooccurrence
