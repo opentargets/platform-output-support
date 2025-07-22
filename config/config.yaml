@@ -349,10 +349,11 @@ steps:
       dataset: search_ebi_associations
       parquet_parent: ${local_data}
       json_parent: ${prepared_data}
-      step: exports
+      step: export
+      remote_path: etc/export/search_ebi_associations.json
       requires:
         - sync_bucket search_ebi_associations
-    - name: copy search_ebi_associations
+    - name: upload search_ebi_associations
       requires:
         - explode_data_prep search_ebi_associations
       source: ${prepared_data}/search_ebi_associations/search_ebi_associations.json
