@@ -1,5 +1,6 @@
 # Data prep task
 
+from math import e
 from pathlib import Path
 from typing import Self
 
@@ -30,6 +31,7 @@ class ExplodeDataPrepSpec(Spec):
     parquet_parent: str
     json_parent: str
     dataset: str
+    step: str
 
 
 class ExplodeDataPrep(Task):
@@ -38,7 +40,7 @@ class ExplodeDataPrep(Task):
         self.spec: ExplodeDataPrepSpec
         self.scratchpad = Scratchpad({})
         try:
-            self._config = get_config('config/datasets.yaml').opensearch
+            self._config = get_config('config/datasets.yaml')[self.spec.step]
             self._input_dir = Path(self._config[self.spec.dataset].input_dir)
             self._output_dir = Path(self._config[self.spec.dataset].output_dir)
         except AttributeError:
