@@ -221,6 +221,7 @@ steps:
     - name: explode load all datasets
       foreach:
         - aotf
+        - intervals
         - literature
         - w2v
         - sentences

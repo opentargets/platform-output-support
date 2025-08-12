@@ -9,6 +9,7 @@
             <use_uncompressed_cache>1</use_uncompressed_cache>
             <load_balancing>random</load_balancing>
             <max_query_size>1048576</max_query_size>
+            <date_time_overflow_behavior>saturate</date_time_overflow_behavior>
         </default>
         <readonly>
             <max_memory_usage>30000000000</max_memory_usage>
