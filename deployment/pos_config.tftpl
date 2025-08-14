@@ -156,7 +156,6 @@ steps:
         - search_target
         - search_variant
         - so
-        - target
         - target_essentiality
         - target_prioritisation
         - variant_index
@@ -221,9 +220,12 @@ steps:
     - name: explode load all datasets
       foreach:
         - aotf
+        - intervals
         - literature
         - w2v
         - sentences
+        - credible_sets
+        - studies
       do:
         - name: clickhouse_load clickhouse load ${each}
           requires:
@@ -233,6 +235,12 @@ steps:
             - sync_bucket pipeline intermediate files
           dataset: ${each}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load targets
+      requires:
+        - clickhouse_load clickhouse load credible_sets
+        - clickhouse_load clickhouse load studies
+      dataset: targets
+      data_dir_parent: ${local_data}
 
   ########################################################################################
   # BigQuery
