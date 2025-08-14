@@ -42,7 +42,7 @@ resource "google_compute_instance" "posvm" {
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-11"
-      type  = "pd-extreme"
+      type  = "pd-ssd"
       size  = var.vm_pos_boot_disk_size
     }
   }
