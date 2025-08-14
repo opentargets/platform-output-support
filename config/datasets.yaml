@@ -303,12 +303,12 @@ opensearch:
     input_dir: output/so
     mappings: config/opensearch/default.json
     output_dir: so
-  target:
-    id_field: id
-    index: target
-    input_dir: output/target
-    mappings: config/opensearch/default.json
-    output_dir: target
+  # target:
+  #   id_field: id
+  #   index: target
+  #   input_dir: output/target
+  #   mappings: config/opensearch/default.json
+  #   output_dir: target
   target_essentiality:
     id_field: id
     index: target_essentiality
@@ -336,6 +336,10 @@ clickhouse:
     table: associations_otf_log
     input_dir: view/association_otf
     postload_script: config/clickhouse/scripts/aotf.sql
+  credible_sets:
+    table: credible_sets_log
+    input_dir: output/credible_set
+    postload_script: config/clickhouse/scripts/credible_sets.sql
   intervals:
     table: intervals_log
     input_dir: output/intervals
@@ -352,6 +356,14 @@ clickhouse:
     table: sentences_log
     input_dir: intermediate/literature_sentence
     postload_script: config/clickhouse/scripts/sentences.sql
+  studies:
+    table: studies_log
+    input_dir: output/study
+    postload_script: config/clickhouse/scripts/studies.sql
+  targets:
+    table: targets_log
+    input_dir: output/target
+    postload_script: config/clickhouse/scripts/targets.sql
 bigquery:
   association_by_datasource_direct:
     index: association_by_datasource_direct
