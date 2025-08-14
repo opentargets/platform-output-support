@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS ot.studies_log;

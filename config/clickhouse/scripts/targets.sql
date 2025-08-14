@@ -46,3 +46,7 @@ DROP TABLE IF EXISTS ot.targets_log;
 DROP TABLE IF EXISTS ot.credible_sets_by_study;
 
 DROP TABLE IF EXISTS ot.credible_sets_by_gene;
+
+DROP TABLE IF EXISTS ot.studies_log;
+
+DROP TABLE IF EXISTS ot.credible_sets_log;

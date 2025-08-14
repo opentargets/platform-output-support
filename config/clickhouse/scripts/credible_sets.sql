@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS ot.credible_sets_log;
