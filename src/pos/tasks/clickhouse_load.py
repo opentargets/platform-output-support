@@ -44,6 +44,7 @@ class ClickhouseLoad(Task):
             raise ClickhouseLoadError(f'Clickhouse service {self.spec.service_name} failed to start')
         files = self._get_parquet_path().glob('*.parquet')
         for file in files:
+            logger.debug(f'Inserting file {file} into Clickhouse table {self._table_name}')
             insert_file(clickhouse_client, self._table_name, str(file), fmt='Parquet')
         sql_statements = Path(self._post_load_sql).read_text().split(';')
         for sql in sql_statements:
