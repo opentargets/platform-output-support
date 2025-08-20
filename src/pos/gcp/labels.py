@@ -9,11 +9,11 @@ class GCPLabels(BaseModel):
         subteam (str): Subteam
         product (str): Product
         tool (str): Tool
-        release (str|None): Release name, defaults to None
+        release (str): Release name, defaults to empty string
     """
 
     team: str = 'open-targets'
     subteam: str = 'backend'
     product: str = 'platform'
     tool: str = 'pos'
-    release: str | None = None
+    release: str = ''
