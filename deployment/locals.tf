@@ -21,10 +21,10 @@ locals {
         OPENSEARCH_VERSION            = var.open_search_image_tag
         OPENSEARCH_JAVA_OPTS          = var.open_search_jvm_options
         OPENSEARCH_DISK_NAME          = google_compute_disk.open_search_data_disk.name
-        OPENSEARCH_DISK_SNAPSHOT_NAME = "${google_compute_disk.open_search_data_disk.name}-snapshot"
+        OPENSEARCH_DISK_SNAPSHOT_NAME = "${google_compute_disk.open_search_data_disk.name}"
         CLICKHOUSE_VERSION            = var.clickhouse_image_tag
         CLICKHOUSE_DISK_NAME          = google_compute_disk.clickhouse_data_disk.name
-        CLICKHOUSE_DISK_SNAPSHOT_NAME = "${google_compute_disk.clickhouse_data_disk.name}-snapshot"
+        CLICKHOUSE_DISK_SNAPSHOT_NAME = "${google_compute_disk.clickhouse_data_disk.name}"
         BQ_DATA_SOURCE                = var.data_location_production
         # For templating reasons, we need to substitute the following variables with $${var_name}
         release                       = "$${release}"
