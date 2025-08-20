@@ -12,7 +12,7 @@ clickhouse_tarball = true
 opensearch_tarball = true
 # Log level for POS
 # Be warned, too many logs will slow things down a lot.
-pos_log_level = "DEBUG"
+pos_log_level = "ERROR"
 
 # ==== Data release config ====
 
