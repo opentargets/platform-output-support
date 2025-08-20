@@ -204,13 +204,13 @@ steps:
   clickhouse_stop:
     - name: clickhouse_stop data loading instance
   clickhouse_load_all:
-    - name: sync_bucket etl output files
+    - name: sync_bucket pipeline output files
       source: ${data_source}/output
       destination: ${local_data}/output
-    - name: sync_bucket etl view files
+    - name: sync_bucket pipeline view files
       source: ${data_source}/view
       destination: ${local_data}/view
-    - name: sync_bucket etl intermediate files
+    - name: sync_bucket pipeline intermediate files
       source: ${data_source}/intermediate/literature_sentence
       destination: ${local_data}/intermediate/literature_sentence
     - name: clickhouse_start data loading instance
