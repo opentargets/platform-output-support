@@ -332,6 +332,11 @@ clickhouse:
     input_dir: view/association_otf
     preload_script: config/clickhouse/schema/aotf.sql
     postload_script: config/clickhouse/scripts/aotf.sql
+  baseline_expression:
+    table: baseline_expression_log
+    input_dir: output/baseline_expression
+    preload_script: config/clickhouse/schema/baseline_expression.sql
+    postload_script: config/clickhouse/scripts/baseline_expression.sql
   credible_sets:
     table: credible_sets_log
     input_dir: output/credible_set
