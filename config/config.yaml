@@ -580,6 +580,7 @@ steps:
     - name: explode load all datasets
       foreach:
         - aotf
+        - baseline_expression
         - interval
         - literature
         - w2v

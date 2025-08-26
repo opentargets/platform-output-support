@@ -23,5 +23,7 @@ work/
 .credentials/
 config/clickhouse/config.d/s3.xml
 
-# terraform files
-.terraform/
+# terraform stuff
+.terraform
+.workspace_id
+.terraform.lock.hcl
