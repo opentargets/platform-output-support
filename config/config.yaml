@@ -289,6 +289,7 @@ steps:
     - name: explode load all datasets
       foreach:
         - aotf
+        - baseline_expression
         - interval
         - literature
         - w2v
@@ -432,4 +433,3 @@ steps:
     - name: copy epmc_cooccurrence
       source: ${data_source}/intermediate/literature_epmc_cooccurrence
       destination: etc/export/epmc_cooccurrence
-    
