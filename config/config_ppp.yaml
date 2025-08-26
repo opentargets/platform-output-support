@@ -180,6 +180,7 @@ steps:
         - sync_bucket etl view files
         - clickhouse_start data loading instance
       foreach:
+        - baseline_expression
         - interval
         - literature
         - w2v
@@ -210,6 +211,7 @@ steps:
       foreach:
         - associations_otf_target
         - associations_otf_disease
+        - baseline_expression
         - intervals
         - literature_index
         - literature
@@ -438,6 +440,7 @@ steps:
         - sync_bucket etl view files
         - clickhouse_start data loading instance
       foreach:
+        - baseline_expression
         - interval
         - literature
         - w2v
@@ -468,6 +471,7 @@ steps:
       foreach:
         - associations_otf_target
         - associations_otf_disease
+        - baseline_expression
         - intervals
         - literature_index
         - literature
@@ -521,6 +525,7 @@ steps:
       foreach:
         - associations_otf_target
         - associations_otf_disease
+        - baseline_expression
         - intervals
         - literature_index
         - literature
@@ -569,6 +574,7 @@ steps:
       clickhouse_database: ${database_namespace}
     - name: explode load all datasets
       foreach:
+        - baseline_expression
         - interval
         - literature
         - w2v
