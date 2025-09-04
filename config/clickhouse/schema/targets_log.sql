@@ -9,9 +9,9 @@ CREATE TABLE if not exists ot.targets_log (
     `canonicalTranscript` Tuple (
         `id` String,
         `chromosome` LowCardinality (String),
-        `start` UInt32,
-        `end` UInt32,
-        `strand` UInt8,
+        `start` Int32,
+        `end` Int32,
+        `strand` LowCardinality (String),
     ),
     `chemicalProbes` Array (
         Tuple (
