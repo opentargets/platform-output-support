@@ -120,14 +120,14 @@ function sync_data() {
 
 function opensearch_steps() {
   log "[INFO] Starting OpenSearch steps"
-  uv_run open_search_prep_all 300 && \
-  uv_run open_search_load_all 100 > /var/log/open_search_load.log 2>&1 && \
+  uv_run opensearch_prep_all 300 && \
+  uv_run opensearch_load_all 100 > /var/log/open_search_load.log 2>&1 && \
   opensearch_summary && \
-  uv_run open_search_stop 1 && \
+  uv_run opensearch_stop 1 && \
   sync && \
-  uv_run open_search_disk_snapshot 1 && \
+  uv_run opensearch_disk_snapshot 1 && \
   if [[ ${OPENSEARCH_TARBALL} == true ]]; then
-    uv_run open_search_tarball 1
+    uv_run opensearch_tarball 1
   fi
   log "[INFO] OpenSearch steps completed"
 }
