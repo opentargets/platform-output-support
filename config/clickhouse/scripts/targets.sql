@@ -38,8 +38,6 @@ CREATE TABLE if not exists ot.targets engine = EmbeddedRocksDB () primary key id
         left outer join ot.credible_sets_by_gene on ot.targets_log.id = ot.credible_sets_by_gene.geneId
 );
 
-ALTER TABLE ot.targets DROP COLUMN IF EXISTS geneId;
-
 DROP TABLE IF EXISTS ot.targets_log;
 
 DROP TABLE IF EXISTS ot.credible_sets_by_study;
