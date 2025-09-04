@@ -6,6 +6,13 @@ CREATE TABLE if not exists ot.targets_log (
     `approvedSymbol` String,
     `approvedName` String,
     `biotype` String,
+    `canonicalTranscript` Tuple (
+        `id` String,
+        `chromosome` LowCardinality (String),
+        `start` UInt32,
+        `end` UInt32,
+        `strand` UInt8,
+    ),
     `chemicalProbes` Array (
         Tuple (
             `id` String,
@@ -46,33 +53,6 @@ CREATE TABLE if not exists ot.targets_log (
         )
     ),
     `genomicLocation` Tuple (
-        -- `chromosome` Enum(
-        --     '1',
-        --     '2',
-        --     '3',
-        --     '4',
-        --     '5',
-        --     '6',
-        --     '7',
-        --     '8',
-        --     '9',
-        --     '10',
-        --     '11',
-        --     '12',
-        --     '13',
-        --     '14',
-        --     '15',
-        --     '16',
-        --     '17',
-        --     '18',
-        --     '19',
-        --     '20',
-        --     '21',
-        --     '22',
-        --     'X',
-        --     'Y',
-        --     'MT'
-        -- ),
         `chromosome` LowCardinality (String),
         `start` UInt32,
         `end` UInt32,
