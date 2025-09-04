@@ -32,8 +32,7 @@ order by (geneId) SETTINGS allow_nullable_key = 1 as (
 -- create the targets table indexed by id
 -- and join credible_sets_by_gene to get array(studyLocusIds) for each target
 
-CREATE TABLE if not exists ot.targets engine =
-Join (ANY, LEFT, id) as (
+CREATE TABLE if not exists ot.targets engine = EmbeddedRocksDB () primary key id as (
     select *
     from ot.targets_log
         left outer join ot.credible_sets_by_gene on ot.targets_log.id = ot.credible_sets_by_gene.geneId
