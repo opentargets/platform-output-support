@@ -163,7 +163,7 @@ create_dir_for_group /mnt/clickhouse/data google-sudoers rw
 
 sync_data
 uv_run ot_croissant
-uv_run export 
+uv_run exports 
 opensearch_steps & 
 sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
 clickhouse_steps

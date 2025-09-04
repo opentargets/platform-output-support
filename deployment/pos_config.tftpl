@@ -64,7 +64,7 @@ steps:
   # OpenSearch
   ################################################################################################
   opensearch_start:
-    - name: opensearch_start data loading instance
+    - name: open_search_start data loading instance
       service_name: os-pos
       volume_data: ${opensearch_data}
       volume_logs: ${opensearch_logs}
@@ -77,17 +77,17 @@ steps:
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
   opensearch_stop:
-    - name: opensearch_stop data loading instance
+    - name: open_search_stop data loading instance
       service_name: os-pos
   opensearch_tarball:
     - name: tarball opensearch
       source: /mnt/opensearch
       destination: disk_images/opensearch.tgz
   open_search_prep_all:
-    - name: sync_bucket etl output files
+    - name: sync_bucket pipeline output files
       source: ${data_source}/output
       destination: ${local_data}/output
-    - name: sync_bucket etl view files
+    - name: sync_bucket pipeline view files
       source: ${data_source}/view/
       destination: ${local_data}/view
     - name: explode prep all datasets
@@ -166,7 +166,7 @@ steps:
           json_parent: ${prepared_data}
           step: opensearch
   opensearch_load_all:
-    - name: opensearch_start data loading instance
+    - name: open_search_start data loading instance
       volume_data: ${opensearch_data}
       volume_logs: ${opensearch_logs}
       opensearch_version: ${opensearch_version}
@@ -174,13 +174,13 @@ steps:
     - name: explode load all datasets
       foreach: *opensearch_datasets
       do:
-        - name: opensearch_create_index ${each}
+        - name: open_search_create_index ${each}
           requires:
-            - opensearch_start data loading instance
+            - open_search_start data loading instance
           dataset: ${each}
-        - name: opensearch_load dataset ${each}
+        - name: open_search_load dataset ${each}
           requires:
-            - opensearch_create_index opensearch ${each}
+            - open_search_create_index ${each}
           dataset: ${each}
           json_parent: ${prepared_data}
 
