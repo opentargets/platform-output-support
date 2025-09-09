@@ -95,70 +95,70 @@ steps:
         - sync_bucket pipeline output files
         - sync_bucket pipeline view files
       foreach: &opensearch_datasets
-        # - biosample
-        # - colocalisation_coloc
-        # - colocalisation_ecaviar
-        # - credible_set
+        - biosample
+        - colocalisation_coloc
+        - colocalisation_ecaviar
+        - credible_set
         - croissant
-        # - disease
-        # - disease_hpo
-        # - drug
-        # - drug_warnings
-        # - evidence_cancer_biomarkers
-        # - evidence_cancer_gene_census
-        # - evidence_chembl
-        # - evidence_clingen
-        # - evidence_crispr
-        # - evidence_crispr_screen
-        # - evidence_encore
-        # - evidence_europepmc
-        # - evidence_eva
-        # - evidence_eva
-        # - evidence_eva_somatic
-        # - evidence_expression_atlas
-        # - evidence_gene_burden
-        # - evidence_gene2phenotype
-        # - evidence_genomics_england
-        # - evidence_gwas_credible_sets
-        # - evidence_impc
-        # - evidence_intogen
-        # - evidence_orphanet
-        # - evidence_ot_crispr
-        # - evidence_ot_crispr_validation
-        # - evidence_ot_genetics_portal
-        # - evidence_progeny
-        # - evidence_reactome
-        # - evidence_slapenrich
-        # - evidence_sysbio
-        # - evidence_uniprot_literature
-        # - evidence_uniprot_variants
-        # - expression
-        # - facet_search_disease
-        # - facet_search_target
-        # - go
-        # - gwas_index
-        # - hpo
-        # - indication
-        # - interaction
-        # - interaction_evidence
-        # - known_drugs
-        # - l2g_predictions
-        # - mechanism_of_action
-        # - mouse_phenotypes
-        # - openfda_faers
-        # - otar_projects
-        # - pharmacogenomics
+        - disease
+        - disease_hpo
+        - drug
+        - drug_warnings
+        - evidence_cancer_biomarkers
+        - evidence_cancer_gene_census
+        - evidence_chembl
+        - evidence_clingen
+        - evidence_crispr
+        - evidence_crispr_screen
+        - evidence_encore
+        - evidence_europepmc
+        - evidence_eva
+        - evidence_eva
+        - evidence_eva_somatic
+        - evidence_expression_atlas
+        - evidence_gene_burden
+        - evidence_gene2phenotype
+        - evidence_genomics_england
+        - evidence_gwas_credible_sets
+        - evidence_impc
+        - evidence_intogen
+        - evidence_orphanet
+        - evidence_ot_crispr
+        - evidence_ot_crispr_validation
+        - evidence_ot_genetics_portal
+        - evidence_progeny
+        - evidence_reactome
+        - evidence_slapenrich
+        - evidence_sysbio
+        - evidence_uniprot_literature
+        - evidence_uniprot_variants
+        - expression
+        - facet_search_disease
+        - facet_search_target
+        - go
+        - gwas_index
+        - hpo
+        - indication
+        - interaction
+        - interaction_evidence
+        - known_drugs
+        - l2g_predictions
+        - mechanism_of_action
+        - mouse_phenotypes
+        - openfda_faers
+        - otar_projects
+        - pharmacogenomics
         - protein_coding_coords
-        # - reactome
-        # - search_disease
-        # - search_drug
-        # - search_study
-        # - search_target
-        # - search_variant
-        # - so
-        # - target_essentiality
-        # - target_prioritisation
-        # - variant_index
+        - reactome
+        - search_disease
+        - search_drug
+        - search_study
+        - search_target
+        - search_variant
+        - so
+        - target_essentiality
+        - target_prioritisation
+        - variant_index
       do:
         - name: explode_data_prep ${each}
           dataset: ${each}
@@ -221,7 +221,7 @@ steps:
     - name: explode load all datasets
       foreach:
         - aotf
-        - intervals
+        - interval
         - literature
         - w2v
         - sentences
