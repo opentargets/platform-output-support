@@ -340,9 +340,9 @@ clickhouse:
     table: credible_sets_log
     input_dir: output/credible_set
     postload_script: config/clickhouse/scripts/credible_sets.sql
-  intervals:
+  interval:
     table: intervals_log
-    input_dir: output/intervals
+    input_dir: output/interval
     postload_script: config/clickhouse/scripts/intervals.sql
   literature:
     table: literature_log
@@ -524,6 +524,9 @@ bigquery:
   interaction_evidence:
     index: interaction_evidence
     input_dir: output/interaction_evidence
+  interval:
+    index: interval
+    input_dir: output/interval
   known_drug:
     index: known_drug
     input_dir: output/known_drug
