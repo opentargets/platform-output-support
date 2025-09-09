@@ -86,7 +86,7 @@ CREATE TABLE if not exists ot.targets_log (
     ),
     `homologues` Array (
         Tuple (
-            `homologueType` String,
+            `homologyType` String,
             `queryPercentageIdentity` Float64,
             `speciesId` String,
             `speciesName` String,
