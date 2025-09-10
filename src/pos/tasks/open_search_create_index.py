@@ -36,7 +36,7 @@ class OpenSearchCreateIndex(Task):
             raise OpenSearchCreateIndexError(f'unable to load config for {self.spec.dataset}')
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         logger.debug(f'creating index {self._index_name}')
         opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
         if not opensearch.indices.exists(index=self._index_name):

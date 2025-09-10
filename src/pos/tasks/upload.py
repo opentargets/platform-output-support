@@ -36,7 +36,7 @@ class Upload(Task):
         logger.debug(f'Uploading {self.source} to {self.destination}')
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         logger.debug(f'Uploading {self.source} to {self.destination}')
         remote_storage = get_remote_storage(self.destination)
         remote_storage.upload(self.source, self.destination)

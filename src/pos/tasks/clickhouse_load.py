@@ -37,7 +37,7 @@ class ClickhouseLoad(Task):
             raise ClickhouseLoadError(f'unable to load config for {self.spec.dataset}')
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         logger.debug('loading clickhouse service')
         clickhouse_client = ClickhouseInstanceManager(name=self.spec.service_name).client()
         if not clickhouse_client:

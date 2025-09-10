@@ -65,7 +65,7 @@ class OtCroissant(Task):
             self.remote_uri = f'{context.config.release_uri}/{self.spec.output}'
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         release = self.context.scratchpad.sentinel_dict.get('release')
         if not release:
             raise ScratchpadError('"release" not found in the scratchpad')

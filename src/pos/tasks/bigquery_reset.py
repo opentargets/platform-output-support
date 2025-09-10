@@ -34,7 +34,7 @@ class BigqueryReset(Task):
         self._release_metadata = [{'release': self.spec.release}]
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         bigquery = BigQuery(project=self.spec.project_id, location=self.spec.location, dataset=self.spec.dataset_id)
         bigquery.create_dataset()
         self._load_release_metadata(bigquery)

@@ -42,7 +42,7 @@ class BigqueryLoad(Task):
             raise BigqueryLoadError(f'unable to load config for {self.spec.table}')
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         bigquery = BigQuery(project=self.spec.project_id, location=self.spec.location, dataset=self.spec.dataset_id)
         if self._hive_partition:
             logger.debug(f'loading {self._path} into {self._table_name} with hive partition')

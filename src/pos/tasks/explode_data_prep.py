@@ -50,7 +50,7 @@ class ExplodeDataPrep(Task):
         logger.debug(f'output dir: {self.abs_output_dir}')
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         logger.debug(f'Exploding {self.spec.dataset}')
         files = self.abs_input_dir.glob('*.parquet')
         for file in files:

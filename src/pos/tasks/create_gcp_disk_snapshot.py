@@ -37,7 +37,7 @@ class CreateGcpDiskSnapshot(Task):
         self._labels = self._set_labels()
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         snapshot = GCPSnapshotDisk(
             project_id=self.spec.gcp_project_id,
             zone=self.spec.gcp_disk_zone,

@@ -25,7 +25,7 @@ class OpenSearchStop(Task):
         self.spec: OpenSearchStopSpec
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         opensearch = OpenSearchInstanceManager(self.spec.service_name)
         opensearch.stop()
         return self
