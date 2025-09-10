@@ -41,7 +41,7 @@ class OpenSearchLoad(Task):
             raise OpenSearchLoadError(f'Unable to load config for {self.spec.dataset}')
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         logger.debug(f'loading data into index {self._index_name}')
         opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
         json_file = self._get_json_path()

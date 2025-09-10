@@ -24,7 +24,7 @@ class ClickhouseStop(Task):
         self.spec: ClickhouseStopSpec
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         clickhouse = ClickhouseInstanceManager(name=self.spec.service_name)
         clickhouse.stop()
         return self

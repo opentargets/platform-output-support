@@ -34,7 +34,7 @@ class SyncBucket(Task):
         self.context: TaskContext
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         destination_folder = self.context.config.work_path.joinpath(self.spec.destination)
 
         logger.debug(f'checking if {destination_folder} exists. If not, create it')

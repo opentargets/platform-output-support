@@ -40,7 +40,7 @@ class Tarball(Task):
         self.destination = self.remote_uri or self.local_path
 
     @report
-    def run(self) -> Self:
+    def run(self) -> Task:
         if not self.source.exists():
             raise TarballError(f'{self.source} does not exist')
         check_destination(self.local_path, delete=True)
