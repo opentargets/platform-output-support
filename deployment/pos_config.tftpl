@@ -18,6 +18,10 @@ scratchpad:
   opensearch_logs: /var/log/pos/opensearch
   opensearch_disk_name: ${OPENSEARCH_DISK_NAME}
   opensearch_disk_snapshot_name: ${OPENSEARCH_DISK_SNAPSHOT_NAME}
+  opensearch_snapshot_name: ${OPENSEARCH_SNAPSHOT_NAME}
+  opensearch_snapshot_repository: ${OPENSEARCH_SNAPSHOT_REPOSITORY}
+  opensearch_snapshot_bucket: ${OPENSEARCH_SNAPSHOT_BUCKET}
+  opensearch_snapshot_base_path: ${OPENSEARCH_SNAPSHOT_BASE_PATH}
   # clickhouse
   clickhouse_version: ${CLICKHOUSE_VERSION}
   clickhouse_data: /mnt/clickhouse/data
@@ -76,6 +80,20 @@ steps:
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
+  opensearch_snapshot: # create a snapshot of the opensearch data NOT the disk.
+    - name: open_search_start data loading instance
+      volume_data: ${opensearch_data}
+      volume_logs: ${opensearch_logs}
+      opensearch_version: ${opensearch_version}
+      opensearch_java_opts: ${opensearch_java_opts}
+      startup_wait: '60'
+    - name: open_search_snapshot data loading instance
+      requires:
+        - open_search_start data loading instance
+      snapshot_repository_name: ${opensearch_snapshot_repository}
+      snapshot_name: ${opensearch_snapshot_name}
+      snapshot_bucket: ${opensearch_snapshot_bucket}
+      snapshot_base_path: ${opensearch_snapshot_base_path}
   opensearch_stop:
     - name: open_search_stop data loading instance
       service_name: os-pos
