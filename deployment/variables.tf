@@ -46,6 +46,24 @@ variable "open_search_snapshot_source" {
   default     = null
 }
 
+variable "open_search_snapshot_repository" {
+  description = "OpenSearch snapshot repository name"
+  type        = string
+  default     = "ot-os-snapshots"
+}
+
+variable "open_search_snapshot_bucket" {
+  description = "OpenSearch snapshot bucket name"
+  type        = string
+  default     = "open-targets-ops"
+}
+
+variable "open_search_snapshot_base_path" {
+  description = "OpenSearch snapshot base path"
+  type        = string
+  default     = "opensearch-snapshots"
+}
+
 variable "open_search_tarball" {
   description = "Whether to make the opensearch tarball, default 'false'"
   type        = bool
@@ -75,7 +93,7 @@ variable "release_id" {
 variable "open_search_image_tag" {
   description = "OpenSearch image tag"
   type        = string
-  default     = "2.19.0"
+  default     = "3.1.0"
 }
 
 variable "open_search_jvm_options" {

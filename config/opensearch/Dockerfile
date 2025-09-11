@@ -10,6 +10,9 @@ USER root
 # Remove query-insights plugin
 RUN /usr/share/opensearch/bin/opensearch-plugin remove query-insights
 
+# Install repository-gcs plugin
+RUN /usr/share/opensearch/bin/opensearch-plugin install --batch repository-gcs
+
 RUN chown -R ${UID}:${GID} /usr/share/opensearch
 
 USER ${UID}:${GID}

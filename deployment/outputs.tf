@@ -11,10 +11,20 @@ output "posvm" {
 // Disk Images
 output "disk_snapshots" {
   value = {
-    opensearch     = "${local.open_search_disk_name}-snapshot"
-    clickhouse     = "${local.clickhouse_disk_name}-snapshot"
+    opensearch     = local.open_search_disk_name
+    clickhouse     = local.clickhouse_disk_name
   }
   description = "Data disk snapshot names"
+}
+
+output "opensearch_snapshot_info" {
+  value = {
+    name       = "${var.release_id}-${local.timestamp}"
+    repository = var.open_search_snapshot_repository
+    bucket     = var.open_search_snapshot_bucket
+    base_path  = var.open_search_snapshot_base_path
+  }
+  description = "OpenSearch snapshot information"
 }
 
 output "pos_config_file" {

@@ -21,6 +21,7 @@ class OpenSearchStartSpec(Spec):
     volume_logs: str
     opensearch_version: str = '2.19.0'
     opensearch_java_opts: str
+    startup_wait: str = '60'
 
 
 class OpenSearchStart(Task):
@@ -31,7 +32,11 @@ class OpenSearchStart(Task):
     @report
     def run(self) -> Task:
         logger.debug(f'starting opensearch instance {self.spec.service_name}')
-        opensearch = OpenSearchInstanceManager(self.spec.service_name, opensearch_version=self.spec.opensearch_version)
+        opensearch = OpenSearchInstanceManager(
+            self.spec.service_name,
+            opensearch_version=self.spec.opensearch_version,
+            init_timeout=int(self.spec.startup_wait),
+        )
 
         opensearch.start(
             self.spec.volume_data,

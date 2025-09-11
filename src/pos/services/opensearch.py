@@ -84,7 +84,7 @@ class OpenSearchInstanceManager(ContainerizedService):
             raise OpenSearchInstanceManagerError('opensearch instance failed to start')
 
     def client(self) -> OpenSearch:
-        return OpenSearch([{'host': 'localhost', 'port': 9200}], use_ssl=False, timeout=3600)
+        return OpenSearch([{'host': 'localhost', 'port': 9200}], use_ssl=False, timeout=7200)
 
     @reset_timeout
     def is_healthy(self) -> bool:
