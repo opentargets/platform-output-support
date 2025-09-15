@@ -1,5 +1,8 @@
 profile := 'default'
 profile_tfvars := if path_exists(join("profiles", profile + ".tfvars")) == "true" { join("profiles", profile + ".tfvars") } else { error('Profile does not exist') }
+default_ch_disk_source := 'devinstance-datavolume-ch-dev'
+default_os_disk_source := 'devinstance-datavolume-os-dev'
+default_zone := 'europe-west1-d'
 PATH_SCRIPTS := justfile_directory() / "bin"
 PATH_CREDENTIALS := justfile_directory() / ".credentials"
 PATH_GCS_CREDENTIALS_FILE := PATH_CREDENTIALS / "gcs_credentials.json"
@@ -110,3 +113,8 @@ ftpsync: _uv_sync _set_profile _credentials
     RELEASE_ID_PROD=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .release_id) && \
     IS_PARTNER_INSTANCE=$(uv --directory {{ justfile_directory() }} run hcl2tojson {{ TF_DIRECTORY }}/terraform.tfvars | jq -r .is_ppp) && \
     {{ PATH_SCRIPTS }}/launch_ebi_ftp_sync.sh {{ PATH_FTP_SYNC_SCRIPT }} $DATA_LOCATION_SOURCE $RELEASE_ID_PROD $IS_PARTNER_INSTANCE {{ PATH_GCS_CREDENTIALS_FILE }}
+
+# Create release snapshots of the OpenSearch and Clickhouse databases. Release should be yymm e.g. 2509.
+release_snapshots release ch_source=default_ch_disk_source os_source=default_os_disk_source zone=default_zone:
+    gcloud compute snapshots create platform-{{release}}-ch --project=open-targets-eu-dev --labels=product=platform,release={{release}},subteam=backend,team=open-targets,tool=pos --source-disk={{ch_source}} --source-disk-zone={{zone}} --storage-location=europe-west1
+    gcloud compute snapshots create platform-{{release}}-os --project=open-targets-eu-dev --labels=product=platform,release={{release}},subteam=backend,team=open-targets,tool=pos --source-disk={{os_source}} --source-disk-zone={{zone}} --storage-location=europe-west1
