@@ -359,7 +359,7 @@ steps:
           location: eu
           table: ${each}
           base_uri: ${bq_parquet_path}
-  exports:
+  prepare_exports:
     # EBI Search
     - name: sync_bucket search_ebi_associations
       source: ${data_source}/view/search_ebi_associations
@@ -372,6 +372,8 @@ steps:
       remote_path: etc/export/search_ebi_associations.json
       requires:
         - sync_bucket search_ebi_associations
+  upload_exports:
+    # EBI Search
     - name: upload search_ebi_associations
       requires:
         - explode_data_prep search_ebi_associations

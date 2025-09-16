@@ -36,6 +36,7 @@ class SnapshotRepository:
                 'bucket': self.bucket,
                 'base_path': self.base_path,
                 'client': self.client,
+                'shard_path_type': 'FIXED',
             },
         }
 
