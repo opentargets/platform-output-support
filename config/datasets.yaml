@@ -352,10 +352,6 @@ clickhouse:
     table: ml_w2v_log
     input_dir: output/literature_vector
     postload_script: config/clickhouse/scripts/w2v.sql
-  sentences:
-    table: sentences_log
-    input_dir: intermediate/literature_sentence
-    postload_script: config/clickhouse/scripts/sentences.sql
   studies:
     table: studies_log
     input_dir: output/study

@@ -43,9 +43,6 @@ steps:
     - name: sync_bucket etl view files
       source: ${data_source}/view
       destination: ${local_data}/view
-    - name: sync_bucket etl intermediate files
-      source: ${data_source}/intermediate/literature_sentence
-      destination: ${local_data}/intermediate/literature_sentence
 
   ################################################################################################
   # OT Croissant
@@ -229,9 +226,6 @@ steps:
     - name: sync_bucket pipeline view files
       source: ${data_source}/view
       destination: ${local_data}/view
-    - name: sync_bucket pipeline intermediate files
-      source: ${data_source}/intermediate/literature_sentence
-      destination: ${local_data}/intermediate/literature_sentence
     - name: clickhouse_start data loading instance
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
@@ -242,7 +236,6 @@ steps:
         - interval
         - literature
         - w2v
-        - sentences
         - credible_sets
         - studies
       do:
@@ -251,7 +244,6 @@ steps:
             - clickhouse_start data loading instance
             - sync_bucket pipeline output files
             - sync_bucket pipeline view files
-            - sync_bucket pipeline intermediate files
           dataset: ${each}
           data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
