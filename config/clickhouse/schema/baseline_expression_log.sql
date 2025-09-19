@@ -12,6 +12,8 @@ create table if not exists ot.baseline_expression_log (
     median Float64,
     q3 Float64,
     max Float64,
+    distribution_score Float64,
+    specificity_score Float64,
     datasourceId String,
     datatypeId String,
     unit String,
