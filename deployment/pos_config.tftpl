@@ -232,7 +232,7 @@ steps:
       clickhouse_version: ${clickhouse_version}
     - name: explode load all datasets
       foreach:
-        - aotf
+        - disease
         - interval
         - literature
         - w2v
@@ -251,6 +251,12 @@ steps:
         - clickhouse_load clickhouse load credible_sets
         - clickhouse_load clickhouse load studies
       dataset: targets
+      data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load aotf
+      requires:
+        - clickhouse_load clickhouse load disease
+        - sync_bucket pipeline view files
+      dataset: aotf
       data_dir_parent: ${local_data}
 
   ########################################################################################

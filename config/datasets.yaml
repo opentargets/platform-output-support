@@ -340,6 +340,10 @@ clickhouse:
     table: credible_sets_log
     input_dir: output/credible_set
     postload_script: config/clickhouse/scripts/credible_sets.sql
+  disease:
+    table: disease_log
+    input_dir: output/disease
+    postload_script: config/clickhouse/scripts/disease.sql
   interval:
     table: intervals_log
     input_dir: output/interval

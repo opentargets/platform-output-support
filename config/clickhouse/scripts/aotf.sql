@@ -1,4 +1,5 @@
-CREATE TABLE IF NOT EXISTS ot.associations_otf_indirect
+CREATE TABLE IF NOT EXISTS ot.associations_otf_indirect ENGINE =
+Join (ANY, LEFT, row_id) AS
 SELECT
     row_id,
     arrayFilter (
@@ -15,8 +16,7 @@ FROM
         datasource_id = r.datasource_id
     )
 GROUP BY
-    row_id ENGINE =
-    Join (ANY, LEFT, row_id);
+    row_id;
 
 CREATE TABLE IF NOT EXISTS ot.associations_otf_disease ENGINE = MergeTree PRIMARY KEY A
 ORDER BY (A, B, datasource_id) AS
