@@ -10,7 +10,7 @@ FROM
     ot.associations_otf_log
     LEFT JOIN ot.disease_log ON associations_otf_log.disease_id = ot.disease_log.id ARRAY
     JOIN descendants
-    LEFT JOIN ot.associations_otf_log AS r ON (descendants = r.disease_id)
+    JOIN ot.associations_otf_log AS r ON (descendants = r.disease_id)
     AND (target_id = r.target_id)
     AND (
         datasource_id = r.datasource_id
