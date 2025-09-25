@@ -78,7 +78,7 @@ CREATE TABLE if not exists ot.targets_log (
         ),
         `attributes` Array (
             Tuple (
-                `name` String,
+                `attribute_name` String,
                 `description` String,
                 `pmid` Nullable (UInt32)
             )
