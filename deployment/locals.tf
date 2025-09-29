@@ -27,6 +27,7 @@ locals {
         OPENSEARCH_SNAPSHOT_BUCKET     = var.open_search_snapshot_bucket
         OPENSEARCH_SNAPSHOT_BASE_PATH  = var.open_search_snapshot_base_path
         CLICKHOUSE_VERSION            = var.clickhouse_image_tag
+        DATABASE_NAMESPACE            = var.database_namespace
         CLICKHOUSE_DISK_NAME          = google_compute_disk.clickhouse_data_disk.name
         CLICKHOUSE_DISK_SNAPSHOT_NAME = "${google_compute_disk.clickhouse_data_disk.name}"
         BQ_DATA_SOURCE                = var.data_location_production
@@ -49,6 +50,7 @@ locals {
         opensearch_snapshot_bucket     = "$${opensearch_snapshot_bucket}"
         opensearch_snapshot_base_path  = "$${opensearch_snapshot_base_path}"
         clickhouse_version            = "$${clickhouse_version}"
+        database_namespace            = "$${database_namespace}"
         clickhouse_data               = "$${clickhouse_data}"
         clickhouse_logs               = "$${clickhouse_logs}"
         clickhouse_disk_name          = "$${clickhouse_disk_name}"

@@ -1,6 +1,4 @@
-create database if not exists ot;
-
-CREATE TABLE if not exists ot.credible_sets_log (
+CREATE TABLE if not exists credible_sets_log (
     `studyLocusId` String,
     `variantId` Nullable (String),
     `chromosome` Nullable (

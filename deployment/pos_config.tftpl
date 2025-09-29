@@ -24,6 +24,7 @@ scratchpad:
   opensearch_snapshot_base_path: ${OPENSEARCH_SNAPSHOT_BASE_PATH}
   # clickhouse
   clickhouse_version: ${CLICKHOUSE_VERSION}
+  database_namespace: ${DATABASE_NAMESPACE}
   clickhouse_data: /mnt/clickhouse/data
   clickhouse_logs: /var/log/pos/clickhouse
   clickhouse_disk_name: ${CLICKHOUSE_DISK_NAME}
@@ -207,6 +208,7 @@ steps:
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
       clickhouse_version: ${clickhouse_version}
+      clickhouse_database: ${database_namespace}
   clickhouse_tarball:
     - name: tarball clickhouse
       source: /mnt/clickhouse
@@ -219,6 +221,7 @@ steps:
       gcp_disk_zone: europe-west1-d
   clickhouse_stop:
     - name: clickhouse_stop data loading instance
+      clickhouse_database_name: ${database_namespace}
   clickhouse_load_all:
     - name: sync_bucket pipeline output files
       source: ${data_source}/output
@@ -230,6 +233,7 @@ steps:
       volume_data: ${clickhouse_data}
       volume_logs: ${clickhouse_logs}
       clickhouse_version: ${clickhouse_version}
+      clickhouse_database: ${database_namespace}
     - name: explode load all datasets
       foreach:
         - aotf
@@ -245,14 +249,15 @@ steps:
             - sync_bucket pipeline output files
             - sync_bucket pipeline view files
           dataset: ${each}
+          clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
       requires:
         - clickhouse_load clickhouse load credible_sets
         - clickhouse_load clickhouse load studies
       dataset: targets
+      clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-
   ########################################################################################
   # BigQuery
   bigquery_dev_load_all:

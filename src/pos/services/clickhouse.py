@@ -35,7 +35,7 @@ class ClickhouseInstanceManager(ContainerizedService):
         name: str,
         dockerfile: Path = Path('config/clickhouse/Dockerfile'),
         clickhouse_version: str = '23.3.1.2823',
-        database: str = 'ot',
+        database: str = 'default',
         init_timeout: int = 10,
     ) -> None:
         super().__init__(name, dockerfile, clickhouse_version, init_timeout)
@@ -55,14 +55,12 @@ class ClickhouseInstanceManager(ContainerizedService):
         ports = {'9000': 9000, '8123': 8123, '9363': 9363}
         config_path = str(Path('config/clickhouse/config.d').absolute())
         users_path = str(Path('config/clickhouse/users.d').absolute())
-        schema_path = str(Path('config/clickhouse/schema').absolute())
 
         volumes = {
             volume_data: {'bind': '/var/lib/clickhouse', 'mode': 'rw'},
             volume_logs: {'bind': '/var/log/clickhouse-server', 'mode': 'rw'},
             config_path: {'bind': '/etc/clickhouse-server/config.d', 'mode': 'rw'},
             users_path: {'bind': '/etc/clickhouse-server/users.d', 'mode': 'rw'},
-            schema_path: {'bind': '/docker-entrypoint-initdb.d', 'mode': 'rw'},
         }
         logger.debug(f'volumes: {volumes}')
         ulimits = [Ulimit(name='nofile', soft=262144, hard=262144)]

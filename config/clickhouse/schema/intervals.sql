@@ -1,6 +1,4 @@
-create database if not exists ot;
-
-CREATE TABLE if not exists ot.intervals_log (
+CREATE TABLE if not exists intervals_log (
     `chromosome` Enum8 (
         '1',
         '2',

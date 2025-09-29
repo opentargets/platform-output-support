@@ -34,6 +34,12 @@ variable "clickhouse_tarball" {
   default     = false
 }
 
+variable "database_namespace" {
+  description = "Database namespace, default 'ot'"
+  type        = string
+  default     = "ot"
+}
+
 variable "open_search_data_disk_size" {
   description = "Opensearch data disk size to deploy"
   type        = string

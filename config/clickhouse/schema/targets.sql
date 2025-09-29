@@ -1,6 +1,4 @@
-create database if not exists ot;
-
-CREATE TABLE if not exists ot.targets_log (
+CREATE TABLE if not exists targets_log (
     `id` String,
     `alternativeGenes` Array (String),
     `approvedSymbol` String,
