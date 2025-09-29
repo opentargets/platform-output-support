@@ -1,6 +1,4 @@
-create database if not exists ot;
-
-create table if not exists ot.associations_otf_log (
+create table if not exists associations_otf_log (
     row_id String,
     disease_id LowCardinality (String),
     target_id LowCardinality (String),

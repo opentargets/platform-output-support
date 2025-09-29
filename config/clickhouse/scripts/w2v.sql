@@ -1,20 +1,9 @@
-create table if not exists ot.ml_w2v engine = MergeTree ()
-order by
-    (word) primary key (word) as
-select
-    category,
-    word,
-    norm,
-    vector
-from
-    (
-        select
-            category,
-            word,
-            norm,
-            vector
-        from
-            ot.ml_w2v_log
+create table if not exists ml_w2v engine = MergeTree ()
+order by (word) primary key (word) as
+select category, word, norm, vector
+from (
+        select category, word, norm, vector
+        from ml_w2v_log
     );
 
-drop table ot.ml_w2v_log;
+drop table ml_w2v_log;

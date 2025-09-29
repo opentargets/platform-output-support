@@ -20,6 +20,7 @@ class ClickhouseStartSpec(Spec):
     volume_data: str
     volume_logs: str
     clickhouse_version: str = '23.3.1.2823'
+    clickhouse_database: str = 'ot'
 
 
 class ClickhouseStart(Task):
@@ -34,4 +35,7 @@ class ClickhouseStart(Task):
             name=self.spec.service_name, clickhouse_version=self.spec.clickhouse_version
         )
         clickhouse.start(self.spec.volume_data, self.spec.volume_logs)
+        client = clickhouse.client()
+        parameters = {'table': self.spec.clickhouse_database}
+        client.query(query='CREATE DATABASE IF NOT EXISTS {table:Identifier}', parameters=parameters)
         return self

@@ -21,6 +21,7 @@ class ClickhouseLoadSpec(Spec):
 
     service_name: str = 'ch-pos'
     dataset: str
+    clickhouse_database: str = 'ot'
     data_dir_parent: str
 
 
@@ -32,6 +33,7 @@ class ClickhouseLoad(Task):
             self._config = get_config('config/datasets.yaml').clickhouse
             self._table_name = self._config[self.spec.dataset]['table']
             self._input_dir = self._config[self.spec.dataset]['input_dir']
+            self._pre_load_sql = self._config[self.spec.dataset].get('preload_script')
             self._post_load_sql = self._config[self.spec.dataset].get('postload_script')
         except AttributeError:
             raise ClickhouseLoadError(f'unable to load config for {self.spec.dataset}')
@@ -39,18 +41,28 @@ class ClickhouseLoad(Task):
     @report
     def run(self) -> Task:
         logger.debug('loading clickhouse service')
-        clickhouse_client = ClickhouseInstanceManager(name=self.spec.service_name).client()
+        clickhouse_client = ClickhouseInstanceManager(
+            name=self.spec.service_name, database=self.spec.clickhouse_database
+        ).client()
         if not clickhouse_client:
             raise ClickhouseLoadError(f'Clickhouse service {self.spec.service_name} failed to start')
+        # create table tables
+        pre_load_statements = Path(self._pre_load_sql).read_text().split(';')
+        self._execute_statements(clickhouse_client, pre_load_statements)
+        # load data
         files = self._get_parquet_path().glob('*.parquet')
         for file in files:
             logger.debug(f'Inserting file {file} into Clickhouse table {self._table_name}')
             insert_file(clickhouse_client, self._table_name, str(file), fmt='Parquet')
-        sql_statements = Path(self._post_load_sql).read_text().split(';')
-        for sql in sql_statements:
-            if sql.strip():
-                clickhouse_client.query(sql)
+        # run post load sql
+        post_load_statements = Path(self._post_load_sql).read_text().split(';')
+        self._execute_statements(clickhouse_client, post_load_statements)
         return self
 
     def _get_parquet_path(self) -> Path:
         return Path(f'{self.context.config.work_path}/{self.spec.data_dir_parent}/{self._input_dir}')
+
+    def _execute_statements(self, client, statements: list[str]) -> None:
+        for sql in statements:
+            if sql.strip():
+                client.query(sql)

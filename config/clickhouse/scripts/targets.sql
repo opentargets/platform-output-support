@@ -1,10 +1,8 @@
-create database if not exists ot;
-
 -- create the credible_sets table indexed by studyId
-CREATE TABLE if not exists ot.credible_sets_by_study engine = MergeTree
+CREATE TABLE if not exists credible_sets_by_study engine = MergeTree
 order by (studyId) SETTINGS allow_nullable_key = 1 as (
         select studyId, studyLocusId
-        from ot.credible_sets_log
+        from credible_sets_log
         where
             studyId is not null
             and studyLocusId is not null
@@ -12,7 +10,7 @@ order by (studyId) SETTINGS allow_nullable_key = 1 as (
 
 -- create the credible_sets table indexed by geneId
 -- join with credible_sets_by_study to get array(studyLocusId) for each gene
-CREATE TABLE if not exists ot.credible_sets_by_gene engine = MergeTree
+CREATE TABLE if not exists credible_sets_by_gene engine = MergeTree
 order by (geneId) SETTINGS allow_nullable_key = 1 as (
         select
             geneId,
@@ -20,8 +18,9 @@ order by (geneId) SETTINGS allow_nullable_key = 1 as (
                 studyLocusId,
                 studyLocusId != ''
             ) as studyLocusIds
-        from ot.studies_log
-            left outer join ot.credible_sets_by_study on studies_log.studyId = credible_sets_by_study.studyId
+        from
+            studies_log
+            left outer join credible_sets_by_study on studies_log.studyId = credible_sets_by_study.studyId
         where
             geneId is not null
             and studyLocusId is not null
@@ -32,18 +31,19 @@ order by (geneId) SETTINGS allow_nullable_key = 1 as (
 -- create the targets table indexed by id
 -- and join credible_sets_by_gene to get array(studyLocusIds) for each target
 
-CREATE TABLE if not exists ot.targets engine = EmbeddedRocksDB () primary key id as (
+CREATE TABLE if not exists targets engine = EmbeddedRocksDB () primary key id as (
     select * except geneId
-    from ot.targets_log
-        left outer join ot.credible_sets_by_gene on ot.targets_log.id = ot.credible_sets_by_gene.geneId
+    from
+        targets_log
+        left outer join credible_sets_by_gene on targets_log.id = credible_sets_by_gene.geneId
 );
 
-DROP TABLE IF EXISTS ot.targets_log;
+DROP TABLE IF EXISTS targets_log;
 
-DROP TABLE IF EXISTS ot.credible_sets_by_study;
+DROP TABLE IF EXISTS credible_sets_by_study;
 
-DROP TABLE IF EXISTS ot.credible_sets_by_gene;
+DROP TABLE IF EXISTS credible_sets_by_gene;
 
-DROP TABLE IF EXISTS ot.studies_log;
+DROP TABLE IF EXISTS studies_log;
 
-DROP TABLE IF EXISTS ot.credible_sets_log;
+DROP TABLE IF EXISTS credible_sets_log;

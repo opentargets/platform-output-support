@@ -16,14 +16,17 @@ pos_log_level = "ERROR"
 
 # ==== Data release config ====
 
+# Platform release version (non-ppp only)
 release_id = "25.09"
+# Database namespace: yymm or yymm-ppp
+database_namespace = "platform-2509"
 
 # Source data
 
-data_location_source = "gs://open-targets-pipeline-runs/szsz/25.06-testrun-4"
+data_location_source = "gs://open-targets-pre-data-releases/25.09"
 
 # Production data
-data_location_production = "gs://open-targets-data-releases/25.06"
+data_location_production = "gs://open-targets-data-releases/25.09"
 
 
 # ==== VM config ====
@@ -36,4 +39,4 @@ data_location_production = "gs://open-targets-data-releases/25.06"
 
 # Uncomment the following lines to use existing snapshots for ClickHouse and OpenSearch.
 # clickhouse_snapshot_source = "platform-2506-ch"
-# open_search_snapshot_source = "pos-20250609-1039-os-snapshot"
+# open_search_snapshot_source = "ppp-2509-os"

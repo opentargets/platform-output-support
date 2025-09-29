@@ -335,30 +335,37 @@ clickhouse:
   aotf:
     table: associations_otf_log
     input_dir: view/association_otf
+    preload_script: config/clickhouse/schema/aotf.sql
     postload_script: config/clickhouse/scripts/aotf.sql
   credible_sets:
     table: credible_sets_log
     input_dir: output/credible_set
+    preload_script: config/clickhouse/schema/credible_sets.sql
     postload_script: config/clickhouse/scripts/credible_sets.sql
   interval:
     table: intervals_log
     input_dir: output/interval
+    preload_script: config/clickhouse/schema/intervals.sql
     postload_script: config/clickhouse/scripts/intervals.sql
   literature:
     table: literature_log
     input_dir: output/literature
+    preload_script: config/clickhouse/schema/literature.sql
     postload_script: config/clickhouse/scripts/literature.sql
   w2v:
     table: ml_w2v_log
     input_dir: output/literature_vector
+    preload_script: config/clickhouse/schema/w2v.sql
     postload_script: config/clickhouse/scripts/w2v.sql
   studies:
     table: studies_log
     input_dir: output/study
+    preload_script: config/clickhouse/schema/studies.sql
     postload_script: config/clickhouse/scripts/studies.sql
   targets:
     table: targets_log
     input_dir: output/target
+    preload_script: config/clickhouse/schema/targets.sql
     postload_script: config/clickhouse/scripts/targets.sql
 bigquery:
   association_by_datasource_direct:

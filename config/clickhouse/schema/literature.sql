@@ -1,6 +1,4 @@
-create database if not exists ot;
-
-create table if not exists ot.literature_log (
+create table if not exists literature_log (
     pmid String,
     pmcid Nullable (String),
     date Date,
