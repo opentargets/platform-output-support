@@ -106,8 +106,8 @@ function opensearch_summary() {
 
 function clickhouse_summary() {
   log "[INFO] Printing ClickHouse summary"
-  for table in $(echo 'show tables in ot' | curl -s 'http://localhost:8123/?' --data-binary @-); do
-    export fqdn=ot.$table
+  for table in $(echo "show tables in ${DATABASE_NAMESPACE}" | curl -s 'http://localhost:8123/?' --data-binary @-); do
+    export fqdn="${DATABASE_NAMESPACE}.$table"
     echo "Count for '$fqdn' ---> $(echo "select count() from $fqdn" | curl -s 'http://localhost:8123/?' --data-binary @-)"
   done
 }

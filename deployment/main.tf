@@ -72,6 +72,7 @@ resource "google_compute_instance" "posvm" {
       {
         POS_USER_NAME = local.posvm_remote_user_name
         BRANCH        = var.pos_git_branch
+        DATABASE_NAMESPACE = var.database_namespace
         OPENSEARCH_DISK_NAME = google_compute_disk.open_search_data_disk.name
         OPENSEARCH_TARBALL   = var.open_search_tarball == true ? "true" : "false"
         CLICKHOUSE_DISK_NAME = google_compute_disk.clickhouse_data_disk.name
