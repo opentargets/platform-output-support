@@ -3,7 +3,6 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Self
 
 from loguru import logger
 from ot_croissant.crumbs.metadata import PlatformOutputMetadata
@@ -30,8 +29,6 @@ class OtCroissantSpec(Spec):
         - dataset_path (Path): The path where the parquet outputs \
           are stored. These outputs are going to be used to extract \
           the schema.
-        - date_published (str): The date when the data was published. \
-          The date format is YYYY-MM-DD.
         - output (str): Path (relative to `work_path` or `release_uri`) \
           to store the metadata at.
         - prepared_data_parent (Path): The parent path where the prepared data \
@@ -41,7 +38,6 @@ class OtCroissantSpec(Spec):
     ftp_address: str | None = None
     gcp_address: str
     dataset_path: Path
-    date_published: str
     output: str
     prepared_data_parent: Path
 
@@ -86,7 +82,7 @@ class OtCroissant(Task):
             ftp_location=self.spec.ftp_address,
             gcp_location=self.spec.gcp_address,
             version=release,
-            date_published=self.spec.date_published,
+            date_published=datetime.today().strftime('%Y-%m-%d'),
             data_integrity_hash='sha256',
         )
         logger.debug(f'Metadata generated: {metadata}')
