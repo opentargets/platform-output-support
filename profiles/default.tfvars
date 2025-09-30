@@ -18,8 +18,8 @@ pos_log_level = "ERROR"
 
 # Platform release version (non-ppp only)
 release_id = "25.09"
-# Database namespace: yymm or yymm-ppp
-database_namespace = "platform-2509"
+# Database namespace: platformyymm or pppyymm
+database_namespace = "platform2509"
 
 # Source data
 
