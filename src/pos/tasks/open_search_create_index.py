@@ -22,6 +22,7 @@ class OpenSearchCreateIndexSpec(Spec):
 
     service_name: str = 'os-pos'
     dataset: str
+    prefix: str
 
 
 class OpenSearchCreateIndex(Task):
@@ -30,7 +31,7 @@ class OpenSearchCreateIndex(Task):
         self.spec: OpenSearchCreateIndexSpec
         try:
             self._config = get_config('config/datasets.yaml').opensearch
-            self._index_name = self._config[self.spec.dataset]['index']
+            self._index_name = self._get_index_name()
             self._mappings = Path(self._config[self.spec.dataset]['mappings'])
         except AttributeError:
             raise OpenSearchCreateIndexError(f'unable to load config for {self.spec.dataset}')
@@ -50,3 +51,6 @@ class OpenSearchCreateIndex(Task):
             logger.debug(f'created index {self._index_name}')
         logger.debug(f'index {self._index_name} already exists')
         return self
+
+    def _get_index_name(self) -> str:
+        return f'{self.spec.prefix}_{self._config[self.spec.dataset]["index"]}'
