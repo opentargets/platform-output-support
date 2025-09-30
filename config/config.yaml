@@ -194,10 +194,12 @@ steps:
           requires:
             - open_search_start data loading instance
           dataset: ${each}
+          prefix: ${database_namespace}
         - name: open_search_load dataset ${each}
           requires:
             - open_search_create_index ${each}
           dataset: ${each}
+          prefix: ${database_namespace}
           json_parent: ${prepared_data}
 
   ################################################################################################

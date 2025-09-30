@@ -3,7 +3,7 @@
 import json
 from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Self
+from typing import Any
 
 from loguru import logger
 from opensearchpy import helpers
@@ -25,6 +25,7 @@ class OpenSearchLoadSpec(Spec):
     service_name: str = 'os-pos'
     dataset: str
     json_parent: str
+    prefix: str
 
 
 class OpenSearchLoad(Task):
@@ -33,7 +34,7 @@ class OpenSearchLoad(Task):
         self.spec: OpenSearchLoadSpec
         try:
             self._config = get_config('config/datasets.yaml').opensearch
-            self._index_name = self._config[self.spec.dataset]['index']
+            self._index_name = self._get_index_name()
             self._id_field = self._config[self.spec.dataset].get('id_field')
             self._id_value = self._config[self.spec.dataset].get('id_value')
             self._output_dir = self._config[self.spec.dataset]['output_dir']
@@ -82,3 +83,6 @@ class OpenSearchLoad(Task):
         return Path(
             f'{self.context.config.work_path}/{self.spec.json_parent}/{self._output_dir}/{self.spec.dataset}.json'
         )
+
+    def _get_index_name(self) -> str:
+        return f'{self.spec.prefix}_{self._config[self.spec.dataset]["index"]}'

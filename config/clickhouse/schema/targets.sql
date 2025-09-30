@@ -54,7 +54,7 @@ CREATE TABLE if not exists targets_log (
         `chromosome` LowCardinality (String),
         `start` UInt32,
         `end` UInt32,
-        `strand` UInt8
+        `strand` Int8
     ),
     `go` Array (
         Tuple (
