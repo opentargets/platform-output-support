@@ -1,6 +1,5 @@
 # Clickhouse load task
 from pathlib import Path
-from typing import Self
 
 from clickhouse_connect.driver.tools import insert_file
 from loguru import logger

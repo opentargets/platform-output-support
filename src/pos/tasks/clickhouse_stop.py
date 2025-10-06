@@ -1,6 +1,5 @@
 # Clickhouse stop task
-from typing import Self
-
+from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -25,6 +24,7 @@ class ClickhouseStop(Task):
 
     @report
     def run(self) -> Task:
+        logger.debug(f'stopping clickhouse instance {self.spec.service_name}')
         clickhouse = ClickhouseInstanceManager(name=self.spec.service_name)
         clickhouse.stop()
         return self

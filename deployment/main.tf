@@ -10,6 +10,11 @@ resource "tls_private_key" "posvm" {
   rsa_bits  = 4096
 }
 
+#Create the HMAC key for the associated service account 
+resource "google_storage_hmac_key" "key" {
+  service_account_email = "pos-service-account@open-targets-eu-dev.iam.gserviceaccount.com"
+}
+
 // Create a disk volume for Clickhouse data
 resource "google_compute_disk" "clickhouse_data_disk" {
   project     = "open-targets-eu-dev"
@@ -88,7 +93,8 @@ resource "google_compute_instance" "posvm" {
       "pos_config.tftpl",
       local.yaml_config_variables
     )
-    # pos_run_script = file("run.sh")
+    google_storage_hmac_key_access_id = google_storage_hmac_key.key.access_id
+    google_storage_hmac_key_secret    = google_storage_hmac_key.key.secret
   }
   service_account {
     email  = "pos-service-account@open-targets-eu-dev.iam.gserviceaccount.com"

@@ -1,7 +1,7 @@
 variable "vm_pos_boot_disk_size" {
   description = "POS VM boot disk size, default '500GB'"
   type        = string
-  default     = 500
+  default     = 600
 }
 
 variable "vm_pos_machine_type" {
@@ -19,7 +19,7 @@ variable "pos_logs_path_root" {
 variable "clickhouse_data_disk_size" {
   description = "Clickhouse data disk size to deploy"
   type        = string
-  default     = "50"
+  default     = "200"
 }
 
 variable "clickhouse_snapshot_source" {
@@ -43,7 +43,7 @@ variable "database_namespace" {
 variable "open_search_data_disk_size" {
   description = "Opensearch data disk size to deploy"
   type        = string
-  default     = "200"
+  default     = "400"
 }
 
 variable "open_search_snapshot_source" {

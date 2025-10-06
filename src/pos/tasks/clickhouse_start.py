@@ -1,6 +1,4 @@
 # Clickhouse start task
-from typing import Self
-
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
@@ -36,6 +34,6 @@ class ClickhouseStart(Task):
         )
         clickhouse.start(self.spec.volume_data, self.spec.volume_logs)
         client = clickhouse.client()
-        parameters = {'table': self.spec.clickhouse_database}
-        client.query(query='CREATE DATABASE IF NOT EXISTS {table:Identifier}', parameters=parameters)
+        parameters = {'database': self.spec.clickhouse_database}
+        client.query(query='CREATE DATABASE IF NOT EXISTS {database:Identifier}', parameters=parameters)
         return self
