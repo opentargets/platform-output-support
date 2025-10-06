@@ -2,10 +2,11 @@
 <yandex>
     <logger>
         <level>warning</level>
-        <log>/var/log/clickhouse-server/clickhouse-server.log</log>
-        <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
         <size>1000M</size>
         <count>7</count>
+        <console>true</console>
+        <log remove="remove"/>
+        <errorlog remove="remove"/>
     </logger>
     <display_name>ot-genetics</display_name>
     <http_port>8123</http_port>
