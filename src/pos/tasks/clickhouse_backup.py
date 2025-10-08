@@ -1,5 +1,5 @@
 # Clickhouse backup task
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from string import Template
 from urllib.parse import urljoin
@@ -37,16 +37,6 @@ class ClickhouseBackupQueryParameters:
     access_key_id: str
     secret_access_key: str
 
-    def asdict(self) -> dict[str, str]:
-        return {
-            'database': self.database,
-            'table': self.table,
-            'backup_path': self.backup_path,
-            'export_path': self.export_path,
-            'access_key_id': self.access_key_id,
-            'secret_access_key': self.secret_access_key,
-        }
-
 
 class ClickhouseBackup(Task):
     def __init__(self, spec: ClickhouseBackupSpec, context: TaskContext) -> None:
@@ -58,9 +48,10 @@ class ClickhouseBackup(Task):
                 self.context.scratchpad.sentinel_dict.get('product'),
                 str(self.context.scratchpad.sentinel_dict.get('release')),
                 self.spec.table,
-            ]),
+            ])
+            + '/',
         )
-        self.export_url = urljoin(self.backup_url, 'export.zstd')
+        self.export_url = urljoin(self.backup_url, 'export.parquet.lz4')
         self.s3_access = dict([line.split() for line in Path(self.spec.gcs_hmac_file).read_text().splitlines()])
         if not self.s3_access.get('access_key') or not self.s3_access.get('secret'):
             raise ClickhouseBackupError(f'GCS HMAC credentials not found in {self.spec.gcs_hmac_file}')
@@ -71,14 +62,16 @@ class ClickhouseBackup(Task):
         client = ClickhouseInstanceManager(name=self.spec.service_name, database=self.spec.clickhouse_database).client()
         if not client:
             raise ClickhouseBackupError(f'Clickhouse service {self.spec.service_name} failed to start')
-        parameters = ClickhouseBackupQueryParameters(
-            database=self.spec.clickhouse_database,
-            table=self.spec.table,
-            backup_path=self.backup_url,
-            export_path=self.export_url,
-            access_key_id=self.s3_access.get('access_key'),
-            secret_access_key=self.s3_access.get('secret'),
-        ).asdict()
+        parameters = asdict(
+            ClickhouseBackupQueryParameters(
+                database=self.spec.clickhouse_database,
+                table=self.spec.table,
+                backup_path=self.backup_url,
+                export_path=self.export_url,
+                access_key_id=self.s3_access.get('access_key'),
+                secret_access_key=self.s3_access.get('secret'),
+            )
+        )
         self.backup_table_query(client, parameters)
         table_engine = self._get_table_engine(client, self.spec.clickhouse_database, self.spec.table)
         if table_engine == 'EmbeddedRocksDB':
@@ -125,8 +118,7 @@ class ClickhouseBackup(Task):
             """INSERT INTO FUNCTION s3(\
         '${export_path}', \
         '${access_key_id}', \
-        '${secret_access_key}',
-        Native) \
+        '${secret_access_key}', Parquet) \
         SELECT * FROM `${database}`.`${table}`"""
         ).substitute(parameters)
         try:
