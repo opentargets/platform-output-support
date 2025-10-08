@@ -4,6 +4,7 @@ log_level: ${LOG_LEVEL}
 release_uri: ${RELEASE_URI}
 scratchpad:
   release: ${RELEASE}
+  product: ${PRODUCT}
   data_source: ${RELEASE_URI}
   # temp file locations
   local_data: release_data
@@ -29,6 +30,8 @@ scratchpad:
   clickhouse_logs: /var/log/pos/clickhouse
   clickhouse_disk_name: ${CLICKHOUSE_DISK_NAME}
   clickhouse_disk_snapshot_name: ${CLICKHOUSE_DISK_SNAPSHOT_NAME}
+  clickhouse_backup_base_path: ${CLICKHOUSE_BACKUP_BASE_PATH}
+  gcs_hmac_file: /etc/opt/gcs_hmac
   # bigquery
   bq_prod_project_id: open-targets-prod
   bq_parquet_path: ${BQ_DATA_SOURCE}
@@ -220,6 +223,30 @@ steps:
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
+  clickhouse_backup_all:
+    - name: clickhouse_start data loading instance
+      volume_data: ${clickhouse_data}
+      volume_logs: ${clickhouse_logs}
+      clickhouse_version: ${clickhouse_version}
+      clickhouse_database: ${database_namespace}
+    - name: explode backup clickhouse tables
+      requires:
+        - clickhouse_start data loading instance
+      foreach:
+        - associations_otf_target
+        - associations_otf_disease
+        - intervals
+        - literature_index
+        - literature
+        - targets
+        - ml_w2v
+      do:
+        - name: clickhouse_backup table ${each}
+          requires:
+            - clickhouse_start data loading instance
+          clickhouse_database: ${database_namespace}
+          table: ${each}
+          gcs_base_path: ${clickhouse_backup_base_path}
   clickhouse_stop:
     - name: clickhouse_stop data loading instance
       clickhouse_database_name: ${database_namespace}

@@ -31,6 +31,7 @@ scratchpad:
   clickhouse_disk_name: ${CLICKHOUSE_DISK_NAME}
   clickhouse_disk_snapshot_name: ${CLICKHOUSE_DISK_SNAPSHOT_NAME}
   clickhouse_backup_base_path: ${CLICKHOUSE_BACKUP_BASE_PATH}
+  gcs_hmac_file: /etc/opt/gcs_hmac
   # bigquery
   bq_prod_project_id: open-targets-prod
   bq_parquet_path: ${BQ_DATA_SOURCE}

@@ -1,6 +1,6 @@
 # Clickhouse backup task
 from dataclasses import dataclass
-from os import getenv
+from pathlib import Path
 from string import Template
 from urllib.parse import urljoin
 
@@ -25,6 +25,7 @@ class ClickhouseBackupSpec(Spec):
     clickhouse_database: str = 'ot'
     table: str
     gcs_base_path: str
+    gcs_hmac_file: str
 
 
 @dataclass
@@ -60,8 +61,9 @@ class ClickhouseBackup(Task):
             ]),
         )
         self.export_url = urljoin(self.backup_url, 'export.zstd')
-        logger.debug(f'backup_url: {self.backup_url}')
-        logger.debug(f'export_url: {self.export_url}')
+        self.s3_access = dict([line.split() for line in Path(self.spec.gcs_hmac_file).read_text().splitlines()])
+        if not self.s3_access.get('access_key') or not self.s3_access.get('secret'):
+            raise ClickhouseBackupError(f'GCS HMAC credentials not found in {self.spec.gcs_hmac_file}')
 
     @report
     def run(self) -> Task:
@@ -69,18 +71,13 @@ class ClickhouseBackup(Task):
         client = ClickhouseInstanceManager(name=self.spec.service_name, database=self.spec.clickhouse_database).client()
         if not client:
             raise ClickhouseBackupError(f'Clickhouse service {self.spec.service_name} failed to start')
-        access_key_id = getenv('GCS_ACCESS_KEY_ID')
-        secret_access_key = getenv('GCS_SECRET_ACCESS_KEY')
-        if not access_key_id or not secret_access_key:
-            logger.error('GCS credentials not set in environment variables')
-            raise ClickhouseBackupError('GCS credentials not set in environment variables')
         parameters = ClickhouseBackupQueryParameters(
             database=self.spec.clickhouse_database,
             table=self.spec.table,
             backup_path=self.backup_url,
             export_path=self.export_url,
-            access_key_id=access_key_id,
-            secret_access_key=secret_access_key,
+            access_key_id=self.s3_access.get('access_key'),
+            secret_access_key=self.s3_access.get('secret'),
         ).asdict()
         self.backup_table_query(client, parameters)
         table_engine = self._get_table_engine(client, self.spec.clickhouse_database, self.spec.table)
