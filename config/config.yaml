@@ -247,6 +247,7 @@ steps:
           clickhouse_database: ${database_namespace}
           table: ${each}
           gcs_base_path: ${clickhouse_backup_base_path}
+          gcs_hmac_file: ${gcs_hmac_file}
   clickhouse_stop:
     - name: clickhouse_stop data loading instance
       clickhouse_database_name: ${database_namespace}
