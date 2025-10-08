@@ -67,6 +67,12 @@ function install_packages() {
     chgrp -R google-sudoers /opt/pos_run.sh && chmod g+x /opt/pos_run.sh
     create_dir_for_group /var/log/pos/opensearch google-sudoers rwx
     create_dir_for_group /var/log/pos/clickhouse google-sudoers rwx
+
+    hmac_access_key=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/google_storage_hmac_key_access_id" -H "Metadata-Flavor: Google")
+    hmac_secret=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/google_storage_hmac_key_secret" -H "Metadata-Flavor: Google")
+    echo "access_key $${hmac_access_key}" > /etc/opt/gcs_hmac
+    echo "secret $${hmac_secret}" >> /etc/opt/gcs_hmac
+    chgrp -R google-sudoers /etc/opt/gcs_hmac && chmod 440 /etc/opt/gcs_hmac
 }
 
 
@@ -121,7 +127,7 @@ function sync_data() {
 function opensearch_steps() {
   log "[INFO] Starting OpenSearch steps"
   uv_run opensearch_prep_all 300 && \
-  uv_run opensearch_load_all 100 > /var/log/open_search_load.log 2>&1 && \
+  uv_run opensearch_load_all 80 > /var/log/open_search_load.log 2>&1 && \
   opensearch_summary && \
   uv_run opensearch_stop 1 && \
   sync && \

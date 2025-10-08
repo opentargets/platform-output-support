@@ -16,6 +16,7 @@ locals {
         LOG_LEVEL                     = var.pos_log_level
         RELEASE_URI                   = var.data_location_source
         RELEASE                       = var.release_id
+        PRODUCT                       = var.is_ppp == false ? "platform" : "ppp"
         RELEASE_FTP_OUTPUT            = local.ftp_output_path
         RELEASE_GCS_OUTPUT            = local.gcs_output_path
         OPENSEARCH_VERSION            = var.open_search_image_tag
@@ -30,6 +31,7 @@ locals {
         DATABASE_NAMESPACE            = var.database_namespace
         CLICKHOUSE_DISK_NAME          = google_compute_disk.clickhouse_data_disk.name
         CLICKHOUSE_DISK_SNAPSHOT_NAME = "${google_compute_disk.clickhouse_data_disk.name}"
+        CLICKHOUSE_BACKUP_BASE_PATH   = var.clickhouse_backup_base_path
         BQ_DATA_SOURCE                = var.data_location_production
         # For templating reasons, we need to substitute the following variables with $${var_name}
         release                       = "$${release}"
@@ -55,6 +57,8 @@ locals {
         clickhouse_logs               = "$${clickhouse_logs}"
         clickhouse_disk_name          = "$${clickhouse_disk_name}"
         clickhouse_disk_snapshot_name = "$${clickhouse_disk_snapshot_name}"
+        clickhouse_backup_base_path   = "$${clickhouse_backup_base_path}"
+        gcs_hmac_file                 = "$${gcs_hmac_file}"
         bq_prod_project_id            = "$${bq_prod_project_id}"
         bq_parquet_path               = "$${bq_parquet_path}"
         each                          = "$${each}"
