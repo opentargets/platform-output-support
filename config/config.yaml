@@ -247,7 +247,11 @@ steps:
           table: ${each}
           gcs_base_path: ${clickhouse_backup_base_path}
   clickhouse_restore_all:
+    - name: clickhouse_create_database for restoration
+      clickhouse_database: ${database_namespace}
     - name: explode restore clickhouse tables
+      requires:
+        - clickhouse_create_database for restoration
       foreach:
         - associations_otf_target
         - associations_otf_disease
