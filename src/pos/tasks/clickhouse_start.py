@@ -4,7 +4,7 @@ from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.services.clickhouse import ClickhouseInstanceManager
+from pos.services.clickhouse import ClickhouseInstanceManager, create_database
 
 
 class ClickhouseStartError(OtterError):
@@ -34,6 +34,8 @@ class ClickhouseStart(Task):
         )
         clickhouse.start(self.spec.volume_data, self.spec.volume_logs)
         client = clickhouse.client()
-        parameters = {'database': self.spec.clickhouse_database}
-        client.query(query='CREATE DATABASE IF NOT EXISTS {database:Identifier}', parameters=parameters)
+        if client:
+            create_database(client, self.spec.clickhouse_database)
+        else:
+            raise ClickhouseStartError(f'Clickhouse service {self.spec.service_name} failed instantiate client')
         return self

@@ -246,6 +246,21 @@ steps:
           clickhouse_database: ${database_namespace}
           table: ${each}
           gcs_base_path: ${clickhouse_backup_base_path}
+  clickhouse_restore_all:
+    - name: explode restore clickhouse tables
+      foreach:
+        - associations_otf_target
+        - associations_otf_disease
+        - intervals
+        - literature_index
+        - literature
+        - targets
+        - ml_w2v
+      do:
+        - name: clickhouse_restore table ${each}
+          clickhouse_database: ${database_namespace}
+          table: ${each}
+          gcs_base_path: ${clickhouse_backup_base_path}
   clickhouse_stop:
     - name: clickhouse_stop data loading instance
       clickhouse_database_name: ${database_namespace}
