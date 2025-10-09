@@ -37,7 +37,7 @@ variable "clickhouse_tarball" {
 variable "clickhouse_backup_base_path" {
   description = "Base path in GCS bucket where ClickHouse backups will be stored"
   type        = string
-  default     = "https://storage.googleapis.com/opentargets-backup/clickhouse"
+  default     = "https://storage.googleapis.com/opentargets-backup/clickhouse/"
 }
 
 variable "database_namespace" {

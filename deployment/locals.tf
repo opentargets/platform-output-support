@@ -58,7 +58,6 @@ locals {
         clickhouse_disk_name          = "$${clickhouse_disk_name}"
         clickhouse_disk_snapshot_name = "$${clickhouse_disk_snapshot_name}"
         clickhouse_backup_base_path   = "$${clickhouse_backup_base_path}"
-        gcs_hmac_file                 = "$${gcs_hmac_file}"
         bq_prod_project_id            = "$${bq_prod_project_id}"
         bq_parquet_path               = "$${bq_parquet_path}"
         each                          = "$${each}"

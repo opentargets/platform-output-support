@@ -1,6 +1,5 @@
 # Clickhouse backup task
 from dataclasses import asdict, dataclass
-from pathlib import Path
 from string import Template
 from urllib.parse import urljoin
 
@@ -25,7 +24,6 @@ class ClickhouseBackupSpec(Spec):
     clickhouse_database: str = 'ot'
     table: str
     gcs_base_path: str
-    gcs_hmac_file: str
 
 
 @dataclass
@@ -34,8 +32,6 @@ class ClickhouseBackupQueryParameters:
     table: str
     backup_path: str
     export_path: str
-    access_key_id: str
-    secret_access_key: str
 
 
 class ClickhouseBackup(Task):
@@ -52,9 +48,6 @@ class ClickhouseBackup(Task):
             + '/',
         )
         self.export_url = urljoin(self.backup_url, 'export.parquet.lz4')
-        self.s3_access = dict([line.split() for line in Path(self.spec.gcs_hmac_file).read_text().splitlines()])
-        if not self.s3_access.get('access_key') or not self.s3_access.get('secret'):
-            raise ClickhouseBackupError(f'GCS HMAC credentials not found in {self.spec.gcs_hmac_file}')
 
     @report
     def run(self) -> Task:
@@ -68,8 +61,6 @@ class ClickhouseBackup(Task):
                 table=self.spec.table,
                 backup_path=self.backup_url,
                 export_path=self.export_url,
-                access_key_id=self.s3_access.get('access_key'),
-                secret_access_key=self.s3_access.get('secret'),
             )
         )
         self.backup_table_query(client, parameters)
@@ -90,12 +81,7 @@ class ClickhouseBackup(Task):
             ClickhouseBackupError: If the backup operation fails
             e.g. if the backup path already exists.
         """
-        query = Template(
-            """BACKUP TABLE `${database}`.`${table}` \
-        TO S3('${backup_path}', \
-        '${access_key_id}', \
-        '${secret_access_key}')"""
-        ).substitute(parameters)
+        query = Template("BACKUP TABLE `${database}`.`${table}` TO S3('${backup_path}')").substitute(parameters)
         try:
             client.query(query=query)
         except DatabaseError as db_err:
@@ -116,10 +102,8 @@ class ClickhouseBackup(Task):
         """
         query = Template(
             """INSERT INTO FUNCTION s3(\
-        '${export_path}', \
-        '${access_key_id}', \
-        '${secret_access_key}', Parquet) \
-        SELECT * FROM `${database}`.`${table}`"""
+                '${export_path}', Parquet) \
+                SELECT * FROM `${database}`.`${table}`"""
         ).substitute(parameters)
         try:
             client.query(query)

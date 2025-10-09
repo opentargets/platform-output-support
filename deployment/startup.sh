@@ -67,12 +67,7 @@ function install_packages() {
     chgrp -R google-sudoers /opt/pos_run.sh && chmod g+x /opt/pos_run.sh
     create_dir_for_group /var/log/pos/opensearch google-sudoers rwx
     create_dir_for_group /var/log/pos/clickhouse google-sudoers rwx
-
-    hmac_access_key=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/google_storage_hmac_key_access_id" -H "Metadata-Flavor: Google")
-    hmac_secret=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/google_storage_hmac_key_secret" -H "Metadata-Flavor: Google")
-    echo "access_key $${hmac_access_key}" > /etc/opt/gcs_hmac
-    echo "secret $${hmac_secret}" >> /etc/opt/gcs_hmac
-    chgrp -R google-sudoers /etc/opt/gcs_hmac && chmod 440 /etc/opt/gcs_hmac
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/s3_config" -H "Metadata-Flavor: Google" > /opt/platform-output-support/config/clickhouse/config.d/s3_config.xml
 }
 
 
@@ -154,7 +149,7 @@ function clickhouse_steps() {
 
 function copy_clickhouse_configs() {
   log "[INFO] Syncing ClickHouse configs"
-  cp -vR /opt/platform-output-support/config/clickhouse/config.d /mnt/clickhouse/
+  cp -vR /opt/platform-output-support/config/clickhouse/config.d/config.xml /mnt/clickhouse/config.d/config.xml
   cp -vR /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
 }
 
