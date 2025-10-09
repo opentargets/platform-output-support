@@ -130,14 +130,19 @@ class ClickhouseInstanceManager(ContainerizedService):
         return healthy
 
 
-def create_database(client: Client, database: str) -> None:
+def create_database(client: Client, database: str, exists_ok: bool = True) -> None:
     """Create Clickhouse database if it does not exist.
 
     Args:
         client: Clickhouse client
         database: Database name
+        exists_ok: If True, do not raise an error if the database already exists (default: True)
     """
-    client.query(query='CREATE DATABASE IF NOT EXISTS {database:Identifier}', parameters={'database': database})
+    if exists_ok:
+        query = 'CREATE DATABASE IF NOT EXISTS {database:Identifier}'
+    else:
+        query = 'CREATE DATABASE {database:Identifier}'
+    client.query(query=query, parameters={'database': database})
 
 
 def get_table_engine(client: Client, database: str, table: str) -> str | None:
@@ -179,7 +184,7 @@ def restore_table(client: Client, parameters: ClickhouseBackupQueryParameters) -
         client (Client): ClickHouse client instance.
         parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
     """
-    query = Template("RESTORE TABLE `${database}`.`${table}` FROM S3('${restore_path}')").substitute(asdict(parameters))
+    query = Template("RESTORE TABLE `${database}`.`${table}` FROM S3('${backup_path}')").substitute(asdict(parameters))
     client.query(query=query)
 
 
@@ -211,7 +216,7 @@ def import_from_s3(client: Client, parameters: ClickhouseBackupQueryParameters) 
         client (Client): ClickHouse client instance.
         parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
     """
-    query = Template("INSERT INTO `${database}`.`${table}` SELECT * FROM s3('${export_path})").substitute(
+    query = Template("INSERT INTO `${database}`.`${table}` SELECT * FROM s3('${export_path}')").substitute(
         asdict(parameters)
     )
     client.query(query)

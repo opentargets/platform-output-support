@@ -10,7 +10,6 @@ from otter.util.errors import OtterError
 
 from pos.services.clickhouse import (
     ClickhouseBackupQueryParameters,
-    create_database,
     get_table_engine,
     import_from_s3,
     restore_table,
@@ -25,7 +24,7 @@ class ClickhouseRestoreSpec(Spec):
     """Configuration fields for the restore Clickhouse task."""
 
     host: str = 'localhost'
-    port: str = '9000'
+    port: str = '8123'
     clickhouse_database: str = 'ot'
     table: str
     gcs_base_path: str
@@ -44,7 +43,7 @@ class ClickhouseRestore(Task):
             ])
             + '/',
         )
-        self.export_url = urljoin(self.restore_url, 'export.parquet.lz4')
+        self.export_url = urljoin(self.backup_url, 'export.parquet.lz4')
 
     @report
     def run(self) -> Task:
@@ -62,7 +61,6 @@ class ClickhouseRestore(Task):
             export_path=self.export_url,
         )
         try:
-            create_database(client, self.spec.clickhouse_database)
             restore_table(client, parameters)
             table_engine = get_table_engine(client, self.spec.clickhouse_database, self.spec.table)
             if table_engine == 'EmbeddedRocksDB':
