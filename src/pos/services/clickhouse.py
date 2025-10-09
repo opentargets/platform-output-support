@@ -1,6 +1,8 @@
 """Clickhouse service module."""
 
+from dataclasses import asdict, dataclass
 from pathlib import Path
+from string import Template
 
 import clickhouse_connect
 from clickhouse_connect.driver.client import Client
@@ -9,6 +11,14 @@ from docker.types.containers import Ulimit
 from loguru import logger
 
 from pos.services.containerized_service import ContainerizedService, ContainerizedServiceError, reset_timeout
+
+
+@dataclass
+class ClickhouseBackupQueryParameters:
+    database: str
+    table: str
+    backup_path: str
+    export_path: str
 
 
 class ClickhouseInstanceManagerError(Exception):
@@ -118,3 +128,90 @@ class ClickhouseInstanceManager(ContainerizedService):
                 break
             self._wait(1)
         return healthy
+
+
+def create_database(client: Client, database: str) -> None:
+    """Create Clickhouse database if it does not exist.
+
+    Args:
+        client: Clickhouse client
+        database: Database name
+    """
+    client.query(query='CREATE DATABASE IF NOT EXISTS {database:Identifier}', parameters={'database': database})
+
+
+def get_table_engine(client: Client, database: str, table: str) -> str | None:
+    """Get the engine type of a ClickHouse table.
+
+    Args:
+        client (Client): ClickHouse client instance.
+        database (str): Name of the database.
+        table (str): Name of the table.
+
+    Returns:
+        str | None: The engine type of the table, or None if not found.
+    """
+    query = Template(
+        """SELECT engine \
+        FROM system.tables \
+        WHERE database='${database}' AND name='${table}'"""
+    ).substitute({'database': database, 'table': table})
+    table_engine_query = client.query(query=query).first_row
+    return table_engine_query[0] if table_engine_query else None
+
+
+def backup_table(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+    """Backup ClickHouse table to S3 compatible storage (GCS).
+
+    Args:
+        client (Client): ClickHouse client instance.
+        parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
+
+    """
+    query = Template("BACKUP TABLE `${database}`.`${table}` TO S3('${backup_path}')").substitute(asdict(parameters))
+    client.query(query=query)
+
+
+def restore_table(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+    """Restore ClickHouse table from S3 compatible storage (GCS).
+
+    Args:
+        client (Client): ClickHouse client instance.
+        parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
+    """
+    query = Template("RESTORE TABLE `${database}`.`${table}` FROM S3('${restore_path}')").substitute(asdict(parameters))
+    client.query(query=query)
+
+
+def export_to_s3(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+    """Export ClickHouse table to S3 compatible storage (GCS).
+
+    This is used for tables with the EmbeddedRocksDB engine which
+    is not supported by the BACKUP/RESTORE commands.
+
+    Args:
+        client (Client): ClickHouse client instance.
+        parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
+    """
+    query = Template(
+        """INSERT INTO FUNCTION s3(\
+                '${export_path}', Parquet) \
+                SELECT * FROM `${database}`.`${table}`"""
+    ).substitute(asdict(parameters))
+    client.query(query)
+
+
+def import_from_s3(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+    """Import ClickHouse table from S3 compatible storage (GCS).
+
+    This is used for tables with the EmbeddedRocksDB engine which
+    is not supported by the BACKUP/RESTORE commands.
+
+    Args:
+        client (Client): ClickHouse client instance.
+        parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
+    """
+    query = Template("INSERT INTO `${database}`.`${table}` SELECT * FROM s3('${export_path})").substitute(
+        asdict(parameters)
+    )
+    client.query(query)
