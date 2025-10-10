@@ -23,10 +23,9 @@ locals {
         OPENSEARCH_JAVA_OPTS          = var.open_search_jvm_options
         OPENSEARCH_DISK_NAME          = google_compute_disk.open_search_data_disk.name
         OPENSEARCH_DISK_SNAPSHOT_NAME = "${google_compute_disk.open_search_data_disk.name}"
-        OPENSEARCH_SNAPSHOT_NAME       = "${var.release_id}-${local.timestamp}"
         OPENSEARCH_SNAPSHOT_REPOSITORY = var.open_search_snapshot_repository
         OPENSEARCH_SNAPSHOT_BUCKET     = var.open_search_snapshot_bucket
-        OPENSEARCH_SNAPSHOT_BASE_PATH  = var.open_search_snapshot_base_path
+        OPENSEARCH_SNAPSHOT_BASE_PATH  = "${var.open_search_snapshot_base_path}/${var.database_namespace}"
         CLICKHOUSE_VERSION            = var.clickhouse_image_tag
         DATABASE_NAMESPACE            = var.database_namespace
         CLICKHOUSE_DISK_NAME          = google_compute_disk.clickhouse_data_disk.name

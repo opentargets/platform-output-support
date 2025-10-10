@@ -1,8 +1,10 @@
 """Clickhouse service module."""
 
+from collections import namedtuple
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from string import Template
+from urllib.parse import urljoin
 
 import clickhouse_connect
 from clickhouse_connect.driver.client import Client
@@ -220,3 +222,29 @@ def import_from_s3(client: Client, parameters: ClickhouseBackupQueryParameters) 
         asdict(parameters)
     )
     client.query(query)
+
+
+BackupURLs = namedtuple('BackupURLs', ['backup_url', 'export_url'])
+
+
+def make_backup_urls(gcs_base_path: str, database: str, table: str) -> BackupURLs:
+    """Make ClickHouse backup and export URLs.
+
+    Args:
+        gcs_base_path: GCS base path
+        database: Database name
+        table: Table name
+
+    Returns:
+        Named tuple with backup and export URLs
+    """
+    backup_url = urljoin(
+        gcs_base_path,
+        '/'.join([
+            database,
+            table,
+        ])
+        + '/',
+    )
+    export_url = urljoin(backup_url, 'export.parquet.lz4')
+    return BackupURLs(backup_url=backup_url, export_url=export_url)

@@ -615,7 +615,7 @@ wheels = [
 
 [[package]]
 name = "opentargets-otter"
-version = "25.0.9"
+version = "25.0.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
@@ -626,9 +626,9 @@ dependencies = [
     { name = "requests" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bb/7a/e2896c0809572fd128124065672f5334e83a858ead360629e6353d0f9898/opentargets_otter-25.0.9.tar.gz", hash = "sha256:4ff4eb931163b8268f7687ab324f5a794a8f7c00bfa0b78d3df9815f77ad1645", size = 82236, upload-time = "2025-10-07T14:06:00.413Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/51/50/745a29fbc27ec8bb9f0a8d6900783327abdb552739db4f8e3e2973a88acf/opentargets_otter-25.0.11.tar.gz", hash = "sha256:981952d90f8a0702c35682b503656febd088a573a9f90498b411ee923e3dd00f", size = 82393, upload-time = "2025-10-09T11:19:26.834Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/2c/af46ab2bd66ed86673bbb0ef85b4ceb535ad313eb68d407d3d8fdea5cb34/opentargets_otter-25.0.9-py3-none-any.whl", hash = "sha256:0e210345d4643929fe6f21c4dbe5702001fdb1b2ed036aaf53c3c6a496eb466b", size = 50289, upload-time = "2025-10-07T14:05:59.057Z" },
+    { url = "https://files.pythonhosted.org/packages/0e/6c/76cfbd6f32ee9a8d699ff94b939c4007c58d4cdc288a37d7414f74a5cedc/opentargets_otter-25.0.11-py3-none-any.whl", hash = "sha256:f285c3c6aa82d8d199be1298c35a28812f020bc5a9313d3566d7b4b87f9404cb", size = 50434, upload-time = "2025-10-09T11:19:25.399Z" },
 ]
 
 [[package]]
@@ -788,7 +788,7 @@ requires-dist = [
     { name = "google-cloud-bigquery", specifier = ">=3.34.0" },
     { name = "google-cloud-compute", specifier = ">=1.31.0" },
     { name = "opensearch-py", specifier = ">=3.0.0" },
-    { name = "opentargets-otter", specifier = ">=25.0.9" },
+    { name = "opentargets-otter", specifier = "==25.0.11" },
     { name = "orjson", specifier = ">=3.10.18" },
     { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v0.1.6" },
     { name = "polars", specifier = ">=1.31.0" },

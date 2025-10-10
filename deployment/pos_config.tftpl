@@ -19,7 +19,6 @@ scratchpad:
   opensearch_logs: /var/log/pos/opensearch
   opensearch_disk_name: ${OPENSEARCH_DISK_NAME}
   opensearch_disk_snapshot_name: ${OPENSEARCH_DISK_SNAPSHOT_NAME}
-  opensearch_snapshot_name: ${OPENSEARCH_SNAPSHOT_NAME}
   opensearch_snapshot_repository: ${OPENSEARCH_SNAPSHOT_REPOSITORY}
   opensearch_snapshot_bucket: ${OPENSEARCH_SNAPSHOT_BUCKET}
   opensearch_snapshot_base_path: ${OPENSEARCH_SNAPSHOT_BASE_PATH}
@@ -90,9 +89,16 @@ steps:
       requires:
         - open_search_start data loading instance
       snapshot_repository_name: ${opensearch_snapshot_repository}
-      snapshot_name: ${opensearch_snapshot_name}
+      snapshot_name: ${database_namespace}
       snapshot_bucket: ${opensearch_snapshot_bucket}
       snapshot_base_path: ${opensearch_snapshot_base_path}
+  opensearch_restore:
+    - name: open_search_restore indices
+      snapshot_repository_name: ${opensearch_snapshot_repository}
+      snapshot_name: ${database_namespace}
+      snapshot_bucket: ${opensearch_snapshot_bucket}
+      snapshot_base_path: ${opensearch_snapshot_base_path}
+      indices: '*,-.*'
   opensearch_stop:
     - name: open_search_stop data loading instance
       service_name: os-pos
@@ -247,7 +253,11 @@ steps:
           table: ${each}
           gcs_base_path: ${clickhouse_backup_base_path}
   clickhouse_restore_all:
+    - name: clickhouse_create_database for restoration
+      clickhouse_database: ${database_namespace}
     - name: explode restore clickhouse tables
+      requires:
+        - clickhouse_create_database for restoration
       foreach:
         - associations_otf_target
         - associations_otf_disease

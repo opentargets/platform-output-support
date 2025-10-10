@@ -12,7 +12,8 @@ resource "tls_private_key" "posvm" {
 
 #Create the HMAC key for the associated service account 
 resource "google_storage_hmac_key" "key" {
-  service_account_email = "pos-service-account@open-targets-eu-dev.iam.gserviceaccount.com"
+  service_account_email = "pos-service-account@open-targets-prod.iam.gserviceaccount.com"
+  project               = "open-targets-prod"
 }
 
 // Create a disk volume for Clickhouse data
