@@ -98,6 +98,12 @@ steps:
       snapshot_name: ${database_namespace}
       snapshot_bucket: ${opensearch_snapshot_bucket}
       snapshot_base_path: ${opensearch_snapshot_base_path}
+  opensearch_restore:
+    - name: open_search_restore indices
+      snapshot_repository_name: ${opensearch_snapshot_repository}
+      snapshot_name: ${opensearch_snapshot_name}
+      snapshot_bucket: ${opensearch_snapshot_bucket}
+      snapshot_base_path: ${opensearch_snapshot_base_path}
       indices: '*,-.*'
   opensearch_stop:
     - name: open_search_stop data loading instance
