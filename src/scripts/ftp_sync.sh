@@ -1,12 +1,14 @@
 #!/bin/bash
 
 #SBATCH -J ot_platform_ebi_ftp_sync
-#SBATCH -t 04:00:00
+#SBATCH -t 00:10:00
 #SBATCH --mem=10G
-#SBATCH -e /nfs/ftp/private/otftpuser/slurm/logs/ot_platform_ebi_ftp_sync-%J.err
-#SBATCH -o /nfs/ftp/private/otftpuser/slurm/logs/ot_platform_ebi_ftp_sync-%J.out
+#SBATCH -e ot_platform_ebi_ftp_sync-%J.err
+#SBATCH -o ot_platform_ebi_ftp_sync-%J.out
 #SBATCH --mail-type=BEGIN,END,FAIL
 
+
+#  /nfs/ftp/private/otftpuser/slurm/logs/
 # This is an SLURM job that uploads Open Targets Platform release data to EBI FTP Service
 
 # Defaults
@@ -155,7 +157,7 @@ print_summary
 log_heading "JOB" "Starting job '${job_name}'"
 bootstrap
 pull_data_from_gcp
-compute_checksums
-ftp_update_latest_symlink
+# compute_checksums
+# ftp_update_latest_symlink
 cleanup
 log_heading "JOB" "END OF JOB ${job_name}"

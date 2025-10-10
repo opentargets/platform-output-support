@@ -64,7 +64,7 @@ class ClickhouseInstanceManager(ContainerizedService):
         Raises:
             ClickhouseInstanceManagerError: If Clickhouse failed to start
         """
-        ports = {'9000': 9000, '8123': 8123, '9363': 9363}
+        ports: dict[str, int] = {'9000': 9000, '8123': 8123, '9363': 9363}
         config_path = str(Path('config/clickhouse/config.d').absolute())
         users_path = str(Path('config/clickhouse/users.d').absolute())
 
