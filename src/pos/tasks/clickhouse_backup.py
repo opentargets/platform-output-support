@@ -13,6 +13,7 @@ from pos.services.clickhouse import (
     backup_table,
     export_to_s3,
     get_table_engine,
+    make_backup_urls,
 )
 
 
@@ -33,16 +34,11 @@ class ClickhouseBackup(Task):
     def __init__(self, spec: ClickhouseBackupSpec, context: TaskContext) -> None:
         super().__init__(spec, context)
         self.spec: ClickhouseBackupSpec
-        self.backup_url = urljoin(
+        self.backup_urls = make_backup_urls(
             self.spec.gcs_base_path,
-            '/'.join([
-                self.context.scratchpad.sentinel_dict.get('product'),
-                str(self.context.scratchpad.sentinel_dict.get('release')),
-                self.spec.table,
-            ])
-            + '/',
+            self.spec.clickhouse_database,
+            self.spec.table,
         )
-        self.export_url = urljoin(self.backup_url, 'export.parquet.lz4')
 
     @report
     def run(self) -> Task:
@@ -53,8 +49,8 @@ class ClickhouseBackup(Task):
         parameters = ClickhouseBackupQueryParameters(
             database=self.spec.clickhouse_database,
             table=self.spec.table,
-            backup_path=self.backup_url,
-            export_path=self.export_url,
+            backup_path=self.backup_urls.backup_url,
+            export_path=self.backup_urls.export_url,
         )
         try:
             backup_table(client, parameters)

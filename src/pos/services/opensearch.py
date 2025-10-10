@@ -1,5 +1,6 @@
 """OpenSearch service module."""
 
+from dataclasses import dataclass
 from pathlib import Path
 
 from docker.types import Ulimit
@@ -7,6 +8,37 @@ from loguru import logger
 from opensearchpy import OpenSearch
 
 from pos.services.containerized_service import ContainerizedService, ContainerizedServiceError, reset_timeout
+
+
+@dataclass
+class SnapshotRepository:
+    """Snapshot repository configuration fields.
+
+    Args:
+        name: Repository name
+        type: Repository type (default: '')
+        bucket: Bucket name (default: '')
+        base_path: Base path (default: '')
+        client: Client name (default: 'default')
+    """
+
+    name: str
+    type: str = ''
+    bucket: str = ''
+    base_path: str = ''
+    client: str = 'default'
+
+    def body(self) -> dict:
+        """Return the snapshot repository body."""
+        return {
+            'type': self.type,
+            'settings': {
+                'bucket': self.bucket,
+                'base_path': self.base_path,
+                'client': self.client,
+                'shard_path_type': 'FIXED',
+            },
+        }
 
 
 class OpenSearchInstanceManagerError(Exception):
@@ -64,6 +96,7 @@ class OpenSearchInstanceManager(ContainerizedService):
             'DISABLE_SECURITY_PLUGIN': 'true',
             'OPENSEARCH_JAVA_OPTS': opensearch_java_opts,
             'thread_pool.write.queue_size': '-1',
+            'indices.recovery.max_bytes_per_sec': '0mb',
         }
         volumes = {
             volume_data: {'bind': '/usr/share/opensearch/data', 'mode': 'rw'},

@@ -37,7 +37,7 @@ variable "clickhouse_tarball" {
 variable "clickhouse_backup_base_path" {
   description = "Base path in GCS bucket where ClickHouse backups will be stored"
   type        = string
-  default     = "https://storage.googleapis.com/opentargets-backup/clickhouse/"
+  default     = "https://storage.googleapis.com/open-targets-data-backends/clickhouse/"
 }
 
 variable "database_namespace" {
@@ -67,13 +67,13 @@ variable "open_search_snapshot_repository" {
 variable "open_search_snapshot_bucket" {
   description = "OpenSearch snapshot bucket name"
   type        = string
-  default     = "open-targets-ops"
+  default     = "open-targets-data-backends"
 }
 
 variable "open_search_snapshot_base_path" {
   description = "OpenSearch snapshot base path"
   type        = string
-  default     = "opensearch-snapshots"
+  default     = "opensearch"
 }
 
 variable "open_search_tarball" {
