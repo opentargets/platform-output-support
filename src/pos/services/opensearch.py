@@ -1,6 +1,7 @@
 """OpenSearch service module."""
 
 from dataclasses import dataclass
+from dataclasses import dataclass
 from pathlib import Path
 
 from docker.types import Ulimit
@@ -37,6 +38,7 @@ class SnapshotRepository:
                 'base_path': self.base_path,
                 'client': self.client,
                 'shard_path_type': 'FIXED',
+                'max_snapshot_bytes_per_sec': '0mb',
             },
         }
 
@@ -96,6 +98,7 @@ class OpenSearchInstanceManager(ContainerizedService):
             'DISABLE_SECURITY_PLUGIN': 'true',
             'OPENSEARCH_JAVA_OPTS': opensearch_java_opts,
             'thread_pool.write.queue_size': '-1',
+            'indices.recovery.max_bytes_per_sec': '0mb',
             'indices.recovery.max_bytes_per_sec': '0mb',
         }
         volumes = {

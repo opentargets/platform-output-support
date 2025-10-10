@@ -85,7 +85,9 @@ resource "google_compute_instance" "posvm" {
         CLICKHOUSE_TARBALL   = var.clickhouse_tarball == true ? "true" : "false"
         FORMAT_OS_DISK       = var.open_search_snapshot_source == null ? "true" : "false"
         FORMAT_CH_DISK       = var.clickhouse_snapshot_source == null ? "true" : "false"
-        INSTANCE_LABEL       = random_string.posvm.result
+        STEP                 = var.pos_step
+        NUM_PROCESSES        = var.pos_num_processes
+        TIMESTAMP            = local.timestamp
       }
     )
     ssh-keys               = "${local.posvm_remote_user_name}:${tls_private_key.posvm.public_key_openssh}"
@@ -102,9 +104,6 @@ resource "google_compute_instance" "posvm" {
         SECRET_KEY = google_storage_hmac_key.key.secret
       }
     )
-
-    google_storage_hmac_key_access_id = google_storage_hmac_key.key.access_id
-    google_storage_hmac_key_secret    = google_storage_hmac_key.key.secret
   }
   service_account {
     email  = "pos-service-account@open-targets-eu-dev.iam.gserviceaccount.com"
@@ -116,20 +115,4 @@ resource "google_compute_instance" "posvm" {
   lifecycle {
     create_before_destroy = true
   }
-  # connection {
-  #   type        = "ssh"
-  #   host        = self.network_interface[0].access_config[0].nat_ip
-  #   user        = local.posvm_remote_user_name
-  #   private_key = tls_private_key.posvm.private_key_pem
-  # }
-  # provisioner "file" {
-  #   source      = "run.sh"
-  #   destination = "/opt/platform-output-support/run_pos.sh"
-  # }
-  # // Adjust scripts permissions
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "chmod 777 /opt/platform-output-support/run_pos.sh",
-  #   ]
-  # }
 }
