@@ -616,7 +616,7 @@ wheels = [
 [[package]]
 name = "opentargets-otter"
 version = "25.0.11"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/opentargets/otter?branch=explode-task-status-depends-on-child-tasks#1dcdd866969e38fba79dd758f6256ac30b1ea572" }
 dependencies = [
     { name = "filelock" },
     { name = "google-cloud-storage" },
@@ -625,10 +625,6 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/51/50/745a29fbc27ec8bb9f0a8d6900783327abdb552739db4f8e3e2973a88acf/opentargets_otter-25.0.11.tar.gz", hash = "sha256:981952d90f8a0702c35682b503656febd088a573a9f90498b411ee923e3dd00f", size = 82393, upload-time = "2025-10-09T11:19:26.834Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/6c/76cfbd6f32ee9a8d699ff94b939c4007c58d4cdc288a37d7414f74a5cedc/opentargets_otter-25.0.11-py3-none-any.whl", hash = "sha256:f285c3c6aa82d8d199be1298c35a28812f020bc5a9313d3566d7b4b87f9404cb", size = 50434, upload-time = "2025-10-09T11:19:25.399Z" },
 ]
 
 [[package]]
@@ -788,7 +784,7 @@ requires-dist = [
     { name = "google-cloud-bigquery", specifier = ">=3.34.0" },
     { name = "google-cloud-compute", specifier = ">=1.31.0" },
     { name = "opensearch-py", specifier = ">=3.0.0" },
-    { name = "opentargets-otter", specifier = "==25.0.11" },
+    { name = "opentargets-otter", git = "https://github.com/opentargets/otter?branch=explode-task-status-depends-on-child-tasks" },
     { name = "orjson", specifier = ">=3.10.18" },
     { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v0.1.6" },
     { name = "polars", specifier = ">=1.31.0" },
