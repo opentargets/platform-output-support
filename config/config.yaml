@@ -12,6 +12,8 @@ scratchpad:
   # croissant
   release_ftp_output: ${RELEASE_FTP_OUTPUT}
   release_gcs_output: ${RELEASE_GCS_OUTPUT}
+  # database namespace
+  database_namespace: ${DATABASE_NAMESPACE}
   # opensearch
   opensearch_version: ${OPENSEARCH_VERSION}
   opensearch_java_opts: ${OPENSEARCH_JAVA_OPTS}
@@ -24,7 +26,6 @@ scratchpad:
   opensearch_snapshot_base_path: ${OPENSEARCH_SNAPSHOT_BASE_PATH}
   # clickhouse
   clickhouse_version: ${CLICKHOUSE_VERSION}
-  database_namespace: ${DATABASE_NAMESPACE}
   clickhouse_data: /mnt/clickhouse/data
   clickhouse_logs: /var/log/pos/clickhouse
   clickhouse_disk_name: ${CLICKHOUSE_DISK_NAME}
