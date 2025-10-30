@@ -37,6 +37,7 @@ class SnapshotRepository:
                 'base_path': self.base_path,
                 'client': self.client,
                 'shard_path_type': 'FIXED',
+                'max_snapshot_bytes_per_sec': '0mb',
             },
         }
 
