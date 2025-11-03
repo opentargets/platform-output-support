@@ -2,6 +2,7 @@
 
 
 from pathlib import Path
+import subprocess
 from typing import Self
 
 from otter.task.model import Spec, Task, TaskContext
@@ -47,10 +48,17 @@ class CreateGcpDiskSnapshot(Task):
             labels=self._labels,
         )
         try:
+            self._complete_pending_disk_writes()
             snapshot.create()
         except (RuntimeError, TimeoutError) as e:
             raise CreateGcpDiskSnapshotError(f'failed to create GCP disk image: {e}')
         return self
+
+    def _complete_pending_disk_writes(self) -> None:
+        """Ensure all pending disk writes are completed before snapshotting."""
+        complete_pending_disk_writes = subprocess.run(['sync'], check=True)
+        if complete_pending_disk_writes.returncode != 0:
+            raise CreateGcpDiskSnapshotError('failed to complete pending disk writes before snapshot')
 
     def _set_labels(self) -> GCPLabels:
         return GCPLabels(
