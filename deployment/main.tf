@@ -96,7 +96,7 @@ resource "google_compute_instance" "posvm" {
     s3_config = templatefile(
       "s3_config.tftpl",
       {
-        GCS_BATH_PATH = var.clickhouse_backup_base_path
+        GCS_BASE_PATH = var.clickhouse_backup_base_path
         ACCESS_KEY = google_storage_hmac_key.key.access_id
         SECRET_KEY = google_storage_hmac_key.key.secret
       }
