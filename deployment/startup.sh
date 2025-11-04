@@ -100,53 +100,6 @@ function uv_run() {
     uv --directory /opt/platform-output-support run pos -c /etc/opt/pos_config.yaml -p $processes -s $step
 }
 
-function opensearch_summary() {
-  log "[INFO] Printing  OpenSearch summary"
-  curl -X GET "localhost:9200/_cat/indices?pretty&s=i"
-}
-
-function clickhouse_summary() {
-  log "[INFO] Printing ClickHouse summary"
-  for table in $(echo "show tables in ${DATABASE_NAMESPACE}" | curl -s 'http://localhost:8123/?' --data-binary @-); do
-    export fqdn="${DATABASE_NAMESPACE}.$table"
-    echo "Count for '$fqdn' ---> $(echo "select count() from $fqdn" | curl -s 'http://localhost:8123/?' --data-binary @-)"
-  done
-}
-
-function sync_data() {
-  log "[INFO] Syncing data"
-  uv_run sync_data 1
-}
-
-
-function opensearch_steps() {
-  log "[INFO] Starting OpenSearch steps"
-  uv_run opensearch_prep_all 300 && \
-  uv_run opensearch_load_all 80 > /var/log/open_search_load.log 2>&1 && \
-  opensearch_summary && \
-  uv_run opensearch_stop 1 && \
-  sync && \
-  uv_run opensearch_disk_snapshot 1 && \
-  if [[ ${OPENSEARCH_TARBALL} == true ]]; then
-    uv_run opensearch_tarball 1
-  fi
-  log "[INFO] OpenSearch steps completed"
-}
-
-function clickhouse_steps() {
-  log "[INFO] Starting ClickHouse steps"
-  uv_run clickhouse_load_all && \
-  clickhouse_summary && \
-  uv_run clickhouse_stop 1 && \
-  copy_clickhouse_configs && \
-  sync && \
-  uv_run clickhouse_disk_snapshot 1 && \
-  if [[ ${CLICKHOUSE_TARBALL} == true ]]; then
-    uv_run clickhouse_tarball 1
-  fi
-  log "[INFO] ClickHouse steps completed"
-}
-
 function copy_clickhouse_configs() {
   log "[INFO] Syncing ClickHouse configs"
   cp -vR /opt/platform-output-support/config/clickhouse/config.d/config.xml /mnt/clickhouse/config.d/config.xml
@@ -161,15 +114,11 @@ mount_disk ${OPENSEARCH_DISK_NAME} /mnt/opensearch ${FORMAT_OS_DISK}
 mount_disk ${CLICKHOUSE_DISK_NAME} /mnt/clickhouse ${FORMAT_CH_DISK}
 create_dir_for_group /mnt/opensearch/data google-sudoers rw
 create_dir_for_group /mnt/clickhouse/data google-sudoers rw
+copy_clickhouse_configs
 
-sync_data
-uv_run ot_croissant
-uv_run exports 
-opensearch_steps & 
-sleep 2m  # avoids clickhouse from syncing data while opensearch is syncing data
-clickhouse_steps
-wait
+uv_run ${STEP} ${NUM_PROCESSES} > /var/log/pos.log 2>&1
+
 journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
-gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/google-startup-scripts.log
-gsutil -m cp /var/log/open_search_load.log gs://open-targets-ops/logs/platform-pos/${INSTANCE_LABEL}/pos/open_search_load.log
+gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${TIMESTAMP}/pos/google-startup-scripts.log
+gsutil -m cp /var/log/pos.log gs://open-targets-ops/logs/platform-pos/${TIMESTAMP}/pos/pos.log
 poweroff

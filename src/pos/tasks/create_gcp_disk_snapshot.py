@@ -1,9 +1,7 @@
 # Data prep task
 
 
-from pathlib import Path
 import subprocess
-from typing import Self
 
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report

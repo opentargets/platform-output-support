@@ -3,14 +3,13 @@
 from pathlib import Path
 from queue import Queue
 
+from box import Box
 from loguru import logger
 from otter.scratchpad.model import Scratchpad
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
 
-from pos.parquet2json.converter import convert
-from pos.parquet2json.utils import setup_logger
 from pos.tasks.data_prep import DataPrepSpec
 from pos.utils import get_config
 
@@ -41,7 +40,7 @@ class ExplodeDataPrep(Task):
         self.spec: ExplodeDataPrepSpec
         self.scratchpad = Scratchpad({})
         try:
-            self._config = get_config('config/datasets.yaml')[self.spec.step]
+            self._config: Box = get_config('config/datasets.yaml')[self.spec.step]
             self._input_dir = Path(self._config[self.spec.dataset].input_dir)
             self._output_dir = Path(self._config[self.spec.dataset].output_dir)
         except AttributeError:

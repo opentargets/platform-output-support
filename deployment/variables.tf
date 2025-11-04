@@ -143,3 +143,15 @@ variable "is_ppp" {
   type        = bool
   default     = false
 }
+
+variable "pos_step" {
+  description = "POS step to execute, default 'backend'"
+  type        = string
+  default     = "backend"
+}
+
+variable "pos_num_processes" {
+  description = "Number of processes to use for POS step execution, default '10'"
+  type        = number
+  default     = 10
+}
