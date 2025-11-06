@@ -5,12 +5,13 @@ description = "Open Targets Pipeline Output Stage"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "click-default-group>=1.2.4",
     "clickhouse-connect>=0.8.17",
     "docker>=7.1.0",
     "google-cloud-bigquery>=3.34.0",
     "google-cloud-compute>=1.31.0",
     "opensearch-py>=3.0.0",
-    "opentargets-otter>=25.0.13",
+    "opentargets-otter",
     "orjson>=3.10.18",
     "ot-croissant",
     "paramiko>=4.0.0",
@@ -32,7 +33,7 @@ test = ["pytest==8.4.1", "coverage==7.9.1", "pytest-mock==3.14.1"]
 
 [project.scripts]
 p2j = "pos.parquet2json.cli:app"
-pos = "pos.core:main"
+pos = "pos.core:pos"
 
 [build-system]
 requires = ["hatchling"]
@@ -186,3 +187,4 @@ ignore-decorators = ["pos.tasks.report", "pos.manifest.task_reporter.report"]
 
 [tool.uv.sources]
 ot-croissant = { git = "https://github.com/opentargets/ot_croissant", tag = "v0.1.6" }
+opentargets-otter = { git = "https://github.com/opentargets/otter", branch = "handle-unknown-cli-args" }

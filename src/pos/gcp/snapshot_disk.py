@@ -4,7 +4,7 @@ import sys
 from typing import Any
 
 from google.api_core.extended_operation import ExtendedOperation
-from google.cloud.compute_v1 import DisksClient, Snapshot
+from google.cloud.compute_v1 import DisksClient, GetSnapshotRequest, Snapshot, SnapshotsClient
 from loguru import logger
 
 from pos.gcp.labels import GCPLabels
@@ -25,8 +25,9 @@ class GCPSnapshotDisk:
         self._project_id = project_id
         self._zone = zone
         self._source_disk_name = source_disk_name
+        self._snapshot_name = snapshot_name
         self._snapshot: Snapshot = Snapshot(
-            name=snapshot_name, storage_locations=storage_locations, labels=labels.model_dump()
+            name=self._snapshot_name, storage_locations=storage_locations, labels=labels.model_dump()
         )
 
     def create(self) -> None:
@@ -96,3 +97,21 @@ def wait_for_extended_operation(
             logger.warning(f'{warning.code}: {warning.message}', file=sys.stderr, flush=True)
 
     return result
+
+
+def snapshot_exists(project_id: str, snapshot_name: str) -> bool:
+    """Check if the snapshot already exists.
+
+    Returns:
+        True if the snapshot exists, False otherwise.
+    """
+    try:
+        client = SnapshotsClient()
+        request = GetSnapshotRequest(project=project_id, snapshot=snapshot_name)
+        snapshot = client.get(request=request)
+        if snapshot:
+            logger.warning(f'Snapshot {snapshot_name} already exists in project {project_id}.')
+            return True
+        return False
+    except Exception:
+        return False

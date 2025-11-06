@@ -1,23 +1,21 @@
 ---
-# Platform Output Support Configuration File - PLATFORM
+# Platform Output Support Configuration File - PPP
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://open-targets-pipeline-runs/szsz/25.06-testrun-4 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+# release_uri: ${RELEASE_URI} # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
-  release: 25.12 # e.g. 25.12
-  data_source: gs://open-targets-pipeline-runs/szsz/25.06-testrun-4 # same as release_uri 
-  database_namespace: platform2512 # e.g. platform2512 
- 
+  release: ${RELEASE} # e.g. 25.12
+  data_source: ${DATA_SOURCE} # same as release_uri 
+  database_namespace: ${DATABASE_NAMESPACE} # e.g. ppp2512
+  
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2512dev-os
-  opensearch_disk_snapshot_name: platform-2512dev-os
-  clickhouse_disk_name: platform-2512dev-ch
-  clickhouse_disk_snapshot_name: platform-2512dev-ch
+  opensearch_disk_name: ppp-2512a-os
+  opensearch_disk_snapshot_name: ppp-2512a-os
+  clickhouse_disk_name: ppp-2512a-ch
+  clickhouse_disk_snapshot_name: ppp-2512a-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================  
-  disk_snapshot_project_id: open-targets-eu-dev
-  release_gcs_bucket: gs://open-targets-data-releases
-
+  release_gcs_bucket: gs://open-targets-ppp-data-releases
   # temp file locations
   local_data: release_data
   prepared_data: prepared_data
@@ -38,15 +36,9 @@ scratchpad:
   clickhouse_logs: /var/log/pos/clickhouse
   clickhouse_backup_base_path: https://storage.googleapis.com/open-targets-data-backends/clickhouse/
 
-  # bigquery
-  bq_prod_project_id: open-targets-prod
-
-  # ftp sync
-  ftp_sync_path_gcs_credentials_file: gs://open-targets-ops/credentials/pis-service_account.json
-
 steps:
   ##################################################################################################
-  # Full platform backend
+  # Full PPP backend
   ##################################################################################################
   backend:
     # sync data
@@ -60,7 +52,7 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
+      ftp_address: 
       gcp_address: ${release_gcs_bucket}/${release}/output/
       dataset_path: ${local_data}/output
       output: croissant.json
@@ -94,6 +86,7 @@ steps:
         - evidence_clingen
         - evidence_crispr
         - evidence_crispr_screen
+        - evidence_encore
         - evidence_europepmc
         - evidence_eva
         - evidence_eva_somatic
@@ -105,6 +98,8 @@ steps:
         - evidence_impc
         - evidence_intogen
         - evidence_orphanet
+        - evidence_ot_crispr
+        - evidence_ot_crispr_validation
         - evidence_progeny
         - evidence_reactome
         - evidence_slapenrich
@@ -125,6 +120,7 @@ steps:
         - mechanism_of_action
         - mouse_phenotypes
         - openfda_faers
+        - otar_projects
         - pharmacogenomics
         - protein_coding_coords
         - reactome
@@ -166,7 +162,7 @@ steps:
         - open_search_snapshot data loading instance
       service_name: os-pos
     - name: create_gcp_disk_snapshot opensearch
-      gcp_project_id: ${disk_snapshot_project_id}
+      gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -225,28 +221,10 @@ steps:
     - name: create_gcp_disk_snapshot clickhouse
       requires:
         - clickhouse_stop data loading instance
-      gcp_project_id: ${disk_snapshot_project_id}
+      gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
-    # exports
-    - name: explode_data_prep search_ebi_associations
-      dataset: search_ebi_associations
-      parquet_parent: ${local_data}
-      json_parent: ${prepared_data}
-      step: export
-      remote_path: etc/export/search_ebi_associations.json
-      requires:
-        - sync_bucket etl view files
-    - name: upload search_ebi_associations
-      requires:
-        - explode_data_prep search_ebi_associations
-      source: ${prepared_data}/search_ebi_associations/search_ebi_associations.json
-      destination: etc/export/search_ebi_associations/search_ebi_associations.json
-    - name: sync_bucket epmc_cooccurrence
-      source: ${data_source}/intermediate/literature_epmc_cooccurrence
-      destination: ${data_source}/etc/export/epmc_cooccurrence
-
   ################################################################################################
   # Tarballs
   ################################################################################################
@@ -279,7 +257,7 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
+      ftp_address: 
       gcp_address: ${release_gcs_bucket}/${release}/output/
       dataset_path: ${local_data}/output
       output: croissant.json
@@ -344,7 +322,7 @@ steps:
         - open_search_snapshot data loading instance
       service_name: os-pos
     - name: create_gcp_disk_snapshot opensearch
-      gcp_project_id: ${disk_snapshot_project_id}
+      gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -362,7 +340,7 @@ steps:
       opensearch_java_opts: ${opensearch_java_opts}
   opensearch_disk_snapshot:
     - name: create_gcp_disk_snapshot opensearch
-      gcp_project_id: ${disk_snapshot_project_id}
+      gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -495,7 +473,7 @@ steps:
     - name: create_gcp_disk_snapshot clickhouse
       requires:
         - clickhouse_stop data loading instance
-      gcp_project_id: ${disk_snapshot_project_id}
+      gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -515,7 +493,7 @@ steps:
       destination: disk_images/clickhouse.tgz
   clickhouse_disk_snapshot:
     - name: create_gcp_disk_snapshot clickhouse
-      gcp_project_id: ${disk_snapshot_project_id}
+      gcp_project_id: open-targets-eu-dev
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -601,136 +579,9 @@ steps:
       dataset: targets
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-  ########################################################################################
-  # BigQuery
-  bigquery_dev_load_all:
-    - name: bigquery_reset dev
-      project_id: open-targets-eu-dev
-      dataset_id: platform_dev
-      location: eu
-      release: ${release}
-    - name: explode load bigquery tables
-      foreach: &bigquery_datasets
-        - association_by_datasource_direct
-        - association_by_datasource_indirect
-        - association_by_datatype_direct
-        - association_by_datatype_indirect
-        - association_by_overall_indirect
-        - association_overall_direct
-        - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
-        - credible_set
-        - disease
-        - disease_hpo
-        - disease_phenotype
-        - drug_indication
-        - drug_mechanism_of_action
-        - drug_molecule
-        - drug_warning
-        - evidence_cancer_biomarkers
-        - evidence_cancer_gene_census
-        - evidence_chembl
-        - evidence_clingen
-        - evidence_crispr
-        - evidence_crispr_screen
-        - evidence_europepmc
-        - evidence_eva
-        - evidence_eva_somatic
-        - evidence_expression_atlas
-        - evidence_gene2phenotype
-        - evidence_gene_burden
-        - evidence_genomics_england
-        - evidence_gwas_credible_sets
-        - evidence_impc
-        - evidence_intogen
-        - evidence_orphanet
-        - evidence_progeny
-        - evidence_reactome
-        - evidence_slapenrich
-        - evidence_sysbio
-        - evidence_uniprot_literature
-        - evidence_uniprot_variants
-        - expression
-        - go
-        - interaction
-        - interaction_evidence
-        - interval
-        - known_drug
-        - l2g_prediction
-        - literature
-        - literature_vector
-        - mouse_phenotype
-        - openfda_significant_adverse_drug_reactions
-        - openfda_significant_adverse_target_reactions
-        - pharmacogenomics
-        - protein_coding_coords
-        - reactome
-        - so
-        - study
-        - target
-        - target_essentiality
-        - target_prioritisation
-        - variant
-      do:
-        - name: bigquery_load dev ${each}
-          requires:
-            - bigquery_reset dev
-          dataset_id: platform_dev
-          project_id: open-targets-eu-dev
-          location: eu
-          table: ${each}
-          base_uri: ${release_gcs_bucket}/${release}
-  bigquery_prod_load_all:
-    - name: bigquery_reset prod
-      project_id: open-targets-prod
-      dataset_id: platform
-      location: eu
-      release: ${release}
-    - name: explode load bigquery tables
-      foreach: *bigquery_datasets
-      do:
-        - name: bigquery_load prod ${each}
-          requires:
-            - bigquery_reset prod
-          dataset_id: platform
-          project_id: open-targets-prod
-          location: eu
-          table: ${each}
-          base_uri: ${release_gcs_bucket}/${release}
-  exports:
-    # EBI Search
-    - name: sync_bucket search_ebi_associations
-      source: ${data_source}/view/search_ebi_associations
-      destination: ${local_data}/view/search_ebi_associations
-    - name: explode_data_prep search_ebi_associations
-      dataset: search_ebi_associations
-      parquet_parent: ${local_data}
-      json_parent: ${prepared_data}
-      step: export
-      remote_path: etc/export/search_ebi_associations.json
-      requires:
-        - sync_bucket search_ebi_associations
-    - name: upload search_ebi_associations
-      requires:
-        - explode_data_prep search_ebi_associations
-      source: ${prepared_data}/search_ebi_associations/search_ebi_associations.json
-      destination: etc/export/search_ebi_associations/search_ebi_associations.json
-    # EPMC Co-occurrence
-    - name: sync_bucket epmc_cooccurrence
-      source: ${data_source}/intermediate/literature_epmc_cooccurrence
-      destination: ${data_source}/etc/export/epmc_cooccurrence
+  ################################################################################################
   # gcs_sync
   gcs_sync:
     - name: sync_bucket gcs release data
       source: ${data_source}/ 
       destination: ${release_gcs_bucket}/${release}/ 
-  # ftp_sync
-  ftp_sync:
-    - name: ftp_sync release data to ftp server
-      source_data: ${data_source}
-      release_id: ${release}
-      gcs_credentials_file: ${ftp_sync_path_gcs_credentials_file}
-  test:
-    - name: hello_world test
-      who: Hello, Open Targets Platform Output Support!

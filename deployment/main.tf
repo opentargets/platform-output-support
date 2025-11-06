@@ -19,10 +19,9 @@ resource "google_storage_hmac_key" "key" {
 // Create a disk volume for Clickhouse data
 resource "google_compute_disk" "clickhouse_data_disk" {
   project     = "open-targets-eu-dev"
-  name        = local.clickhouse_disk_name
+  name        = var.clickhouse_disk_name
   description = "Clickhouse data disk"
   type        = "pd-ssd"
-  # zone        = "europe-west1-b"
   size        = var.clickhouse_snapshot_source == null ? var.clickhouse_data_disk_size : null
   labels      = local.base_labels
   snapshot    = var.clickhouse_snapshot_source
@@ -31,10 +30,9 @@ resource "google_compute_disk" "clickhouse_data_disk" {
 // Create a disk volume for ElasticSearch data
 resource "google_compute_disk" "open_search_data_disk" {
   project     = "open-targets-eu-dev"
-  name        = local.open_search_disk_name
+  name        = var.open_search_disk_name
   description = "OpenSearch data disk"
   type        = "pd-ssd"
-  # zone        = "europe-west1-b"
   size        = var.open_search_snapshot_source == null ? var.open_search_data_disk_size : null
   labels      = local.base_labels
   snapshot    = var.open_search_snapshot_source
@@ -44,7 +42,8 @@ resource "google_compute_disk" "open_search_data_disk" {
 resource "google_compute_instance" "posvm" {
   name         = "posvm-${random_string.posvm.result}"
   machine_type = var.vm_pos_machine_type
-
+  # instance_termination_action = "DELETE"
+  # max_run_duration = "10800s" // 3 hours  
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-11"
@@ -56,13 +55,13 @@ resource "google_compute_instance" "posvm" {
   // Attach Clickhouse data disk
   attached_disk {
     source      = google_compute_disk.clickhouse_data_disk.self_link
-    device_name = local.clickhouse_disk_name
+    device_name = var.clickhouse_disk_name
   }
 
   // Attach OpenSearch data disk
   attached_disk {
     source      = google_compute_disk.open_search_data_disk.self_link
-    device_name = local.open_search_disk_name
+    device_name = var.open_search_disk_name
   }
 
   network_interface {
@@ -73,29 +72,24 @@ resource "google_compute_instance" "posvm" {
   }
 
   metadata = {
+    pos_config = file(var.pos_config_file)
     startup-script = templatefile(
       "startup.sh",
       {
         POS_USER_NAME = local.posvm_remote_user_name
         BRANCH        = var.pos_git_branch
-        DATABASE_NAMESPACE = var.database_namespace
-        OPENSEARCH_DISK_NAME = google_compute_disk.open_search_data_disk.name
-        OPENSEARCH_TARBALL   = var.open_search_tarball == true ? "true" : "false"
-        CLICKHOUSE_DISK_NAME = google_compute_disk.clickhouse_data_disk.name
-        CLICKHOUSE_TARBALL   = var.clickhouse_tarball == true ? "true" : "false"
+        OPENSEARCH_DISK_NAME = var.open_search_disk_name
+        CLICKHOUSE_DISK_NAME = var.clickhouse_disk_name
         FORMAT_OS_DISK       = var.open_search_snapshot_source == null ? "true" : "false"
         FORMAT_CH_DISK       = var.clickhouse_snapshot_source == null ? "true" : "false"
         STEP                 = var.pos_step
         NUM_PROCESSES        = var.pos_num_processes
         TIMESTAMP            = local.timestamp
+        SHUTDOWN_AFTER_RUN   = var.pos_shutdown_after_run
       }
     )
     ssh-keys               = "${local.posvm_remote_user_name}:${tls_private_key.posvm.public_key_openssh}"
     google-logging-enabled = false
-    pos_config = templatefile(
-      "pos_config.tftpl",
-      local.yaml_config_variables
-    )
     s3_config = templatefile(
       "s3_config.tftpl",
       {
