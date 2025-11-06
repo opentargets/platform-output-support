@@ -102,6 +102,8 @@ function uv_run() {
 
 function copy_clickhouse_configs() {
   log "[INFO] Syncing ClickHouse configs"
+  mkdir -p /mnt/clickhouse/config.d
+  mkdir -p /mnt/clickhouse/users.d
   cp -vR /opt/platform-output-support/config/clickhouse/config.d/config.xml /mnt/clickhouse/config.d/config.xml
   cp -vR /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
 }
@@ -118,7 +120,9 @@ copy_clickhouse_configs
 
 uv_run ${STEP} ${NUM_PROCESSES} > /var/log/pos.log 2>&1
 
-journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
-gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${TIMESTAMP}/pos/google-startup-scripts.log
-gsutil -m cp /var/log/pos.log gs://open-targets-ops/logs/platform-pos/${TIMESTAMP}/pos/pos.log
-poweroff
+if [[ ${SHUTDOWN_AFTER_RUN} == true ]]; then
+  journalctl -u google-startup-scripts.service > /var/log/google-startup-scripts.log
+  gsutil -m cp /var/log/google-startup-scripts.log gs://open-targets-ops/logs/platform-pos/${TIMESTAMP}/pos/google-startup-scripts.log
+  gsutil -m cp /var/log/pos.log gs://open-targets-ops/logs/platform-pos/${TIMESTAMP}/pos/pos.log
+  poweroff
+fi
