@@ -2,7 +2,6 @@
 
 import subprocess
 from pathlib import Path
-from typing import Self
 
 from loguru import logger
 from otter.manifest.model import Artifact

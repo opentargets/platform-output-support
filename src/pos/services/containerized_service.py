@@ -109,7 +109,7 @@ class ContainerizedService(ABC):
             logger.warning(f'{self.name} container is not running')
             return
         logger.debug(f'stopping {self.name} container')
-        self.container.stop()
+        self.container.stop(timeout=300)
 
     def _wait(self, duration: int) -> None:
         """Wait for a specified duration and return the new timeout."""

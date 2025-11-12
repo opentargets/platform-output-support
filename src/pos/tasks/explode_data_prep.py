@@ -1,8 +1,9 @@
 # Data prep task
 
 from pathlib import Path
-from typing import Self
+from queue import Queue
 
+from box import Box
 from loguru import logger
 from otter.scratchpad.model import Scratchpad
 from otter.task.model import Spec, Task, TaskContext
@@ -39,7 +40,7 @@ class ExplodeDataPrep(Task):
         self.spec: ExplodeDataPrepSpec
         self.scratchpad = Scratchpad({})
         try:
-            self._config = get_config('config/datasets.yaml')[self.spec.step]
+            self._config: Box = get_config('config/datasets.yaml')[self.spec.step]
             self._input_dir = Path(self._config[self.spec.dataset].input_dir)
             self._output_dir = Path(self._config[self.spec.dataset].output_dir)
         except AttributeError:
@@ -52,6 +53,7 @@ class ExplodeDataPrep(Task):
     @report
     def run(self) -> Task:
         logger.debug(f'Exploding {self.spec.dataset}')
+        subtask_queue: Queue[Spec] = self.context.sub_queue
         files = self.abs_input_dir.glob('*.parquet')
         for file in files:
             spec = DataPrepSpec(
@@ -59,8 +61,11 @@ class ExplodeDataPrep(Task):
                 source=str(file),
                 destination=str(self._get_json_destination()),
             )
-            self.scratchpad.store('each', str(file))
-            self.context.specs.append(Spec.model_validate(self.scratchpad.replace_dict(spec.model_dump())))
+            subtask_spec = spec.model_validate(self.scratchpad.replace_dict(spec.model_dump()))
+            subtask_spec.task_queue = subtask_queue
+            subtask_queue.put(subtask_spec)
+        subtask_queue.shutdown()
+        subtask_queue.join()
         return self
 
     def _get_parquet_source(self) -> Path:

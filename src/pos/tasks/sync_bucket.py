@@ -1,8 +1,6 @@
 # Sync bucket
 
 import subprocess
-from pathlib import Path
-from typing import Self
 
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
@@ -24,7 +22,7 @@ class SyncBucketSpec(Spec):
     """
 
     source: str
-    destination: Path
+    destination: str
 
 
 class SyncBucket(Task):
@@ -35,14 +33,16 @@ class SyncBucket(Task):
 
     @report
     def run(self) -> Task:
-        destination_folder = self.context.config.work_path.joinpath(self.spec.destination)
-
-        logger.debug(f'checking if {destination_folder} exists. If not, create it')
-        # Checking if the destination folder exists. If not, create it.
-        check_dir(destination_folder)
+        if self.spec.destination.startswith('gs://'):
+            destination_folder = self.spec.destination
+        else:
+            destination_folder = self.context.config.work_path.joinpath(self.spec.destination)
+            logger.debug(f'checking if {destination_folder} exists. If not, create it')
+            # Checking if the destination folder exists. If not, create it.
+            check_dir(destination_folder)
 
         logger.debug(f'syncing {self.spec.source} with {self.spec.destination}')
-        rsync_command = [
+        rsync_command = [  # refactor to use gcloud storage api - removes dep on local install of gsutil
             'gsutil',
             '-m',
             'rsync',
@@ -51,5 +51,4 @@ class SyncBucket(Task):
             destination_folder,
         ]
         subprocess.run(rsync_command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-
         return self
