@@ -1,6 +1,4 @@
 # Clickhouse backup task
-from urllib.parse import urljoin
-
 from clickhouse_connect.driver.exceptions import DatabaseError
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
