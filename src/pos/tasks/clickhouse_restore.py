@@ -1,6 +1,4 @@
 # Clickhouse restore task
-from urllib.parse import urljoin
-
 import clickhouse_connect
 from clickhouse_connect.driver.exceptions import DatabaseError
 from loguru import logger
