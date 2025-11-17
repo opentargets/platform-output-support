@@ -183,17 +183,23 @@ steps:
         - sync_bucket etl view files
         - clickhouse_start data loading instance
       foreach:
-        - aotf
         - interval
         - literature
         - w2v
         - credible_sets
         - studies
+        - disease
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load aotf
+      requires:
+        - clickhouse_load clickhouse load disease
+      dataset: aotf
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
       requires:
         - clickhouse_load clickhouse load credible_sets
@@ -453,17 +459,23 @@ steps:
         - sync_bucket etl view files
         - clickhouse_start data loading instance
       foreach:
-        - aotf
         - interval
         - literature
         - w2v
         - credible_sets
         - studies
+        - disease
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+     - name: clickhouse_load clickhouse load aotf
+      requires:
+        - clickhouse_load clickhouse load disease
+      dataset: aotf
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
       requires:
         - clickhouse_load clickhouse load credible_sets
@@ -578,12 +590,12 @@ steps:
       clickhouse_database: ${database_namespace}
     - name: explode load all datasets
       foreach:
-        - aotf
         - interval
         - literature
         - w2v
         - credible_sets
         - studies
+        - disease
       do:
         - name: clickhouse_load clickhouse load ${each}
           requires:
@@ -593,6 +605,12 @@ steps:
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load aotf
+      requires:
+        - clickhouse_load clickhouse load disease
+      dataset: aotf
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
       requires:
         - clickhouse_load clickhouse load credible_sets

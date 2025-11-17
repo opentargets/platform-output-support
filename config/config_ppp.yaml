@@ -14,7 +14,9 @@ scratchpad:
   clickhouse_disk_name: ppp-2512a-ch
   clickhouse_disk_snapshot_name: ppp-2512a-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
+  disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-ppp-data-releases
+
   # temp file locations
   local_data: release_data
   prepared_data: prepared_data
@@ -160,7 +162,7 @@ steps:
         - open_search_snapshot data loading instance
       service_name: os-pos
     - name: create_gcp_disk_snapshot opensearch
-      gcp_project_id: open-targets-eu-dev
+      gcp_project_id: ${disk_snapshot_project_id}
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -178,17 +180,23 @@ steps:
         - sync_bucket etl view files
         - clickhouse_start data loading instance
       foreach:
-        - aotf
         - interval
         - literature
         - w2v
         - credible_sets
         - studies
+        - disease
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load aotf
+      requires:
+        - clickhouse_load clickhouse load disease
+      dataset: aotf
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
       requires:
         - clickhouse_load clickhouse load credible_sets
@@ -219,7 +227,7 @@ steps:
     - name: create_gcp_disk_snapshot clickhouse
       requires:
         - clickhouse_stop data loading instance
-      gcp_project_id: open-targets-eu-dev
+      gcp_project_id: ${disk_snapshot_project_id}
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -320,7 +328,7 @@ steps:
         - open_search_snapshot data loading instance
       service_name: os-pos
     - name: create_gcp_disk_snapshot opensearch
-      gcp_project_id: open-targets-eu-dev
+      gcp_project_id: ${disk_snapshot_project_id}
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -338,7 +346,7 @@ steps:
       opensearch_java_opts: ${opensearch_java_opts}
   opensearch_disk_snapshot:
     - name: create_gcp_disk_snapshot opensearch
-      gcp_project_id: open-targets-eu-dev
+      gcp_project_id: ${disk_snapshot_project_id}
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -430,17 +438,23 @@ steps:
         - sync_bucket etl view files
         - clickhouse_start data loading instance
       foreach:
-        - aotf
         - interval
         - literature
         - w2v
         - credible_sets
         - studies
+        - disease
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+     - name: clickhouse_load clickhouse load aotf
+      requires:
+        - clickhouse_load clickhouse load disease
+      dataset: aotf
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
       requires:
         - clickhouse_load clickhouse load credible_sets
@@ -471,7 +485,7 @@ steps:
     - name: create_gcp_disk_snapshot clickhouse
       requires:
         - clickhouse_stop data loading instance
-      gcp_project_id: open-targets-eu-dev
+      gcp_project_id: ${disk_snapshot_project_id}
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -491,7 +505,7 @@ steps:
       destination: disk_images/clickhouse.tgz
   clickhouse_disk_snapshot:
     - name: create_gcp_disk_snapshot clickhouse
-      gcp_project_id: open-targets-eu-dev
+      gcp_project_id: ${disk_snapshot_project_id}
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
@@ -555,12 +569,12 @@ steps:
       clickhouse_database: ${database_namespace}
     - name: explode load all datasets
       foreach:
-        - aotf
         - interval
         - literature
         - w2v
         - credible_sets
         - studies
+        - disease
       do:
         - name: clickhouse_load clickhouse load ${each}
           requires:
@@ -570,6 +584,12 @@ steps:
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load aotf
+      requires:
+        - clickhouse_load clickhouse load disease
+      dataset: aotf
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load targets
       requires:
         - clickhouse_load clickhouse load credible_sets
