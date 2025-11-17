@@ -1,14 +1,12 @@
-create database if not exists ot;
-
-create table if not exists ot.baseline_expression_log (
-    targetId LowCardinality(String),
-    targetFromSourceId Nullable(String),
-    tissueBiosampleId Nullable(String),
-    tissueBiosampleParentId Nullable(String),
-    tissueBiosampleFromSource Nullable(String),
-    celltypeBiosampleId Nullable(String),
-    celltypeBiosampleParentId Nullable(String),
-    celltypeBiosampleFromSource Nullable(String),
+create table if not exists baseline_expression_log (
+    targetId LowCardinality (String),
+    targetFromSourceId Nullable (String),
+    tissueBiosampleId Nullable (String),
+    tissueBiosampleParentId Nullable (String),
+    tissueBiosampleFromSource Nullable (String),
+    celltypeBiosampleId Nullable (String),
+    celltypeBiosampleParentId Nullable (String),
+    celltypeBiosampleFromSource Nullable (String),
     min Float64,
     q1 Float64,
     median Float64,
