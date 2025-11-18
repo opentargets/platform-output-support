@@ -49,137 +49,137 @@ opensearch:
     output_dir: drug_warning
   evidence_cancer_biomarkers:
     index: evidence_cancer_biomarkers
-    input_dir: output/evidence/sourceId=cancer_biomarkers
+    input_dir: output/evidence_cancer_biomarkers
     mappings: config/opensearch/default.json
     output_dir: evidence/cancer_biomarkers
   evidence_cancer_gene_census:
     index: evidence_cancer_gene_census
-    input_dir: output/evidence/sourceId=cancer_gene_census
+    input_dir: output/evidence_cancer_gene_census
     mappings: config/opensearch/default.json
     output_dir: evidence/cancer_gene_census
   evidence_chembl:
     index: evidence_chembl
-    input_dir: output/evidence/sourceId=chembl
+    input_dir: output/evidence_chembl
     mappings: config/opensearch/default.json
     output_dir: evidence/chembl
   evidence_clingen:
     index: evidence_clingen
-    input_dir: output/evidence/sourceId=clingen
+    input_dir: output/evidence_clingen
     mappings: config/opensearch/default.json
     output_dir: evidence/clingen
   evidence_crispr:
     index: evidence_crispr
-    input_dir: output/evidence/sourceId=crispr
+    input_dir: output/evidence_crispr
     mappings: config/opensearch/default.json
     output_dir: evidence/crispr
   evidence_crispr_screen:
     index: evidence_crispr_screen
-    input_dir: output/evidence/sourceId=crispr_screen
+    input_dir: output/evidence_crispr_screen
     mappings: config/opensearch/default.json
     output_dir: evidence/crispr_screen
   evidence_encore:
     index: evidence_encore
-    input_dir: output/evidence/sourceId=encore
+    input_dir: output/evidence_encore
     mappings: config/opensearch/default.json
     output_dir: evidence/encore
   evidence_europepmc:
     index: evidence_europepmc
-    input_dir: output/evidence/sourceId=europepmc
+    input_dir: output/evidence_europepmc
     mappings: config/opensearch/default.json
     output_dir: evidence/europepmc
   evidence_eva:
     index: evidence_eva
-    input_dir: output/evidence/sourceId=eva
+    input_dir: output/evidence_eva
     mappings: config/opensearch/default.json
     output_dir: evidence/eva
   evidence_eva_somatic:
     index: evidence_eva_somatic
-    input_dir: output/evidence/sourceId=eva_somatic
+    input_dir: output/evidence_eva_somatic
     mappings: config/opensearch/default.json
     output_dir: evidence/eva_somatic
   evidence_expression_atlas:
     index: evidence_expression_atlas
-    input_dir: output/evidence/sourceId=expression_atlas
+    input_dir: output/evidence_expression_atlas
     mappings: config/opensearch/default.json
     output_dir: evidence/expression_atlas
   evidence_gene2phenotype:
     index: evidence_gene2phenotype
-    input_dir: output/evidence/sourceId=gene2phenotype
+    input_dir: output/evidence_gene2phenotype
     mappings: config/opensearch/default.json
     output_dir: evidence/gene2phenotype
   evidence_gene_burden:
     index: evidence_gene_burden
-    input_dir: output/evidence/sourceId=gene_burden
+    input_dir: output/evidence_gene_burden
     mappings: config/opensearch/default.json
     output_dir: evidence/gene_burden
   evidence_genomics_england:
     index: evidence_genomics_england
-    input_dir: output/evidence/sourceId=genomics_england
+    input_dir: output/evidence_genomics_england
     mappings: config/opensearch/default.json
     output_dir: evidence/genomics_england
   evidence_gwas_credible_sets:
     index: evidence_gwas_credible_sets
-    input_dir: output/evidence/sourceId=gwas_credible_sets
+    input_dir: output/evidence_gwas_credible_sets
     mappings: config/opensearch/default.json
     output_dir: evidence/gwas_credible_sets
   evidence_impc:
     index: evidence_impc
-    input_dir: output/evidence/sourceId=impc
+    input_dir: output/evidence_impc
     mappings: config/opensearch/default.json
     output_dir: evidence/impc
   evidence_intogen:
     index: evidence_intogen
-    input_dir: output/evidence/sourceId=intogen
+    input_dir: output/evidence_intogen
     mappings: config/opensearch/default.json
     output_dir: evidence/intogen
   evidence_orphanet:
     index: evidence_orphanet
-    input_dir: output/evidence/sourceId=orphanet
+    input_dir: output/evidence_orphanet
     mappings: config/opensearch/default.json
     output_dir: evidence/orphanet
   evidence_ot_crispr:
     index: evidence_ot_crispr
-    input_dir: output/evidence/sourceId=ot_crispr
+    input_dir: output/evidence_ot_crispr
     mappings: config/opensearch/default.json
     output_dir: evidence/ot_crispr
   evidence_ot_crispr_validation:
     index: evidence_ot_crispr_validation
-    input_dir: output/evidence/sourceId=ot_crispr_validation
+    input_dir: output/evidence_ot_crispr_validation
     mappings: config/opensearch/default.json
     output_dir: evidence/ot_crispr_validation
   evidence_ot_genetics_portal:
     index: evidence_ot_genetics_portal
-    input_dir: output/evidence/sourceId=ot_genetics_portal
+    input_dir: output/evidence_ot_genetics_portal
     mappings: config/opensearch/default.json
     output_dir: evidence/ot_genetics_portal
   evidence_progeny:
     index: evidence_progeny
-    input_dir: output/evidence/sourceId=progeny
+    input_dir: output/evidence_progeny
     mappings: config/opensearch/default.json
     output_dir: evidence/progeny
   evidence_reactome:
     index: evidence_reactome
-    input_dir: output/evidence/sourceId=reactome
+    input_dir: output/evidence_reactome
     mappings: config/opensearch/default.json
     output_dir: evidence/reactome
   evidence_slapenrich:
     index: evidence_slapenrich
-    input_dir: output/evidence/sourceId=slapenrich
+    input_dir: output/evidence_slapenrich
     mappings: config/opensearch/default.json
     output_dir: evidence/slapenrich
   evidence_sysbio:
     index: evidence_sysbio
-    input_dir: output/evidence/sourceId=sysbio
+    input_dir: output/evidence_sysbio
     mappings: config/opensearch/default.json
     output_dir: evidence/sysbio
   evidence_uniprot_literature:
     index: evidence_uniprot_literature
-    input_dir: output/evidence/sourceId=uniprot_literature
+    input_dir: output/evidence_uniprot_literature
     mappings: config/opensearch/default.json
     output_dir: evidence/uniprot_literature
   evidence_uniprot_variants:
     index: evidence_uniprot_variants
-    input_dir: output/evidence/sourceId=uniprot_variants
+    input_dir: output/evidence_uniprot_variants
     mappings: config/opensearch/default.json
     output_dir: evidence/uniprot_variants
   expression:
@@ -421,99 +421,99 @@ bigquery:
     input_dir: output/drug_warning
   evidence_cancer_biomarkers:
     index: evidence
-    input_dir: output/evidence/sourceId=cancer_biomarkers
+    input_dir: output/evidence_cancer_biomarkers
     hive_partition: true
   evidence_cancer_gene_census:
     index: evidence
-    input_dir: output/evidence/sourceId=cancer_gene_census
+    input_dir: output/evidence_cancer_gene_census
     hive_partition: true
   evidence_chembl:
     index: evidence
-    input_dir: output/evidence/sourceId=chembl
+    input_dir: output/evidence_chembl
     hive_partition: true
   evidence_clingen:
     index: evidence
-    input_dir: output/evidence/sourceId=clingen
+    input_dir: output/evidence_clingen
     hive_partition: true
   evidence_crispr:
     index: evidence
-    input_dir: output/evidence/sourceId=crispr
+    input_dir: output/evidence_crispr
     hive_partition: true
   evidence_crispr_screen:
     index: evidence
-    input_dir: output/evidence/sourceId=crispr_screen
+    input_dir: output/evidence_crispr_screen
     hive_partition: true
   evidence_encore:
     index: evidence
-    input_dir: output/evidence/sourceId=encore
+    input_dir: output/evidence_encore
     hive_partition: true
   evidence_europepmc:
     index: evidence
-    input_dir: output/evidence/sourceId=europepmc
+    input_dir: output/evidence_europepmc
     hive_partition: true
   evidence_eva:
     index: evidence
-    input_dir: output/evidence/sourceId=eva
+    input_dir: output/evidence_eva
     hive_partition: true
   evidence_eva_somatic:
     index: evidence
-    input_dir: output/evidence/sourceId=eva_somatic
+    input_dir: output/evidence_eva_somatic
     hive_partition: true
   evidence_expression_atlas:
     index: evidence
-    input_dir: output/evidence/sourceId=expression_atlas
+    input_dir: output/evidence_expression_atlas
     hive_partition: true
   evidence_gene2phenotype:
     index: evidence
-    input_dir: output/evidence/sourceId=gene2phenotype
+    input_dir: output/evidence_gene2phenotype
     hive_partition: true
   evidence_gene_burden:
     index: evidence
-    input_dir: output/evidence/sourceId=gene_burden
+    input_dir: output/evidence_gene_burden
     hive_partition: true
   evidence_genomics_england:
     index: evidence
-    input_dir: output/evidence/sourceId=genomics_england
+    input_dir: output/evidence_genomics_england
     hive_partition: true
   evidence_gwas_credible_sets:
     index: evidence
-    input_dir: output/evidence/sourceId=gwas_credible_sets
+    input_dir: output/evidence_gwas_credible_sets
     hive_partition: true
   evidence_impc:
     index: evidence
-    input_dir: output/evidence/sourceId=impc
+    input_dir: output/evidence_impc
     hive_partition: true
   evidence_intogen:
     index: evidence
-    input_dir: output/evidence/sourceId=intogen
+    input_dir: output/evidence_intogen
     hive_partition: true
   evidence_orphanet:
     index: evidence
-    input_dir: output/evidence/sourceId=orphanet
+    input_dir: output/evidence_orphanet
     hive_partition: true
   evidence_progeny:
     index: evidence
-    input_dir: output/evidence/sourceId=progeny
+    input_dir: output/evidence_progeny
     hive_partition: true
   evidence_reactome:
     index: evidence
-    input_dir: output/evidence/sourceId=reactome
+    input_dir: output/evidence_reactome
     hive_partition: true
   evidence_slapenrich:
     index: evidence
-    input_dir: output/evidence/sourceId=slapenrich
+    input_dir: output/evidence_slapenrich
     hive_partition: true
   evidence_sysbio:
     index: evidence
-    input_dir: output/evidence/sourceId=sysbio
+    input_dir: output/evidence_sysbio
     hive_partition: true
   evidence_uniprot_literature:
     index: evidence
-    input_dir: output/evidence/sourceId=uniprot_literature
+    input_dir: output/evidence_uniprot_literature
     hive_partition: true
   evidence_uniprot_variants:
     index: evidence
-    input_dir: output/evidence/sourceId=uniprot_variants
+    input_dir: output/evidence_uniprot_variants
     hive_partition: true
   expression:
     index: expression
