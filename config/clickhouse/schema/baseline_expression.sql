@@ -13,7 +13,7 @@ create table if not exists baseline_expression_log (
     q3 Float64,
     max Float64,
     distribution_score Float64,
-    specificity_score Float64,
+    specificity_score Nullable (Float64),
     datasourceId String,
     datatypeId String,
     unit String,
