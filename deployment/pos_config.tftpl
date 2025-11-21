@@ -38,7 +38,7 @@ scratchpad:
   gcs_sync_source: ${RELEASE_URI} # must have trailing slash
   gcs_sync_destination: ${RELEASE_GCS_OUTPUT} # must have trailing slash
   # ftp sync
-  ftp_sync_source_data: ${RELEASE_URI} 
+  ftp_sync_source_data: ${RELEASE_URI}
   ftp_sync_release_id: ${RELEASE}
   ftp_sync_path_gcs_credentials_file: ${GCS_CREDENTIALS_FILE
 
@@ -78,8 +78,7 @@ steps:
         - open_search_start data loading instance
       foreach: &opensearch_datasets
         - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
+        - colocalisation
         - credible_set
         - croissant
         - disease
@@ -503,7 +502,7 @@ steps:
   ################################################################################################
   # ClickHouse - Modular Steps
   ################################################################################################
-  
+
   clickhouse_start:
     - name: clickhouse_start data loading instance
       volume_data: ${clickhouse_data}
@@ -619,8 +618,7 @@ steps:
         - association_by_overall_indirect
         - association_overall_direct
         - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
+        - colocalisation
         - credible_set
         - disease
         - disease_hpo
@@ -722,12 +720,12 @@ steps:
     # EPMC Co-occurrence
     - name: copy epmc_cooccurrence
       source: ${data_source}/intermediate/literature_epmc_cooccurrence
-      destination: etc/export/epmc_cooccurrence 
+      destination: etc/export/epmc_cooccurrence
   # gcs_sync
   gcs_sync:
     - name: sync_bucket gcs release data
-      source: ${gcs_sync_source} 
-      destination: ${gcs_sync_destination} 
+      source: ${gcs_sync_source}
+      destination: ${gcs_sync_destination}
   # ftp_sync
   ftp_sync:
     - name: ftp_sync release data to ftp server

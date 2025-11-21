@@ -6,15 +6,14 @@ log_level: DEBUG
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: ${RELEASE} # e.g. 25.12
-  data_source: ${DATA_SOURCE} # same as release_uri 
+  data_source: ${DATA_SOURCE} # same as release_uri
   database_namespace: ${DATABASE_NAMESPACE} # e.g. ppp2512
-  
   # Google disk snapshot variables
   opensearch_disk_name: ppp-2512a-os
   opensearch_disk_snapshot_name: ppp-2512a-os
   clickhouse_disk_name: ppp-2512a-ch
   clickhouse_disk_snapshot_name: ppp-2512a-ch
-  # ========================= THESE VALUES RARELY NEED CHANGING ===========================  
+  # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   release_gcs_bucket: gs://open-targets-ppp-data-releases
   # temp file locations
   local_data: release_data
@@ -28,7 +27,7 @@ scratchpad:
   opensearch_snapshot_repository: ot-os-snapshots
   opensearch_snapshot_bucket: open-targets-data-backends
   opensearch_snapshot_base_path: opensearch
-  opensearch_indices_to_restore: '*,-.*'  # e.g. '*,-.*' to restore all except hidden indices
+  opensearch_indices_to_restore: '*,-.*' # e.g. '*,-.*' to restore all except hidden indices
 
   # clickhouse
   clickhouse_version: 25.6.3.116
@@ -52,7 +51,7 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: 
+      ftp_address:
       gcp_address: ${release_gcs_bucket}/${release}/output/
       dataset_path: ${local_data}/output
       output: croissant.json
@@ -72,8 +71,7 @@ steps:
         - open_search_start data loading instance
       foreach: &opensearch_datasets
         - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
+        - colocalisation
         - credible_set
         - croissant
         - disease
@@ -257,7 +255,7 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: 
+      ftp_address:
       gcp_address: ${release_gcs_bucket}/${release}/output/
       dataset_path: ${local_data}/output
       output: croissant.json
@@ -480,7 +478,7 @@ steps:
   ################################################################################################
   # ClickHouse - Modular Steps
   ################################################################################################
-  
+
   clickhouse_start:
     - name: clickhouse_start data loading instance
       volume_data: ${clickhouse_data}
@@ -583,5 +581,5 @@ steps:
   # gcs_sync
   gcs_sync:
     - name: sync_bucket gcs release data
-      source: ${data_source}/ 
-      destination: ${release_gcs_bucket}/${release}/ 
+      source: ${data_source}/
+      destination: ${release_gcs_bucket}/${release}/
