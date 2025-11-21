@@ -1,10 +1,17 @@
 import subprocess
+from enum import Enum
 from pathlib import Path
 from subprocess import CompletedProcess
 
 
 class TerraformError(Exception):
     """Exception for Terraform-related errors."""
+
+
+class WorkspaceAction(Enum):
+    SELECT = 'select'
+    NEW = 'new'
+    DELETE = 'delete'
 
 
 class TerraformRunner:
@@ -20,6 +27,9 @@ class TerraformRunner:
 
     def init(self) -> CompletedProcess[bytes]:
         return self._command('init')
+
+    def workspace(self, action: WorkspaceAction, name: str) -> CompletedProcess[bytes]:
+        return self._command('workspace', [action.value, name])
 
     def apply(
         self, tfvars: dict[str, str] | None, tfvar_file: Path | None, auto_approve: bool = False
