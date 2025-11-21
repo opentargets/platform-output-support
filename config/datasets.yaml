@@ -5,16 +5,11 @@ opensearch:
     input_dir: output/biosample
     mappings: config/opensearch/default.json
     output_dir: biosample
-  colocalisation_coloc:
+  colocalisation:
     index: colocalisation
-    input_dir: output/colocalisation_coloc
+    input_dir: output/colocalisation
     mappings: config/opensearch/colocalisation.json
-    output_dir: colocalisation_coloc
-  colocalisation_ecaviar:
-    index: colocalisation
-    input_dir: output/colocalisation_ecaviar
-    mappings: config/opensearch/colocalisation.json
-    output_dir: colocalisation_ecaviar
+    output_dir: colocalisation
   credible_set:
     index: credible_set
     input_dir: output/credible_set
@@ -389,12 +384,9 @@ bigquery:
   biosample:
     index: biosample
     input_dir: output/biosample
-  colocalisation_coloc:
-    index: colocalisation_coloc
-    input_dir: output/colocalisation_coloc
-  colocalisation_ecaviar:
-    index: colocalisation_ecaviar
-    input_dir: output/colocalisation_ecaviar
+  colocalisation:
+    index: colocalisation
+    input_dir: output/colocalisation
   credible_set:
     index: credible_set
     input_dir: output/credible_set

@@ -30,7 +30,7 @@ scratchpad:
   opensearch_snapshot_repository: ot-os-snapshots
   opensearch_snapshot_bucket: open-targets-data-backends
   opensearch_snapshot_base_path: opensearch
-  opensearch_indices_to_restore: "*,-.*" # e.g. '*,-.*' to restore all except hidden indices
+  opensearch_indices_to_restore: '*,-.*' # e.g. '*,-.*' to restore all except hidden indices
 
   # clickhouse
   clickhouse_version: 25.6.3.116
@@ -71,7 +71,7 @@ steps:
       volume_logs: ${opensearch_logs}
       opensearch_version: ${opensearch_version}
       opensearch_java_opts: ${opensearch_java_opts}
-      startup_wait: "60"
+      startup_wait: '60'
     - name: explode prep and load all datasets
       requires:
         - sync_bucket etl output files
@@ -80,8 +80,7 @@ steps:
         - open_search_start data loading instance
       foreach: &opensearch_datasets
         - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
+        - colocalisation
         - credible_set
         - croissant
         - disease
@@ -307,7 +306,7 @@ steps:
       volume_logs: ${opensearch_logs}
       opensearch_version: ${opensearch_version}
       opensearch_java_opts: ${opensearch_java_opts}
-      startup_wait: "60"
+      startup_wait: '60'
     - name: explode prep and load all datasets
       requires:
         - sync_bucket etl output files
@@ -372,7 +371,7 @@ steps:
       volume_logs: ${opensearch_logs}
       opensearch_version: ${opensearch_version}
       opensearch_java_opts: ${opensearch_java_opts}
-      startup_wait: "60"
+      startup_wait: '60'
     - name: open_search_snapshot data loading instance
       requires:
         - open_search_start data loading instance
@@ -618,8 +617,7 @@ steps:
         - association_by_overall_indirect
         - association_overall_direct
         - biosample
-        - colocalisation_coloc
-        - colocalisation_ecaviar
+        - colocalisation
         - credible_set
         - disease
         - disease_hpo
