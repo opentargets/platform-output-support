@@ -11,7 +11,7 @@ from otter.storage.google import GoogleStorage
 
 from pos.gcp.snapshot_disk import snapshot_exists
 from pos.gcp.vm import ComputeEngineSSHTunnel
-from pos.services.terraform import TerraformError, TerraformRunner
+from pos.services.terraform import TerraformError, TerraformRunner, WorkspaceAction
 from pos.utils import get_config
 
 OPENSEARCH_PORT = 9200
@@ -49,6 +49,7 @@ def common_params(func):
         '-s',
         'step',
         required=True,
+        prompt=True,
         help='Step to run.',
     )
     @click.option(
@@ -129,6 +130,14 @@ def remote_params(func):
         show_default=True,
         help='Path to the Terraform configuration directory.',
     )
+    @click.option(
+        '--workspace',
+        'workspace',
+        type=click.STRING,
+        prompt=True,
+        default='default',
+        help='Terraform workspace to use.',
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
@@ -142,6 +151,7 @@ def restore_database_params(func):
         'product',
         type=click.Choice(['platform', 'ppp']),
         required=True,
+        prompt=True,
         help='Platform or PPP',
     )
     @click.option(
@@ -213,6 +223,7 @@ def local(config, step, work_path, release_uri, pool_size, log_level) -> None:
     '-s',
     'step',
     required=True,
+    prompt=True,
     help='Step to run.',
 )
 @click.option(
@@ -256,6 +267,7 @@ def remote(
     tfvar_file: Path,
     auto_approve: bool,
     shutdown_after_run: bool,
+    workspace: str,
 ) -> None:
     """Run any POS step remotely on a machine defined by Terraform."""
     terraform = TerraformRunner(tfdir)
@@ -280,6 +292,7 @@ def remote(
     tfvar_file_abs = tfvar_file.absolute() if tfvar_file else None
     try:
         terraform.init()
+        terraform.workspace(action=WorkspaceAction.NEW, name=workspace)
         terraform.apply(tfvars=tfvars_dict, tfvar_file=tfvar_file_abs, auto_approve=auto_approve)
     except TerraformError as e:
         click.echo(f'Terraform execution failed: {e}')
@@ -291,6 +304,7 @@ def remote(
     'product',
     type=click.Choice(['platform', 'ppp']),
     required=True,
+    prompt=True,
     help='Product to create backend for.',
 )
 @click.option(
@@ -313,6 +327,7 @@ def backend(
     tfvar: tuple[str, str],
     tfvar_file: Path,
     auto_approve: bool,
+    workspace: str,
 ) -> None:
     """Create platform backend using remote POS execution.
 
@@ -342,6 +357,7 @@ def backend(
     tfvar_file_abs = tfvar_file.absolute() if tfvar_file else None
     try:
         terraform.init()
+        terraform.workspace(action=WorkspaceAction.NEW, name=workspace)
         terraform.apply(tfvars=tfvars_dict, tfvar_file=tfvar_file_abs, auto_approve=auto_approve)
     except TerraformError as e:
         click.echo(f'Terraform execution failed: {e}')
@@ -354,6 +370,7 @@ def backend(
     'product',
     type=click.Choice(['platform', 'ppp']),
     required=True,
+    prompt=True,
     help='Product to create backend for.',
 )
 @click.option(
@@ -361,6 +378,7 @@ def backend(
     'opensearch_from_snapshot',
     type=click.STRING,
     required=True,
+    prompt=True,
     help='GCS disk snapshot name to restore OpenSearch from.',
 )
 @click.option(
@@ -368,6 +386,7 @@ def backend(
     'clickhouse_from_snapshot',
     type=click.STRING,
     required=True,
+    prompt=True,
     help='GCS disk snapshot name to restore ClickHouse from.',
 )
 def tarballs(
@@ -379,6 +398,7 @@ def tarballs(
     tfvar_file: Path,
     auto_approve: bool,
     pos_branch: str,
+    workspace: str,
 ) -> None:
     """Create platform tarballs using remote POS execution.
 
@@ -402,6 +422,7 @@ def tarballs(
     terraform = TerraformRunner(tfdir)
     try:
         terraform.init()
+        terraform.workspace(action=WorkspaceAction.NEW, name=workspace)
         terraform.apply(tfvars=tfvars_dict, tfvar_file=tfvar_file_abs, auto_approve=auto_approve)
     except TerraformError as e:
         click.echo(f'Terraform execution failed: {e}')
@@ -424,11 +445,22 @@ def tarballs(
     show_default=True,
     help='Automatically approve Terraform actions without prompting.',
 )
-def clean_remote(tfdir: Path, auto_approve: bool) -> None:
+@click.option(
+    '--workspace',
+    'workspace',
+    type=click.STRING,
+    prompt=True,
+    default='default',
+    help='Terraform workspace to use.',
+)
+def clean_remote(tfdir: Path, auto_approve: bool, workspace: str | None) -> None:
     """Clean up remote POS resources after a remote run."""
     tf = TerraformRunner(tfdir)
     try:
         tf.destroy(auto_approve=auto_approve)
+        if workspace:
+            tf.workspace(action=WorkspaceAction.SELECT, name='default')
+            tf.workspace(action=WorkspaceAction.DELETE, name=workspace)
     except TerraformError as e:
         click.echo(f'Terraform execution failed: {e}')
 
@@ -439,6 +471,7 @@ def clean_remote(tfdir: Path, auto_approve: bool) -> None:
     'instance',
     type=click.Choice(['dev', 'prod']),
     required=True,
+    prompt=True,
     help='BigQuery instance to initialize.',
 )
 def bigquery(instance) -> None:
@@ -462,6 +495,7 @@ def bigquery(instance) -> None:
     'product',
     type=click.Choice(['platform', 'ppp']),
     required=True,
+    prompt=True,
     help='Product to create backend for.',
 )
 def gcs_sync(product) -> None:
