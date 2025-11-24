@@ -2,18 +2,18 @@
 # Platform Output Support Configuration File - PLATFORM
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://open-targets-pipeline-runs/szsz/25.06-testrun-4 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://open-targets-pipeline-runs/il/25.12-testrun-1 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 25.12 # e.g. 25.12
-  data_source: gs://open-targets-pipeline-runs/szsz/25.06-testrun-4 # same as release_uri
+  data_source: gs://open-targets-pipeline-runs/il/25.12-testrun-1 # same as release_uri
   database_namespace: platform2512 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2512dev-os
-  opensearch_disk_snapshot_name: platform-2512dev-os
-  clickhouse_disk_name: platform-2512dev-ch
-  clickhouse_disk_snapshot_name: platform-2512dev-ch
+  opensearch_disk_name: platform-2512-os
+  opensearch_disk_snapshot_name: platform-2512-os
+  clickhouse_disk_name: platform-2512-ch
+  clickhouse_disk_snapshot_name: platform-2512-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -470,7 +470,7 @@ steps:
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
-     - name: clickhouse_load clickhouse load aotf
+    - name: clickhouse_load clickhouse load aotf
       requires:
         - clickhouse_load clickhouse load disease
       dataset: aotf

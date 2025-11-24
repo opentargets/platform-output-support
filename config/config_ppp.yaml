@@ -449,7 +449,7 @@ steps:
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
-     - name: clickhouse_load clickhouse load aotf
+    - name: clickhouse_load clickhouse load aotf
       requires:
         - clickhouse_load clickhouse load disease
       dataset: aotf
