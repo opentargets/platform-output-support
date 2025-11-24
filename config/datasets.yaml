@@ -323,7 +323,7 @@ opensearch:
     output_dir: variant
   protein_coding_coords:
     index: protein_coding_coords
-    input_dir: view/coding_variant_table
+    input_dir: view/coding_variant
     mappings: config/opensearch/default.json
     output_dir: protein_coding_coords
 clickhouse:
@@ -488,21 +488,9 @@ bigquery:
     index: evidence
     input_dir: output/evidence_orphanet
     hive_partition: true
-  evidence_progeny:
-    index: evidence
-    input_dir: output/evidence_progeny
-    hive_partition: true
   evidence_reactome:
     index: evidence
     input_dir: output/evidence_reactome
-    hive_partition: true
-  evidence_slapenrich:
-    index: evidence
-    input_dir: output/evidence_slapenrich
-    hive_partition: true
-  evidence_sysbio:
-    index: evidence
-    input_dir: output/evidence_sysbio
     hive_partition: true
   evidence_uniprot_literature:
     index: evidence
@@ -574,7 +562,7 @@ bigquery:
     input_dir: output/variant
   protein_coding_coords:
     index: protein_coding_coords
-    input_dir: view/coding_variant_table
+    input_dir: view/coding_variant
 export:
   search_ebi_associations:
     input_dir: view/search_ebi_associations
