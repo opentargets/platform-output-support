@@ -339,7 +339,7 @@ clickhouse:
     postload_script: config/clickhouse/scripts/credible_sets.sql
   interval:
     table: intervals_log
-    input_dir: output/interval
+    input_dir: output/enhancer_to_gene
     preload_script: config/clickhouse/schema/intervals.sql
     postload_script: config/clickhouse/scripts/intervals.sql
   literature:
@@ -514,7 +514,7 @@ bigquery:
     input_dir: output/interaction_evidence
   interval:
     index: interval
-    input_dir: output/interval
+    input_dir: output/enhancer_to_gene
   known_drug:
     index: known_drug
     input_dir: output/known_drug
