@@ -1,6 +1,6 @@
 CREATE TABLE if not exists credible_sets_log (
     `studyLocusId` String,
-    `variantId` Nullable (String),
+    `variantId` String,
     `chromosome` Nullable (
         Enum(
             '1',
@@ -32,7 +32,7 @@ CREATE TABLE if not exists credible_sets_log (
     ),
     `position` Nullable (UInt32),
     `region` Nullable (String),
-    `studyId` Nullable (String),
+    `studyId` String,
     `beta` Nullable (Float64),
     `zScore` Nullable (Float64),
     `pValueMantissa` Nullable (Float64),
@@ -49,6 +49,20 @@ CREATE TABLE if not exists credible_sets_log (
     `locusStart` Nullable (Int32),
     `locusEnd` Nullable (Int32),
     `sampleSize` Nullable (UInt32),
+    `locus` Array (
+        Tuple (
+            `is95CredibleSet` Nullable (Bool),
+            `is99CredibleSet` Nullable (Bool),
+            `logBF` Nullable (Float64),
+            `posteriorProbability` Nullable (Float64),
+            `variantId` String,
+            `pvalueMantissa` Nullable (Float64),
+            `pvalueExponent` Nullable (Int32),
+            `beta` Nullable (Float64),
+            `standardError` Nullable (Float64),
+            `r2Overall` Nullable (Float64)
+        )
+    ),
     `ldSet` Array (
         Tuple (
             `tagVariantId` Nullable (String),
