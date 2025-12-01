@@ -13,12 +13,27 @@ ORDER BY (
         FROM credible_sets_log
     );
 
-SET max_memory_usage = 600000000000;
-
-SET max_threads = 4;
-
 CREATE TABLE IF NOT EXISTS credible_sets_by_variant ENGINE = MergeTree ()
-ORDER BY (studyType, variantId) SETTINGS allow_nullable_key = 1 AS (
-        select * except (locus, variantId), arrayJoin (locus.variantId) as variantId
+ORDER BY (variantId) AS (
+        select
+            groupArray (studyLocusId) as studyLocusIds, arrayJoin (locus.variantId) as variantId
         from credible_sets_log
+        group by
+            variantId
     );
+
+CREATE TABLE platform2512.credible_sets_by_variant (
+    `studyLocusIds` Array (String),
+    `variantId` String
+) ENGINE = MergeTree
+ORDER BY variantId
+    -- select * except A_studyLocusId
+    -- from (
+    --         select arrayJoin (studyLocusIds) as A_studyLocusId
+    --         from credible_sets_by_variant
+    --         where
+    --             variantId = '5_96874071_C_T'
+    --     ) as A
+    --     left join credible_sets on A.A_studyLocusId = credible_sets.studyLocusId
+    -- where
+    --     studyType = 'sqtl'
