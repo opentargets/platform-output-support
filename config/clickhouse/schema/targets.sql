@@ -180,11 +180,13 @@ CREATE TABLE if not exists targets_log (
             `level` String
         )
     ),
-    `tep` Tuple (
-        `url` String,
-        `targetFromSourceId` String,
-        `therapeuticArea` String,
-        `description` String
+    `tep` Nullable(
+        Tuple (
+            `url` String,
+            `targetFromSourceId` String,
+            `therapeuticArea` String,
+            `description` String
+        )
     ),
     `tractability` Array (
         Tuple (
