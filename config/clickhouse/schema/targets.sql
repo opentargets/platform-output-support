@@ -106,7 +106,7 @@ CREATE TABLE if not exists targets_log (
     ),
     `safetyLiabilities` Array (
         Tuple (
-            `bisamples` Array (
+            `biosamples` Array (
                 Tuple (
                     `tissueLabel` Nullable (String),
                     `tissueId` Nullable (String),
