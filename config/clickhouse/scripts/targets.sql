@@ -1,5 +1,5 @@
 -- create the credible_sets table indexed by studyId
-CREATE TABLE if not exists credible_sets_by_study engine = MergeTree
+CREATE TABLE if not exists target_credible_sets_by_study engine = MergeTree
 order by (studyId) SETTINGS allow_nullable_key = 1 as (
         select studyId, studyLocusId
         from credible_sets_log
@@ -20,7 +20,7 @@ order by (geneId) SETTINGS allow_nullable_key = 1 as (
             ) as studyLocusIds
         from
             studies_log
-            left outer join credible_sets_by_study on studies_log.studyId = credible_sets_by_study.studyId
+            left outer join target_credible_sets_by_study on studies_log.studyId = target_credible_sets_by_study.studyId
         where
             geneId is not null
             and studyLocusId is not null
@@ -40,7 +40,7 @@ CREATE TABLE if not exists targets engine = EmbeddedRocksDB () primary key id as
 
 DROP TABLE IF EXISTS targets_log;
 
-DROP TABLE IF EXISTS credible_sets_by_study;
+DROP TABLE IF EXISTS target_credible_sets_by_study;
 
 DROP TABLE IF EXISTS credible_sets_by_gene;
 
