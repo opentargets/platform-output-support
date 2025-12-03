@@ -1,39 +1,60 @@
-CREATE TABLE if not exists credible_sets engine = EmbeddedRocksDB () primary key studyLocusId as (
-    select * except locus
-    from credible_sets_log
+CREATE TABLE IF NOT EXISTS credible_sets ENGINE = EmbeddedRocksDB () PRIMARY KEY studyLocusId AS (
+    SELECT * except locus
+    FROM credible_sets_log
 );
 
 CREATE TABLE IF NOT EXISTS credible_sets_by_study ENGINE = MergeTree ()
-ORDER BY (
-        studyType,
-        studyId,
-        studyLocusId
-    ) SETTINGS allow_nullable_key = 1 AS (
-        SELECT * except locus
+ORDER BY (studyId) AS (
+        SELECT
+            groupArray (studyLocusId) AS studyLocusIds, studyId
         FROM credible_sets_log
+        GROUP BY
+            studyId
     );
 
 CREATE TABLE IF NOT EXISTS credible_sets_by_variant ENGINE = MergeTree ()
 ORDER BY (variantId) AS (
-        select
-            groupArray (studyLocusId) as studyLocusIds, arrayJoin (locus.variantId) as variantId
-        from credible_sets_log
-        group by
+        SELECT
+            groupArray (studyLocusId) AS studyLocusIds, arrayJoin (locus.variantId) AS variantId
+        FROM credible_sets_log
+        GROUP BY
             variantId
     );
 
-CREATE TABLE platform2512.credible_sets_by_variant (
-    `studyLocusIds` Array (String),
-    `variantId` String
-) ENGINE = MergeTree
-ORDER BY variantId
-    -- select * except A_studyLocusId
-    -- from (
-    --         select arrayJoin (studyLocusIds) as A_studyLocusId
-    --         from credible_sets_by_variant
-    --         where
-    --             variantId = '5_96874071_C_T'
-    --     ) as A
-    --     left join credible_sets on A.A_studyLocusId = credible_sets.studyLocusId
-    -- where
-    --     studyType = 'sqtl'
+CREATE TABLE IF NOT EXISTS credible_sets_by_region ENGINE = MergeTree ()
+ORDER BY (region) AS (
+        SELECT
+            groupArray (studyLocusId) AS studyLocusIds, region
+        FROM credible_sets_log
+        WHERE
+            region IS NOT NULL
+        GROUP BY
+            region
+    );
+
+CREATE TABLE IF NOT EXISTS credible_sets_by_study_type ENGINE = MergeTree ()
+ORDER BY (studyType) AS (
+        SELECT
+            groupArray (studyLocusId) AS studyLocusIds, studyType
+        FROM credible_sets_log
+        WHERE
+            studyType IS NOT NULL
+        GROUP BY
+            studyType
+    );
+
+-- CREATE TABLE platform2512.credible_sets_by_variant (
+--     `studyLocusIds` Array (String),
+--     `variantId` String
+-- ) ENGINE = MergeTree
+-- ORDER BY variantId
+-- select * except A_studyLocusId
+-- from (
+--         select arrayJoin (studyLocusIds) as A_studyLocusId
+--         from credible_sets_by_variant
+--         where
+--             variantId = '5_96874071_C_T'
+--     ) as A
+--     left join credible_sets on A.A_studyLocusId = credible_sets.studyLocusId
+-- where
+--     studyType = 'sqtl'
