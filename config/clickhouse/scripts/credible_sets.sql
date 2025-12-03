@@ -22,9 +22,10 @@ ORDER BY (variantId) AS (
     );
 
 CREATE TABLE IF NOT EXISTS credible_sets_by_region ENGINE = MergeTree ()
-ORDER BY (region) AS (
+ORDER BY (region) SETTINGS allow_nullable_key = 1 AS (
         SELECT
-            groupArray (studyLocusId) AS studyLocusIds, region
+            groupArray (studyLocusId) AS studyLocusIds,
+            region
         FROM credible_sets_log
         WHERE
             region IS NOT NULL
@@ -33,9 +34,10 @@ ORDER BY (region) AS (
     );
 
 CREATE TABLE IF NOT EXISTS credible_sets_by_study_type ENGINE = MergeTree ()
-ORDER BY (studyType) AS (
+ORDER BY (studyType) SETTINGS allow_nullable_key = 1 AS (
         SELECT
-            groupArray (studyLocusId) AS studyLocusIds, studyType
+            groupArray (studyLocusId) AS studyLocusIds,
+            studyType
         FROM credible_sets_log
         WHERE
             studyType IS NOT NULL
