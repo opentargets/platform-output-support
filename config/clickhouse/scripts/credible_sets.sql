@@ -44,19 +44,3 @@ ORDER BY (studyType) SETTINGS allow_nullable_key = 1 AS (
         GROUP BY
             studyType
     );
-
--- CREATE TABLE platform2512.credible_sets_by_variant (
---     `studyLocusIds` Array (String),
---     `variantId` String
--- ) ENGINE = MergeTree
--- ORDER BY variantId
--- select * except A_studyLocusId
--- from (
---         select arrayJoin (studyLocusIds) as A_studyLocusId
---         from credible_sets_by_variant
---         where
---             variantId = '5_96874071_C_T'
---     ) as A
---     left join credible_sets on A.A_studyLocusId = credible_sets.studyLocusId
--- where
---     studyType = 'sqtl'
