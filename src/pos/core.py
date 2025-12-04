@@ -453,12 +453,13 @@ def tarballs(
     default='default',
     help='Terraform workspace to use.',
 )
-def clean_remote(tfdir: Path, auto_approve: bool, workspace: str | None) -> None:
+def clean_remote(tfdir: Path, auto_approve: bool, workspace: str) -> None:
     """Clean up remote POS resources after a remote run."""
     tf = TerraformRunner(tfdir)
     try:
+        tf.workspace(action=WorkspaceAction.SELECT, name=workspace)
         tf.destroy(auto_approve=auto_approve)
-        if workspace:
+        if workspace != 'default':
             tf.workspace(action=WorkspaceAction.SELECT, name='default')
             tf.workspace(action=WorkspaceAction.DELETE, name=workspace)
     except TerraformError as e:
