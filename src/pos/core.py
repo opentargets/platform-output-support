@@ -409,6 +409,8 @@ def tarballs(
     if product == 'ppp':
         config = Path('config').joinpath('config_ppp.yaml')
     tfvars_dict: dict[str, str] = {
+        'open_search_disk_name': get_config(str(config)).scratchpad.opensearch_disk_name,
+        'clickhouse_disk_name': get_config(str(config)).scratchpad.clickhouse_disk_name,
         'open_search_snapshot_source': opensearch_from_snapshot,
         'clickhouse_snapshot_source': clickhouse_from_snapshot,
         'pos_step': 'tarballs',
