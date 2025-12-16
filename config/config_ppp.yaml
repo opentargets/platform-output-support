@@ -2,17 +2,17 @@
 # Platform Output Support Configuration File - PPP
 work_path: ./work
 log_level: DEBUG
-# release_uri: ${RELEASE_URI} # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://opentargets-pipeline-runs/szsz/25.12-ppp-testrun-3 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
-  release: ${RELEASE} # e.g. 25.12
-  data_source: ${DATA_SOURCE} # same as release_uri
-  database_namespace: ${DATABASE_NAMESPACE} # e.g. ppp2512
+  release: 25.12 # e.g. 25.12
+  data_source: gs://opentargets-pipeline-runs/szsz/25.12-ppp-testrun-3 # same as release_uri
+  database_namespace: ppp2512 # e.g. ppp2512
   # Google disk snapshot variables
-  opensearch_disk_name: ppp-2512a-os
-  opensearch_disk_snapshot_name: ppp-2512a-os
-  clickhouse_disk_name: ppp-2512a-ch
-  clickhouse_disk_snapshot_name: ppp-2512a-ch
+  opensearch_disk_name: ppp-2512-os
+  opensearch_disk_snapshot_name: ppp-2512-os
+  clickhouse_disk_name: ppp-2512-ch
+  clickhouse_disk_snapshot_name: ppp-2512-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-ppp-data-releases
