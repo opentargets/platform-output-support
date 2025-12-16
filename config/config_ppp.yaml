@@ -547,6 +547,7 @@ steps:
       foreach:
         - associations_otf_target
         - associations_otf_disease
+        - baseline_expression
         - intervals
         - literature_index
         - literature
