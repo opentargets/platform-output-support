@@ -787,7 +787,7 @@ wheels = [
 [[package]]
 name = "opentargets-otter"
 version = "25.0.16"
-source = { git = "https://github.com/opentargets/otter?branch=handle-unknown-cli-args#6a5f1b5f81c93515165a4a81ddb4aaba661db7a4" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
     { name = "google-cloud-storage" },
@@ -796,6 +796,10 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/12/54/2b0848e0a8c49edb4e3dcedacb5a0fddd7ec786e1439a1c89ff859d0f148/opentargets_otter-25.0.16.tar.gz", hash = "sha256:e1b13149fa106633b7d21b0432f42b31a00dfcdb2d9ca9d0769bb3227cd55f54", size = 107832, upload-time = "2025-11-07T15:47:43.662Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1b/7f/7aa7a818cf2966e70caeee79532ca01cf2a4745ad309e54cbff1c22898c8/opentargets_otter-25.0.16-py3-none-any.whl", hash = "sha256:fe2e44c4b74524bfc862deecbc0d458d34a9d77fa0fec3185ec058ee6818aa24", size = 51926, upload-time = "2025-11-07T15:47:42.273Z" },
 ]
 
 [[package]]
@@ -986,7 +990,7 @@ requires-dist = [
     { name = "google-cloud-bigquery", specifier = ">=3.34.0" },
     { name = "google-cloud-compute", specifier = ">=1.31.0" },
     { name = "opensearch-py", specifier = ">=3.0.0" },
-    { name = "opentargets-otter", git = "https://github.com/opentargets/otter?branch=handle-unknown-cli-args" },
+    { name = "opentargets-otter", specifier = ">=25.0.16" },
     { name = "orjson", specifier = ">=3.10.18" },
     { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?branch=master" },
     { name = "paramiko", specifier = ">=4.0.0" },
