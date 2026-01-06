@@ -746,7 +746,7 @@ steps:
     - name: ftp_sync release data to ftp server
       source_data: ${data_source}
       release_id: ${release}
-      gcs_credentials_file: ${ftp_sync_path_gcs_credentials_file}
+      gcs_credentials_file_remote: ${ftp_sync_path_gcs_credentials_file}
   test:
     - name: hello_world test
       who: Hello, Open Targets Platform Output Support!
