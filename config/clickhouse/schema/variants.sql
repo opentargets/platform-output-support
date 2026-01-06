@@ -77,4 +77,4 @@ CREATE TABLE if not exists variants_log (
     ),
     `hgvsId` Nullable (String),
     `variantDescription` String,
-);
+) engine = Log;
