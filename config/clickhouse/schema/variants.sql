@@ -74,6 +74,7 @@ CREATE TABLE if not exists variants_log (
             `populationName` Nullable (String),
             `alleleFrequency` Nullable (Float64)
         )
-    ) `hgvsId` Nullable (String),
+    ),
+    `hgvsId` Nullable (String),
     `variantDescription` String,
 );
