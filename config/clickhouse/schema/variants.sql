@@ -1,47 +1,3 @@
--- case class VariantEffect(method: Option[String],
---                          assessment: Option[String],
---                          score: Option[Double],
---                          assessmentFlag: Option[String],
---                          targetId: Option[String],
---                          normalisedScore: Option[Double]
--- )
-
--- case class TranscriptConsequence(variantFunctionalConsequenceIds: Option[Seq[String]],
---                                  aminoAcidChange: Option[String],
---                                  uniprotAccessions: Option[Seq[String]],
---                                  isEnsemblCanonical: Boolean,
---                                  codons: Option[String],
---                                  distanceFromFootprint: Int,
---                                  distanceFromTss: Int,
---                                  targetId: Option[String],
---                                  impact: Option[String],
---                                  transcriptId: Option[String],
---                                  lofteePrediction: Option[String],
---                                  siftPrediction: Option[Double],
---                                  polyphenPrediction: Option[Double],
---                                  transcriptIndex: Long,
---                                  consequenceScore: Double
--- )
-
--- case class DbXref(id: Option[String], source: Option[String])
-
--- case class AlleleFrequency(populationName: Option[String], alleleFrequency: Option[Double])
-
--- case class VariantIndex(variantId: String,
---                         chromosome: String,
---                         position: Int,
---                         referenceAllele: String,
---                         alternateAllele: String,
---                         variantEffect: Option[Seq[VariantEffect]],
---                         mostSevereConsequenceId: String,
---                         transcriptConsequences: Option[Seq[TranscriptConsequence]],
---                         rsIds: Option[Seq[String]],
---                         dbXrefs: Option[Seq[DbXref]],
---                         alleleFrequencies: Option[Seq[AlleleFrequency]],
---                         hgvsId: Option[String],
---                         variantDescription: String
--- )
-
 CREATE TABLE if not exists variants_log (
     `variantId` String,
     `chromosome` Nullable (
@@ -73,14 +29,10 @@ CREATE TABLE if not exists variants_log (
             'MT'
         )
     ),
-    `position` Nullable (UInt32),
-    `referenceAllele` Nullable (String),
-    `alternateAllele` Nullable (String),
-    `mostSevereConsequenceId` Nullable (String),
-    `rsIds` Array (String),
-    `hgvsId` Nullable (String),
-    `variantDescription` Nullable (String),
-    `variantEffects` Array (
+    `position` UInt32,
+    `referenceAllele` String,
+    `alternateAllele` String,
+    `variantEffect` Array (
         Tuple (
             `method` Nullable (String),
             `assessment` Nullable (String),
@@ -90,6 +42,7 @@ CREATE TABLE if not exists variants_log (
             `normalisedScore` Nullable (Float64)
         )
     ),
+    `mostSevereConsequenceId` String,
     `transcriptConsequences` Array (
         Tuple (
             `variantFunctionalConsequenceIds` Array (String),
@@ -109,6 +62,7 @@ CREATE TABLE if not exists variants_log (
             `consequenceScore` Float64
         )
     ),
+    `rsIds` Array (String),
     `dbXrefs` Array (
         Tuple (
             `id` Nullable (String),
@@ -120,5 +74,6 @@ CREATE TABLE if not exists variants_log (
             `populationName` Nullable (String),
             `alleleFrequency` Nullable (Float64)
         )
-    )
+    ) `hgvsId` Nullable (String),
+    `variantDescription` String,
 );
