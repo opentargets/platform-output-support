@@ -463,6 +463,7 @@ steps:
         - literature
         - w2v
         - credible_sets
+        - colocalisation
         - studies
         - disease
       do:
@@ -483,34 +484,34 @@ steps:
       dataset: targets
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: explode backup clickhouse tables
-      requires:
-        - explode load all datasets
-      foreach:
-        - associations_otf_target
-        - associations_otf_disease
-        - baseline_expression
-        - intervals
-        - literature_index
-        - literature
-        - targets
-        - ml_w2v
-      do:
-        - name: clickhouse_backup table ${each}
-          clickhouse_database: ${database_namespace}
-          table: ${each}
-          gcs_base_path: ${clickhouse_backup_base_path}
-    - name: clickhouse_stop data loading instance
-      requires:
-        - explode backup clickhouse tables
-      clickhouse_database_name: ${database_namespace}
-    - name: create_gcp_disk_snapshot clickhouse
-      requires:
-        - clickhouse_stop data loading instance
-      gcp_project_id: ${disk_snapshot_project_id}
-      gcp_disk_name: ${clickhouse_disk_name}
-      gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
-      gcp_disk_zone: europe-west1-d
+    # - name: explode backup clickhouse tables
+    #   requires:
+    #     - explode load all datasets
+    #   foreach:
+    #     - associations_otf_target
+    #     - associations_otf_disease
+    #     - baseline_expression
+    #     - intervals
+    #     - literature_index
+    #     - literature
+    #     - targets
+    #     - ml_w2v
+    #   do:
+    #     - name: clickhouse_backup table ${each}
+    #       clickhouse_database: ${database_namespace}
+    #       table: ${each}
+    #       gcs_base_path: ${clickhouse_backup_base_path}
+    # - name: clickhouse_stop data loading instance
+    #   requires:
+    #     - explode backup clickhouse tables
+    #   clickhouse_database_name: ${database_namespace}
+    # - name: create_gcp_disk_snapshot clickhouse
+    #   requires:
+    #     - clickhouse_stop data loading instance
+    #   gcp_project_id: ${disk_snapshot_project_id}
+    #   gcp_disk_name: ${clickhouse_disk_name}
+    #   gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
+    #   gcp_disk_zone: europe-west1-d
   ################################################################################################
   # ClickHouse - Modular Steps
   ################################################################################################
