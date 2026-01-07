@@ -5,11 +5,11 @@ opensearch:
     input_dir: output/biosample
     mappings: config/opensearch/default.json
     output_dir: biosample
-  colocalisation:
-    index: colocalisation
-    input_dir: output/colocalisation
-    mappings: config/opensearch/colocalisation.json
-    output_dir: colocalisation
+  # colocalisation:
+  #   index: colocalisation
+  #   input_dir: output/colocalisation
+  #   mappings: config/opensearch/colocalisation.json
+  #   output_dir: colocalisation
   credible_set:
     index: credible_set
     input_dir: output/credible_set
@@ -337,6 +337,11 @@ clickhouse:
     input_dir: output/baseline_expression
     preload_script: config/clickhouse/schema/baseline_expression.sql
     postload_script: config/clickhouse/scripts/baseline_expression.sql
+  colocalisation:
+    table: colocalisation_log
+    input_dir: output/colocalisation
+    preload_script: config/clickhouse/schema/colocalisation.sql
+    postload_script: config/clickhouse/scripts/colocalisation.sql
   credible_sets:
     table: credible_sets_log
     input_dir: output/credible_set

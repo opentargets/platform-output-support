@@ -464,6 +464,7 @@ steps:
         - literature
         - w2v
         - credible_sets
+        - colocalisation
         - studies
         - disease
         - variants
