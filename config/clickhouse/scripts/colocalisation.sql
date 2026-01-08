@@ -48,3 +48,7 @@ from (
     );
 
 drop table colocalisation_log;
+
+drop table colocalisation_left;
+
+drop table colocalisation_right;
