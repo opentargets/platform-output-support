@@ -25,7 +25,7 @@ variable "clickhouse_disk_name" {
 variable "clickhouse_data_disk_size" {
   description = "Clickhouse data disk size to deploy"
   type        = string
-  default     = "200"
+  default     = "400"
 }
 
 variable "clickhouse_snapshot_source" {
