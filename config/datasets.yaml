@@ -21,12 +21,12 @@ opensearch:
     input_dir: output/croissant
     mappings: config/opensearch/default.json
     output_dir: croissant
-  disease:
-    id_field: id
-    index: disease
-    input_dir: output/disease
-    mappings: config/opensearch/default.json
-    output_dir: disease
+  # disease:
+  #   id_field: id
+  #   index: disease
+  #   input_dir: output/disease
+  #   mappings: config/opensearch/default.json
+  #   output_dir: disease
   disease_hpo:
     index: disease_hpo
     input_dir: output/disease_phenotype
@@ -347,6 +347,11 @@ clickhouse:
     input_dir: output/credible_set
     preload_script: config/clickhouse/schema/credible_sets.sql
     postload_script: config/clickhouse/scripts/credible_sets.sql
+  disease:
+    table: disease_log
+    input_dir: output/disease
+    preload_script: config/clickhouse/schema/disease.sql
+    postload_script: config/clickhouse/scripts/disease.sql
   interval:
     table: intervals_log
     input_dir: output/enhancer_to_gene
