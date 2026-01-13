@@ -7,7 +7,7 @@ scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 25.12 # e.g. 25.12
   data_source:  gs://open-targets-pipeline-runs/il/25.12-testrun-2 #gs://open-targets-pipeline-runs/il/25.12-testrun-1 # same as release_uri
-  database_namespace: platform2512variant # e.g. platform2512
+  database_namespace: platform2512 # e.g. platform2512
 
   # Google disk snapshot variables
   opensearch_disk_name: platform-2512-os-rc4
@@ -83,7 +83,7 @@ steps:
         - colocalisation
         - credible_set
         - croissant
-        - disease
+        # - disease
         - disease_hpo
         - drug
         - drug_warnings
@@ -466,13 +466,18 @@ steps:
         - credible_sets
         - colocalisation
         - studies
-        - disease
         - variants
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load disease
+      requires:
+        - clickhouse_load clickhouse load studies
+      dataset: disease
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load aotf
       requires:
         - clickhouse_load clickhouse load disease
@@ -486,27 +491,33 @@ steps:
       dataset: targets
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: explode backup clickhouse tables
-      requires:
-        - explode load all datasets
-      foreach:
-        - associations_otf_target
-        - associations_otf_disease
-        - baseline_expression
-        - intervals
-        - literature_index
-        - literature
-        - targets
-        - ml_w2v
-        - variants
-      do:
-        - name: clickhouse_backup table ${each}
-          clickhouse_database: ${database_namespace}
-          table: ${each}
-          gcs_base_path: ${clickhouse_backup_base_path}
+    # - name: explode backup clickhouse tables
+    #   requires:
+    #     - explode load all datasets
+    #     - clickhouse_load clickhouse load disease
+    #     - clickhouse_load clickhouse load aotf
+    #     - clickhouse_load clickhouse load targets
+    #   foreach:
+    #     - associations_otf_target
+    #     - associations_otf_disease
+    #     - baseline_expression
+    #     - intervals
+    #     - literature_index
+    #     - literature
+    #     - targets
+    #     - ml_w2v
+    #     - variants
+    #   do:
+    #     - name: clickhouse_backup table ${each}
+    #       clickhouse_database: ${database_namespace}
+    #       table: ${each}
+    #       gcs_base_path: ${clickhouse_backup_base_path}
     - name: clickhouse_stop data loading instance
       requires:
-        - explode backup clickhouse tables
+        - explode load all datasets
+        - clickhouse_load clickhouse load disease
+        - clickhouse_load clickhouse load aotf
+        - clickhouse_load clickhouse load targets
       clickhouse_database_name: ${database_namespace}
     - name: create_gcp_disk_snapshot clickhouse
       requires:
