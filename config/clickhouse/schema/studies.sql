@@ -1,21 +1,19 @@
 CREATE TABLE if not exists studies_log (
     `studyId` String,
-    `condition` Nullable (String),
-    `projectId` Nullable (String),
-    `studyType` Nullable (
-        Enum(
-            'tuqtl',
-            'pqtl',
-            'eqtl',
-            'sqtl',
-            'sctuqtl',
-            'scpqtl',
-            'sceqtl',
-            'scsqtl',
-            'gwas'
-        )
+    `condition` LowCardinality (Nullable (String)),
+    `projectId` String,
+    `studyType` Enum(
+        'tuqtl',
+        'pqtl',
+        'eqtl',
+        'sqtl',
+        'sctuqtl',
+        'scpqtl',
+        'sceqtl',
+        'scsqtl',
+        'gwas'
     ),
-    `traitFromSource` Nullable (String),
+    `traitFromSource` String,
     `geneId` Nullable (String),
     `biosampleFromSourceId` Nullable (String),
     `nSamples` Nullable (UInt32),
@@ -25,11 +23,11 @@ CREATE TABLE if not exists studies_log (
     `initialSampleSize` Nullable (String),
     `traitFromSourceMappedIds` Array (String),
     `diseaseIds` Array (String),
-    `publicationJournal` Nullable (String),
+    `publicationJournal` LowCardinality (Nullable (String)),
     `publicationDate` Nullable (String),
     `ldPopulationStructure` Array (
         Tuple (
-            `ldPopulation` Nullable (String),
+            `ldPopulation` LowCardinality (String),
             `relativeSampleSize` Nullable (Float64)
         )
     ),
@@ -37,8 +35,8 @@ CREATE TABLE if not exists studies_log (
     `qualityControls` Array (String),
     `replicationSamples` Array (
         Tuple (
-            `ancestry` Nullable (String),
-            `sampleSize` Nullable (UInt32)
+            `ancestry` LowCardinality (String),
+            `sampleSize` UInt32
         )
     ),
     `nControls` Nullable (UInt32),
@@ -47,8 +45,8 @@ CREATE TABLE if not exists studies_log (
     `publicationTitle` Nullable (String),
     `discoverySamples` Array (
         Tuple (
-            `ancestry` Nullable (String),
-            `sampleSize` Nullable (UInt32)
+            `ancestry` LowCardinality (String),
+            `sampleSize` UInt32
         )
     ),
     `nCases` Nullable (UInt32),
