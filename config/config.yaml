@@ -12,8 +12,8 @@ scratchpad:
   # Google disk snapshot variables
   opensearch_disk_name: platform-2512-os-rc4
   opensearch_disk_snapshot_name: platform-2512-os-rc4
-  clickhouse_disk_name: platform-2512-ch-mig2
-  clickhouse_disk_snapshot_name: platform-2512-ch-mig2
+  clickhouse_disk_name: platform-2512-ch-mig4
+  clickhouse_disk_snapshot_name: platform-2512-ch-mig4
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -461,13 +461,24 @@ steps:
         - w2v
         - credible_sets
         - colocalisation
-        - studies
         - variants
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load studies
+      requires:
+        - clickhouse_load clickhouse load credible_sets
+      dataset: studies
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load targets
+      requires:
+        - clickhouse_load clickhouse load studies
+      dataset: targets
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load disease
       requires:
         - clickhouse_load clickhouse load studies
@@ -478,13 +489,6 @@ steps:
       requires:
         - clickhouse_load clickhouse load disease
       dataset: aotf
-      clickhouse_database: ${database_namespace}
-      data_dir_parent: ${local_data}
-    - name: clickhouse_load clickhouse load targets
-      requires:
-        - clickhouse_load clickhouse load credible_sets
-        - clickhouse_load clickhouse load studies
-      dataset: targets
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
     # - name: explode backup clickhouse tables
