@@ -1,6 +1,6 @@
 create table if not exists literature_index engine = MergeTree ()
 order by (
-        keywordId, SHA512 (pmid), year, month, day
+        keywordId, pmid, year, month, day
     ) as (
         select
             pmid, pmcid, keywordId, relevance, date, year, month, day
@@ -8,7 +8,7 @@ order by (
     );
 
 create table if not exists literature engine = MergeTree ()
-order by (SHA512 (pmid)) as (
+order by (pmid, year) as (
         select
             pmid, any (pmcid) as pmcid, any (date) as date, any (year) as year, any (month) as month, any (day) as day
         from literature_log
