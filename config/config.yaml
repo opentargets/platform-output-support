@@ -457,6 +457,7 @@ steps:
       foreach:
         - baseline_expression
         - interval
+        - l2g_predictions
         - literature
         - w2v
         - credible_sets

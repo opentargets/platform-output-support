@@ -5,28 +5,12 @@ opensearch:
     input_dir: output/biosample
     mappings: config/opensearch/default.json
     output_dir: biosample
-  # colocalisation:
-  #   index: colocalisation
-  #   input_dir: output/colocalisation
-  #   mappings: config/opensearch/colocalisation.json
-  #   output_dir: colocalisation
-  credible_set:
-    index: credible_set
-    input_dir: output/credible_set
-    mappings: config/opensearch/credible_set.json
-    output_dir: credible_set
   croissant:
     index: downloads
     id_value: croissant
     input_dir: output/croissant
     mappings: config/opensearch/default.json
     output_dir: croissant
-  # disease:
-  #   id_field: id
-  #   index: disease
-  #   input_dir: output/disease
-  #   mappings: config/opensearch/default.json
-  #   output_dir: disease
   disease_hpo:
     index: disease_hpo
     input_dir: output/disease_phenotype
@@ -199,11 +183,6 @@ opensearch:
     input_dir: output/go
     mappings: config/opensearch/default.json
     output_dir: go
-  gwas_index:
-    index: gwas_index
-    input_dir: output/study
-    mappings: config/opensearch/study.json
-    output_dir: study
   hpo:
     id_field: id
     index: hpo
@@ -229,12 +208,7 @@ opensearch:
     index: known_drugs
     input_dir: output/known_drug
     mappings: config/opensearch/search_known_drugs.json
-    output_dir: known_drug
-  l2g_predictions:
-    index: l2g_predictions
-    input_dir: output/l2g_prediction
-    mappings: config/opensearch/l2g_predictions.json
-    output_dir: l2g_prediction
+    output_dir: known_drug 
   mechanism_of_action:
     index: mechanism_of_action
     input_dir: output/drug_mechanism_of_action
@@ -298,12 +272,6 @@ opensearch:
     input_dir: output/so
     mappings: config/opensearch/default.json
     output_dir: so
-  # target:
-  #   id_field: id
-  #   index: target
-  #   input_dir: output/target
-  #   mappings: config/opensearch/default.json
-  #   output_dir: target
   target_essentiality:
     id_field: id
     index: target_essentiality
@@ -316,11 +284,6 @@ opensearch:
     input_dir: output/target_prioritisation
     mappings: config/opensearch/default.json
     output_dir: target_prioritisation
-  # variant_index:
-  #   index: variant_index
-  #   input_dir: output/variant
-  #   mappings: config/opensearch/default.json
-  #   output_dir: variant
   protein_coding_coords:
     index: protein_coding_coords
     input_dir: view/coding_variant
@@ -357,6 +320,11 @@ clickhouse:
     input_dir: output/enhancer_to_gene
     preload_script: config/clickhouse/schema/intervals.sql
     postload_script: config/clickhouse/scripts/intervals.sql
+  l2g_predictions:
+    table: l2g_predictions_log
+    input_dir: output/l2g_prediction
+    preload_script: config/clickhouse/schema/l2g_predictions.sql
+    postload_script: config/clickhouse/scripts/l2g_predictions.sql
   literature:
     table: literature_log
     input_dir: output/literature
