@@ -225,11 +225,6 @@ opensearch:
     input_dir: output/interaction_evidence
     mappings: config/opensearch/default.json
     output_dir: interaction_evidence
-  known_drugs:
-    index: known_drugs
-    input_dir: output/known_drug
-    mappings: config/opensearch/search_known_drugs.json
-    output_dir: known_drug
   l2g_predictions:
     index: l2g_predictions
     input_dir: output/l2g_prediction
