@@ -6,7 +6,7 @@ release_uri: gs://open-targets-pipeline-runs/il/25.12-testrun-2 # e.g gs://open-
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 25.12 # e.g. 25.12
-  data_source:  gs://open-targets-pipeline-runs/il/25.12-testrun-2 #gs://open-targets-pipeline-runs/il/25.12-testrun-1 # same as release_uri
+  data_source: gs://open-targets-pipeline-runs/il/25.12-testrun-2 #gs://open-targets-pipeline-runs/il/25.12-testrun-1 # same as release_uri
   database_namespace: platform2512 # e.g. platform2512
 
   # Google disk snapshot variables
@@ -83,7 +83,6 @@ steps:
         - facet_search_disease
         - facet_search_target
         - indication
-        - known_drugs
         - search_disease
         - search_drug
         - search_study
@@ -208,7 +207,7 @@ steps:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
@@ -544,7 +543,7 @@ steps:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets

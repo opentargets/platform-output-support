@@ -76,7 +76,6 @@ steps:
         - facet_search_disease
         - facet_search_target
         - indication
-        - known_drugs
         - search_disease
         - search_drug
         - search_study
@@ -201,7 +200,7 @@ steps:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
@@ -518,7 +517,7 @@ steps:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
