@@ -12,8 +12,8 @@ scratchpad:
   # Google disk snapshot variables
   opensearch_disk_name: platform-2512-os-rc4
   opensearch_disk_snapshot_name: platform-2512-os-rc4
-  clickhouse_disk_name: platform-2512-ch-mig4
-  clickhouse_disk_snapshot_name: platform-2512-ch-mig4
+  clickhouse_disk_name: platform-2512-ch-mig6
+  clickhouse_disk_snapshot_name: platform-2512-ch-mig6
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -456,13 +456,14 @@ steps:
         - clickhouse_start data loading instance
       foreach:
         - baseline_expression
+        - credible_sets
+        - colocalisation
+        - interaction
         - interval
         - l2g_predictions
         - literature
-        - w2v
-        - credible_sets
-        - colocalisation
         - variants
+        - w2v
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
