@@ -194,11 +194,6 @@ opensearch:
     input_dir: output/drug_indication
     mappings: config/opensearch/default.json
     output_dir: drug_indication
-  interaction:
-    index: interaction
-    input_dir: output/interaction
-    mappings: config/opensearch/default.json
-    output_dir: interaction
   interaction_evidence:
     index: interaction_evidence
     input_dir: output/interaction_evidence
@@ -315,6 +310,11 @@ clickhouse:
     input_dir: output/disease
     preload_script: config/clickhouse/schema/disease.sql
     postload_script: config/clickhouse/scripts/disease.sql
+  interaction:
+    table: interaction_log
+    input_dir: output/interaction
+    preload_script: config/clickhouse/schema/interaction.sql
+    postload_script: config/clickhouse/scripts/interaction.sql
   interval:
     table: intervals_log
     input_dir: output/enhancer_to_gene
