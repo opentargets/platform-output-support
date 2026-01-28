@@ -367,6 +367,11 @@ clickhouse:
     input_dir: output/disease
     preload_script: config/clickhouse/schema/disease.sql
     postload_script: config/clickhouse/scripts/disease.sql
+  clinical_indication:
+    table: clinical_indication_log
+    input_dir: output/clinical_indication
+    preload_script: config/clickhouse/schema/clinical_indication.sql
+    postload_script: config/clickhouse/scripts/clinical_indication.sql
 bigquery:
   association_by_datasource_direct:
     index: association_by_datasource_direct

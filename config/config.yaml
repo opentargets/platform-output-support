@@ -2,18 +2,18 @@
 # Platform Output Support Configuration File - PLATFORM
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://open-targets-pipeline-runs/il/25.12-testrun-1 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://open-targets-pipeline-runs/rm/25.12-testrun-2 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 25.12 # e.g. 25.12
-  data_source: gs://open-targets-pipeline-runs/il/25.12-testrun-1 # same as release_uri
+  data_source: gs://open-targets-pipeline-runs/rm/25.12-testrun-2 # same as release_uri
   database_namespace: platform2512 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2512-os
-  opensearch_disk_snapshot_name: platform-2512-os
-  clickhouse_disk_name: platform-2512-ch
-  clickhouse_disk_snapshot_name: platform-2512-ch
+  opensearch_disk_name: platform-2512-os-4247-2
+  opensearch_disk_snapshot_name: platform-2512-os-4247-2
+  clickhouse_disk_name: platform-2512-ch-4247-3
+  clickhouse_disk_snapshot_name: platform-2512-ch-4247-3
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -186,6 +186,7 @@ steps:
         - credible_sets
         - studies
         - disease
+        - clinical_indication
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
@@ -204,34 +205,36 @@ steps:
       dataset: targets
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: explode backup clickhouse tables
-      requires:
-        - explode load all datasets
-      foreach:
-        - associations_otf_target
-        - associations_otf_disease
-        - baseline_expression
-        - intervals
-        - literature_index
-        - literature
-        - targets
-        - ml_w2v
-      do:
-        - name: clickhouse_backup table ${each}
-          clickhouse_database: ${database_namespace}
-          table: ${each}
-          gcs_base_path: ${clickhouse_backup_base_path}
-    - name: clickhouse_stop data loading instance
-      requires:
-        - explode backup clickhouse tables
-      clickhouse_database_name: ${database_namespace}
-    - name: create_gcp_disk_snapshot clickhouse
-      requires:
-        - clickhouse_stop data loading instance
-      gcp_project_id: ${disk_snapshot_project_id}
-      gcp_disk_name: ${clickhouse_disk_name}
-      gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
-      gcp_disk_zone: europe-west1-d
+    # - name: explode backup clickhouse tables
+    #   requires:
+    #     - explode load all datasets
+    #   foreach:
+    #     - associations_otf_target
+    #     - associations_otf_disease
+    #     - clinical_indication_disease
+    #     - clinical_indication_drug
+    #     - baseline_expression
+    #     - intervals
+    #     - literature_index
+    #     - literature
+    #     - targets
+    #     - ml_w2v
+    #   do:
+    #     - name: clickhouse_backup table ${each}
+    #       clickhouse_database: ${database_namespace}
+    #       table: ${each}
+    #       gcs_base_path: ${clickhouse_backup_base_path}
+    # - name: clickhouse_stop data loading instance
+    #   requires:
+    #     - explode backup clickhouse tables
+    #   clickhouse_database_name: ${database_namespace}
+    # - name: create_gcp_disk_snapshot clickhouse
+    #   requires:
+    #     - clickhouse_stop data loading instance
+    #   gcp_project_id: ${disk_snapshot_project_id}
+    #   gcp_disk_name: ${clickhouse_disk_name}
+    #   gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
+    #   gcp_disk_zone: europe-west1-d
     # exports
     - name: explode_data_prep search_ebi_associations
       dataset: search_ebi_associations
@@ -464,6 +467,7 @@ steps:
         - credible_sets
         - studies
         - disease
+        - clinical_indication
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
@@ -482,26 +486,31 @@ steps:
       dataset: targets
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: explode backup clickhouse tables
-      requires:
-        - explode load all datasets
-      foreach:
-        - associations_otf_target
-        - associations_otf_disease
-        - baseline_expression
-        - intervals
-        - literature_index
-        - literature
-        - targets
-        - ml_w2v
-      do:
-        - name: clickhouse_backup table ${each}
-          clickhouse_database: ${database_namespace}
-          table: ${each}
-          gcs_base_path: ${clickhouse_backup_base_path}
+    # - name: explode backup clickhouse tables
+    #   requires:
+    #     - explode load all datasets
+    #   foreach:
+    #     - associations_otf_target
+    #     - associations_otf_disease
+    #     - baseline_expression
+    #     - intervals
+    #     - literature_index
+    #     - literature
+    #     - targets
+    #     - ml_w2v
+    #     - clinical_indication_disease
+    #     - clinical_indication_drug
+    #   do:
+    #     - name: clickhouse_backup table ${each}
+    #       clickhouse_database: ${database_namespace}
+    #       table: ${each}
+    #       gcs_base_path: ${clickhouse_backup_base_path}
     - name: clickhouse_stop data loading instance
       requires:
-        - explode backup clickhouse tables
+        - explode load all datasets
+        - clickhouse_load clickhouse load disease
+        - clickhouse_load clickhouse load aotf
+        - clickhouse_load clickhouse load targets
       clickhouse_database_name: ${database_namespace}
     - name: create_gcp_disk_snapshot clickhouse
       requires:
@@ -548,6 +557,8 @@ steps:
         - literature
         - targets
         - ml_w2v
+        - clinical_indication_disease
+        - clinical_indication_drug
       do:
         - name: clickhouse_backup table ${each}
           requires:
@@ -569,6 +580,8 @@ steps:
         - literature
         - targets
         - ml_w2v
+        - clinical_indication_disease
+        - clinical_indication_drug
       do:
         - name: clickhouse_restore table ${each}
           clickhouse_database: ${database_namespace}
@@ -598,6 +611,7 @@ steps:
         - credible_sets
         - studies
         - disease
+        - clinical_indication
       do:
         - name: clickhouse_load clickhouse load ${each}
           requires:
