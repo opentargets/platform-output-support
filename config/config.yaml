@@ -12,8 +12,8 @@ scratchpad:
   # Google disk snapshot variables
   opensearch_disk_name: platform-2512-os-rc4
   opensearch_disk_snapshot_name: platform-2512-os-rc4
-  clickhouse_disk_name: platform-2512-ch-mig6
-  clickhouse_disk_snapshot_name: platform-2512-ch-mig6
+  clickhouse_disk_name: platform-2512-ch-mig9
+  clickhouse_disk_snapshot_name: platform-2512-ch-mig9
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -80,7 +80,6 @@ steps:
         - open_search_start data loading instance
       foreach: &opensearch_datasets
         - biosample
-        - credible_set
         - croissant
         - disease_hpo
         - drug
@@ -111,10 +110,7 @@ steps:
         - go
         - hpo
         - indication
-        - interaction
-        - interaction_evidence
         - known_drugs
-        - l2g_predictions
         - mechanism_of_action
         - mouse_phenotypes
         - openfda_faers
@@ -458,7 +454,7 @@ steps:
         - baseline_expression
         - credible_sets
         - colocalisation
-        - interaction
+        - interaction_evidence
         - interval
         - l2g_predictions
         - literature
@@ -469,6 +465,12 @@ steps:
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load interaction
+      requires:
+        - clickhouse_load clickhouse load interaction_evidence
+      dataset: interaction
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load studies
       requires:
         - clickhouse_load clickhouse load credible_sets
