@@ -305,6 +305,12 @@ clickhouse:
     input_dir: output/disease
     preload_script: config/clickhouse/schema/disease.sql
     postload_script: config/clickhouse/scripts/disease.sql
+  evidence:
+    table: evidence_log
+    input_dir: output
+    preload_script: config/clickhouse/schema/evidence.sql
+    postload_script: config/clickhouse/scripts/evidence.sql
+    glob_pattern: 'evidence_*/*.parquet'
   interaction:
     table: interaction_log
     input_dir: output/interaction
