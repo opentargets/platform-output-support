@@ -34,10 +34,7 @@ CREATE TABLE IF NOT EXISTS credible_sets_by_region ENGINE = EmbeddedRocksDB () P
         region
 );
 
-CREATE TABLE IF NOT EXISTS credible_sets_locus ENGINE = MergeTree
-ORDER BY (studyLocusId, variantId) AS (
-        SELECT
-            studyLocusId, locus.variantId as variantId, locus.is95CredibleSet as is95CredibleSet, locus.is99CredibleSet as is99CredibleSet, locus.logBF as logBF, locus.posteriorProbability as posteriorProbability, locus.pValueMantissa as pValueMantissa, locus.pValueExponent as pValueExponent, locus.beta as beta, locus.standardError as standardError, locus.r2Overall as r2Overall
-        FROM credible_sets_log ARRAY
-            JOIN locus
-    );
+CREATE TABLE IF NOT EXISTS credible_set_locus ENGINE = EmbeddedRocksDB () PRIMARY KEY studyLocusId AS (
+    SELECT studyLocusId, locus
+    FROM credible_sets_log
+);
