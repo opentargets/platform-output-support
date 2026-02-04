@@ -59,17 +59,6 @@ CREATE TABLE IF NOT EXISTS credible_sets_by_region ENGINE = EmbeddedRocksDB () P
         region
 );
 
-CREATE TABLE IF NOT EXISTS credible_sets_by_region ENGINE = EmbeddedRocksDB () PRIMARY KEY region AS (
-    SELECT
-        groupArrayDistinct (studyLocusId) AS studyLocusIds,
-        region
-    FROM credible_sets_log
-    WHERE
-        region IS NOT NULL
-    GROUP BY
-        region
-);
-
 CREATE TABLE IF NOT EXISTS credible_sets_locus ENGINE = EmbeddedRocksDB () PRIMARY KEY studyLocusId AS (
     SELECT studyLocusId, locus
     FROM credible_sets_log
