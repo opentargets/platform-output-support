@@ -52,6 +52,6 @@ CREATE TABLE if not exists disease engine = EmbeddedRocksDB () primary key id as
         left outer join studies_by_disease_indirect as indirect_studies on disease_log.id = indirect_studies.diseaseId
 );
 
-DROP TABLE IF EXISTS studies_by_disease;
+DROP TABLE IF EXISTS studies_by_disease SYNC;
 
-DROP TABLE IF EXISTS studies_by_disease_indirect;
+DROP TABLE IF EXISTS studies_by_disease_indirect SYNC;

@@ -16,4 +16,4 @@ order by (pmid, year) as (
             pmid
     );
 
-drop table literature_log;
+drop table literature_log SYNC;

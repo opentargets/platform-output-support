@@ -8,4 +8,4 @@ order by (
         from baseline_expression_log
     );
 
-drop table baseline_expression_log;
+drop table baseline_expression_log SYNC;
