@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS target_essentiality_log (
-    id (String),
+    id String,
     geneEssentiality Array (
         Tuple (
             isEssential Nullable (Bool),
