@@ -11,11 +11,6 @@ opensearch:
     input_dir: output/croissant
     mappings: config/opensearch/default.json
     output_dir: croissant
-  disease_hpo:
-    index: disease_hpo
-    input_dir: output/disease_phenotype
-    mappings: config/opensearch/default.json
-    output_dir: disease_phenotype
   drug:
     index: drug
     input_dir: output/drug_molecule
@@ -26,147 +21,6 @@ opensearch:
     input_dir: output/drug_warning
     mappings: config/opensearch/default.json
     output_dir: drug_warning
-  evidence_cancer_biomarkers:
-    index: evidence_cancer_biomarkers
-    input_dir: output/evidence_cancer_biomarkers
-    mappings: config/opensearch/default.json
-    output_dir: evidence/cancer_biomarkers
-  evidence_cancer_gene_census:
-    index: evidence_cancer_gene_census
-    input_dir: output/evidence_cancer_gene_census
-    mappings: config/opensearch/default.json
-    output_dir: evidence/cancer_gene_census
-  evidence_chembl:
-    index: evidence_chembl
-    input_dir: output/evidence_chembl
-    mappings: config/opensearch/default.json
-    output_dir: evidence/chembl
-  evidence_clingen:
-    index: evidence_clingen
-    input_dir: output/evidence_clingen
-    mappings: config/opensearch/default.json
-    output_dir: evidence/clingen
-  evidence_crispr:
-    index: evidence_crispr
-    input_dir: output/evidence_crispr
-    mappings: config/opensearch/default.json
-    output_dir: evidence/crispr
-  evidence_crispr_screen:
-    index: evidence_crispr_screen
-    input_dir: output/evidence_crispr_screen
-    mappings: config/opensearch/default.json
-    output_dir: evidence/crispr_screen
-  evidence_encore:
-    index: evidence_encore
-    input_dir: output/evidence_encore
-    mappings: config/opensearch/default.json
-    output_dir: evidence/encore
-  evidence_europepmc:
-    index: evidence_europepmc
-    input_dir: output/evidence_europepmc
-    mappings: config/opensearch/default.json
-    output_dir: evidence/europepmc
-  evidence_eva:
-    index: evidence_eva
-    input_dir: output/evidence_eva
-    mappings: config/opensearch/default.json
-    output_dir: evidence/eva
-  evidence_eva_somatic:
-    index: evidence_eva_somatic
-    input_dir: output/evidence_eva_somatic
-    mappings: config/opensearch/default.json
-    output_dir: evidence/eva_somatic
-  evidence_expression_atlas:
-    index: evidence_expression_atlas
-    input_dir: output/evidence_expression_atlas
-    mappings: config/opensearch/default.json
-    output_dir: evidence/expression_atlas
-  evidence_gene2phenotype:
-    index: evidence_gene2phenotype
-    input_dir: output/evidence_gene2phenotype
-    mappings: config/opensearch/default.json
-    output_dir: evidence/gene2phenotype
-  evidence_gene_burden:
-    index: evidence_gene_burden
-    input_dir: output/evidence_gene_burden
-    mappings: config/opensearch/default.json
-    output_dir: evidence/gene_burden
-  evidence_genomics_england:
-    index: evidence_genomics_england
-    input_dir: output/evidence_genomics_england
-    mappings: config/opensearch/default.json
-    output_dir: evidence/genomics_england
-  evidence_gwas_credible_sets:
-    index: evidence_gwas_credible_sets
-    input_dir: output/evidence_gwas_credible_sets
-    mappings: config/opensearch/default.json
-    output_dir: evidence/gwas_credible_sets
-  evidence_impc:
-    index: evidence_impc
-    input_dir: output/evidence_impc
-    mappings: config/opensearch/default.json
-    output_dir: evidence/impc
-  evidence_intogen:
-    index: evidence_intogen
-    input_dir: output/evidence_intogen
-    mappings: config/opensearch/default.json
-    output_dir: evidence/intogen
-  evidence_orphanet:
-    index: evidence_orphanet
-    input_dir: output/evidence_orphanet
-    mappings: config/opensearch/default.json
-    output_dir: evidence/orphanet
-  evidence_ot_crispr:
-    index: evidence_ot_crispr
-    input_dir: output/evidence_ot_crispr
-    mappings: config/opensearch/default.json
-    output_dir: evidence/ot_crispr
-  evidence_ot_crispr_validation:
-    index: evidence_ot_crispr_validation
-    input_dir: output/evidence_ot_crispr_validation
-    mappings: config/opensearch/default.json
-    output_dir: evidence/ot_crispr_validation
-  evidence_ot_genetics_portal:
-    index: evidence_ot_genetics_portal
-    input_dir: output/evidence_ot_genetics_portal
-    mappings: config/opensearch/default.json
-    output_dir: evidence/ot_genetics_portal
-  evidence_progeny:
-    index: evidence_progeny
-    input_dir: output/evidence_progeny
-    mappings: config/opensearch/default.json
-    output_dir: evidence/progeny
-  evidence_reactome:
-    index: evidence_reactome
-    input_dir: output/evidence_reactome
-    mappings: config/opensearch/default.json
-    output_dir: evidence/reactome
-  evidence_slapenrich:
-    index: evidence_slapenrich
-    input_dir: output/evidence_slapenrich
-    mappings: config/opensearch/default.json
-    output_dir: evidence/slapenrich
-  evidence_sysbio:
-    index: evidence_sysbio
-    input_dir: output/evidence_sysbio
-    mappings: config/opensearch/default.json
-    output_dir: evidence/sysbio
-  evidence_uniprot_literature:
-    index: evidence_uniprot_literature
-    input_dir: output/evidence_uniprot_literature
-    mappings: config/opensearch/default.json
-    output_dir: evidence/uniprot_literature
-  evidence_uniprot_variants:
-    index: evidence_uniprot_variants
-    input_dir: output/evidence_uniprot_variants
-    mappings: config/opensearch/default.json
-    output_dir: evidence/uniprot_variants
-  expression:
-    id_field: id
-    index: expression
-    input_dir: output/expression
-    mappings: config/opensearch/default.json
-    output_dir: expression
   facet_search_disease:
     index: facet_search_disease
     input_dir: view/search_facet_disease
@@ -177,18 +31,6 @@ opensearch:
     input_dir: view/search_facet_target
     mappings: config/opensearch/facet_search.json
     output_dir: search_facet_target
-  go:
-    id_field: id
-    index: go
-    input_dir: output/go
-    mappings: config/opensearch/default.json
-    output_dir: go
-  hpo:
-    id_field: id
-    index: hpo
-    input_dir: output/disease_hpo
-    mappings: config/opensearch/default.json
-    output_dir: disease_hpo
   indication:
     index: indication
     input_dir: output/drug_indication
@@ -214,23 +56,11 @@ opensearch:
     input_dir: output/openfda_significant_adverse_drug_reactions
     mappings: config/opensearch/default.json
     output_dir: openfda_significant_adverse_drug_reactions
-  otar_projects:
-    id_field: efo_id
-    index: otar_projects
-    input_dir: output/otar
-    mappings: config/opensearch/default.json
-    output_dir: otar
   pharmacogenomics:
     index: pharmacogenomics
     input_dir: output/pharmacogenomics
     mappings: config/opensearch/default.json
     output_dir: pharmacogenomics
-  reactome:
-    id_field: id
-    index: reactome
-    input_dir: output/reactome
-    mappings: config/opensearch/default.json
-    output_dir: reactome
   search_disease:
     index: search_disease
     input_dir: view/search_disease
@@ -256,18 +86,6 @@ opensearch:
     input_dir: view/search_variant
     mappings: config/opensearch/search.json
     output_dir: search_variant
-  so:
-    id_field: id
-    index: so
-    input_dir: output/so
-    mappings: config/opensearch/default.json
-    output_dir: so
-  target_essentiality:
-    id_field: id
-    index: target_essentiality
-    input_dir: output/target_essentiality
-    mappings: config/opensearch/default.json
-    output_dir: target_essentiality
   target_prioritisation:
     id_field: targetId
     index: target_prioritisation
@@ -305,12 +123,27 @@ clickhouse:
     input_dir: output/disease
     preload_script: config/clickhouse/schema/disease.sql
     postload_script: config/clickhouse/scripts/disease.sql
+  disease_hpo:
+    table: disease_hpo_log
+    input_dir: output/disease_phenotype
+    preload_script: config/clickhouse/schema/disease_hpo.sql
+    postload_script: config/clickhouse/scripts/disease_hpo.sql
   evidence:
     table: evidence_log
     input_dir: output
     preload_script: config/clickhouse/schema/evidence.sql
     postload_script: config/clickhouse/scripts/evidence.sql
     glob_pattern: 'evidence_*/*.parquet'
+  expression:
+    table: expression_log
+    input_dir: output/expression
+    preload_script: config/clickhouse/schema/expression.sql
+    postload_script: config/clickhouse/scripts/expression.sql
+  go:
+    table: gene_ontology_log
+    input_dir: output/go
+    preload_script: config/clickhouse/schema/go.sql
+    postload_script: config/clickhouse/scripts/go.sql
   interaction:
     table: interaction_log
     input_dir: output/interaction
@@ -326,6 +159,11 @@ clickhouse:
     input_dir: output/enhancer_to_gene
     preload_script: config/clickhouse/schema/intervals.sql
     postload_script: config/clickhouse/scripts/intervals.sql
+  hpo:
+    table: hpo_log
+    input_dir: output/disease_hpo
+    preload_script: config/clickhouse/schema/hpo.sql
+    postload_script: config/clickhouse/scripts/hpo.sql
   l2g_predictions:
     table: l2g_predictions_log
     input_dir: output/l2g_prediction
@@ -336,16 +174,36 @@ clickhouse:
     input_dir: output/literature
     preload_script: config/clickhouse/schema/literature.sql
     postload_script: config/clickhouse/scripts/literature.sql
+  otar_projects:
+    table: otar_projects_log
+    input_dir: output/otar
+    preload_script: config/clickhouse/schema/otar_projects.sql
+    postload_script: config/clickhouse/scripts/otar_projects.sql
   w2v:
     table: ml_w2v_log
     input_dir: output/literature_vector
     preload_script: config/clickhouse/schema/w2v.sql
     postload_script: config/clickhouse/scripts/w2v.sql
+  reactome:
+    table: reactome_log
+    input_dir: output/reactome
+    preload_script: config/clickhouse/schema/reactome.sql
+    postload_script: config/clickhouse/scripts/reactome.sql
   studies:
     table: studies_log
     input_dir: output/study
     preload_script: config/clickhouse/schema/studies.sql
     postload_script: config/clickhouse/scripts/studies.sql
+  so:
+    table: sequence_ontology_log
+    input_dir: output/so
+    preload_script: config/clickhouse/schema/so.sql
+    postload_script: config/clickhouse/scripts/so.sql
+  target_essentiality:
+    table: target_essentiality_log
+    input_dir: output/target_essentiality
+    preload_script: config/clickhouse/schema/target_essentiality.sql
+    postload_script: config/clickhouse/scripts/target_essentiality.sql
   targets:
     table: targets_log
     input_dir: output/target

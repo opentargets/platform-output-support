@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS gene_ontology_log (id String, name String) ENGINE = Log;
