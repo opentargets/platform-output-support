@@ -38,6 +38,6 @@ from (
             left outer join disease_log on associations_otf_log.disease_id = disease_log.id
     );
 
-drop table associations_otf_log;
+drop table associations_otf_log SYNC;
 
-drop table disease_log;
+drop table disease_log SYNC;

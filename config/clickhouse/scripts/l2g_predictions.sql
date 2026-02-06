@@ -15,4 +15,4 @@ CREATE TABLE IF NOT EXISTS l2g_predictions ENGINE = EmbeddedRocksDB () PRIMARY K
         studyLocusId
 );
 
-DROP TABLE IF EXISTS l2g_predictions_log;
+DROP TABLE IF EXISTS l2g_predictions_log SYNC;

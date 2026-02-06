@@ -38,12 +38,12 @@ CREATE TABLE if not exists targets engine = EmbeddedRocksDB () primary key id as
         left outer join credible_sets_by_gene on targets_log.id = credible_sets_by_gene.geneId
 );
 
-DROP TABLE IF EXISTS targets_log;
+DROP TABLE IF EXISTS targets_log SYNC;
 
-DROP TABLE IF EXISTS target_credible_sets_by_study;
+DROP TABLE IF EXISTS target_credible_sets_by_study SYNC;
 
-DROP TABLE IF EXISTS credible_sets_by_gene;
+DROP TABLE IF EXISTS credible_sets_by_gene SYNC;
 
-DROP TABLE IF EXISTS studies_log;
+DROP TABLE IF EXISTS studies_log SYNC;
 
-DROP TABLE IF EXISTS credible_sets_log;
+DROP TABLE IF EXISTS credible_sets_log SYNC;

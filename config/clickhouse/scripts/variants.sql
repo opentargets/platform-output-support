@@ -3,4 +3,4 @@ CREATE TABLE if not exists variants engine = EmbeddedRocksDB () primary key vari
     from variants_log
 );
 
-DROP TABLE IF EXISTS variants_log;
+DROP TABLE IF EXISTS variants_log SYNC;

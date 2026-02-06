@@ -114,8 +114,8 @@ CREATE TABLE IF NOT EXISTS colocalisation ENGINE = EmbeddedRocksDB () PRIMARY KE
         studyLocusId
 );
 
-drop table colocalisation_log;
+drop table colocalisation_log SYNC;
 
-drop table colocalisation_left;
+drop table colocalisation_left SYNC;
 
-drop table colocalisation_right;
+drop table colocalisation_right SYNC;
