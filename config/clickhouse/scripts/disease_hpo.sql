@@ -30,4 +30,4 @@ CREATE TABLE IF NOT EXISTS disease_hpo ENGINE = EmbeddedRocksDB () PRIMARY KEY d
     GROUP BY disease
 );
 
-DROP TABLE IF EXISTS disease_hpo_log;
+DROP TABLE IF EXISTS disease_hpo_log SYNC;

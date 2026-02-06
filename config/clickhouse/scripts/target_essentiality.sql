@@ -3,4 +3,4 @@ CREATE TABLE IF NOT EXISTS target_essentiality ENGINE = EmbeddedRocksDB () PRIMA
     FROM target_essentiality_log
 );
 
-DROP TABLE IF EXISTS target_essentiality_log;
+DROP TABLE IF EXISTS target_essentiality_log SYNC;

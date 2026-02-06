@@ -31,4 +31,4 @@ WHERE
     diseaseId IS NOT NULL
     AND targetId IS NOT NULL;
 
-DROP TABLE IF EXISTS evidence_log;
+DROP TABLE IF EXISTS evidence_log SYNC;

@@ -4,4 +4,4 @@ order by (chromosome, start, end) as (
         from intervals_log
     );
 
-drop table intervals_log;
+drop table intervals_log SYNC;
