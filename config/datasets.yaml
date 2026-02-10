@@ -184,11 +184,6 @@ clickhouse:
     input_dir: output/literature_vector
     preload_script: config/clickhouse/schema/w2v.sql
     postload_script: config/clickhouse/scripts/w2v.sql
-  reactome:
-    table: reactome_log
-    input_dir: output/reactome
-    preload_script: config/clickhouse/schema/reactome.sql
-    postload_script: config/clickhouse/scripts/reactome.sql
   studies:
     table: studies_log
     input_dir: output/study
@@ -370,9 +365,6 @@ bigquery:
   pharmacogenomics:
     index: pharmacogenomics
     input_dir: output/pharmacogenomics
-  reactome:
-    index: reactome
-    input_dir: output/reactome
   so:
     index: so
     input_dir: output/so
