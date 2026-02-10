@@ -451,6 +451,7 @@ steps:
         - clickhouse_start data loading instance
       foreach:
         - baseline_expression
+        - biosample
         - credible_sets
         - colocalisation
         - disease_hpo

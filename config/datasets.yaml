@@ -1,10 +1,5 @@
 ---
 opensearch:
-  biosample:
-    index: biosample
-    input_dir: output/biosample
-    mappings: config/opensearch/default.json
-    output_dir: biosample
   croissant:
     index: downloads
     id_value: croissant
@@ -103,6 +98,11 @@ clickhouse:
     input_dir: output/baseline_expression
     preload_script: config/clickhouse/schema/baseline_expression.sql
     postload_script: config/clickhouse/scripts/baseline_expression.sql
+  biosample:
+    table: biosample_log
+    input_dir: output/biosample
+    preload_script: config/clickhouse/schema/biosample.sql
+    postload_script: config/clickhouse/scripts/biosample.sql
   colocalisation:
     table: colocalisation_log
     input_dir: output/colocalisation
