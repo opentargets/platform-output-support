@@ -123,7 +123,6 @@ steps:
         - otar_projects
         - pharmacogenomics
         - protein_coding_coords
-        - reactome
         - search_disease
         - search_drug
         - search_study
