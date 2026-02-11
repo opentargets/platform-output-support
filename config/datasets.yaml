@@ -82,11 +82,6 @@ opensearch:
     input_dir: output/target_prioritisation
     mappings: config/opensearch/default.json
     output_dir: target_prioritisation
-  protein_coding_coords:
-    index: protein_coding_coords
-    input_dir: view/coding_variant
-    mappings: config/opensearch/default.json
-    output_dir: protein_coding_coords
 clickhouse:
   aotf:
     table: associations_otf_log
@@ -179,6 +174,11 @@ clickhouse:
     input_dir: output/otar
     preload_script: config/clickhouse/schema/otar_projects.sql
     postload_script: config/clickhouse/scripts/otar_projects.sql
+  protein_coding_coords:
+    table: protein_coding_coords_log
+    input_dir: view/coding_variant
+    preload_script: config/clickhouse/schema/protein_coding_coords.sql
+    postload_script: config/clickhouse/scripts/protein_coding_coords.sql
   w2v:
     table: ml_w2v_log
     input_dir: output/literature_vector
