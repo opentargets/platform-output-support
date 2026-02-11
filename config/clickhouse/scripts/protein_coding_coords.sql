@@ -20,7 +20,7 @@ CREATE TABLE if not exists protein_coding_coords_by_target engine = EmbeddedRock
                 alternateAminoAcid LowCardinality (String),
                 referenceAminoAcid LowCardinality (String),
                 variantFunctionalConsequenceIds Array (String),
-                variantEffect Nullable (Float32),
+                variantEffect Nullable (Float64),
                 variantId String,
                 diseases Array (String),
                 datasources Array (
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS protein_coding_coords_by_variant ENGINE = EmbeddedRoc
                 alternateAminoAcid LowCardinality (String),
                 referenceAminoAcid LowCardinality (String),
                 variantFunctionalConsequenceIds Array (String),
-                variantEffect Nullable (Float32),
+                variantEffect Nullable (Float64),
                 variantId String,
                 diseases Array (String),
                 datasources Array (
