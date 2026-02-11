@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS protein_coding_coords_log (
     alternateAminoAcid LowCardinality (String),
     referenceAminoAcid LowCardinality (String),
     variantFunctionalConsequenceIds Array (String),
-    variantEffect Nullable (Float32),
+    variantEffect Nullable (Float64),
     variantId String,
     diseases Array (String),
     datasources Array (
