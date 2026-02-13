@@ -41,11 +41,6 @@ opensearch:
     input_dir: output/drug_mechanism_of_action
     mappings: config/opensearch/default.json
     output_dir: drug_mechanism_of_action
-  openfda_faers:
-    index: openfda_faers
-    input_dir: output/openfda_significant_adverse_drug_reactions
-    mappings: config/opensearch/default.json
-    output_dir: openfda_significant_adverse_drug_reactions
   pharmacogenomics:
     index: pharmacogenomics
     input_dir: output/pharmacogenomics
@@ -169,6 +164,11 @@ clickhouse:
     input_dir: output/mouse_phenotype
     preload_script: config/clickhouse/schema/mouse_phenotypes.sql
     postload_script: config/clickhouse/scripts/mouse_phenotypes.sql
+  openfda_faers:
+    table: openfda_faers_log
+    input_dir: output/openfda_significant_adverse_drug_reactions
+    preload_script: config/clickhouse/schema/openfda_faers.sql
+    postload_script: config/clickhouse/scripts/openfda_faers.sql
   otar_projects:
     table: otar_projects_log
     input_dir: output/otar
