@@ -36,11 +36,6 @@ opensearch:
     input_dir: output/known_drug
     mappings: config/opensearch/search_known_drugs.json
     output_dir: known_drug 
-  mechanism_of_action:
-    index: mechanism_of_action
-    input_dir: output/drug_mechanism_of_action
-    mappings: config/opensearch/default.json
-    output_dir: drug_mechanism_of_action
   pharmacogenomics:
     index: pharmacogenomics
     input_dir: output/pharmacogenomics
@@ -159,6 +154,11 @@ clickhouse:
     input_dir: output/literature
     preload_script: config/clickhouse/schema/literature.sql
     postload_script: config/clickhouse/scripts/literature.sql
+  mechanism_of_action:
+    table: mechanism_of_action_log
+    input_dir: output/drug_mechanism_of_action
+    preload_script: config/clickhouse/schema/mechanism_of_action.sql
+    postload_script: config/clickhouse/scripts/mechanism_of_action.sql
   mouse_phenotypes:
     table: mouse_phenotypes_log
     input_dir: output/mouse_phenotype
