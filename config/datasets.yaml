@@ -66,11 +66,6 @@ opensearch:
     input_dir: view/search_variant
     mappings: config/opensearch/search.json
     output_dir: search_variant
-  target_prioritisation:
-    id_field: targetId
-    index: target_prioritisation
-    input_dir: output/target_prioritisation
-    mappings: config/opensearch/default.json
     output_dir: target_prioritisation
 clickhouse:
   aotf:
@@ -199,6 +194,11 @@ clickhouse:
     input_dir: output/target_essentiality
     preload_script: config/clickhouse/schema/target_essentiality.sql
     postload_script: config/clickhouse/scripts/target_essentiality.sql
+  target_prioritisation:
+    table: target_prioritisation_log
+    input_dir: output/target_prioritisation
+    preload_script: config/clickhouse/schema/target_prioritisation.sql
+    postload_script: config/clickhouse/scripts/target_prioritisation.sql
   targets:
     table: targets_log
     input_dir: output/target
