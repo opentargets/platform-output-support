@@ -92,7 +92,6 @@ steps:
         - search_study
         - search_target
         - search_variant
-        - target_prioritisation
       do:
         - name: explode_data_prep ${each}
           dataset: ${each}
@@ -446,6 +445,12 @@ steps:
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse target_prioritisation
+      requires:
+        - clickhouse_load clickhouse load target_essentiality
+      dataset: target_prioritisation
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load interaction
       requires:
         - clickhouse_load clickhouse load interaction_evidence
