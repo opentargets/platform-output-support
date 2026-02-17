@@ -377,6 +377,11 @@ clickhouse:
     input_dir: output/clinical_report
     preload_script: config/clickhouse/schema/clinical_report.sql
     postload_script: config/clickhouse/scripts/clinical_report.sql
+  clinical_target:
+    table: clinical_target_log
+    input_dir: output/clinical_target
+    preload_script: config/clickhouse/schema/clinical_target.sql
+    postload_script: config/clickhouse/scripts/clinical_target.sql
 bigquery:
   association_by_datasource_direct:
     index: association_by_datasource_direct
