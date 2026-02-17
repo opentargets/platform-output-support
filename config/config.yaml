@@ -12,8 +12,8 @@ scratchpad:
   # Google disk snapshot variables
   opensearch_disk_name: platform-2512-os-4247-2
   opensearch_disk_snapshot_name: platform-2512-os-4247-2
-  clickhouse_disk_name: platform-2512-ch-4247-5
-  clickhouse_disk_snapshot_name: platform-2512-ch-4247-5
+  clickhouse_disk_name: platform-2512-ch-4247-6
+  clickhouse_disk_snapshot_name: platform-2512-ch-4247-6
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -188,6 +188,7 @@ steps:
         - disease
         - clinical_indication
         - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
@@ -215,6 +216,7 @@ steps:
     #     - clinical_indication_disease
     #     - clinical_indication_drug
     #     - clinical_report
+    #     - clinical_target
     #     - baseline_expression
     #     - intervals
     #     - literature_index
@@ -471,6 +473,7 @@ steps:
         - disease
         - clinical_indication
         - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
@@ -504,6 +507,7 @@ steps:
     #     - clinical_indication_disease
     #     - clinical_indication_drug
     #     - clinical_report
+    #     - clinical_target
     #   do:
     #     - name: clickhouse_backup table ${each}
     #       clickhouse_database: ${database_namespace}
@@ -564,6 +568,7 @@ steps:
         - clinical_indication_disease
         - clinical_indication_drug
         - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_backup table ${each}
           requires:
@@ -588,6 +593,7 @@ steps:
         - clinical_indication_disease
         - clinical_indication_drug
         - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_restore table ${each}
           clickhouse_database: ${database_namespace}
@@ -619,6 +625,7 @@ steps:
         - disease
         - clinical_indication
         - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_load clickhouse load ${each}
           requires:
