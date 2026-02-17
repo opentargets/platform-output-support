@@ -52,11 +52,11 @@ opensearch:
     input_dir: output/evidence_cancer_gene_census
     mappings: config/opensearch/default.json
     output_dir: evidence/cancer_gene_census
-  evidence_chembl:
-    index: evidence_chembl
-    input_dir: output/evidence_chembl
+  evidence_clinical_precedence:
+    index: evidence_clinical_precedence
+    input_dir: output/evidence_clinical_precedence
     mappings: config/opensearch/default.json
-    output_dir: evidence/chembl
+    output_dir: evidence/clinical_precedence
   evidence_clingen:
     index: evidence_clingen
     input_dir: output/evidence_clingen
@@ -437,9 +437,9 @@ bigquery:
   evidence_cancer_gene_census:
     index: evidence_cancer_gene_census
     input_dir: output/evidence_cancer_gene_census
-  evidence_chembl:
-    index: evidence_chembl
-    input_dir: output/evidence_chembl
+  evidence_clinical_precedence:
+    index: evidence_clinical_precedence
+    input_dir: output/evidence_clinical_precedence
   evidence_clingen:
     index: evidence_clingen
     input_dir: output/evidence_clingen
