@@ -12,8 +12,8 @@ scratchpad:
   # Google disk snapshot variables
   opensearch_disk_name: platform-2512-os-rc4
   opensearch_disk_snapshot_name: platform-2512-os-rc4
-  clickhouse_disk_name: platform-2512-ch-mig20
-  clickhouse_disk_snapshot_name: platform-2512-ch-mig20
+  clickhouse_disk_name: platform-2512-ch-mig21
+  clickhouse_disk_snapshot_name: platform-2512-ch-mig21
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -84,7 +84,6 @@ steps:
         - drug_warnings
         - facet_search_disease
         - facet_search_target
-        - indication
         - known_drugs
         - pharmacogenomics
         - search_disease
@@ -427,6 +426,7 @@ steps:
         - expression
         - go
         - hpo
+        - indication
         - interaction_evidence
         - interval
         - l2g_predictions

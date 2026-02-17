@@ -26,11 +26,6 @@ opensearch:
     input_dir: view/search_facet_target
     mappings: config/opensearch/facet_search.json
     output_dir: search_facet_target
-  indication:
-    index: indication
-    input_dir: output/drug_indication
-    mappings: config/opensearch/default.json
-    output_dir: drug_indication
   known_drugs:
     index: known_drugs
     input_dir: output/known_drug
@@ -119,6 +114,11 @@ clickhouse:
     input_dir: output/go
     preload_script: config/clickhouse/schema/go.sql
     postload_script: config/clickhouse/scripts/go.sql
+  indication:
+    table: indication_log
+    input_dir: output/drug_indication
+    preload_script: config/clickhouse/schema/indication.sql
+    postload_script: config/clickhouse/scripts/indication.sql
   interaction:
     table: interaction_log
     input_dir: output/interaction
