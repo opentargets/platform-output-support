@@ -165,6 +165,7 @@ steps:
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
+      mount_point: ${opensearch_data}
       requires:
         - open_search_stop data loading instance
     # clickhouse
@@ -232,7 +233,7 @@ steps:
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
-  ################################################################################################
+      mount_point: ${clickhouse_data}
   # Tarballs
   ################################################################################################
   tarballs:
@@ -333,6 +334,7 @@ steps:
       gcp_disk_name: ${opensearch_disk_name}
       gcp_snapshot_name: ${opensearch_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
+      mount_point: ${opensearch_data}
       requires:
         - open_search_stop data loading instance
   ################################################################################################
@@ -492,6 +494,7 @@ steps:
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
+      mount_point: ${clickhouse_data}
   ################################################################################################
   # ClickHouse - Modular Steps
   ################################################################################################
@@ -512,6 +515,7 @@ steps:
       gcp_disk_name: ${clickhouse_disk_name}
       gcp_snapshot_name: ${clickhouse_disk_snapshot_name}
       gcp_disk_zone: europe-west1-d
+      mount_point: ${clickhouse_data}
   clickhouse_backup_all:
     - name: clickhouse_start data loading instance
       volume_data: ${clickhouse_data}
