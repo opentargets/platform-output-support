@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS target_prioritisation ENGINE = EmbeddedRocksDB () primary key targetId as (
+CREATE TABLE IF NOT EXISTS target_prioritisation_temp ENGINE = EmbeddedRocksDB () primary key targetId as (
     SELECT
         targetId,
         arrayFilter(x -> x.2 != '', [
@@ -17,11 +17,40 @@ CREATE TABLE IF NOT EXISTS target_prioritisation ENGINE = EmbeddedRocksDB () pri
         ('mouseOrthologMaxIdentityPercentage', toString(mouseOrthologMaxIdentityPercentage)),
         ('paralogMaxIdentityPercentage', toString(paralogMaxIdentityPercentage)),
         ('tissueDistribution', toString(tissueDistribution)),
-        ('tissueSpecificity', toString(tissueSpecificity)),
-        ('geneEssentiality', if(isEssential, "-1", "0"))
-    ])::Array(Tuple(key String, value String)) AS targetPrioritisation
+        ('tissueSpecificity', toString(tissueSpecificity))
+    ])::Array(Tuple(key String, value String)) AS tp
     FROM target_prioritisation_log
-    LEFT OUTER JOIN target_essentiality ON target_prioritisation_log.targetId = target_essentiality.id
 );
+
+CREATE TABLE IF NOT EXISTS target_prioritisation ENGINE = EmbeddedRocksDB () PRIMARY KEY targetId AS (
+    SELECT
+        targetId,
+        arrayFilter(x -> x.2 != '', arrayPushBack (
+            tp,
+            if(
+                tp.size0 > 0,
+                (
+                    'geneEssentiality',
+                    CASE 
+                        WHEN arrayElement (
+                            geneEssentiality.isEssential,
+                            1
+                        ) = 'true' THEN '-1' 
+                        WHEN arrayElement (
+                            geneEssentiality.isEssential,
+                            1
+                        ) = 'false' THEN '0'
+                        ELSE ''
+                    END
+                ),
+                ('geneEssentiality', '')
+            )
+        ))::Array(Tuple(key String, value String)) AS items
+    FROM
+        target_prioritisation_temp
+        LEFT JOIN target_essentiality ON target_prioritisation_temp.targetId = target_essentiality.id
+);
+
+DROP TABLE IF EXISTS target_prioritisation_temp SYNC;
 
 DROP TABLE IF EXISTS target_prioritisation_log SYNC;
