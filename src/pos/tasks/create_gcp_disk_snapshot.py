@@ -22,6 +22,7 @@ class CreateGcpDiskSnapshotSpec(Spec):
     gcp_disk_name: str
     gcp_snapshot_name: str  # 'dev-250310-os or dev-250310-ch'
     gcp_disk_zone: str  # 'europe-west1-d'
+    mount_point: str  # '/mnt/opensearch' or '/mnt/clickhouse'
     gcp_storage_location: str = 'eu'
     gcp_labels_team: str = 'open-targets'
     gcp_labels_subteam: str = 'backend'
@@ -47,6 +48,7 @@ class CreateGcpDiskSnapshot(Task):
         )
         try:
             self._complete_pending_disk_writes()
+            self._discard_unused_disk_blocks()
             snapshot.create()
         except (RuntimeError, TimeoutError) as e:
             raise CreateGcpDiskSnapshotError(f'failed to create GCP disk image: {e}')
@@ -57,6 +59,12 @@ class CreateGcpDiskSnapshot(Task):
         complete_pending_disk_writes = subprocess.run(['sync'], check=True)
         if complete_pending_disk_writes.returncode != 0:
             raise CreateGcpDiskSnapshotError('failed to complete pending disk writes before snapshot')
+
+    def _discard_unused_disk_blocks(self) -> None:
+        """Discard unused disk blocks to optimize snapshot size."""
+        discard_unused_disk_blocks = subprocess.run(['fstrim', '-v', self.spec.mount_point], check=True)
+        if discard_unused_disk_blocks.returncode != 0:
+            raise CreateGcpDiskSnapshotError('failed to discard unused disk blocks before snapshot')
 
     def _set_labels(self) -> GCPLabels:
         return GCPLabels(
