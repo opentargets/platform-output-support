@@ -36,11 +36,6 @@ opensearch:
     input_dir: output/known_drug
     mappings: config/opensearch/search_known_drugs.json
     output_dir: known_drug 
-  pharmacogenomics:
-    index: pharmacogenomics
-    input_dir: output/pharmacogenomics
-    mappings: config/opensearch/default.json
-    output_dir: pharmacogenomics
   search_disease:
     index: search_disease
     input_dir: view/search_disease
@@ -169,6 +164,11 @@ clickhouse:
     input_dir: output/otar
     preload_script: config/clickhouse/schema/otar_projects.sql
     postload_script: config/clickhouse/scripts/otar_projects.sql
+  pharmacogenomics:
+    table: pharmacogenomics_log
+    input_dir: output/pharmacogenomics
+    preload_script: config/clickhouse/schema/pharmacogenomics.sql
+    postload_script: config/clickhouse/scripts/pharmacogenomics.sql
   protein_coding_coords:
     table: protein_coding_coords_log
     input_dir: view/coding_variant
