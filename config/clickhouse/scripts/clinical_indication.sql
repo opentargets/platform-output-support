@@ -4,8 +4,7 @@ select id,
     drugId,
     diseaseId,
     maxClinicalStage,
-    clinicalReportIds,
-    hasExpertReview
+    clinicalReportIds
 from clinical_indication_log
 where drugId is not null;
 create table if not exists clinical_indication_disease engine = MergeTree ()
@@ -14,8 +13,7 @@ select id,
     drugId,
     diseaseId,
     maxClinicalStage,
-    clinicalReportIds,
-    hasExpertReview
+    clinicalReportIds
 from clinical_indication_log
 where diseaseId is not null;
 drop table clinical_indication_log;
