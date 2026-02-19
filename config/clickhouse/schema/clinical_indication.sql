@@ -3,6 +3,5 @@ create table if not exists clinical_indication_log (
     drugId LowCardinality (String),
     diseaseId LowCardinality (String),
     maxClinicalStage LowCardinality (String),
-    clinicalReportIds Array (String),
-    hasExpertReview Bool
+    clinicalReportIds Array (String)
 ) engine = Log;

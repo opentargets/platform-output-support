@@ -4,6 +4,7 @@ create table if not exists clinical_report_log (
     clinicalStage LowCardinality (String),
     phaseFromSource Nullable (String),
     type Nullable (String),
+    title Nullable (String),
     trialStudyType Nullable (String),
     trialDescription Nullable (String),
     trialNumberOfArms Nullable (Int32),
@@ -13,6 +14,7 @@ create table if not exists clinical_report_log (
     trialWhyStopped Nullable (String),
     trialPrimaryPurpose Nullable (String),
     trialPhase Nullable (String),
+    trialStopReasonCategories Array (String),
     diseases Array (
         Tuple (
             diseaseFromSource String,
