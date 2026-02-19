@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS drug_warnings_log (
     chemblIds Array (String),
     country Nullable (String),
     description Nullable (String),
-    id Nullable (UInt64),
+    id Nullable (UInt32),
     references Array (
         Tuple (
             ref_id String,
