@@ -10,10 +10,10 @@ scratchpad:
   database_namespace: platform2512 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2512-os-4247-2
-  opensearch_disk_snapshot_name: platform-2512-os-4247-2
-  clickhouse_disk_name: platform-2512-ch-4247-6
-  clickhouse_disk_snapshot_name: platform-2512-ch-4247-6
+  opensearch_disk_name: platform-2512-os-4247-1
+  opensearch_disk_snapshot_name: platform-2512-os-4247-1
+  clickhouse_disk_name: platform-2512-ch-4247-13
+  clickhouse_disk_snapshot_name: platform-2512-ch-4247-13
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -342,16 +342,16 @@ steps:
           dataset: ${each}
           prefix: ${database_namespace}
           json_parent: ${prepared_data}
-    - name: open_search_snapshot data loading instance
-      requires:
-        - explode prep and load all datasets
-      snapshot_repository_name: ${opensearch_snapshot_repository}
-      snapshot_name: ${database_namespace}
-      snapshot_bucket: ${opensearch_snapshot_bucket}
-      snapshot_base_path: ${opensearch_snapshot_base_path}/${database_namespace}
+    # - name: open_search_snapshot data loading instance
+    #   requires:
+    #     - explode prep and load all datasets
+    #   snapshot_repository_name: ${opensearch_snapshot_repository}
+    #   snapshot_name: ${database_namespace}
+    #   snapshot_bucket: ${opensearch_snapshot_bucket}
+    #   snapshot_base_path: ${opensearch_snapshot_base_path}/${database_namespace}
     - name: open_search_stop data loading instance
       requires:
-        - open_search_snapshot data loading instance
+        - explode prep and load all datasets
       service_name: os-pos
     - name: create_gcp_disk_snapshot opensearch
       gcp_project_id: ${disk_snapshot_project_id}
