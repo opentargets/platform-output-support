@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS drug_warnings ENGINE = EmbeddedRocksDB () PRIMARY KEY
             references,
             warningType,
             year,
-            efoTerm,
-            efoId,
-            efoIdForWarningClass
+            efo_term,
+            efo_id,
+            efo_id_for_warning_class
         )::Tuple(
             toxicityClass Nullable (String),
             chemblIds Array (String),
@@ -21,16 +21,16 @@ CREATE TABLE IF NOT EXISTS drug_warnings ENGINE = EmbeddedRocksDB () PRIMARY KEY
             id Nullable (UInt64),
             references Array (
                 Tuple (
-                    id String,
-                    source String,
-                    url String
+                    ref_id String,
+                    ref_type String,
+                    ref_url String
                 )
             ),
             warningType String,
             year Nullable (UInt16),
-            efoTerm Nullable (String),
-            efoId Nullable (String),
-            efoIdForWarningClass Nullable (String)
+            efo_term Nullable (String),
+            efo_id Nullable (String),
+            efo_id_for_warning_class Nullable (String)
             )
         ) AS drugWarnings
     FROM drug_warnings_log
