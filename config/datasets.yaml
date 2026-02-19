@@ -11,6 +11,11 @@ opensearch:
     input_dir: output/drug_molecule
     mappings: config/opensearch/default.json
     output_dir: drug_molecule
+  drug_warnings:
+    index: drug_warnings
+    input_dir: output/drug_warning
+    mappings: config/opensearch/default.json
+    output_dir: drug_warning
   facet_search_disease:
     index: facet_search_disease
     input_dir: view/search_facet_disease
@@ -93,11 +98,6 @@ clickhouse:
     input_dir: output/disease_phenotype
     preload_script: config/clickhouse/schema/disease_hpo.sql
     postload_script: config/clickhouse/scripts/disease_hpo.sql
-  drug_warnings:
-    table: drug_warnings_log
-    input_dir: output/drug_warning
-    preload_script: config/clickhouse/schema/drug_warnings.sql
-    postload_script: config/clickhouse/scripts/drug_warnings.sql
   evidence:
     table: evidence_log
     input_dir: output
