@@ -12,8 +12,8 @@ scratchpad:
   # Google disk snapshot variables
   opensearch_disk_name: platform-2512-os-4247-2
   opensearch_disk_snapshot_name: platform-2512-os-4247-2
-  clickhouse_disk_name: platform-2512-ch-4247-2
-  clickhouse_disk_snapshot_name: platform-2512-ch-4247-2
+  clickhouse_disk_name: platform-2512-ch-4247-3
+  clickhouse_disk_snapshot_name: platform-2512-ch-4247-3
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
