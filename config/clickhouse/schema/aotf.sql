@@ -1,10 +1,12 @@
 create table if not exists associations_otf_log (
-    row_id String,
-    disease_id LowCardinality (String),
-    target_id LowCardinality (String),
-    disease_data Nullable (String),
-    target_data Nullable (String),
-    datasource_id LowCardinality (String),
-    datatype_id LowCardinality (String),
-    row_score Float64
+    rowId String,
+    diseaseId LowCardinality (String),
+    targetId LowCardinality (String),
+    diseaseData Nullable (String),
+    targetData Nullable (String),
+    datasourceId LowCardinality (String),
+    datatypeId LowCardinality (String),
+    rowScore Float64,
+    noveltyDirect Nullable (Float64),
+    noveltyIndirect Nullable (Float64)
 ) engine = Log;
