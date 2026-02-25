@@ -24,7 +24,7 @@ scratchpad:
 
   # opensearch
   opensearch_version: 3.1.0
-  opensearch_java_opts: -Xms300g -Xmx302g
+  opensearch_java_opts: -Xms40g -Xmx200g
   opensearch_data: /mnt/opensearch/data
   opensearch_logs: /var/log/pos/opensearch
   opensearch_snapshot_repository: ot-os-snapshots
@@ -136,45 +136,124 @@ steps:
         - sync_bucket etl output files
         - sync_bucket etl view files
         - clickhouse_start data loading instance
-      foreach:
+      foreach: &clickhouse_datasets
         - baseline_expression
-        - interval
-        - literature
-        - w2v
+        - biosample
         - credible_sets
-        - studies
-        - disease
+        - colocalisation
+        - disease_hpo
+        - drug
+        - drug_warnings
+        - evidence
+        - expression
+        - go
+        - hpo
+        - interaction_evidence
+        - interval
+        - l2g_predictions
+        - literature
+        - mechanism_of_action
+        - mouse_phenotypes
+        - openfda_faers
+        - otar_projects
+        - pharmacogenomics
+        - protein_coding_coords
+        - so
+        - target_essentiality
         - variants
+        - w2v
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
           clickhouse_database: ${database_namespace}
           data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse target_prioritisation
+      requires:
+        - clickhouse_load clickhouse load target_essentiality
+      dataset: target_prioritisation
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load interaction
+      requires:
+        - clickhouse_load clickhouse load interaction_evidence
+      dataset: interaction
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load studies
+      requires:
+        - clickhouse_load clickhouse load credible_sets
+      dataset: studies
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load targets
+      requires:
+        - clickhouse_load clickhouse load studies
+      dataset: targets
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
+    - name: clickhouse_load clickhouse load disease
+      requires:
+        - clickhouse_load clickhouse load studies
+      dataset: disease
+      clickhouse_database: ${database_namespace}
+      data_dir_parent: ${local_data}
     - name: clickhouse_load clickhouse load aotf
       requires:
         - clickhouse_load clickhouse load disease
       dataset: aotf
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: clickhouse_load clickhouse load targets
-      requires:
-        - clickhouse_load clickhouse load credible_sets
-        - clickhouse_load clickhouse load studies
-      dataset: targets
-      clickhouse_database: ${database_namespace}
-      data_dir_parent: ${local_data}
     - name: explode backup clickhouse tables
       requires:
         - explode load all datasets
-      foreach:
+        - clickhouse_load clickhouse target_prioritisation
+        - clickhouse_load clickhouse load interaction
+        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load disease
+        - clickhouse_load clickhouse load aotf
+        - clickhouse_load clickhouse load targets
+      foreach: &clickhouse_tables
         - associations_otf_target
         - associations_otf_disease
         - baseline_expression
+        - biosample
+        - colocalisation
+        - credible_sets
+        - credible_sets_by_study
+        - credible_sets_by_variant
+        - credible_sets_by_region
+        - credible_sets_locus
+        - disease_hpo
+        - disease
+        - drug_warnings
+        - drug
+        - evidence
+        - evidence_by_variant
+        - evidence_by_disease_and_target
+        - expression
+        - gene_ontology
+        - hpo
+        - interaction
         - intervals
+        - l2g_predictions
         - literature_index
         - literature
-        - targets
+        - mechanism_of_action
         - ml_w2v
+        - mouse_phenotypes
+        - openfda_faers
+        - otar_projects
+        - pharmacogenomics_by_drug
+        - pharmacogenomics_by_target
+        - pharmacogenomics_by_variant
+        - protein_coding_coords_by_target
+        - protein_coding_coords_by_variant
+        - sequence_ontology
+        - studies
+        - target_essentiality
+        - target_prioritisation
+        - targets
+        - variants
       do:
         - name: clickhouse_backup table ${each}
           clickhouse_database: ${database_namespace}
@@ -418,32 +497,7 @@ steps:
         - sync_bucket etl output files
         - sync_bucket etl view files
         - clickhouse_start data loading instance
-      foreach:
-        - baseline_expression
-        - biosample
-        - credible_sets
-        - colocalisation
-        - disease_hpo
-        - drug
-        - drug_warnings
-        - evidence
-        - expression
-        - go
-        - hpo
-        - interaction_evidence
-        - interval
-        - l2g_predictions
-        - literature
-        - mechanism_of_action
-        - mouse_phenotypes
-        - openfda_faers
-        - otar_projects
-        - pharmacogenomics
-        - protein_coding_coords
-        - so
-        - target_essentiality
-        - variants
-        - w2v
+      foreach: *clickhouse_datasets
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
@@ -485,33 +539,24 @@ steps:
       dataset: aotf
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    # - name: explode backup clickhouse tables
-    #   requires:
-    #     - explode load all datasets
-    #     - clickhouse_load clickhouse load disease
-    #     - clickhouse_load clickhouse load aotf
-    #     - clickhouse_load clickhouse load targets
-    #   foreach:
-    #     - associations_otf_target
-    #     - associations_otf_disease
-    #     - baseline_expression
-    #     - intervals
-    #     - literature_index
-    #     - literature
-    #     - targets
-    #     - ml_w2v
-    #     - variants
-    #   do:
-    #     - name: clickhouse_backup table ${each}
-    #       clickhouse_database: ${database_namespace}
-    #       table: ${each}
-    #       gcs_base_path: ${clickhouse_backup_base_path}
-    - name: clickhouse_stop data loading instance
+    - name: explode backup clickhouse tables
       requires:
         - explode load all datasets
+        - clickhouse_load clickhouse target_prioritisation
+        - clickhouse_load clickhouse load interaction
+        - clickhouse_load clickhouse load studies 
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
+      foreach: *clickhouse_tables
+      do:
+        - name: clickhouse_backup table ${each}
+          clickhouse_database: ${database_namespace}
+          table: ${each}
+          gcs_base_path: ${clickhouse_backup_base_path}
+    - name: clickhouse_stop data loading instance
+      requires:
+        - explode backup clickhouse tables
       clickhouse_database_name: ${database_namespace}
     - name: create_gcp_disk_snapshot clickhouse
       requires:
@@ -551,15 +596,7 @@ steps:
     - name: explode backup clickhouse tables
       requires:
         - clickhouse_start data loading instance
-      foreach:
-        - associations_otf_target
-        - associations_otf_disease
-        - baseline_expression
-        - intervals
-        - literature_index
-        - literature
-        - targets
-        - ml_w2v
+      foreach: *clickhouse_tables
       do:
         - name: clickhouse_backup table ${each}
           requires:
@@ -573,14 +610,7 @@ steps:
     - name: explode restore clickhouse tables
       requires:
         - clickhouse_create_database for restoration
-      foreach:
-        - associations_otf_target
-        - associations_otf_disease
-        - intervals
-        - literature_index
-        - literature
-        - targets
-        - ml_w2v
+      foreach: *clickhouse_tables
       do:
         - name: clickhouse_restore table ${each}
           clickhouse_database: ${database_namespace}
@@ -602,14 +632,7 @@ steps:
       clickhouse_version: ${clickhouse_version}
       clickhouse_database: ${database_namespace}
     - name: explode load all datasets
-      foreach:
-        - baseline_expression
-        - interval
-        - literature
-        - w2v
-        - credible_sets
-        - studies
-        - disease
+      foreach: *clickhouse_datasets
       do:
         - name: clickhouse_load clickhouse load ${each}
           requires:
