@@ -1,4 +1,4 @@
-CREATE TABLE if not exists intervals_log (
+CREATE TABLE if not exists enhancer_to_gene_log (
     `chromosome` Enum8 (
         '1',
         '2',
@@ -31,6 +31,7 @@ CREATE TABLE if not exists intervals_log (
     `geneId` String,
     `biosampleName` LowCardinality (String),
     `biosampleId` LowCardinality (String),
+    `biosampleFromSourceId` Nullable (String),
     `intervalType` LowCardinality (String),
     `distanceToTss` Int32,
     `score` Float64,
@@ -43,5 +44,6 @@ CREATE TABLE if not exists intervals_log (
     `datasourceId` LowCardinality (String),
     `pmid` String,
     `studyId` String,
+    `qualityControls` Array (String)
 ) engine = Log;
 ;

@@ -137,12 +137,12 @@ steps:
         - disease_hpo
         - drug
         - drug_warnings
+        - enhancer_to_gene
         - evidence
         - expression
         - go
         - hpo
         - interaction_evidence
-        - interval
         - l2g_predictions
         - literature
         - mechanism_of_action
@@ -220,6 +220,7 @@ steps:
         - disease
         - drug_warnings
         - drug
+        - enhancer_to_gene
         - evidence
         - evidence_by_variant
         - evidence_by_disease_and_target
@@ -227,7 +228,6 @@ steps:
         - gene_ontology
         - hpo
         - interaction
-        - intervals
         - l2g_predictions
         - literature_index
         - literature
