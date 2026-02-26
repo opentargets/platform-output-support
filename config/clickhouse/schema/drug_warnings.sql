@@ -6,14 +6,14 @@ CREATE TABLE IF NOT EXISTS drug_warnings_log (
     id Nullable (UInt32),
     references Array (
         Tuple (
-            ref_id String,
-            ref_type String,
-            ref_url String
+            id String,
+            source String,
+            url String
         )
     ),
     warningType String,
     year Nullable (UInt16),
-    efo_term Nullable (String),
-    efo_id Nullable (String),
-    efo_id_for_warning_class Nullable (String)
+    efoTerm Nullable (String),
+    efoId Nullable (String),
+    efoIdForWarningClass Nullable (String)
 ) ENGINE = Log;
