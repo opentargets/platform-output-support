@@ -76,7 +76,7 @@ CREATE TABLE if not exists targets_log (
         ),
         `attributes` Array (
             Tuple (
-                `attribute_name` String,
+                `name` String,
                 `description` String,
                 `pmid` Nullable (UInt32)
             )
