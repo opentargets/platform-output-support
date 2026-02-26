@@ -48,13 +48,13 @@ CREATE TABLE IF NOT EXISTS interaction ENGINE = EmbeddedRocksDB () PRIMARY KEY t
                 sourceDatabase Enum('intact', 'reactome', 'signor', 'string'), 
                 speciesA Tuple (
                     mnemonic LowCardinality (String), 
-                    scientific_name LowCardinality (String), 
-                    taxon_id UInt8
+                    scientificName LowCardinality (String), 
+                    taxonId UInt8
                 ), 
                 speciesB Tuple (
                     mnemonic LowCardinality (String), 
-                    scientific_name LowCardinality (Nullable (String)), 
-                    taxon_id Nullable (UInt8)
+                    scientificName LowCardinality (Nullable (String)), 
+                    taxonId Nullable (UInt8)
                 ),
                 evidences Array (Tuple(
                     evidenceScore Nullable (Float64), 
