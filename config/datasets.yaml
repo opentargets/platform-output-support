@@ -203,11 +203,6 @@ clickhouse:
     input_dir: output/target
     preload_script: config/clickhouse/schema/targets.sql
     postload_script: config/clickhouse/scripts/targets.sql
-  disease:
-    table: disease_log
-    input_dir: output/disease
-    preload_script: config/clickhouse/schema/disease.sql
-    postload_script: config/clickhouse/scripts/disease.sql
   variants:
     table: variants_log
     input_dir: output/variant
