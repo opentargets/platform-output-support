@@ -97,6 +97,11 @@ clickhouse:
     input_dir: output/drug_warning
     preload_script: config/clickhouse/schema/drug_warnings.sql
     postload_script: config/clickhouse/scripts/drug_warnings.sql
+  enhancer_to_gene:
+    table: enhancer_to_gene_log
+    input_dir: output/enhancer_to_gene
+    preload_script: config/clickhouse/schema/enhancer_to_gene.sql
+    postload_script: config/clickhouse/scripts/enhancer_to_gene.sql
   evidence:
     table: evidence_log
     input_dir: output
@@ -123,11 +128,6 @@ clickhouse:
     input_dir: output/interaction_evidence
     preload_script: config/clickhouse/schema/interaction_evidence.sql
     postload_script: config/clickhouse/scripts/interaction_evidence.sql
-  interval:
-    table: intervals_log
-    input_dir: output/enhancer_to_gene
-    preload_script: config/clickhouse/schema/intervals.sql
-    postload_script: config/clickhouse/scripts/intervals.sql
   hpo:
     table: hpo_log
     input_dir: output/disease_hpo
@@ -332,8 +332,8 @@ bigquery:
   interaction_evidence:
     index: interaction_evidence
     input_dir: output/interaction_evidence
-  interval:
-    index: interval
+  enhancer_to_gene:
+    index: enhancer_to_gene
     input_dir: output/enhancer_to_gene
   known_drug:
     index: known_drug
