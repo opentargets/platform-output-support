@@ -193,5 +193,17 @@ CREATE TABLE if not exists targets_log (
             `value` Boolean
         )
     ),
-    `transcriptIds` Array (String)
+    `transcriptIds` Array (String),
+    `transcripts` Array (
+        Tuple (
+            `transcriptId` String,
+            `biotype` String,
+            `isEnsemblCanonical` Bool,
+            `uniprotId` Nullable (String),
+            `isUniprotReviewed` Nullable (Bool),
+            `translationId` Nullable (String),
+            `alphafoldId` Nullable (String),
+            `uniprotIsoformId` Nullable (String)
+        )
+    )
 ) engine = Log;
