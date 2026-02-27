@@ -79,59 +79,59 @@ steps:
         - ot_croissant generate release metadata
         - open_search_start data loading instance
       foreach: &opensearch_datasets
-        - biosample
-        - colocalisation
-        - credible_set
-        - croissant
-        - disease
-        - disease_hpo
+        # - biosample
+        # - colocalisation
+        # - credible_set
+        # - croissant
+        # - disease
+        # - disease_hpo
         - drug
-        - drug_warnings
-        - evidence_cancer_biomarkers
-        - evidence_cancer_gene_census
+        # - drug_warnings
+        # - evidence_cancer_biomarkers
+        # - evidence_cancer_gene_census
         - evidence_clinical_precedence
-        - evidence_clingen
-        - evidence_crispr
-        - evidence_crispr_screen
-        - evidence_europepmc
-        - evidence_eva
-        - evidence_eva_somatic
-        - evidence_expression_atlas
-        - evidence_gene_burden
-        - evidence_gene2phenotype
-        - evidence_genomics_england
-        - evidence_gwas_credible_sets
-        - evidence_impc
-        - evidence_intogen
-        - evidence_orphanet
-        - evidence_reactome
-        - evidence_uniprot_literature
-        - evidence_uniprot_variants
-        - expression
-        - facet_search_disease
-        - facet_search_target
-        - go
-        - gwas_index
-        - hpo
-        - indication
-        - interaction
-        - interaction_evidence
-        - l2g_predictions
-        - mechanism_of_action
-        - mouse_phenotypes
-        - openfda_faers
-        - pharmacogenomics
-        - protein_coding_coords
-        - reactome
-        - search_disease
-        - search_drug
-        - search_study
-        - search_target
-        - search_variant
-        - so
-        - target_essentiality
-        - target_prioritisation
-        - variant_index
+        # - evidence_clingen
+        # - evidence_crispr
+        # - evidence_crispr_screen
+        # - evidence_europepmc
+        # - evidence_eva
+        # - evidence_eva_somatic
+        # - evidence_expression_atlas
+        # - evidence_gene_burden
+        # - evidence_gene2phenotype
+        # - evidence_genomics_england
+        # - evidence_gwas_credible_sets
+        # - evidence_impc
+        # - evidence_intogen
+        # - evidence_orphanet
+        # - evidence_reactome
+        # - evidence_uniprot_literature
+        # - evidence_uniprot_variants
+        # - expression
+        # - facet_search_disease
+        # - facet_search_target
+        # - go
+        # - gwas_index
+        # - hpo
+        # - indication
+        # - interaction
+        # - interaction_evidence
+        # - l2g_predictions
+        # - mechanism_of_action
+        # - mouse_phenotypes
+        # - openfda_faers
+        # - pharmacogenomics
+        # - protein_coding_coords
+        # - reactome
+        # - search_disease
+        # - search_drug
+        # - search_study
+        # - search_target
+        # - search_variant
+        # - so
+        # - target_essentiality
+        # - target_prioritisation
+        # - variant_index
       do:
         - name: explode_data_prep ${each}
           dataset: ${each}
@@ -331,17 +331,17 @@ steps:
           parquet_parent: ${local_data}
           json_parent: ${prepared_data}
           step: opensearch
-        - name: open_search_create_index ${each}
-          requires:
-            - explode_data_prep ${each}
-          dataset: ${each}
-          prefix: ${database_namespace}
-        - name: open_search_load dataset ${each}
-          requires:
-            - open_search_create_index ${each}
-          dataset: ${each}
-          prefix: ${database_namespace}
-          json_parent: ${prepared_data}
+        # - name: open_search_create_index ${each}
+        #   requires:
+        #     - explode_data_prep ${each}
+        #   dataset: ${each}
+        #   prefix: ${database_namespace}
+        # - name: open_search_load dataset ${each}
+        #   requires:
+        #     - open_search_create_index ${each}
+        #   dataset: ${each}
+        #   prefix: ${database_namespace}
+        #   json_parent: ${prepared_data}
     # - name: open_search_snapshot data loading instance
     #   requires:
     #     - explode prep and load all datasets
@@ -349,17 +349,17 @@ steps:
     #   snapshot_name: ${database_namespace}
     #   snapshot_bucket: ${opensearch_snapshot_bucket}
     #   snapshot_base_path: ${opensearch_snapshot_base_path}/${database_namespace}
-    - name: open_search_stop data loading instance
-      requires:
-        - explode prep and load all datasets
-      service_name: os-pos
-    - name: create_gcp_disk_snapshot opensearch
-      gcp_project_id: ${disk_snapshot_project_id}
-      gcp_disk_name: ${opensearch_disk_name}
-      gcp_snapshot_name: ${opensearch_disk_snapshot_name}
-      gcp_disk_zone: europe-west1-d
-      requires:
-        - open_search_stop data loading instance
+    # - name: open_search_stop data loading instance
+    #   requires:
+    #     - explode prep and load all datasets
+    #   service_name: os-pos
+    # - name: create_gcp_disk_snapshot opensearch
+    #   gcp_project_id: ${disk_snapshot_project_id}
+    #   gcp_disk_name: ${opensearch_disk_name}
+    #   gcp_snapshot_name: ${opensearch_disk_snapshot_name}
+    #   gcp_disk_zone: europe-west1-d
+    #   requires:
+    #     - open_search_stop data loading instance
   ################################################################################################
   # OpenSearch - Modular Steps
   ################################################################################################
