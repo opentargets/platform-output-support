@@ -50,12 +50,8 @@ CREATE TABLE IF NOT EXISTS evidence_log (
     `drugFromSource` Nullable (String),
     `drugResponse` Nullable (String),
     `cohortShortName` Nullable (String),
-    `diseaseModelAssociatedModelPhenotypes` Array (
-        Tuple (id String, label String)
-    ),
-    `diseaseModelAssociatedHumanPhenotypes` Array (
-        Tuple (id String, label String)
-    ),
+    `diseaseModelAssociatedModelPhenotypes` Array (Tuple (id String, label String)),
+    `diseaseModelAssociatedHumanPhenotypes` Array (Tuple (id String, label String)),
     `significantDriverMethods` Array (String),
     `pValueExponent` Nullable (Int32),
     `log2FoldChangePercentileRank` Nullable (Int32),
@@ -162,5 +158,12 @@ CREATE TABLE IF NOT EXISTS evidence_log (
             isHit Nullable (Bool),
             shortName Nullable (String)
         )
-    )
+    ),
+    `clinicalReportId` Nullable (String),
+    `clinicalStage` Nullable (String),
+    `trialWhyStopped` Nullable (String),
+    `trialStopReasonCategories` Array (String),
+    `qualityControls` Array (String),
+    `publicationDate` Nullable (String),
+    `evidenceDate` Nullable (String)
 ) engine = Log;
