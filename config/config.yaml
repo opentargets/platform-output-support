@@ -10,10 +10,10 @@ scratchpad:
   database_namespace: platform2512 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2512-os-4247-2
-  opensearch_disk_snapshot_name: platform-2512-os-4247-2
-  clickhouse_disk_name: platform-2512-ch-4247-enc
-  clickhouse_disk_snapshot_name: platform-2512-ch-4247-enc
+  opensearch_disk_name: platform-2512-os-4247-3
+  opensearch_disk_snapshot_name: platform-2512-os-4247-3
+  clickhouse_disk_name: platform-2512-ch-4247-19
+  clickhouse_disk_snapshot_name: platform-2512-ch-4247-19
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -369,17 +369,17 @@ steps:
           parquet_parent: ${local_data}
           json_parent: ${prepared_data}
           step: opensearch
-        # - name: open_search_create_index ${each}
-        #   requires:
-        #     - explode_data_prep ${each}
-        #   dataset: ${each}
-        #   prefix: ${database_namespace}
-        # - name: open_search_load dataset ${each}
-        #   requires:
-        #     - open_search_create_index ${each}
-        #   dataset: ${each}
-        #   prefix: ${database_namespace}
-        #   json_parent: ${prepared_data}
+        - name: open_search_create_index ${each}
+          requires:
+            - explode_data_prep ${each}
+          dataset: ${each}
+          prefix: ${database_namespace}
+        - name: open_search_load dataset ${each}
+          requires:
+            - open_search_create_index ${each}
+          dataset: ${each}
+          prefix: ${database_namespace}
+          json_parent: ${prepared_data}
     # - name: open_search_snapshot data loading instance
     #   requires:
     #     - explode prep and load all datasets
@@ -545,24 +545,27 @@ steps:
       dataset: aotf
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: explode backup clickhouse tables
+    # - name: explode backup clickhouse tables
+    #   requires:
+    #     - explode load all datasets
+    #     - clickhouse_load clickhouse target_prioritisation
+    #     - clickhouse_load clickhouse load interaction
+    #     - clickhouse_load clickhouse load studies
+    #     - clickhouse_load clickhouse load disease
+    #     - clickhouse_load clickhouse load aotf
+    #     - clickhouse_load clickhouse load targets
+    #   foreach: *clickhouse_tables
+    #   do:
+    #     - name: clickhouse_backup table ${each}
+    #       clickhouse_database: ${database_namespace}
+    #       table: ${each}
+    #       gcs_base_path: ${clickhouse_backup_base_path}
+    - name: clickhouse_stop data loading instance
       requires:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
         - clickhouse_load clickhouse load studies
-        - clickhouse_load clickhouse load disease
-        - clickhouse_load clickhouse load aotf
-        - clickhouse_load clickhouse load targets
-      foreach: *clickhouse_tables
-      do:
-        - name: clickhouse_backup table ${each}
-          clickhouse_database: ${database_namespace}
-          table: ${each}
-          gcs_base_path: ${clickhouse_backup_base_path}
-    - name: clickhouse_stop data loading instance
-      requires:
-        - explode load all datasets
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
