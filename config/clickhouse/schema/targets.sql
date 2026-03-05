@@ -16,6 +16,7 @@ CREATE TABLE if not exists targets_log (
             `id` String,
             `control` Nullable (String),
             `drugId` Nullable (String),
+            `drugFromSourceId` Nullable (String),
             `mechanismOfAction` Array (String),
             `isHighQuality` Bool,
             `origin` Array (String),

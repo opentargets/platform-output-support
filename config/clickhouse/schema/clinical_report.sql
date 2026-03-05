@@ -15,6 +15,7 @@ create table if not exists clinical_report_log (
     trialPrimaryPurpose Nullable (String),
     trialPhase Nullable (String),
     trialStopReasonCategories Array (String),
+    qualityControls Array (String),
     diseases Array (
         Tuple (
             diseaseFromSource String,

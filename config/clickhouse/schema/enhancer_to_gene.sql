@@ -26,8 +26,8 @@ CREATE TABLE if not exists enhancer_to_gene_log (
         'Y',
         'MT'
     ),
-    `start` UInt32,
-    `end` UInt32,
+    `start` Int64,
+    `end` Int64,
     `geneId` String,
     `biosampleName` LowCardinality (String),
     `biosampleId` LowCardinality (String),
