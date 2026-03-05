@@ -47,12 +47,20 @@ class ClickhouseInstanceManager(ContainerizedService):
         name: str,
         dockerfile: Path = Path('config/clickhouse/Dockerfile'),
         clickhouse_version: str = '23.3.1.2823',
+        host: str | None = None,
+        username: str | None = None,
+        password: str = '',
         database: str = 'default',
+        port: int = 8123,
         init_timeout: int = 10,
     ) -> None:
         super().__init__(name, dockerfile, clickhouse_version, init_timeout)
         self.name = name
+        self.host = host
+        self.username = username
+        self.password = password
         self.database = database
+        self.port = port
 
     def start(self, volume_data: str, volume_logs: str) -> None:
         """Start Clickhouse instance.
@@ -98,7 +106,13 @@ class ClickhouseInstanceManager(ContainerizedService):
                 self._wait(1)
                 continue
             try:
-                client = clickhouse_connect.get_client(database=self.database)
+                client = clickhouse_connect.get_client(
+                    host=self.host,
+                    username=self.username,
+                    password=self.password,
+                    database=self.database,
+                    port=self.port,
+                )
             except DatabaseError:
                 self._wait(1)
                 if self._init_timeout == 0:
