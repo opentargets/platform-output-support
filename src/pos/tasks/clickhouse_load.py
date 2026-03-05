@@ -1,6 +1,7 @@
 # Clickhouse load task
 from pathlib import Path
 
+import clickhouse_connect
 from clickhouse_connect.driver.tools import insert_file
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
@@ -20,8 +21,14 @@ class ClickhouseLoadSpec(Spec):
 
     service_name: str = 'ch-pos'
     dataset: str
+    external_clickhouse: bool = False
+    clickhouse_host: str = 'localhost'
+    clickhouse_username: str = 'default'
+    clickhouse_password: str = ''
     clickhouse_database: str = 'ot'
+    clickhouse_port: int = 8123
     data_dir_parent: str
+    dataset_config_path: str = 'config/datasets.yaml'
 
 
 class ClickhouseLoad(Task):
@@ -29,7 +36,7 @@ class ClickhouseLoad(Task):
         super().__init__(spec, context)
         self.spec: ClickhouseLoadSpec
         try:
-            self._config = get_config('config/datasets.yaml').clickhouse
+            self._config = get_config(self.spec.dataset_config_path).clickhouse
             self._table_name = self._config[self.spec.dataset]['table']
             self._input_dir = self._config[self.spec.dataset]['input_dir']
             self._pre_load_sql = self._config[self.spec.dataset].get('preload_script')
@@ -41,9 +48,23 @@ class ClickhouseLoad(Task):
     @report
     def run(self) -> Task:
         logger.debug('loading clickhouse service')
-        clickhouse_client = ClickhouseInstanceManager(
-            name=self.spec.service_name, database=self.spec.clickhouse_database
-        ).client()
+        if not self.spec.external_clickhouse:
+            clickhouse_client = ClickhouseInstanceManager(
+                name=self.spec.service_name,
+                host=self.spec.clickhouse_host,
+                username=self.spec.clickhouse_username,
+                password=self.spec.clickhouse_password,
+                database=self.spec.clickhouse_database,
+                port=self.spec.clickhouse_port
+            ).client()
+        else:
+            clickhouse_client = clickhouse_connect.get_client(
+                host=self.spec.clickhouse_host,
+                port=self.spec.clickhouse_port,
+                username=self.spec.clickhouse_username,
+                password=self.spec.clickhouse_password,
+                database=self.spec.clickhouse_database
+            )
         if not clickhouse_client:
             raise ClickhouseLoadError(f'Clickhouse service {self.spec.service_name} failed to start')
         # create table tables
