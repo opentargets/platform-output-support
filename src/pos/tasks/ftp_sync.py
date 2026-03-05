@@ -76,7 +76,8 @@ class FtpSync(Task):
             f'export PATH_OPS_CREDENTIALS={self._get_remote_home(ssh)}/{self.remote_credentials_path};'
             f'export RELEASE_ID_PROD={self.spec.release_id};'
             f'export DATA_LOCATION_SOURCE={self.spec.source_data};'
-            f'sbatch --partition {self.spec.slurm_queue} {self._get_remote_home(ssh)}/{self.spec.remote_working_dir}/ftp_sync.sh'
+            f'sbatch --partition \
+                {self.spec.slurm_queue} {self._get_remote_home(ssh)}/{self.spec.remote_working_dir}/ftp_sync.sh'
         )
         _, s, _ = ssh.exec_command(launch_command)
         logger.info(f'{s.read().decode()}')

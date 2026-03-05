@@ -72,7 +72,7 @@ class ClickhouseInstanceManager(ContainerizedService):
         Raises:
             ClickhouseInstanceManagerError: If Clickhouse failed to start
         """
-        ports: dict[str, int] = {'9000': 9000, '8123': 8123, '9363': 9363}
+        ports: dict[str, int | list[int] | tuple[str, int] | None] | None = {'9000': 9000, '8123': 8123, '9363': 9363}
         config_path = str(Path('config/clickhouse/config.d').absolute())
         users_path = str(Path('config/clickhouse/users.d').absolute())
 
@@ -175,7 +175,7 @@ def get_table_engine(client: Client, database: str, table: str) -> str | None:
     query = Template(
         """SELECT engine \
         FROM system.tables \
-        WHERE database='${database}' AND name='${table}'"""
+        WHERE database='${database}' AND name='${table}'"""  # noqa: RUF027
     ).substitute({'database': database, 'table': table})
     table_engine_query = client.query(query=query).first_row
     return table_engine_query[0] if table_engine_query else None

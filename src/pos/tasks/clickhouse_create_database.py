@@ -19,7 +19,7 @@ class ClickhouseCreateDatabaseSpec(Spec):
     host: str = 'localhost'
     username: str = 'default'
     password: str = ''
-    port: str = '8123'
+    port: int = 8123
     clickhouse_database: str = 'ot'
     exist_ok: bool = False
 

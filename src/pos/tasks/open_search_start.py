@@ -1,5 +1,4 @@
 # Data prep task
-from typing import Self
 
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
