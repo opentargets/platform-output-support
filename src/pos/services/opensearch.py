@@ -1,7 +1,6 @@
 """OpenSearch service module."""
 
 from dataclasses import dataclass
-from dataclasses import dataclass
 from pathlib import Path
 
 from docker.types import Ulimit
@@ -86,7 +85,7 @@ class OpenSearchInstanceManager(ContainerizedService):
         Raises:
             OpenSearchInstanceManagerError: If OpenSearch failed to start
         """
-        ports = {'9200': 9200, '9300': 9300}
+        ports: dict[str, int | list[int] | tuple[str, int] | None] = {'9200': 9200, '9300': 9300}
         environment: dict[str, str] | list[str] | None = {
             'path.data': '/usr/share/opensearch/data',
             'path.logs': '/usr/share/opensearch/logs',
@@ -99,7 +98,6 @@ class OpenSearchInstanceManager(ContainerizedService):
             'OPENSEARCH_JAVA_OPTS': opensearch_java_opts,
             'thread_pool.write.queue_size': '-1',
             'indices.recovery.max_bytes_per_sec': '0mb',
-            'indices.recovery.max_bytes_per_sec': '0mb',
         }
         volumes = {
             volume_data: {'bind': '/usr/share/opensearch/data', 'mode': 'rw'},
@@ -111,7 +109,7 @@ class OpenSearchInstanceManager(ContainerizedService):
         ]
         try:
             self._run_container(
-                ports=ports,  # type: ignore[reportArgumentType]
+                ports=ports,
                 env=environment,
                 volumes=volumes,
                 ulimits=ulimits,

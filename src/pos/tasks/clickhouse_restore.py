@@ -23,7 +23,7 @@ class ClickhouseRestoreSpec(Spec):
     """Configuration fields for the restore Clickhouse task."""
 
     host: str = 'localhost'
-    port: str = '8123'
+    port: int = 8123
     clickhouse_database: str = 'ot'
     table: str
     gcs_base_path: str
