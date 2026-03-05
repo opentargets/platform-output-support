@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS target_prioritisation_log (
     isCancerDriverGene Nullable (UInt8),
     isInMembrane Nullable (UInt8),
     isSecreted Nullable (UInt8),
-    maxClinicalTrialPhase Nullable (Float64),
+    maxClinicalStage Nullable (Float64),
     mouseKOScore Nullable (Float64),
     mouseOrthologMaxIdentityPercentage Nullable (Float64),
     paralogMaxIdentityPercentage Nullable (Float64),
