@@ -199,7 +199,7 @@ CREATE TABLE if not exists targets_log (
         Tuple (
             `transcriptId` String,
             `biotype` String,
-            `isEnsemblCanonical` Bool,
+            `isEnsemblCanonical` Nullable (Bool),
             `uniprotId` Nullable (String),
             `isUniprotReviewed` Nullable (Bool),
             `translationId` Nullable (String),
