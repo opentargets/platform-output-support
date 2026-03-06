@@ -2,21 +2,22 @@
 # Platform Output Support Configuration File - PLATFORM
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://open-targets-pipeline-runs/rm/25.12-testrun-2 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://opentargets-pipeline-runs/ds/26.03-test3 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
-  release: 25.12 # e.g. 25.12
-  data_source: gs://open-targets-pipeline-runs/rm/25.12-testrun-2 # same as release_uri
-  database_namespace: platform2512 # e.g. platform2512
+  release: 26.03 # e.g. 25.12
+  data_source: gs://opentargets-pipeline-runs/ds/26.03-test3 # same as release_uri
+  database_namespace: platform2603 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2512-os-4247-3
-  opensearch_disk_snapshot_name: platform-2512-os-4247-3
-  clickhouse_disk_name: platform-2512-ch-4247-19
-  clickhouse_disk_snapshot_name: platform-2512-ch-4247-19
+  opensearch_disk_name: platform-2603b-os
+  opensearch_disk_snapshot_name: platform-2603b-os
+  clickhouse_disk_name: platform-2603-ch
+  clickhouse_disk_snapshot_name: platform-2603-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
+  aws_address: s3://open-targets-public-data-releases/platform
 
   # temp file locations
   local_data: release_data
@@ -62,6 +63,7 @@ steps:
         - sync_bucket etl output files
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
       gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: ${aws_address}/${release}
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -82,7 +84,6 @@ steps:
         - croissant
         - facet_search_disease
         - facet_search_target
-        - indication
         - search_disease
         - search_drug
         - search_study
@@ -238,7 +239,6 @@ steps:
         - hpo
         - interaction
         - l2g_predictions
-        - literature_index
         - literature
         - mechanism_of_action
         - ml_w2v
@@ -329,6 +329,7 @@ steps:
         - sync_bucket etl output files
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
       gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: ${aws_address}/${release}
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -347,6 +348,7 @@ steps:
         - sync_bucket etl output files
       ftp_address: ${release_ftp_output}
       gcp_address: ${release_gcs_output}
+      aws_address: ${aws_address}/${release}
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
