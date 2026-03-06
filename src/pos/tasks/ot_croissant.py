@@ -37,6 +37,7 @@ class OtCroissantSpec(Spec):
 
     ftp_address: str | None = None
     gcp_address: str
+    aws_address: str | None = None
     dataset_path: Path
     output: str
     prepared_data_parent: Path
@@ -81,6 +82,7 @@ class OtCroissant(Task):
             datasets=datasets,
             ftp_location=self.spec.ftp_address,
             gcp_location=self.spec.gcp_address,
+            aws_location=self.spec.aws_address,
             version=release,
             date_published=datetime.today().strftime('%Y-%m-%d'),
             data_integrity_hash='sha256',
