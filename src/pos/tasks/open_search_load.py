@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from loguru import logger
-from opensearchpy import helpers
+from opensearchpy import OpenSearch, helpers
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -26,6 +26,10 @@ class OpenSearchLoadSpec(Spec):
     dataset: str
     json_parent: str
     prefix: str
+    external_opensearch: bool = False
+    es_host: str = 'localhost'
+    es_port: int = 9200
+    dataset_config_path: str = 'config/datasets.yaml'
 
 
 class OpenSearchLoad(Task):
@@ -33,7 +37,7 @@ class OpenSearchLoad(Task):
         super().__init__(spec, context)
         self.spec: OpenSearchLoadSpec
         try:
-            self._config = get_config('config/datasets.yaml').opensearch
+            self._config = get_config(self.spec.dataset_config_path).opensearch
             self._index_name = self._get_index_name()
             self._id_field = self._config[self.spec.dataset].get('id_field')
             self._id_value = self._config[self.spec.dataset].get('id_value')
@@ -44,7 +48,12 @@ class OpenSearchLoad(Task):
     @report
     def run(self) -> Task:
         logger.debug(f'loading data into index {self._index_name}')
-        opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
+        if not self.spec.external_opensearch:
+            opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
+        else:
+            opensearch = OpenSearch(
+                [{'host': self.spec.es_host, 'port': self.spec.es_port}], use_ssl=False, timeout=7200
+            )
         json_file = self._get_json_path()
         if not json_file.exists():
             logger.warning(f'file {json_file} does not exist, no data loaded in dataset {self.spec.dataset}')
