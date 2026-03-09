@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from queue import Queue
+from typing import Literal
 
 from box import Box
 from loguru import logger
@@ -32,6 +33,8 @@ class ExplodeDataPrepSpec(Spec):
     json_parent: str
     dataset: str
     step: str
+    dataset_config_path: str = 'config/datasets.yaml'
+    mode: Literal['overwrite', 'concatenate'] = 'concatenate'
 
 
 class ExplodeDataPrep(Task):
@@ -40,7 +43,7 @@ class ExplodeDataPrep(Task):
         self.spec: ExplodeDataPrepSpec
         self.scratchpad = Scratchpad({})
         try:
-            self._config: Box = get_config('config/datasets.yaml')[self.spec.step]
+            self._config: Box = get_config(self.spec.dataset_config_path)[self.spec.step]
             self._input_dir = Path(self._config[self.spec.dataset].input_dir)
             self._output_dir = Path(self._config[self.spec.dataset].output_dir)
         except AttributeError:
@@ -61,6 +64,10 @@ class ExplodeDataPrep(Task):
                 source=str(file),
                 destination=str(self._get_json_destination()),
             )
+            if self.spec.mode == 'overwrite':
+                json_file = self._get_json_destination()
+                if json_file.exists():
+                    json_file.unlink()
             subtask_spec = spec.model_validate(self.scratchpad.replace_dict(spec.model_dump()))
             subtask_spec.task_queue = subtask_queue
             subtask_queue.put(subtask_spec)

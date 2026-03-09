@@ -3,7 +3,7 @@
 from pathlib import Path
 
 from loguru import logger
-from opensearchpy import RequestError
+from opensearchpy import OpenSearch, RequestError
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError
@@ -22,6 +22,10 @@ class OpenSearchCreateIndexSpec(Spec):
     service_name: str = 'os-pos'
     dataset: str
     prefix: str
+    external_opensearch: bool = False
+    es_host: str = 'localhost'
+    es_port: int = 9200
+    dataset_config_path: str = 'config/datasets.yaml'
 
 
 class OpenSearchCreateIndex(Task):
@@ -29,7 +33,7 @@ class OpenSearchCreateIndex(Task):
         super().__init__(spec, context)
         self.spec: OpenSearchCreateIndexSpec
         try:
-            self._config = get_config('config/datasets.yaml').opensearch
+            self._config = get_config(self.spec.dataset_config_path).opensearch
             self._index_name = self._get_index_name()
             self._mappings = Path(self._config[self.spec.dataset]['mappings'])
         except AttributeError:
@@ -38,7 +42,12 @@ class OpenSearchCreateIndex(Task):
     @report
     def run(self) -> Task:
         logger.debug(f'creating index {self._index_name}')
-        opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
+        if not self.spec.external_opensearch:
+            opensearch = OpenSearchInstanceManager(self.spec.service_name).client()
+        else:
+            opensearch = OpenSearch(
+                [{'host': self.spec.es_host, 'port': self.spec.es_port}], use_ssl=False, timeout=7200
+            )
         if not opensearch.indices.exists(index=self._index_name):
             try:
                 opensearch.indices.create(
