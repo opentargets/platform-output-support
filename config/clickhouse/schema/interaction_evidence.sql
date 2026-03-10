@@ -41,7 +41,7 @@ CREATE TABLE if not exists interaction_evidence_log (
         taxonId Nullable (UInt8)
     ),
     targetA String,
-    targetB String,
+    targetB Nullable (String),
     participantDetectionMethodA Array (
         Tuple (
             miIdentifier Nullable (String),

@@ -1,18 +1,19 @@
 CREATE TABLE IF NOT EXISTS interaction_with_evidence ENGINE = MergeTree
 ORDER BY (targetA) SETTINGS allow_nullable_key = 1 AS (
-        SELECT i.*, groupArray (
+        SELECT i.*, arrayFilter(e -> e.6 IS NOT NULL, groupArray (
                 (
                     e.evidenceScore, e.expansionMethodMiIdentifier, e.expansionMethodShortName, e.hostOrganismScientificName, e.hostOrganismTaxId, e.intASource, e.intBSource, e.interactionDetectionMethodMiIdentifier, e.interactionDetectionMethodShortName, e.interactionIdentifier, e.interactionResources, e.interactionTypeMiIdentifier, e.interactionTypeShortName, e.participantDetectionMethodA, e.participantDetectionMethodB, e.pubmedId
                 )
-            ) AS evidences
+            )) AS evidences
         FROM
             interaction_log AS i
-            LEFT JOIN interaction_evidence_log AS e ON i.targetA = e.targetA
-            AND i.targetB = e.targetB
-            AND i.intA = e.intA
-            AND i.intB = e.intB
-            AND i.intABiologicalRole = e.intABiologicalRole
-            AND i.intBBiologicalRole = e.intBBiologicalRole
+            LEFT JOIN interaction_evidence_log AS e 
+            ON i.targetA = e.targetA
+            AND isNotDistinctFrom(i.targetB, e.targetB)
+            AND isNotDistinctFrom(i.intA, e.intA)
+            AND isNotDistinctFrom(i.intB, e.intB)
+            AND isNotDistinctFrom(i.intABiologicalRole, e.intABiologicalRole)
+            AND isNotDistinctFrom(i.intBBiologicalRole, e.intBBiologicalRole)
             AND i.sourceDatabase = e.interactionResources.sourceDatabase
         GROUP BY
             i.*
@@ -89,9 +90,3 @@ CREATE TABLE IF NOT EXISTS interaction ENGINE = EmbeddedRocksDB () PRIMARY KEY t
     FROM interaction_with_evidence
     GROUP BY targetA      
 );
-
-DROP TABLE IF EXISTS interaction_log SYNC;
-
-DROP TABLE IF EXISTS interaction_evidence_log SYNC;
-
-DROP TABLE IF EXISTS interaction_with_evidence SYNC;
