@@ -316,7 +316,7 @@ steps:
       requires:
         - sync_bucket etl output files
       ftp_address: 
-      gcp_address: ${release_gcs_output}
+      gcp_address: ${release_gcs_bucket}/${release}/output/
       aws_address: 
       dataset_path: ${local_data}/output
       output: croissant.json
