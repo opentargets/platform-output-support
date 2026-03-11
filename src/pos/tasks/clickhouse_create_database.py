@@ -17,8 +17,11 @@ class ClickhouseCreateDatabaseSpec(Spec):
     """Configuration fields for the Clickhouse create database task."""
 
     host: str = 'localhost'
-    port: str = '8123'
+    username: str = 'default'
+    password: str = ''
+    port: int = 8123
     clickhouse_database: str = 'ot'
+    exist_ok: bool = False
 
 
 class ClickhouseCreateDatabase(Task):
@@ -30,8 +33,14 @@ class ClickhouseCreateDatabase(Task):
     def run(self) -> Task:
         logger.debug('Create Clickhouse database')
         try:
-            client = clickhouse_connect.get_client(host=self.spec.host, port=self.spec.port, database='default')
-            create_database(client, self.spec.clickhouse_database, exists_ok=False)
+            client = clickhouse_connect.get_client(
+                host=self.spec.host,
+                port=self.spec.port,
+                username=self.spec.username,
+                password=self.spec.password,
+                database='default'
+            )
+            create_database(client, self.spec.clickhouse_database, exists_ok=self.spec.exist_ok)
         except DatabaseError as db_err:
             raise ClickhouseCreateDatabaseError(f'Create Clickhouse database error : {db_err}') from db_err
         return self

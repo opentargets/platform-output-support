@@ -1,6 +1,7 @@
 # Sync bucket
 
 import subprocess
+from pathlib import Path
 
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
@@ -34,7 +35,7 @@ class SyncBucket(Task):
     @report
     def run(self) -> Task:
         if self.spec.destination.startswith('gs://'):
-            destination_folder = self.spec.destination
+            destination_folder: Path = Path(self.spec.destination)
         else:
             destination_folder = self.context.config.work_path.joinpath(self.spec.destination)
             logger.debug(f'checking if {destination_folder} exists. If not, create it')
@@ -48,7 +49,7 @@ class SyncBucket(Task):
             'rsync',
             '-r',
             self.spec.source,
-            destination_folder,
+            str(destination_folder),
         ]
         subprocess.run(rsync_command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         return self

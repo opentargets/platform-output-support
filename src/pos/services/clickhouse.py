@@ -34,7 +34,11 @@ class ClickhouseInstanceManager(ContainerizedService):
         name: Container name
         dockerfile: Path to Dockerfile (default: 'config/clickhouse/Dockerfile')
         clickhouse_version: Clickhouse version (default: '23.3.1.2823')
+        host: Clickhouse host (default: None)
+        username: Clickhouse username (default: None)
+        password: Clickhouse password (default: '')
         database: Database name (default: 'ot')
+        port: Clickhouse HTTP port (default: 8123)
         init_timeout: Initialization timeout in seconds (default: 10)
 
 
@@ -47,12 +51,20 @@ class ClickhouseInstanceManager(ContainerizedService):
         name: str,
         dockerfile: Path = Path('config/clickhouse/Dockerfile'),
         clickhouse_version: str = '23.3.1.2823',
+        host: str | None = None,
+        username: str | None = None,
+        password: str = '',
         database: str = 'default',
+        port: int = 8123,
         init_timeout: int = 10,
     ) -> None:
         super().__init__(name, dockerfile, clickhouse_version, init_timeout)
         self.name = name
+        self.host = host
+        self.username = username
+        self.password = password
         self.database = database
+        self.port = port
 
     def start(self, volume_data: str, volume_logs: str) -> None:
         """Start Clickhouse instance.
@@ -64,7 +76,11 @@ class ClickhouseInstanceManager(ContainerizedService):
         Raises:
             ClickhouseInstanceManagerError: If Clickhouse failed to start
         """
-        ports: dict[str, int] = {'9000': 9000, '8123': 8123, '9363': 9363}
+        ports: dict[str, int | list[int] | tuple[str, int] | None] | None = {
+            '9000': 9000,
+            str(self.port): 8123,
+            '9363': 9363,
+        }
         config_path = str(Path('config/clickhouse/config.d').absolute())
         users_path = str(Path('config/clickhouse/users.d').absolute())
 
@@ -98,7 +114,13 @@ class ClickhouseInstanceManager(ContainerizedService):
                 self._wait(1)
                 continue
             try:
-                client = clickhouse_connect.get_client(database=self.database)
+                client = clickhouse_connect.get_client(
+                    host=self.host,
+                    username=self.username,
+                    password=self.password,
+                    database=self.database,
+                    port=self.port,
+                )
             except DatabaseError:
                 self._wait(1)
                 if self._init_timeout == 0:
@@ -161,7 +183,7 @@ def get_table_engine(client: Client, database: str, table: str) -> str | None:
     query = Template(
         """SELECT engine \
         FROM system.tables \
-        WHERE database='${database}' AND name='${table}'"""
+        WHERE database='${database}' AND name='${table}'"""  # noqa: RUF027
     ).substitute({'database': database, 'table': table})
     table_engine_query = client.query(query=query).first_row
     return table_engine_query[0] if table_engine_query else None

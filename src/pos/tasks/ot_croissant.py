@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from loguru import logger
-from ot_croissant.crumbs.metadata import PlatformOutputMetadata
+from ot_croissant.crumbs.metadata import PlatformOutputMetadata  # type: ignore[import-untyped]
 from otter.manifest.model import Artifact
 from otter.storage import get_remote_storage
 from otter.task.model import Spec, Task, TaskContext

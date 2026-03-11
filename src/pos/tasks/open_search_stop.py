@@ -1,7 +1,5 @@
 # Data prep task
 
-from typing import Self
-
 from otter.task.model import Spec, Task, TaskContext
 from otter.task.task_reporter import report
 from otter.util.errors import OtterError

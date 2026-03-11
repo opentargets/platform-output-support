@@ -1,7 +1,5 @@
 # Big query reset task
 
-from typing import Self
-
 from google.cloud.bigquery.schema import SchemaField
 from loguru import logger
 from otter.task.model import Spec, Task, TaskContext
