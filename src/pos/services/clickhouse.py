@@ -34,7 +34,11 @@ class ClickhouseInstanceManager(ContainerizedService):
         name: Container name
         dockerfile: Path to Dockerfile (default: 'config/clickhouse/Dockerfile')
         clickhouse_version: Clickhouse version (default: '23.3.1.2823')
+        host: Clickhouse host (default: None)
+        username: Clickhouse username (default: None)
+        password: Clickhouse password (default: '')
         database: Database name (default: 'ot')
+        port: Clickhouse HTTP port (default: 8123)
         init_timeout: Initialization timeout in seconds (default: 10)
 
 
