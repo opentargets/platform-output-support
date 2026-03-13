@@ -16,6 +16,7 @@ scratchpad:
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-ppp-data-releases
+  aws_address: s3://open-targets-public-data-releases/platform
 
   # temp file locations
   local_data: release_data
@@ -55,6 +56,7 @@ steps:
         - sync_bucket etl output files
       ftp_address:
       gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: 
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -76,7 +78,6 @@ steps:
         - facet_search_disease
         - facet_search_target
         - indication
-        - known_drugs
         - search_disease
         - search_drug
         - search_study
@@ -201,7 +202,7 @@ steps:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
@@ -297,6 +298,7 @@ steps:
         - sync_bucket etl output files
       ftp_address:
       gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: 
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -313,8 +315,9 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: ${release_ftp_output}
-      gcp_address: ${release_gcs_output}
+      ftp_address: 
+      gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: 
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -518,7 +521,7 @@ steps:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets

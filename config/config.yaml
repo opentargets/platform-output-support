@@ -2,21 +2,22 @@
 # Platform Output Support Configuration File - PLATFORM
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://open-targets-pipeline-runs/il/25.12-testrun-2 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://opentargets-pipeline-runs/ds/26.03-test3 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
-  release: 25.12 # e.g. 25.12
-  data_source:  gs://open-targets-pipeline-runs/il/25.12-testrun-2 #gs://open-targets-pipeline-runs/il/25.12-testrun-1 # same as release_uri
-  database_namespace: platform2512 # e.g. platform2512
+  release: 26.03 # e.g. 25.12
+  data_source: gs://opentargets-pipeline-runs/ds/26.03-test3 # same as release_uri
+  database_namespace: platform2603 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2512-os-rc4
-  opensearch_disk_snapshot_name: platform-2512-os-rc4
-  clickhouse_disk_name: platform-2512-ch-mig24
-  clickhouse_disk_snapshot_name: platform-2512-ch-mig24
+  opensearch_disk_name: platform-2603c-os
+  opensearch_disk_snapshot_name: platform-2603c-os
+  clickhouse_disk_name: platform-2603b-ch
+  clickhouse_disk_snapshot_name: platform-2603b-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
+  aws_address: s3://open-targets-public-data-releases/platform
 
   # temp file locations
   local_data: release_data
@@ -62,6 +63,7 @@ steps:
         - sync_bucket etl output files
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
       gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: ${aws_address}/${release}/output/
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -82,8 +84,6 @@ steps:
         - croissant
         - facet_search_disease
         - facet_search_target
-        - indication
-        - known_drugs
         - search_disease
         - search_drug
         - search_study
@@ -162,6 +162,9 @@ steps:
         - target_essentiality
         - variants
         - w2v
+        - clinical_indication
+        - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
@@ -208,7 +211,7 @@ steps:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
@@ -219,7 +222,6 @@ steps:
         - biosample
         - colocalisation
         - credible_sets
-        - credible_sets_by_study
         - credible_sets_by_variant
         - credible_sets_by_region
         - credible_sets_locus
@@ -236,7 +238,6 @@ steps:
         - hpo
         - interaction
         - l2g_predictions
-        - literature_index
         - literature
         - mechanism_of_action
         - ml_w2v
@@ -254,6 +255,10 @@ steps:
         - target_prioritisation
         - targets
         - variants
+        - clinical_indication_disease
+        - clinical_indication_drug
+        - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_backup table ${each}
           clickhouse_database: ${database_namespace}
@@ -323,6 +328,7 @@ steps:
         - sync_bucket etl output files
       ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
       gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: ${aws_address}/${release}/output/
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -339,8 +345,9 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: ${release_ftp_output}
-      gcp_address: ${release_gcs_output}
+      ftp_address: http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${release}/output/
+      gcp_address: ${release_gcs_bucket}/${release}/output/
+      aws_address: ${aws_address}/${release}/output/
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -374,16 +381,9 @@ steps:
           dataset: ${each}
           prefix: ${database_namespace}
           json_parent: ${prepared_data}
-    - name: open_search_snapshot data loading instance
-      requires:
-        - explode prep and load all datasets
-      snapshot_repository_name: ${opensearch_snapshot_repository}
-      snapshot_name: ${database_namespace}
-      snapshot_bucket: ${opensearch_snapshot_bucket}
-      snapshot_base_path: ${opensearch_snapshot_base_path}/${database_namespace}
     - name: open_search_stop data loading instance
       requires:
-        - open_search_snapshot data loading instance
+        - explode prep and load all datasets
       service_name: os-pos
     - name: create_gcp_disk_snapshot opensearch
       gcp_project_id: ${disk_snapshot_project_id}
@@ -539,24 +539,15 @@ steps:
       dataset: aotf
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: explode backup clickhouse tables
+    - name: clickhouse_stop data loading instance
       requires:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
         - clickhouse_load clickhouse load interaction
-        - clickhouse_load clickhouse load studies 
+        - clickhouse_load clickhouse load studies
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
-      foreach: *clickhouse_tables
-      do:
-        - name: clickhouse_backup table ${each}
-          clickhouse_database: ${database_namespace}
-          table: ${each}
-          gcs_base_path: ${clickhouse_backup_base_path}
-    - name: clickhouse_stop data loading instance
-      requires:
-        - explode backup clickhouse tables
       clickhouse_database_name: ${database_namespace}
     - name: create_gcp_disk_snapshot clickhouse
       requires:
@@ -684,7 +675,7 @@ steps:
         - enhancer_to_gene
         - evidence_cancer_biomarkers
         - evidence_cancer_gene_census
-        - evidence_chembl
+        - evidence_clinical_precedence
         - evidence_clingen
         - evidence_crispr
         - evidence_crispr_screen

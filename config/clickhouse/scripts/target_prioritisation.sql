@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS target_prioritisation_temp ENGINE = EmbeddedRocksDB (
         ('isCancerDriverGene', toString(isCancerDriverGene)),
         ('isInMembrane', toString(isInMembrane)),
         ('isSecreted', toString(isSecreted)),
-        ('maxClinicalTrialPhase', toString(maxClinicalTrialPhase)),
+        ('maxClinicalStage', toString(maxClinicalStage)),
         ('mouseKOScore', toString(mouseKOScore)),
         ('mouseOrthologMaxIdentityPercentage', toString(mouseOrthologMaxIdentityPercentage)),
         ('paralogMaxIdentityPercentage', toString(paralogMaxIdentityPercentage)),

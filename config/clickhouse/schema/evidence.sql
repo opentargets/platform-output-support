@@ -50,18 +50,13 @@ CREATE TABLE IF NOT EXISTS evidence_log (
     `drugFromSource` Nullable (String),
     `drugResponse` Nullable (String),
     `cohortShortName` Nullable (String),
-    `diseaseModelAssociatedModelPhenotypes` Array (
-        Tuple (id String, label String)
-    ),
-    `diseaseModelAssociatedHumanPhenotypes` Array (
-        Tuple (id String, label String)
-    ),
+    `diseaseModelAssociatedModelPhenotypes` Array (Tuple (id String, label String)),
+    `diseaseModelAssociatedHumanPhenotypes` Array (Tuple (id String, label String)),
     `significantDriverMethods` Array (String),
     `pValueExponent` Nullable (Int32),
     `log2FoldChangePercentileRank` Nullable (Int32),
     `biologicalModelAllelicComposition` Nullable (String),
     `confidence` Nullable (String),
-    `clinicalPhase` Nullable (Float64),
     `resourceScore` Nullable (Float64),
     `variantFunctionalConsequenceId` Nullable (String),
     `variantFunctionalConsequenceFromQtlId` Nullable (String),
@@ -80,7 +75,6 @@ CREATE TABLE IF NOT EXISTS evidence_log (
     `datasourceId` String,
     `datatypeId` String,
     `oddsRatioConfidenceIntervalUpper` Nullable (Float64),
-    `clinicalStatus` Nullable (String),
     `log2FoldChangeValue` Nullable (Float64),
     `oddsRatio` Nullable (Float64),
     `cohortDescription` Nullable (String),
@@ -118,8 +112,6 @@ CREATE TABLE IF NOT EXISTS evidence_log (
     `betaConfidenceIntervalLower` Nullable (Float64),
     `betaConfidenceIntervalUpper` Nullable (Float64),
     `studyStartDate` Nullable (String),
-    `studyStopReason` Nullable (String),
-    `studyStopReasonCategories` Array (String),
     `targetFromSource` Nullable (String),
     `cellLineBackground` Nullable (String),
     `contrast` Nullable (String),
@@ -162,5 +154,12 @@ CREATE TABLE IF NOT EXISTS evidence_log (
             isHit Nullable (Bool),
             shortName Nullable (String)
         )
-    )
+    ),
+    `clinicalReportId` Nullable (String),
+    `clinicalStage` Nullable (String),
+    `trialWhyStopped` Nullable (String),
+    `trialStopReasonCategories` Array (String),
+    `qualityControls` Array (String),
+    `publicationDate` Nullable (String),
+    `evidenceDate` Nullable (String)
 ) engine = Log;
