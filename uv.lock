@@ -824,8 +824,8 @@ wheels = [
 
 [[package]]
 name = "ot-croissant"
-version = "26.3.0.dev2"
-source = { git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0-dev2#f1e221936beea13b093607094018ade3f90dcc6c" }
+version = "26.3.0.dev3"
+source = { git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0-dev3#5896ae99ddb09163ef52280df75d5d45addd8a0a" }
 dependencies = [
     { name = "loguru" },
     { name = "mlcroissant" },
@@ -993,7 +993,7 @@ requires-dist = [
     { name = "opensearch-py", specifier = ">=3.0.0" },
     { name = "opentargets-otter", specifier = ">=25.0.16" },
     { name = "orjson", specifier = ">=3.10.18" },
-    { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0-dev2" },
+    { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0-dev3" },
     { name = "paramiko", specifier = ">=4.0.0" },
     { name = "polars", specifier = ">=1.31.0" },
     { name = "pyarrow", specifier = ">=20.0.0" },
