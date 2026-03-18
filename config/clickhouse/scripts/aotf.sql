@@ -35,6 +35,10 @@ FROM
     LEFT OUTER JOIN disease_log ON associations_otf_log.diseaseId = disease_log.id;
 ;
 
+OPTIMIZE TABLE associations_otf_disease FINAL;
+
+OPTIMIZE TABLE associations_otf_target FINAL;
+
 drop table associations_otf_log SYNC;
 
 drop table disease_log SYNC;
