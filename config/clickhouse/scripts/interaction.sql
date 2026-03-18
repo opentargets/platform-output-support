@@ -90,3 +90,7 @@ CREATE TABLE IF NOT EXISTS interaction ENGINE = EmbeddedRocksDB () PRIMARY KEY t
     FROM interaction_with_evidence
     GROUP BY targetA      
 );
+
+OPTIMIZE TABLE interaction FINAL;
+
+DROP TABLE IF EXISTS interaction_with_evidence SYNC;
