@@ -7,7 +7,7 @@ ORDER BY (targetA) SETTINGS allow_nullable_key = 1 AS (
             )) AS evidences
         FROM
             interaction_log AS i
-            LEFT JOIN interaction_evidence_log AS e 
+            LEFT JOIN interaction_evidence_log AS e
             ON i.targetA = e.targetA
             AND isNotDistinctFrom(i.targetB, e.targetB)
             AND isNotDistinctFrom(i.intA, e.intA)
@@ -21,76 +21,74 @@ ORDER BY (targetA) SETTINGS allow_nullable_key = 1 AS (
 
 CREATE TABLE IF NOT EXISTS interaction ENGINE = EmbeddedRocksDB () PRIMARY KEY targetA AS
 (
-    SELECT 
+    SELECT
         targetA,
         groupArray(
             (
                 targetA,
-                intA, 
-                targetB, 
-                intB, 
-                intABiologicalRole, 
-                intBBiologicalRole, 
+                intA,
+                targetB,
+                intB,
+                intABiologicalRole,
+                intBBiologicalRole,
                 scoring,
                 count,
-                sourceDatabase, 
-                speciesA, 
+                sourceDatabase,
+                speciesA,
                 speciesB,
                 evidences
             )::Tuple(
                 targetA String,
-                intA String, 
-                targetB Nullable (String), 
-                intB String, 
-                intABiologicalRole LowCardinality (String), 
-                intBBiologicalRole LowCardinality (String), 
-                scoring Nullable (Float64), 
+                intA String,
+                targetB Nullable (String),
+                intB String,
+                intABiologicalRole LowCardinality (String),
+                intBBiologicalRole LowCardinality (String),
+                scoring Nullable (Float64),
                 count UInt8,
-                sourceDatabase Enum('intact', 'reactome', 'signor', 'string'), 
+                sourceDatabase Enum('intact', 'reactome', 'signor', 'string'),
                 speciesA Tuple (
-                    mnemonic LowCardinality (String), 
-                    scientificName LowCardinality (String), 
+                    mnemonic LowCardinality (String),
+                    scientificName LowCardinality (String),
                     taxonId UInt8
-                ), 
+                ),
                 speciesB Tuple (
-                    mnemonic LowCardinality (String), 
-                    scientificName LowCardinality (Nullable (String)), 
+                    mnemonic LowCardinality (String),
+                    scientificName LowCardinality (Nullable (String)),
                     taxonId Nullable (UInt8)
                 ),
                 evidences Array (Tuple(
-                    evidenceScore Nullable (Float64), 
-                    expansionMethodMiIdentifier Nullable (String), 
-                    expansionMethodShortName Nullable (String), 
-                    hostOrganismScientificName Nullable (String), 
-                    hostOrganismTaxId Nullable (UInt32), 
-                    intASource String, 
-                    intBSource String, 
-                    interactionDetectionMethodMiIdentifier String, 
-                    interactionDetectionMethodShortName String, 
-                    interactionIdentifier Nullable (String), 
+                    evidenceScore Nullable (Float64),
+                    expansionMethodMiIdentifier Nullable (String),
+                    expansionMethodShortName Nullable (String),
+                    hostOrganismScientificName Nullable (String),
+                    hostOrganismTaxId Nullable (UInt32),
+                    intASource String,
+                    intBSource String,
+                    interactionDetectionMethodMiIdentifier String,
+                    interactionDetectionMethodShortName String,
+                    interactionIdentifier Nullable (String),
                     interactionResources Tuple (
-                        databaseVersion LowCardinality (String), 
+                        databaseVersion LowCardinality (String),
                         sourceDatabase LowCardinality (String)
                     ),
-                    interactionTypeMiIdentifier Nullable (String), 
-                    interactionTypeShortName Nullable (String), 
+                    interactionTypeMiIdentifier Nullable (String),
+                    interactionTypeShortName Nullable (String),
                     participantDetectionMethodA Array (Tuple (
-                        miIdentifier Nullable (String), 
+                        miIdentifier Nullable (String),
                         shortName Nullable (String)
                         )
-                    ), 
+                    ),
                     participantDetectionMethodB Array (Tuple (
-                        miIdentifier Nullable (String), 
+                        miIdentifier Nullable (String),
                         shortName Nullable (String)
-                    )), 
+                    )),
                     pubmedId Nullable (String)
                 ))
             )
         ) AS interactions
     FROM interaction_with_evidence
-    GROUP BY targetA      
+    GROUP BY targetA
 );
-
-OPTIMIZE TABLE interaction FINAL;
 
 DROP TABLE IF EXISTS interaction_with_evidence SYNC;
