@@ -2,18 +2,18 @@
 # Platform Output Support Configuration File - PLATFORM
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://opentargets-pipeline-runs/ds/26.03-test3 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://opentargets-pipeline-runs/ds/26.03-test5 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 26.03 # e.g. 25.12
-  data_source: gs://opentargets-pipeline-runs/ds/26.03-test3 # same as release_uri
+  data_source: gs://open-targets-pipeline-runs/ds/26.03-test5 # same as release_uri
   database_namespace: platform2603 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2603c-os
-  opensearch_disk_snapshot_name: platform-2603c-os
-  clickhouse_disk_name: platform-2603b-ch
-  clickhouse_disk_snapshot_name: platform-2603b-ch
+  opensearch_disk_name: platform-2603-os-rc5
+  opensearch_disk_snapshot_name: platform-2603-os-rc5
+  clickhouse_disk_name: platform-2603-ch-rc5
+  clickhouse_disk_snapshot_name: platform-2603-ch-rc5
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
@@ -24,7 +24,7 @@ scratchpad:
   prepared_data: prepared_data
 
   # opensearch
-  opensearch_version: 3.1.0
+  opensearch_version: 3.5.0
   opensearch_java_opts: -Xms40g -Xmx200g
   opensearch_data: /mnt/opensearch/data
   opensearch_logs: /var/log/pos/opensearch
@@ -34,7 +34,7 @@ scratchpad:
   opensearch_indices_to_restore: '*,-.*' # e.g. '*,-.*' to restore all except hidden indices
 
   # clickhouse
-  clickhouse_version: 25.6.3.116
+  clickhouse_version: 25.8.18.1
   clickhouse_data: /mnt/clickhouse/data
   clickhouse_logs: /var/log/pos/clickhouse
   clickhouse_backup_base_path: https://storage.googleapis.com/open-targets-data-backends/clickhouse/
