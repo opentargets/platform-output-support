@@ -8,4 +8,4 @@ from (
 
 OPTIMIZE TABLE ml_w2v FINAL;
 
-rop table ml_w2v_log SYNC;
+drop table ml_w2v_log SYNC;
