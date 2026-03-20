@@ -148,6 +148,11 @@ clickhouse:
     input_dir: output/mouse_phenotype
     preload_script: config/clickhouse/schema/mouse_phenotypes.sql
     postload_script: config/clickhouse/scripts/mouse_phenotypes.sql
+  novelty:
+    table: novelty_log
+    input_dir: output/novelty
+    preload_script: config/clickhouse/schema/novelty.sql
+    postload_script: config/clickhouse/scripts/novelty.sql
   openfda_faers:
     table: openfda_faers_log
     input_dir: output/openfda_significant_adverse_drug_reactions
