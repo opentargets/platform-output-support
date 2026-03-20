@@ -148,6 +148,7 @@ steps:
         - literature
         - mechanism_of_action
         - mouse_phenotypes
+        - novelty
         - openfda_faers
         - otar_projects
         - pharmacogenomics
@@ -213,7 +214,6 @@ steps:
         - biosample
         - colocalisation
         - credible_sets
-        - credible_sets_by_study
         - credible_sets_by_variant
         - credible_sets_by_region
         - credible_sets_locus
@@ -235,6 +235,7 @@ steps:
         - mechanism_of_action
         - ml_w2v
         - mouse_phenotypes
+        - novelty
         - openfda_faers
         - otar_projects
         - pharmacogenomics_by_drug
