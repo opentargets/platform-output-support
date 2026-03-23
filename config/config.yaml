@@ -6,7 +6,7 @@ release_uri: gs://open-targets-pipeline-runs/ds/26.03-test5
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 26.03 # e.g. 25.12
-  data_source: gs://open-targets-pipeline-runs/ds/26.03-test5 # same as release_uri
+  data_source: gs://open-targets-pre-data-releases/26.03 # same as release_uri
   database_namespace: platform2603 # e.g. platform2512
 
   # Google disk snapshot variables
