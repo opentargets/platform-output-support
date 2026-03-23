@@ -1,6 +1,6 @@
 [project]
 name = "POS"
-version = "25.0.0-alpha.1"
+version = "26.03.0"
 description = "Open Targets Pipeline Output Stage"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -186,4 +186,4 @@ convention = "google"
 ignore-decorators = ["pos.tasks.report", "pos.manifest.task_reporter.report"]
 
 [tool.uv.sources]
-ot-croissant = { git = "https://github.com/opentargets/ot_croissant", tag = "v26.03.0-dev3" }
+ot-croissant = { git = "https://github.com/opentargets/ot_croissant", tag = "v26.03.0" }
