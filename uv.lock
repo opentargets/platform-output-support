@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14' and platform_python_implementation != 'PyPy' and sys_platform == 'win32'",
@@ -824,8 +824,8 @@ wheels = [
 
 [[package]]
 name = "ot-croissant"
-version = "26.3.0.dev3"
-source = { git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0-dev3#5896ae99ddb09163ef52280df75d5d45addd8a0a" }
+version = "26.3.0"
+source = { git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0#bed86d03b58270856731e0514a0998dd60078f56" }
 dependencies = [
     { name = "loguru" },
     { name = "mlcroissant" },
@@ -946,7 +946,7 @@ wheels = [
 
 [[package]]
 name = "pos"
-version = "25.0.0a1"
+version = "26.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "click-default-group" },
@@ -993,7 +993,7 @@ requires-dist = [
     { name = "opensearch-py", specifier = ">=3.0.0" },
     { name = "opentargets-otter", specifier = ">=25.0.16" },
     { name = "orjson", specifier = ">=3.10.18" },
-    { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0-dev3" },
+    { name = "ot-croissant", git = "https://github.com/opentargets/ot_croissant?tag=v26.03.0" },
     { name = "paramiko", specifier = ">=4.0.0" },
     { name = "polars", specifier = ">=1.31.0" },
     { name = "pyarrow", specifier = ">=20.0.0" },
