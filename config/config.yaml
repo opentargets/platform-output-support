@@ -2,7 +2,7 @@
 # Platform Output Support Configuration File - PLATFORM
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://opentargets-pipeline-runs/ds/26.03-test5 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://open-targets-pipeline-runs/ds/26.03-test5
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 26.03 # e.g. 25.12
@@ -10,10 +10,10 @@ scratchpad:
   database_namespace: platform2603 # e.g. platform2512
 
   # Google disk snapshot variables
-  opensearch_disk_name: platform-2603-os-rc5
-  opensearch_disk_snapshot_name: platform-2603-os-rc5
-  clickhouse_disk_name: platform-2603-ch-rc5
-  clickhouse_disk_snapshot_name: platform-2603-ch-rc5
+  opensearch_disk_name: platform-2603-os
+  opensearch_disk_snapshot_name: platform-2603-os
+  clickhouse_disk_name: platform-2603-ch
+  clickhouse_disk_snapshot_name: platform-2603-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-data-releases
