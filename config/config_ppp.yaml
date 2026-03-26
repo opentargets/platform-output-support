@@ -5,14 +5,14 @@ log_level: DEBUG
 release_uri: gs://opentargets-pipeline-runs/szsz/25.12-ppp-testrun-3 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
-  release: 25.12 # e.g. 25.12
-  data_source: gs://opentargets-pipeline-runs/szsz/25.12-ppp-testrun-3 # same as release_uri
-  database_namespace: ppp2512 # e.g. ppp2512
+  release: 26.03 # e.g. 25.12
+  data_source: gs://opentargets-pipeline-runs/szsz/26.03-ppp-testrun-3 # same as release_uri
+  database_namespace: ppp2603 # e.g. ppp2603
   # Google disk snapshot variables
-  opensearch_disk_name: ppp-2512-os
-  opensearch_disk_snapshot_name: ppp-2512-os
-  clickhouse_disk_name: ppp-2512-ch
-  clickhouse_disk_snapshot_name: ppp-2512-ch
+  opensearch_disk_name: ppp-2603-os
+  opensearch_disk_snapshot_name: ppp-2603-os
+  clickhouse_disk_name: ppp-2603-ch
+  clickhouse_disk_snapshot_name: ppp-2603-ch
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-ppp-data-releases
@@ -23,7 +23,7 @@ scratchpad:
   prepared_data: prepared_data
 
   # opensearch
-  opensearch_version: 3.1.0
+  opensearch_version: 3.5.0
   opensearch_java_opts: -Xms40g -Xmx200g
   opensearch_data: /mnt/opensearch/data
   opensearch_logs: /var/log/pos/opensearch
@@ -33,7 +33,7 @@ scratchpad:
   opensearch_indices_to_restore: '*,-.*' # e.g. '*,-.*' to restore all except hidden indices
 
   # clickhouse
-  clickhouse_version: 25.6.3.116
+  clickhouse_version: 25.8.18.1
   clickhouse_data: /mnt/clickhouse/data
   clickhouse_logs: /var/log/pos/clickhouse
   clickhouse_backup_base_path: https://storage.googleapis.com/open-targets-data-backends/clickhouse/
@@ -77,7 +77,6 @@ steps:
         - croissant
         - facet_search_disease
         - facet_search_target
-        - indication
         - search_disease
         - search_drug
         - search_study
@@ -157,6 +156,9 @@ steps:
         - target_essentiality
         - variants
         - w2v
+        - clinical_indication
+        - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_load clickhouse load ${each}
           dataset: ${each}
@@ -230,7 +232,6 @@ steps:
         - hpo
         - interaction
         - l2g_predictions
-        - literature_index
         - literature
         - mechanism_of_action
         - ml_w2v
@@ -249,6 +250,10 @@ steps:
         - target_prioritisation
         - targets
         - variants
+        - clinical_indication_disease
+        - clinical_indication_drug
+        - clinical_report
+        - clinical_target
       do:
         - name: clickhouse_backup table ${each}
           clickhouse_database: ${database_namespace}
@@ -352,16 +357,9 @@ steps:
           dataset: ${each}
           prefix: ${database_namespace}
           json_parent: ${prepared_data}
-    - name: open_search_snapshot data loading instance
-      requires:
-        - explode prep and load all datasets
-      snapshot_repository_name: ${opensearch_snapshot_repository}
-      snapshot_name: ${database_namespace}
-      snapshot_bucket: ${opensearch_snapshot_bucket}
-      snapshot_base_path: ${opensearch_snapshot_base_path}/${database_namespace}
     - name: open_search_stop data loading instance
       requires:
-        - open_search_snapshot data loading instance
+        - explode prep and load all datasets
       service_name: os-pos
     - name: create_gcp_disk_snapshot opensearch
       gcp_project_id: ${disk_snapshot_project_id}
@@ -517,7 +515,7 @@ steps:
       dataset: aotf
       clickhouse_database: ${database_namespace}
       data_dir_parent: ${local_data}
-    - name: explode backup clickhouse tables
+    - name: clickhouse_stop data loading instance
       requires:
         - explode load all datasets
         - clickhouse_load clickhouse target_prioritisation
@@ -526,15 +524,6 @@ steps:
         - clickhouse_load clickhouse load disease
         - clickhouse_load clickhouse load aotf
         - clickhouse_load clickhouse load targets
-      foreach: *clickhouse_tables
-      do:
-        - name: clickhouse_backup table ${each}
-          clickhouse_database: ${database_namespace}
-          table: ${each}
-          gcs_base_path: ${clickhouse_backup_base_path}
-    - name: clickhouse_stop data loading instance
-      requires:
-        - explode backup clickhouse tables
       clickhouse_database_name: ${database_namespace}
     - name: create_gcp_disk_snapshot clickhouse
       requires:
