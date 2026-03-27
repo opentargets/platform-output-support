@@ -150,7 +150,7 @@ clickhouse:
     postload_script: config/clickhouse/scripts/mouse_phenotypes.sql
   novelty:
     table: novelty_log
-    input_dir: output/novelty
+    input_dir: view/association_timeseries
     preload_script: config/clickhouse/schema/novelty.sql
     postload_script: config/clickhouse/scripts/novelty.sql
   openfda_faers:
