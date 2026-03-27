@@ -24,7 +24,7 @@ scratchpad:
 
   # opensearch
   opensearch_version: 3.5.0
-  opensearch_java_opts: -Xms40g -Xmx200g
+  opensearch_java_opts: -Xms60g -Xmx300g
   opensearch_data: /mnt/opensearch/data
   opensearch_logs: /var/log/pos/opensearch
   opensearch_snapshot_repository: ot-os-snapshots
