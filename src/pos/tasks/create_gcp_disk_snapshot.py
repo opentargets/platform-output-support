@@ -23,7 +23,7 @@ class CreateGcpDiskSnapshotSpec(Spec):
     gcp_snapshot_name: str  # 'dev-250310-os or dev-250310-ch'
     gcp_disk_zone: str  # 'europe-west1-d'
     mount_point: str  # '/mnt/opensearch' or '/mnt/clickhouse'
-    gcp_storage_location: str = 'eu'
+    gcp_storage_location: str = 'europe-west1'
     gcp_labels_team: str = 'open-targets'
     gcp_labels_subteam: str = 'backend'
     gcp_labels_product: str = 'platform'
