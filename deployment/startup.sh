@@ -34,7 +34,7 @@ function install_packages() {
     apt-get remove -y --purge man-db
     apt-get update -y
     apt-get install -y wget vim curl git htop pigz ca-certificates gnupg lsb-release zip unzip
-    
+
     # Install Java with SDKMAN (required for croissant)
     curl -s "https://get.sdkman.io?ci=true" | bash
     source "/.sdkman/bin/sdkman-init.sh"
@@ -46,7 +46,7 @@ function install_packages() {
     echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
       $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-    apt-get update -y 
+    apt-get update -y
     apt-get install -y docker-ce docker-ce-cli containerd.io
     usermod -aG docker ${POS_USER_NAME}
 
@@ -57,28 +57,28 @@ function install_packages() {
     source "$HOME/.local/bin/env"
 
     # Install POS repo, get the config and setup the log locations.
-    git clone https://github.com/opentargets/platform-output-support.git /opt/platform-output-support
-    cd /opt/platform-output-support
+    git clone https://github.com/opentargets/pos.git /opt/pos
+    cd /opt/pos
     git checkout ${BRANCH}
-    create_dir_for_group /opt/platform-output-support google-sudoers rwx
+    create_dir_for_group /opt/pos google-sudoers rwx
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pos_config" -H "Metadata-Flavor: Google" > /etc/opt/pos_config.yaml
-    uv --directory /opt/platform-output-support sync
+    uv --directory /opt/pos sync
     curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/pos_run_script" -H "Metadata-Flavor: Google" > /opt/pos_run.sh
     chgrp -R google-sudoers /opt/pos_run.sh && chmod g+x /opt/pos_run.sh
     create_dir_for_group /var/log/pos/opensearch google-sudoers rwx
     create_dir_for_group /var/log/pos/clickhouse google-sudoers rwx
-    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/s3_config" -H "Metadata-Flavor: Google" > /opt/platform-output-support/config/clickhouse/config.d/s3_config.xml
+    curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/s3_config" -H "Metadata-Flavor: Google" > /opt/pos/config/clickhouse/config.d/s3_config.xml
 }
 
 
 function mount_disk() {
   local disk_name=$1
   local mount_point=$2
-  local format_disk=$3 
+  local format_disk=$3
   # Format the disk using ext4 with no reserved blocks
   prefix="/dev/disk/by-id/google-"
   device_name="$${prefix}$${disk_name}"
-  if [[ $${format_disk} == true ]]; then 
+  if [[ $${format_disk} == true ]]; then
     log "Formatting disk $${device_name} with ext4"
     mkfs.ext4 -m 0 $${device_name}
   else
@@ -97,15 +97,15 @@ function uv_run() {
     if [ -z "$processes" ]; then
         processes=10
     fi
-    uv --directory /opt/platform-output-support run pos -c /etc/opt/pos_config.yaml -p $processes -s $step
+    uv --directory /opt/pos run pos -c /etc/opt/pos_config.yaml -p $processes -s $step
 }
 
 function copy_clickhouse_configs() {
   log "[INFO] Syncing ClickHouse configs"
   mkdir -p /mnt/clickhouse/config.d
   mkdir -p /mnt/clickhouse/users.d
-  cp -vR /opt/platform-output-support/config/clickhouse/config.d/config.xml /mnt/clickhouse/config.d/config.xml
-  cp -vR /opt/platform-output-support/config/clickhouse/users.d /mnt/clickhouse/
+  cp -vR /opt/pos/config/clickhouse/config.d/config.xml /mnt/clickhouse/config.d/config.xml
+  cp -vR /opt/pos/config/clickhouse/users.d /mnt/clickhouse/
 }
 
 
