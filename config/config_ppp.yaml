@@ -2,11 +2,11 @@
 # Platform Output Support Configuration File - PPP
 work_path: ./work
 log_level: DEBUG
-release_uri: gs://opentargets-pipeline-runs/szsz/25.12-ppp-testrun-3 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
+release_uri: gs://open-targets-pipeline-runs/sz/26.03-ppp.1 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
   release: 26.03 # e.g. 25.12
-  data_source: gs://opentargets-pipeline-runs/szsz/26.03-ppp-testrun-3 # same as release_uri
+  data_source: gs://open-targets-pipeline-runs/sz/26.03-ppp.1 # same as release_uri
   database_namespace: ppp2603 # e.g. ppp2603
   # Google disk snapshot variables
   opensearch_disk_name: ppp-2603-os
@@ -56,7 +56,7 @@ steps:
         - sync_bucket etl output files
       ftp_address:
       gcp_address: ${release_gcs_bucket}/${release}/output/
-      aws_address: 
+      aws_address:
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -304,7 +304,7 @@ steps:
         - sync_bucket etl output files
       ftp_address:
       gcp_address: ${release_gcs_bucket}/${release}/output/
-      aws_address: 
+      aws_address:
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
@@ -321,9 +321,9 @@ steps:
     - name: ot_croissant generate release metadata
       requires:
         - sync_bucket etl output files
-      ftp_address: 
+      ftp_address:
       gcp_address: ${release_gcs_bucket}/${release}/output/
-      aws_address: 
+      aws_address:
       dataset_path: ${local_data}/output
       output: croissant.json
       prepared_data_parent: ${prepared_data}
