@@ -5,14 +5,14 @@ log_level: DEBUG
 release_uri: gs://open-targets-pipeline-runs/ds/26.06.0-ppp-dev1 # e.g gs://open-targets-pipeline-runs/szsz/25.06-testrun-4
 scratchpad:
   # ================================= SET THESE VALUES ====================================
-  release: "26.06" # e.g. 25.12
+  release: "26.06.1" # e.g. 25.12
   data_source: gs://open-targets-pipeline-runs/ds/26.06.0-ppp-dev1 # same as release_uri
   database_namespace: ppp2606 # e.g. ppp2603
   # Google disk snapshot variables
-  opensearch_disk_name: ppp-2606-os-rc5
-  opensearch_disk_snapshot_name: ppp-2606-os-rc5
-  clickhouse_disk_name: ppp-2606-ch-rc5
-  clickhouse_disk_snapshot_name: ppp-2606-ch-rc5
+  opensearch_disk_name: ppp-26061-os-rc1
+  opensearch_disk_snapshot_name: ppp-26061-os-rc1
+  clickhouse_disk_name: ppp-26061-ch-rc1
+  clickhouse_disk_snapshot_name: ppp-26061-ch-rc1
   # ========================= THESE VALUES RARELY NEED CHANGING ===========================
   disk_snapshot_project_id: open-targets-eu-dev
   release_gcs_bucket: gs://open-targets-ppp-data-releases
