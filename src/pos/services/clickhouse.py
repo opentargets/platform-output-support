@@ -12,7 +12,11 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from docker.types.containers import Ulimit
 from loguru import logger
 
-from pos.services.containerized_service import ContainerizedService, ContainerizedServiceError, reset_timeout
+from pos.services.containerized_service import (
+    ContainerizedService,
+    ContainerizedServiceError,
+    reset_timeout,
+)
 
 
 @dataclass
@@ -87,15 +91,23 @@ class ClickhouseInstanceManager(ContainerizedService):
         volumes = {
             volume_data: {'bind': '/var/lib/clickhouse', 'mode': 'rw'},
             volume_logs: {'bind': '/var/log/clickhouse-server', 'mode': 'rw'},
-            config_path: {'bind': '/etc/clickhouse-server/config.d', 'mode': 'rw'},
-            users_path: {'bind': '/etc/clickhouse-server/users.d', 'mode': 'rw'},
+            config_path: {
+                'bind': '/etc/clickhouse-server/config.d',
+                'mode': 'rw',
+            },
+            users_path: {
+                'bind': '/etc/clickhouse-server/users.d',
+                'mode': 'rw',
+            },
         }
         logger.debug(f'volumes: {volumes}')
         ulimits = [Ulimit(name='nofile', soft=262144, hard=262144)]
         try:
             self._run_container(ports=ports, volumes=volumes, ulimits=ulimits)
         except ContainerizedServiceError:
-            raise ClickhouseInstanceManagerError(f'clickhouse instance {self.name} failed to start')
+            raise ClickhouseInstanceManagerError(
+                f'clickhouse instance {self.name} failed to start'
+            )
 
     def client(self, reset_timeout: bool = True) -> Client | None:
         """Get Clickhouse client.
@@ -120,12 +132,14 @@ class ClickhouseInstanceManager(ContainerizedService):
                     password=self.password,
                     database=self.database,
                     port=self.port,
-                    send_receive_timeout=600,
+                    send_receive_timeout=1200,
                 )
             except DatabaseError:
                 self._wait(1)
                 if self._init_timeout == 0:
-                    raise ClickhouseInstanceManagerError(f'Failed to connect to Clickhouse database {self.database}')
+                    raise ClickhouseInstanceManagerError(
+                        f'Failed to connect to Clickhouse database {self.database}'
+                    )
                 continue
         return client
 
@@ -155,7 +169,9 @@ class ClickhouseInstanceManager(ContainerizedService):
         return healthy
 
 
-def create_database(client: Client, database: str, exists_ok: bool = True) -> None:
+def create_database(
+    client: Client, database: str, exists_ok: bool = True
+) -> None:
     """Create Clickhouse database if it does not exist.
 
     Args:
@@ -190,7 +206,9 @@ def get_table_engine(client: Client, database: str, table: str) -> str | None:
     return table_engine_query[0] if table_engine_query else None
 
 
-def backup_table(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+def backup_table(
+    client: Client, parameters: ClickhouseBackupQueryParameters
+) -> None:
     """Backup ClickHouse table to S3 compatible storage (GCS).
 
     Args:
@@ -198,22 +216,30 @@ def backup_table(client: Client, parameters: ClickhouseBackupQueryParameters) ->
         parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
 
     """
-    query = Template("BACKUP TABLE `${database}`.`${table}` TO S3('${backup_path}')").substitute(asdict(parameters))
+    query = Template(
+        "BACKUP TABLE `${database}`.`${table}` TO S3('${backup_path}')"
+    ).substitute(asdict(parameters))
     client.query(query=query)
 
 
-def restore_table(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+def restore_table(
+    client: Client, parameters: ClickhouseBackupQueryParameters
+) -> None:
     """Restore ClickHouse table from S3 compatible storage (GCS).
 
     Args:
         client (Client): ClickHouse client instance.
         parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
     """
-    query = Template("RESTORE TABLE `${database}`.`${table}` FROM S3('${backup_path}')").substitute(asdict(parameters))
+    query = Template(
+        "RESTORE TABLE `${database}`.`${table}` FROM S3('${backup_path}')"
+    ).substitute(asdict(parameters))
     client.query(query=query)
 
 
-def export_to_s3(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+def export_to_s3(
+    client: Client, parameters: ClickhouseBackupQueryParameters
+) -> None:
     """Export ClickHouse table to S3 compatible storage (GCS).
 
     This is used for tables with the EmbeddedRocksDB engine which
@@ -231,7 +257,9 @@ def export_to_s3(client: Client, parameters: ClickhouseBackupQueryParameters) ->
     client.query(query)
 
 
-def import_from_s3(client: Client, parameters: ClickhouseBackupQueryParameters) -> None:
+def import_from_s3(
+    client: Client, parameters: ClickhouseBackupQueryParameters
+) -> None:
     """Import ClickHouse table from S3 compatible storage (GCS).
 
     This is used for tables with the EmbeddedRocksDB engine which
@@ -241,16 +269,18 @@ def import_from_s3(client: Client, parameters: ClickhouseBackupQueryParameters) 
         client (Client): ClickHouse client instance.
         parameters (ClickhouseBackupQueryParameters): Dataclass containing query parameters.
     """
-    query = Template("INSERT INTO `${database}`.`${table}` SELECT * FROM s3('${export_path}')").substitute(
-        asdict(parameters)
-    )
+    query = Template(
+        "INSERT INTO `${database}`.`${table}` SELECT * FROM s3('${export_path}')"
+    ).substitute(asdict(parameters))
     client.query(query)
 
 
 BackupURLs = namedtuple('BackupURLs', ['backup_url', 'export_url'])
 
 
-def make_backup_urls(gcs_base_path: str, database: str, table: str) -> BackupURLs:
+def make_backup_urls(
+    gcs_base_path: str, database: str, table: str
+) -> BackupURLs:
     """Make ClickHouse backup and export URLs.
 
     Args:
