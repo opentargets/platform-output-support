@@ -132,7 +132,7 @@ class ClickhouseInstanceManager(ContainerizedService):
                     password=self.password,
                     database=self.database,
                     port=self.port,
-                    send_receive_timeout=1200,
+                    send_receive_timeout=1800,
                 )
             except DatabaseError:
                 self._wait(1)
