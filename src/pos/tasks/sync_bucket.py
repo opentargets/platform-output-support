@@ -47,6 +47,7 @@ class SyncBucket(Task):
             'storage',
             'rsync',
             '-r',
+            '--verbosity=debug',
             self.spec.source,
             str(destination_folder),
         ]
