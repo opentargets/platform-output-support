@@ -51,5 +51,5 @@ class SyncBucket(Task):
             self.spec.source,
             str(destination_folder),
         ]
-        subprocess.run(rsync_command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.run(rsync_command, check=True, stdout=subprocess.STDOUT, stderr=subprocess.STDOUT)
         return self
