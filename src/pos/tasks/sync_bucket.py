@@ -42,9 +42,9 @@ class SyncBucket(Task):
             check_dir(destination_folder)
 
         logger.debug(f'syncing {self.spec.source} with {self.spec.destination}')
-        rsync_command = [  # refactor to use gcloud storage api - removes dep on local install of gsutil
-            'gsutil',
-            '-m',
+        rsync_command = [
+            'gcloud',
+            'storage',
             'rsync',
             '-r',
             self.spec.source,
