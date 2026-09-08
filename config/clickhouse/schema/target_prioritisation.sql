@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS target_prioritisation_log (
     hasPocket Nullable (UInt8),
     hasSafetyEvent Nullable (Int8),
     hasSmallMoleculeBinder Nullable (UInt8),
-    hasTEP Nullable (UInt8),
     isCancerDriverGene Nullable (Int8),
     isInMembrane Nullable (UInt8),
     isSecreted Nullable (UInt8),

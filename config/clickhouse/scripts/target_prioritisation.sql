@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS target_prioritisation_temp ENGINE = EmbeddedRocksDB (
         ('hasPocket', toString(hasPocket)),
         ('hasSafetyEvent', toString(hasSafetyEvent)),
         ('hasSmallMoleculeBinder', toString(hasSmallMoleculeBinder)),
-        ('hasTEP', toString(hasTEP)),
         ('isCancerDriverGene', toString(isCancerDriverGene)),
         ('isInMembrane', toString(isInMembrane)),
         ('isSecreted', toString(isSecreted)),
