@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS target_prioritisation ENGINE = EmbeddedRocksDB () PRI
         ))::Array(Tuple(key String, value String)) AS items
     FROM
         target_prioritisation_temp
-        LEFT JOIN target_essentiality ON target_prioritisation_temp.targetId = target_essentiality.id
+        LEFT JOIN target_essentiality ON target_prioritisation_temp.targetId = target_essentiality.targetId
 );
 
 DROP TABLE IF EXISTS target_prioritisation_temp SYNC;
